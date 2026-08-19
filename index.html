@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - Admission Portal</title>
+    <title>GAIVEX - Admission Exam Portal</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -20,43 +20,262 @@
         </nav>
     </header>
 
-    <div class="hero">
-        <h1>বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি প্ল্যাটফর্ম</h1>
-        <p>বিজ্ঞান বিভাগের সকল বিষয়ের ১ম ও ২য় পত্রের অধ্যায়ভিত্তিক মডেল টেস্ট ও প্র্যাকটিস</p>
-    </div>
+    <main class="hero-section">
+        <div class="hero-content">
+            <h1>স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span class="highlight">GAIVEX</span> এর সাথে</h1>
+            <p>মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট এবং ব্যাখ্যাসহ সমাধান।</p>
+            
+            <div class="subject-cards">
+                <a href="physics.html" class="card physics">
+                    <div class="icon">⚛️</div>
+                    <h3>পদার্থবিজ্ঞান</h3>
+                    <p>মডেল টেস্ট দিন</p>
+                </a>
+                <a href="chemistry.html" class="card chemistry">
+                    <div class="icon">🧪</div>
+                    <h3>রসায়ন</h3>
+                    <p>মডেল টেস্ট দিন</p>
+                </a>
+                <a href="biology.html" class="card biology">
+                    <div class="icon">🧬</div>
+                    <h3>জীববিজ্ঞান</h3>
+                    <p>মডেল টেস্ট দিন</p>
+                </a>
+                <a href="math.html" class="card math">
+                    <div class="icon">📐</div>
+                    <h3>উচ্চতর গণিত</h3>
+                    <p>মডেল টেস্ট দিন</p>
+                </a>
+            </div>
+        </div>
+    </main>
 
-    <div class="container">
-        <h2 class="section-title">বিষয় নির্বাচন করুন</h2>
-        <div class="subject-grid">
-            <a href="physics.html" class="subject-card">
-                <div class="icon">⚛️</div>
-                <h3>পদার্থবিজ্ঞান</h3>
-                <p>১ম ও ২য় পত্র (২১টি অধ্যায়)</p>
-                <span class="btn">পড়া শুরু করুন →</span>
-            </a>
-
-            <a href="chemistry.html" class="subject-card">
-                <div class="icon">🧪</div>
-                <h3>রসায়ন</h3>
-                <p>১ম ও ২য় পত্র (১০টি অধ্যায়)</p>
-                <span class="btn">পড়া শুরু করুন →</span>
-            </a>
-
-            <a href="biology.html" class="subject-card">
-                <div class="icon">🧬</div>
-                <h3>জীববিজ্ঞান</h3>
-                <p>উদ্ভিদবিজ্ঞান ও প্রাণীবিজ্ঞান (২৪টি অধ্যায়)</p>
-                <span class="btn">পড়া শুরু করুন →</span>
-            </a>
-
-            <a href="math.html" class="subject-card">
-                <div class="icon">📐</div>
-                <h3>উচ্চতর গণিত</h3>
-                <p>১ম ও ২য় পত্র (২০টি অধ্যায়)</p>
-                <span class="btn">পড়া শুরু করুন →</span>
-            </a>
+    <!-- Exam Pop-up -->
+    <div class="exam-modal" id="examModal">
+        <div class="exam-box">
+            <span class="close-btn" onclick="closeExam()">&times;</span>
+            <h3 id="modalTitle">মডেল টেস্ট</h3><br>
+            <div id="questionsContainer"></div>
+            <button class="btn-submit" onclick="submitExam()">জমা দিন</button>
         </div>
     </div>
 
+    <!-- Admin Button & Modal -->
+    <button onclick="toggleAdmin()" style="position: fixed; bottom: 15px; right: 15px; background: #4318ff; color: white; border: none; padding: 10px 15px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 999;">⚙️ Admin</button>
+
+    <div id="adminModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+      <div style="background:white; padding:25px; border-radius:12px; width:90%; max-width:500px; max-height:85vh; overflow-y:auto;">
+        <h3 style="margin-bottom:15px; color:#2b3674;">প্রশ্ন ও ব্যাখ্যা যোগ করুন</h3>
+        
+        <label style="font-weight:600;">বিষয়:</label>
+        <select id="admSubject" style="width:100%; padding:8px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc;">
+          <option value="physics">পদার্থবিজ্ঞান (Physics)</option>
+          <option value="chemistry">রসায়ন (Chemistry)</option>
+          <option value="biology">জীববিজ্ঞান (Biology)</option>
+          <option value="math">উচ্চতর গণিত (Math)</option>
+        </select>
+
+        <label style="font-weight:600;">পরীক্ষার সময় (মিনিট):</label>
+        <input type="number" id="admTime" value="10" style="width:100%; padding:8px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc;">
+
+        <label style="font-weight:600;">প্রশ্ন:</label>
+        <textarea id="admQuestion" style="width:100%; padding:8px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc;"></textarea>
+
+        <label style="font-weight:600;">অপশন ১:</label> <input type="text" id="admOpt0" style="width:100%; margin-bottom:8px; padding:6px; border-radius:4px; border:1px solid #ccc;">
+        <label style="font-weight:600;">অপশন ২:</label> <input type="text" id="admOpt1" style="width:100%; margin-bottom:8px; padding:6px; border-radius:4px; border:1px solid #ccc;">
+        <label style="font-weight:600;">অপশন ৩:</label> <input type="text" id="admOpt3" style="width:100%; margin-bottom:8px; padding:6px; border-radius:4px; border:1px solid #ccc;">
+        <label style="font-weight:600;">অপশন ৪:</label> <input type="text" id="admOpt3" style="width:100%; margin-bottom:12px; padding:6px; border-radius:4px; border:1px solid #ccc;">
+
+        <label style="font-weight:600;">সঠিক উত্তর:</label>
+        <select id="admCorrect" style="width:100%; padding:8px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc;">
+          <option value="0">অপশন ১</option>
+          <option value="1">অপশন ২</option>
+          <option value="2">অপশন ৩</option>
+          <option value="3">অপশন ৪</option>
+        </select>
+
+        <label style="font-weight:600;">ব্যাখ্যামূলক উত্তর:</label>
+        <textarea id="admExplanation" placeholder="এখানে উত্তরের সচিত্র ব্যাখ্যা বা সমাধান লিখুন..." style="width:100%; padding:8px; margin-bottom:15px; border-radius:6px; border:1px solid #ccc;"></textarea>
+
+        <button onclick="saveQuestionFromAdmin()" style="background:#05cd99; color:white; padding:10px 18px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">সেভ করুন</button>
+        <button onclick="toggleAdmin()" style="background:#ff5630; color:white; padding:10px 18px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-left:8px;">বন্ধ করুন</button>
+      </div>
+    </div>
+
+    <!-- Exam Engine Script -->
+    <script>
+    const ADMIN_PASS = "GAIVEX#@0987";
+
+    function toggleAdmin() {
+      const modal = document.getElementById('adminModal');
+      if(modal.style.display === 'none' || modal.style.display === '') {
+        let pass = prompt("এডমিন পাসওয়ার্ড দিন:");
+        if(pass === ADMIN_PASS) {
+          modal.style.display = 'flex';
+        } else if(pass !== null) {
+          alert("ভুল পাসওয়ার্ড!");
+        }
+      } else {
+        modal.style.display = 'none';
+      }
+    }
+
+    function saveQuestionFromAdmin() {
+      const subject = document.getElementById('admSubject').value;
+      const timeLimit = parseInt(document.getElementById('admTime').value) || 10;
+      const questionText = document.getElementById('admQuestion').value;
+      const options = [
+        document.getElementById('admOpt0').value,
+        document.getElementById('admOpt1').value,
+        document.getElementById('admOpt2').value,
+        document.getElementById('admOpt3').value
+      ];
+      const correct = parseInt(document.getElementById('admCorrect').value);
+      const explanation = document.getElementById('admExplanation').value;
+
+      if(!questionText || !options[0] || !options[1]) {
+        alert("দয়া করে প্রশ্ন এবং অন্তত ২টি অপশন লিখুন!");
+        return;
+      }
+
+      let db = JSON.parse(localStorage.getItem('gaivex_exam_db')) || {};
+      if(!db[subject]) {
+        db[subject] = { timeLimit: timeLimit, questions: [] };
+      }
+      
+      db[subject].timeLimit = timeLimit;
+      db[subject].questions.push({
+        id: Date.now(),
+        question: questionText,
+        options: options,
+        correct: correct,
+        explanation: explanation
+      });
+
+      localStorage.setItem('gaivex_exam_db', JSON.stringify(db));
+      alert("প্রশ্ন সফলভাবে যোগ করা হয়েছে!");
+      
+      document.getElementById('admQuestion').value = '';
+      document.getElementById('admOpt0').value = '';
+      document.getElementById('admOpt1').value = '';
+      document.getElementById('admOpt2').value = '';
+      document.getElementById('admOpt3').value = '';
+      document.getElementById('admExplanation').value = '';
+    }
+
+    let timerInterval;
+    let timeLeft = 0;
+    let userAnswers = {};
+    let currentSubject = '';
+
+    function openExam(subjectKey) {
+      currentSubject = subjectKey;
+      let db = JSON.parse(localStorage.getItem('gaivex_exam_db')) || {};
+      let examData = db[subjectKey];
+
+      if(!examData || !examData.questions || examData.questions.length === 0) {
+        alert("এই বিষয়ে এখনো কোনো প্রশ্ন যোগ করা হয়নি! নিচে 'Admin' বাটনে ক্লিক করে প্রশ্ন যোগ করুন।");
+        return;
+      }
+
+      document.getElementById('modalTitle').innerText = subjectKey.toUpperCase() + " - মডেল টেস্ট";
+      document.getElementById('examModal').style.display = 'flex';
+      
+      userAnswers = {};
+      timeLeft = examData.timeLimit * 60;
+      
+      renderQuestions(examData);
+      startTimer();
+    }
+
+    function renderQuestions(examData) {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = `
+        <div id="timerBox" style="background:#ff5630; color:white; padding:10px; border-radius:8px; font-weight:bold; text-align:center; margin-bottom:15px;">
+          বাকি সময়: <span id="timeDisplay">00:00</span>
+        </div>
+      `;
+
+      examData.questions.forEach((q, index) => {
+        let optionsHTML = '';
+        q.options.forEach((opt, optIdx) => {
+          optionsHTML += `
+            <label style="display:block; margin:6px 0; cursor:pointer;">
+              <input type="radio" name="q_${q.id}" value="${optIdx}" onchange="userAnswers[${q.id}] = ${optIdx}">
+              ${opt}
+            </label>
+          `;
+        });
+
+        container.innerHTML += `
+          <div class="q-card" style="margin-bottom:15px; padding:15px; border:1px solid #e0e0e0; border-radius:8px; background:#fff;">
+            <h4>${index + 1}. ${q.question}</h4>
+            <div class="q-options">${optionsHTML}</div>
+            <div id="explain_${q.id}" style="display:none; margin-top:10px; padding:10px; background:#eef2ff; border-left:4px solid #4318ff; border-radius:4px; font-size:14px; color:#2b3674;"></div>
+          </div>
+        `;
+      });
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        
+        document.getElementById('timeDisplay').innerText = 
+          `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert("সময় শেষ! আপনার পরীক্ষা সংক্রিয়ভাবে জমা নেওয়া হলো।");
+          submitExam();
+        }
+        timeLeft--;
+      }, 1000);
+    }
+
+    function submitExam() {
+      clearInterval(timerInterval);
+      const timerBox = document.getElementById('timerBox');
+      if(timerBox) timerBox.style.display = 'none';
+
+      let db = JSON.parse(localStorage.getItem('gaivex_exam_db')) || {};
+      let examData = db[currentSubject];
+      let score = 0;
+
+      examData.questions.forEach((q) => {
+        const selected = userAnswers[q.id];
+        const explainDiv = document.getElementById(`explain_${q.id}`);
+        if(explainDiv) {
+            explainDiv.style.display = 'block';
+            if (selected === q.correct) {
+              score++;
+              explainDiv.innerHTML = `<b style="color:#05cd99;">✓ সঠিক উত্তর!</b><br>${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}`;
+            } else {
+              let correctText = q.options[q.correct];
+              explainDiv.innerHTML = `<b style="color:#ff5630;">✕ ভুল উত্তর!</b> (সঠিক: <b>${correctText}</b>)<br>${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}`;
+            }
+        }
+      });
+
+      const container = document.getElementById('questionsContainer');
+      container.insertAdjacentHTML('afterbegin', `
+        <div style="background:#05cd99; color:white; padding:15px; border-radius:8px; text-align:center; margin-bottom:20px;">
+          <h2>পরীক্ষার ফলাফল</h2>
+          <p style="font-size:20px; font-weight:bold; margin-top:5px;">প্রাপ্ত নম্বর: ${score} / ${examData.questions.length}</p>
+        </div>
+      `);
+
+      const btnSubmit = document.querySelector('.btn-submit');
+      btnSubmit.innerText = "পরীক্ষা বন্ধ করুন";
+      btnSubmit.onclick = closeExam;
+    }
+
+    function closeExam() {
+      document.getElementById('examModal').style.display = 'none';
+      location.reload();
+    }
+    </script>
 </body>
 </html>
