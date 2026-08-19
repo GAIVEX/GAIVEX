@@ -9,11 +9,19 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; }
         
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #1e293b; border-bottom: 1px solid #334155; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #1e293b; border-bottom: 1px solid #334155; flex-wrap: wrap; gap: 10px; }
         .logo { font-size: 24px; font-weight: 700; color: #38bdf8; }
         .logo span { color: #f43f5e; }
-        .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 15px; font-weight: 600; }
+        .nav-links { display: flex; align-items: center; gap: 15px; }
+        .nav-links a { color: #94a3b8; text-decoration: none; font-weight: 600; }
         .nav-links a.active, .nav-links a:hover { color: #38bdf8; }
+
+        /* Auth UI Buttons */
+        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-auth:hover { background: #7dd3fc; }
+        .user-profile-btn { display: flex; align-items: center; gap: 8px; cursor: pointer; background: #334155; padding: 5px 12px; border-radius: 20px; border: 1px solid #475569; }
+        .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .hero-section { text-align: center; padding: 40px 20px; max-width: 1000px; margin: 0 auto; }
         .hero-section h1 { font-size: 28px; margin-bottom: 10px; color: #f8fafc; }
@@ -26,17 +34,23 @@
         .subject-box .icon { font-size: 36px; margin-bottom: 10px; }
         .subject-box h3 { font-size: 20px; color: #f8fafc; }
 
-        /* Admin & Exam Modal Styling */
+        /* Modal Base Styling */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:500px; max-height:85vh; overflow-y:auto; border:1px solid #334155; }
+        .modal-content { background:#1e293b; color:#f8fafc; padding:25px; border-radius:12px; width:92%; max-width:450px; max-height:85vh; overflow-y:auto; border:1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:14px; }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 10px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:5px; }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:10px; }
         
         .btn-group { display:flex; gap:10px; margin-top:15px; }
-        .btn { padding:10px 15px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; }
+        .btn { padding:10px 15px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; text-align: center; }
         .btn-save { background:#10b981; color:white; }
         .btn-close { background:#ef4444; color:white; }
+        .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-view { background:#f59e0b; color:white; margin-top:8px; width:100%; }
         
+        .tab-menu { display:flex; border-bottom: 1px solid #334155; margin-bottom: 15px; }
+        .tab-btn { flex:1; padding: 10px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
+
         .admin-trigger { position: fixed; bottom: 20px; right: 20px; background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; }
     </style>
 </head>
@@ -50,6 +64,11 @@
             <a href="chemistry.html">রসায়ন</a>
             <a href="biology.html">জীববিজ্ঞান</a>
             <a href="math.html">উচ্চতর গণিত</a>
+            
+            <!-- Dynamic Auth Button / Profile -->
+            <div id="authNavContainer">
+                <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
+            </div>
         </nav>
     </header>
 
@@ -77,6 +96,58 @@
         </div>
     </main>
 
+    <!-- Auth Modal (Login & Register) -->
+    <div id="authModal" class="modal">
+      <div class="modal-content">
+        <div class="tab-menu">
+            <button class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">লগইন</button>
+            <button class="tab-btn" id="tabRegister" onclick="switchAuthTab('register')">রেজিস্ট্রেশন</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleEmailLogin(event)">
+            <label>ইমেইল:</label>
+            <input type="email" id="loginEmail" required placeholder="example@mail.com">
+            <label>পাসওয়ার্ড:</label>
+            <input type="password" id="loginPassword" required placeholder="******">
+            <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">লগইন করুন</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" onsubmit="handleEmailRegister(event)" style="display:none;">
+            <label>পূর্ণ নাম:</label>
+            <input type="text" id="regName" required placeholder="আপনার নাম লিখুন">
+            <label>ইমেইল:</label>
+            <input type="email" id="regEmail" required placeholder="example@mail.com">
+            <label>পাসওয়ার্ড (নূন্যতম ৬ অক্ষর):</label>
+            <input type="password" id="regPassword" required placeholder="******">
+            <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">অ্যাকাউন্ট তৈরি করুন</button>
+        </form>
+
+        <div style="text-align:center; margin:15px 0 5px 0; color:#64748b; font-size:13px;">অথবা</div>
+
+        <button type="button" class="btn btn-google" onclick="handleGoogleSignIn()">
+            <span>🌐 Google দিয়ে লগইন করুন</span>
+        </button>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-close" onclick="toggleAuthModal(false)">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="modal">
+      <div class="modal-content" style="text-align:center;">
+        <h3 style="color:#38bdf8; margin-bottom:15px;">ব্যবহারকারীর প্রোফাইল</h3>
+        <div id="profileDetails" style="margin-bottom:20px; font-size:15px; color:#cbd5e1;"></div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
+            <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Admin Button & Popup -->
     <button class="admin-trigger" onclick="toggleAdmin()">⚙️ Admin</button>
 
@@ -99,9 +170,15 @@
         </select>
 
         <label>৩. অধ্যায় নির্বাচন করুন:</label>
-        <select id="admChapter">
+        <select id="admChapter" onchange="clearQuestionList()">
           <option value="">-- আগে পত্র বেছে নিন --</option>
         </select>
+
+        <button type="button" class="btn btn-view" onclick="loadQuestionList()">🔍 প্রশ্ন তালিকা দেখুন / ডিলিট করুন</button>
+
+        <div id="adminQuestionList"></div>
+
+        <hr style="margin: 15px 0; border-color: #334155;">
 
         <label>পরীক্ষার সময় (মিনিট):</label>
         <input type="number" id="admTime" value="10">
@@ -132,119 +209,318 @@
       </div>
     </div>
 
-    <script>
-    const ADMIN_PASS = "GAIVEX#@0987";
+    <!-- Firebase SDK (Version 10) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getDatabase, ref, push, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { 
+        getAuth, 
+        signInWithPopup, 
+        GoogleAuthProvider, 
+        createUserWithEmailAndPassword, 
+        signInWithEmailAndPassword, 
+        signOut, 
+        onAuthStateChanged,
+        updateProfile
+      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // সকল বিষয়ের পত্র ও অধ্যায়ের তালিকা
-    const chaptersData = {
-        physics: {
-            paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা"],
-            paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া"]
-        },
-        chemistry: {
-            paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: পর্যায়বৃত্ত ধর্ম", "অধ্যায় ৪: রাসায়নিক পরিবর্তন"],
-            paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন"]
-        },
-        biology: {
-            paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব"],
-            paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব"]
-        },
-        math: {
-            paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৯: ডিফারেন্সিয়েশন"],
-            paper2: ["অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতি"]
+      const firebaseConfig = {
+        apiKey: "AIzaSyAoQInHVL3h3R580F8SZbmsFtX4Kx6xckQ",
+        authDomain: "gaivexexam.firebaseapp.com",
+        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+        projectId: "gaivexexam",
+        storageBucket: "gaivexexam.firebasestorage.app",
+        messagingSenderId: "956204530190",
+        appId: "1:956204530190:web:4e5550afefa3e314c99a5f",
+        measurementId: "G-2YEMS07HEQ"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+      const googleProvider = new GoogleAuthProvider();
+
+      const ADMIN_PASS = "GAIVEX#@0987";
+      let currentUser = null;
+
+      // Global Expose for HTML events
+      window.toggleAuthModal = toggleAuthModal;
+      window.toggleProfileModal = toggleProfileModal;
+      window.switchAuthTab = switchAuthTab;
+      window.handleGoogleSignIn = handleGoogleSignIn;
+      window.handleEmailRegister = handleEmailRegister;
+      window.handleEmailLogin = handleEmailLogin;
+      window.handleLogout = handleLogout;
+      window.toggleAdmin = toggleAdmin;
+      window.updatePaperOptions = updatePaperOptions;
+      window.updateChapterOptions = updateChapterOptions;
+      window.saveQuestionFromAdmin = saveQuestionFromAdmin;
+      window.loadQuestionList = loadQuestionList;
+      window.deleteQuestion = deleteQuestion;
+      window.clearQuestionList = clearQuestionList;
+
+      // Track Auth State
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        const container = document.getElementById('authNavContainer');
+        if (user) {
+          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="avatar">` : (user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U');
+          const name = user.displayName || user.email.split('@')[0];
+          container.innerHTML = `
+            <div class="user-profile-btn" onclick="toggleProfileModal(true)">
+                <div class="user-avatar">${photo}</div>
+                <span style="font-size:14px; font-weight:bold; color:#f8fafc;">${name}</span>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
         }
-    };
-
-    function toggleAdmin() {
-      const modal = document.getElementById('adminModal');
-      if(modal.style.display === 'none' || modal.style.display === '') {
-        let pass = prompt("এডমিন পাসওয়ার্ড দিন:");
-        if(pass === ADMIN_PASS) {
-          modal.style.display = 'flex';
-        } else if(pass !== null) {
-          alert("ভুল পাসওয়ার্ড!");
-        }
-      } else {
-        modal.style.display = 'none';
-      }
-    }
-
-    function updatePaperOptions() {
-        const sub = document.getElementById('admSubject').value;
-        const paperSelect = document.getElementById('admPaper');
-        paperSelect.innerHTML = '<option value="">-- পত্র বেছে নিন --</option>';
-        document.getElementById('admChapter').innerHTML = '<option value="">-- আগে পত্র বেছে নিন --</option>';
-
-        if(sub) {
-            paperSelect.innerHTML += `
-                <option value="paper1">১ম পত্র</option>
-                <option value="paper2">২য় পত্র</option>
-            `;
-        }
-    }
-
-    function updateChapterOptions() {
-        const sub = document.getElementById('admSubject').value;
-        const paper = document.getElementById('admPaper').value;
-        const chapSelect = document.getElementById('admChapter');
-        chapSelect.innerHTML = '<option value="">-- অধ্যায় বেছে নিন --</option>';
-
-        if(sub && paper && chaptersData[sub][paper]) {
-            chaptersData[sub][paper].forEach((chap) => {
-                chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-            });
-        }
-    }
-
-    function saveQuestionFromAdmin() {
-      const subject = document.getElementById('admSubject').value;
-      const paper = document.getElementById('admPaper').value;
-      const chapter = document.getElementById('admChapter').value;
-      const timeLimit = parseInt(document.getElementById('admTime').value) || 10;
-      const questionText = document.getElementById('admQuestion').value;
-      const options = [
-        document.getElementById('admOpt0').value,
-        document.getElementById('admOpt1').value,
-        document.getElementById('admOpt2').value,
-        document.getElementById('admOpt3').value
-      ];
-      const correct = parseInt(document.getElementById('admCorrect').value);
-      const explanation = document.getElementById('admExplanation').value;
-
-      if(!subject || !paper || !chapter || !questionText || !options[0] || !options[1]) {
-        alert("দয়া করে বিষয়, পত্র, অধ্যায়, প্রশ্ন এবং অন্তত ২টি অপশন সঠিকভাবে নির্বাচন করুন!");
-        return;
-      }
-
-      let db = JSON.parse(localStorage.getItem('gaivex_exam_db')) || {};
-      
-      // ইউনিক কি (Key) তৈরি
-      let storageKey = `${subject}_${paper}_${chapter}`;
-      
-      if(!db[storageKey]) {
-        db[storageKey] = { timeLimit: timeLimit, questions: [] };
-      }
-      
-      db[storageKey].timeLimit = timeLimit;
-      db[storageKey].questions.push({
-        id: Date.now(),
-        question: questionText,
-        options: options,
-        correct: correct,
-        explanation: explanation
       });
 
-      localStorage.setItem('gaivex_exam_db', JSON.stringify(db));
-      alert("প্রশ্নটি সফলভাবে সেভ করা হয়েছে! আপনি আরও প্রশ্ন সেভ করতে পারেন।");
-      
-      // প্রশ্ন ইনপুট বক্স ফাঁকা করা যেন পরবর্তী প্রশ্ন লেখা যায়
-      document.getElementById('admQuestion').value = '';
-      document.getElementById('admOpt0').value = '';
-      document.getElementById('admOpt1').value = '';
-      document.getElementById('admOpt2').value = '';
-      document.getElementById('admOpt3').value = '';
-      document.getElementById('admExplanation').value = '';
-    }
+      // Auth Functions
+      function toggleAuthModal(show) {
+        document.getElementById('authModal').style.display = show ? 'flex' : 'none';
+      }
+
+      function toggleProfileModal(show) {
+        const modal = document.getElementById('profileModal');
+        if (show && currentUser) {
+          document.getElementById('profileDetails').innerHTML = `
+            <p><b>নাম:</b> ${currentUser.displayName || 'দেওয়া হয়নি'}</p>
+            <p style="margin-top:5px;"><b>ইমেইল:</b> ${currentUser.email}</p>
+          `;
+        }
+        modal.style.display = show ? 'flex' : 'none';
+      }
+
+      function switchAuthTab(tab) {
+        document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+        document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+        document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+      }
+
+      async function handleGoogleSignIn() {
+        try {
+          await signInWithPopup(auth, googleProvider);
+          toggleAuthModal(false);
+          alert("সফলভাবে লগইন হয়েছে!");
+        } catch (e) {
+          alert("গুগল লগইন ত্রুটি: " + e.message);
+        }
+      }
+
+      async function handleEmailRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPassword').value;
+
+        try {
+          const res = await createUserWithEmailAndPassword(auth, email, pass);
+          await updateProfile(res.user, { displayName: name });
+          toggleAuthModal(false);
+          alert("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+        } catch (err) {
+          alert("রেজিস্ট্রেশন ত্রুটি: " + err.message);
+        }
+      }
+
+      async function handleEmailLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          toggleAuthModal(false);
+          alert("সফলভাবে লগইন হয়েছে!");
+        } catch (err) {
+          alert("লগইন ত্রুটি: " + err.message);
+        }
+      }
+
+      async function handleLogout() {
+        await signOut(auth);
+        toggleProfileModal(false);
+        alert("লগআউট সম্পন্ন হয়েছে!");
+      }
+
+      // Chapters Data
+      const chaptersData = {
+          physics: {
+              paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
+              paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"]
+          },
+          chemistry: {
+              paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"],
+              paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
+          },
+          biology: {
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"],
+              paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
+          },
+          math: {
+              paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
+              paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
+          }
+      };
+
+      function toggleAdmin() {
+        const modal = document.getElementById('adminModal');
+        if(modal.style.display === 'none' || modal.style.display === '') {
+          let pass = prompt("এডমিন পাসওয়ার্ড দিন:");
+          if(pass === ADMIN_PASS) {
+            modal.style.display = 'flex';
+          } else if(pass !== null) {
+            alert("ভুল পাসওয়ার্ড!");
+          }
+        } else {
+          modal.style.display = 'none';
+        }
+      }
+
+      function updatePaperOptions() {
+          const sub = document.getElementById('admSubject').value;
+          const paperSelect = document.getElementById('admPaper');
+          paperSelect.innerHTML = '<option value="">-- পত্র বেছে নিন --</option>';
+          document.getElementById('admChapter').innerHTML = '<option value="">-- আগে পত্র বেছে নিন --</option>';
+
+          if(sub) {
+              paperSelect.innerHTML += `
+                  <option value="paper1">১ম পত্র</option>
+                  <option value="paper2">২য় পত্র</option>
+              `;
+          }
+          clearQuestionList();
+      }
+
+      function updateChapterOptions() {
+          const sub = document.getElementById('admSubject').value;
+          const paper = document.getElementById('admPaper').value;
+          const chapSelect = document.getElementById('admChapter');
+          chapSelect.innerHTML = '<option value="">-- অধ্যায় বেছে নিন --</option>';
+
+          if(sub && paper && chaptersData[sub][paper]) {
+              chaptersData[sub][paper].forEach((chap) => {
+                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
+              });
+          }
+          clearQuestionList();
+      }
+
+      async function saveQuestionFromAdmin() {
+        const subject = document.getElementById('admSubject').value;
+        const paper = document.getElementById('admPaper').value;
+        const chapter = document.getElementById('admChapter').value;
+        const timeLimit = parseInt(document.getElementById('admTime').value) || 10;
+        const questionText = document.getElementById('admQuestion').value;
+        const options = [
+          document.getElementById('admOpt0').value,
+          document.getElementById('admOpt1').value,
+          document.getElementById('admOpt2').value,
+          document.getElementById('admOpt3').value
+        ];
+        const correct = parseInt(document.getElementById('admCorrect').value);
+        const explanation = document.getElementById('admExplanation').value;
+
+        if(!subject || !paper || !chapter || !questionText || !options[0] || !options[1]) {
+          alert("দয়া করে বিষয়, পত্র, অধ্যায়, প্রশ্ন এবং অন্তত ২টি অপশন সঠিকভাবে পূরণ করুন!");
+          return;
+        }
+
+        const cleanChapter = chapter.replace(/[.#$/[\]]/g, "_");
+        const storageKey = `${subject}/${paper}/${cleanChapter}`;
+
+        try {
+          const qListRef = ref(db, `exams/${storageKey}/questions`);
+          const newQRef = push(qListRef);
+
+          await set(newQRef, {
+            id: newQRef.key,
+            question: questionText,
+            options: options,
+            correct: correct,
+            explanation: explanation
+          });
+
+          await set(ref(db, `exams/${storageKey}/timeLimit`), timeLimit);
+
+          alert("প্রশ্নটি ক্লাউড ডাটাবেজে সফলভাবে সেভ হয়েছে!");
+          
+          document.getElementById('admQuestion').value = '';
+          document.getElementById('admOpt0').value = '';
+          document.getElementById('admOpt1').value = '';
+          document.getElementById('admOpt2').value = '';
+          document.getElementById('admOpt3').value = '';
+          document.getElementById('admExplanation').value = '';
+
+          loadQuestionList();
+        } catch(e) {
+          alert("ত্রুটি: " + e.message);
+        }
+      }
+
+      async function loadQuestionList() {
+        const subject = document.getElementById('admSubject').value;
+        const paper = document.getElementById('admPaper').value;
+        const chapter = document.getElementById('admChapter').value;
+
+        if(!subject || !paper || !chapter) {
+          alert("আগে বিষয়, পত্র এবং অধ্যায় বেছে নিন!"); return;
+        }
+
+        const cleanChapter = chapter.replace(/[.#$/[\]]/g, "_");
+        const storageKey = `${subject}/${paper}/${cleanChapter}`;
+        const listContainer = document.getElementById('adminQuestionList');
+
+        listContainer.innerHTML = '<p style="color:#38bdf8; text-align:center; margin-top:10px;">ডাটা লোড হচ্ছে...</p>';
+
+        try {
+          const dbRef = ref(db);
+          const snapshot = await get(child(dbRef, `exams/${storageKey}/questions`));
+
+          if (snapshot.exists()) {
+            const questionsObj = snapshot.val();
+            const qArray = Object.keys(questionsObj).map(key => questionsObj[key]);
+
+            let html = `<h4 style="color:#38bdf8; margin-top:15px; margin-bottom:10px;">সংরক্ষিত প্রশ্নসমূহ (${qArray.length}টি):</h4>`;
+            qArray.forEach((q, index) => {
+              html += `
+                <div style="background:#0f172a; padding:10px; border-radius:6px; margin-bottom:8px; border:1px solid #334155; font-size:13px; color:white;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <b>${index + 1}. ${q.question}</b>
+                    <button onclick="deleteQuestion('${storageKey}', '${q.id}')" style="background:#ef4444; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin-left:10px;">🗑️ ডিলিট</button>
+                  </div>
+                  <div style="color:#94a3b8; margin-top:4px;">সঠিক উত্তর: <b>${q.options[q.correct]}</b></div>
+                </div>
+              `;
+            });
+            listContainer.innerHTML = html;
+          } else {
+            listContainer.innerHTML = `<p style="color:#f43f5e; text-align:center; margin-top:10px;">এই অধ্যায়ে কোনো প্রশ্ন নেই।</p>`;
+          }
+        } catch(e) {
+          listContainer.innerHTML = `<p style="color:#ef4444;">ত্রুটি: ${e.message}</p>`;
+        }
+      }
+
+      async function deleteQuestion(storageKey, qId) {
+        if(confirm("আপনি কি নিশ্চিত যে এই প্রশ্নটি ক্লাউড থেকে মুছে ফেলতে চান?")) {
+          try {
+            await remove(ref(db, `exams/${storageKey}/questions/${qId}`));
+            alert("প্রশ্নটি ডিলিট করা হয়েছে!");
+            loadQuestionList();
+          } catch(e) {
+            alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
+          }
+        }
+      }
+
+      function clearQuestionList() {
+        const listContainer = document.getElementById('adminQuestionList');
+        if(listContainer) listContainer.innerHTML = '';
+      }
     </script>
 </body>
 </html>
