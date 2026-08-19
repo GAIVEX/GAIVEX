@@ -9,49 +9,110 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; }
         
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #1e293b; border-bottom: 1px solid #334155; flex-wrap: wrap; gap: 10px; }
-        .logo { font-size: 24px; font-weight: 700; color: #38bdf8; }
+        /* Navbar Responsive Style */
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 4%; 
+            background: #1e293b; 
+            border-bottom: 1px solid #334155; 
+            gap: 10px;
+        }
+        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; white-space: nowrap; }
         .logo span { color: #f43f5e; }
-        .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a { color: #94a3b8; text-decoration: none; font-weight: 600; }
-        .nav-links a.active, .nav-links a:hover { color: #38bdf8; }
+        
+        .nav-links { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            overflow-x: auto; 
+            padding-bottom: 2px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links a { 
+            color: #94a3b8; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 14px; 
+            white-space: nowrap; 
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .nav-links a.active, .nav-links a:hover { color: #38bdf8; background: #334155; }
 
-        /* Auth UI Buttons */
-        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        /* Responsive Auth Button */
+        #authNavContainer { margin-left: auto; flex-shrink: 0; }
+        .btn-auth { 
+            background: #38bdf8; 
+            color: #0f172a; 
+            border: none; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+        }
         .btn-auth:hover { background: #7dd3fc; }
-        .user-profile-btn { display: flex; align-items: center; gap: 8px; cursor: pointer; background: #334155; padding: 5px 12px; border-radius: 20px; border: 1px solid #475569; }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; overflow: hidden; }
+        
+        .user-profile-btn { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            cursor: pointer; 
+            background: #334155; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            border: 1px solid #475569; 
+            white-space: nowrap;
+        }
+        .user-avatar { 
+            width: 26px; 
+            height: 26px; 
+            border-radius: 50%; 
+            background: #38bdf8; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            color: #0f172a; 
+            overflow: hidden; 
+            font-size: 12px;
+        }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .hero-section { text-align: center; padding: 40px 20px; max-width: 1000px; margin: 0 auto; }
-        .hero-section h1 { font-size: 28px; margin-bottom: 10px; color: #f8fafc; }
+        .hero-section { text-align: center; padding: 30px 15px; max-width: 1000px; margin: 0 auto; }
+        .hero-section h1 { font-size: 24px; margin-bottom: 10px; color: #f8fafc; line-height: 1.4; }
         .highlight { color: #38bdf8; }
-        .hero-section p { color: #94a3b8; margin-bottom: 30px; }
+        .hero-section p { color: #94a3b8; margin-bottom: 25px; font-size: 14px; }
 
-        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 10px; }
-        .subject-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 25px 15px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
-        .subject-box:hover { transform: translateY(-5px); border-color: #38bdf8; background: #334155; }
-        .subject-box .icon { font-size: 36px; margin-bottom: 10px; }
-        .subject-box h3 { font-size: 20px; color: #f8fafc; }
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .subject-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
+        .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
+        .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
+        .subject-box h3 { font-size: 16px; color: #f8fafc; }
 
-        /* Modal Base Styling */
+        /* Modal Layout */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:25px; border-radius:12px; width:92%; max-width:450px; max-height:85vh; overflow-y:auto; border:1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:14px; }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:10px; }
+        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:400px; max-height:85vh; overflow-y:auto; border:1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:13px; }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:9px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:8px; }
         
         .btn-group { display:flex; gap:10px; margin-top:15px; }
-        .btn { padding:10px 15px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; text-align: center; }
+        .btn { padding:10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; text-align: center; font-size: 14px; }
         .btn-save { background:#10b981; color:white; }
         .btn-close { background:#ef4444; color:white; }
-        .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px; padding: 10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
         .btn-view { background:#f59e0b; color:white; margin-top:8px; width:100%; }
         
         .tab-menu { display:flex; border-bottom: 1px solid #334155; margin-bottom: 15px; }
-        .tab-btn { flex:1; padding: 10px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
+        .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
-        .admin-trigger { position: fixed; bottom: 20px; right: 20px; background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; }
+        .admin-trigger { position: fixed; bottom: 20px; right: 20px; background: #38bdf8; color: #0f172a; border: none; padding: 10px 16px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -64,12 +125,11 @@
             <a href="chemistry.html">রসায়ন</a>
             <a href="biology.html">জীববিজ্ঞান</a>
             <a href="math.html">উচ্চতর গণিত</a>
-            
-            <!-- Dynamic Auth Button / Profile -->
-            <div id="authNavContainer">
-                <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
-            </div>
         </nav>
+        <!-- Auth Navigation Button -->
+        <div id="authNavContainer">
+            <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
+        </div>
     </header>
 
     <main class="hero-section">
@@ -124,9 +184,9 @@
             <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">অ্যাকাউন্ট তৈরি করুন</button>
         </form>
 
-        <div style="text-align:center; margin:15px 0 5px 0; color:#64748b; font-size:13px;">অথবা</div>
+        <div style="text-align:center; margin:12px 0 5px 0; color:#64748b; font-size:12px;">অথবা</div>
 
-        <button type="button" class="btn btn-google" onclick="handleGoogleSignIn()">
+        <button type="button" class="btn-google" onclick="handleGoogleSignIn()">
             <span>🌐 Google দিয়ে লগইন করুন</span>
         </button>
 
@@ -140,7 +200,7 @@
     <div id="profileModal" class="modal">
       <div class="modal-content" style="text-align:center;">
         <h3 style="color:#38bdf8; margin-bottom:15px;">ব্যবহারকারীর প্রোফাইল</h3>
-        <div id="profileDetails" style="margin-bottom:20px; font-size:15px; color:#cbd5e1;"></div>
+        <div id="profileDetails" style="margin-bottom:20px; font-size:14px; color:#cbd5e1;"></div>
         <div class="btn-group">
             <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
             <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
@@ -153,7 +213,7 @@
 
     <div id="adminModal" class="modal">
       <div class="modal-content">
-        <h3 style="color:#38bdf8; text-align:center;">প্রশ্ন ও ব্যাখ্যা যোগ করুন</h3>
+        <h3 style="color:#38bdf8; text-align:center; margin-bottom:10px;">প্রশ্ন ও ব্যাখ্যা যোগ করুন</h3>
         
         <label>১. বিষয় নির্বাচন করুন:</label>
         <select id="admSubject" onchange="updatePaperOptions()">
@@ -224,6 +284,7 @@
         updateProfile
       } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+      // আপনার প্রজেক্টের আসল কনফিগারেশন বসানো হয়েছে
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R580F8SZbmsFtX4Kx6xckQ",
         authDomain: "gaivexexam.firebaseapp.com",
@@ -243,7 +304,7 @@
       const ADMIN_PASS = "GAIVEX#@0987";
       let currentUser = null;
 
-      // Global Expose for HTML events
+      // Global Access Setup
       window.toggleAuthModal = toggleAuthModal;
       window.toggleProfileModal = toggleProfileModal;
       window.switchAuthTab = switchAuthTab;
@@ -259,7 +320,7 @@
       window.deleteQuestion = deleteQuestion;
       window.clearQuestionList = clearQuestionList;
 
-      // Track Auth State
+      // Auth State Change
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const container = document.getElementById('authNavContainer');
@@ -269,7 +330,7 @@
           container.innerHTML = `
             <div class="user-profile-btn" onclick="toggleProfileModal(true)">
                 <div class="user-avatar">${photo}</div>
-                <span style="font-size:14px; font-weight:bold; color:#f8fafc;">${name}</span>
+                <span style="font-size:13px; font-weight:bold; color:#f8fafc;">${name}</span>
             </div>
           `;
         } else {
@@ -277,7 +338,6 @@
         }
       });
 
-      // Auth Functions
       function toggleAuthModal(show) {
         document.getElementById('authModal').style.display = show ? 'flex' : 'none';
       }
@@ -346,7 +406,7 @@
         alert("লগআউট সম্পন্ন হয়েছে!");
       }
 
-      // Chapters Data
+      // Subject Chapters
       const chaptersData = {
           physics: {
               paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
