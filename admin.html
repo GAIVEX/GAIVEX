@@ -3,95 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>এডমিন প্যানেল - GAIVEX</title>
+    <title>GAIVEX - Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; padding: 20px; }
-        .admin-card { max-width: 800px; margin: 0 auto 20px auto; background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; }
-        h2 { color: #38bdf8; margin-bottom: 15px; font-size: 20px; }
-        label { display: block; margin-top: 10px; font-weight: bold; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; }
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
         
-        .btn { background: #38bdf8; color: #0f172a; padding: 10px 20px; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.2s; font-size: 15px; }
-        .btn:hover { background: #0284c7; color: white; }
-        .btn-danger { background: #f43f5e; color: white; }
-        .btn-danger:hover { background: #e11d48; }
+        /* লগইন লক বক্স স্টাইল */
+        .login-card { background: #1e293b; border: 1px solid #334155; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .login-card h2 { color: #38bdf8; margin-bottom: 10px; font-size: 22px; }
+        .login-card p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+        .login-card input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 8px; font-size: 15px; margin-bottom: 15px; outline: none; }
+        .login-card input:focus { border-color: #38bdf8; }
+        .login-card button { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .login-card button:hover { background: #7dd3fc; }
+        .error-msg { color: #f43f5e; font-size: 13px; margin-top: 10px; display: none; }
 
-        .q-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .q-text { font-size: 14px; color: #f8fafc; flex: 1; }
-        .action-btns { display: flex; gap: 6px; }
+        /* মূল অ্যাডমিন প্যানেল (ডিফল্টভাবে লুকানো থাকবে) */
+        .admin-card { display: none; width: 100%; max-width: 750px; background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .admin-card h2 { color: #38bdf8; margin-bottom: 20px; text-align: center; }
+        label { font-weight: bold; margin-top: 12px; display: block; color: #cbd5e1; font-size: 14px; }
+        input[type="text"], input[type="number"], textarea { width: 100%; padding: 10px 12px; margin-top: 5px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; }
+        input:focus, textarea:focus { border-color: #38bdf8; }
         
-        .edit-btn { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .edit-btn:hover { background: #d97706; }
-        .del-btn { background: #f43f5e; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .del-btn:hover { background: #e11d48; }
-
-        .editing-mode { border: 2px solid #f59e0b; }
+        .btn-submit { background: #10b981; color: #fff; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 25px; font-size: 16px; transition: 0.3s; }
+        .btn-submit:hover { background: #059669; }
+        
+        .q-box { background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 15px; position: relative; }
+        .remove-btn { position: absolute; top: 10px; right: 10px; background: #f43f5e; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <!-- হেডার/পরীক্ষার তথ্য সেকশন -->
-    <div class="admin-card">
-        <h2>পরীক্ষার শিরোনাম ও সময় আপডেট করুন</h2>
-        <label>পরীক্ষার বিষয়/শিরোনাম</label>
-        <input type="text" id="examTitle" placeholder="যেমন: প্রাণীর পরিচিতি - রুই মাছ">
-        
-        <label>পরীক্ষার সময় (মিনিটে)</label>
-        <input type="number" id="examDuration" value="20">
-
-        <button class="btn" id="saveHeaderBtn">পরীক্ষার তথ্য সেভ করুন 💾</button>
-    </div>
-
-    <!-- প্রশ্ন যোগ ও এডিট ফর্ম -->
-    <div class="admin-card" id="questionFormCard">
-        <h2 id="formHeaderTitle">নতুন প্রশ্ন যোগ করুন</h2>
-        <form id="questionForm">
-            <input type="hidden" id="editIndex" value="-1">
-
-            <label>প্রশ্ন:</label>
-            <input type="text" id="qTitle" required placeholder="প্রশ্ন লিখুন...">
-
-            <label>অপশন ১:</label>
-            <input type="text" id="opt0" required placeholder="প্রথম অপশন">
-
-            <label>অপশন ২:</label>
-            <input type="text" id="opt1" required placeholder="দ্বিতীয় অপশন">
-
-            <label>অপশন ৩:</label>
-            <input type="text" id="opt2" required placeholder="তৃতীয় অপশন">
-
-            <label>অপশন ৪:</label>
-            <input type="text" id="opt3" required placeholder="চতুর্থ অপশন">
-
-            <label>সঠিক উত্তরটি সিলেক্ট করুন:</label>
-            <select id="correctOpt">
-                <option value="0">অপশন ১</option>
-                <option value="1">অপশন ২</option>
-                <option value="2">অপশন ৩</option>
-                <option value="3">অপশন ৪</option>
-            </select>
-
-            <label>ব্যাখ্যা (ঐচ্ছিক):</label>
-            <textarea id="qExplanation" rows="2" placeholder="সঠিক উত্তরের ব্যাখ্যা..."></textarea>
-
-            <button type="submit" class="btn" id="submitFormBtn" style="background: #10b981;">প্রশ্ন যোগ করুন ➕</button>
-            <button type="button" class="btn btn-danger" id="cancelEditBtn" style="display:none; margin-top: 8px;">এডিট বাতিল করুন ✖️</button>
+    <!-- ১. পাসওয়ার্ড লক ইন্টারফেস -->
+    <div class="login-card" id="loginBox">
+        <h2>🔒 GAIVEX অ্যাডমিন লক</h2>
+        <p>অ্যাডমিন প্যানেলে প্রবেশ করতে সঠিক পাসওয়ার্ড লিখুন</p>
+        <form onsubmit="verifyPassword(event)">
+            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড লিখুন..." required>
+            <button type="submit">আনলক করুন 🔓</button>
         </form>
+        <div class="error-msg" id="errorMsg">❌ ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
     </div>
 
-    <!-- বর্তমান প্রশ্নসমূহের তালিকা -->
-    <div class="admin-card">
-        <h2>বর্তমান সকল প্রশ্নের তালিকা (<span id="totalQCount">0</span>)</h2>
-        <div id="questionsList">লোড হচ্ছে...</div>
-        <button class="btn btn-danger" id="deleteAllBtn" style="margin-top:20px;">সকল প্রশ্ন একবারে মুছে ফেলুন ⚠️</button>
+    <!-- ২. মূল অ্যাডমিন প্যানেল -->
+    <div class="admin-card" id="adminPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+            <h2 style="margin:0;">🛠️ GAIVEX অ্যাডমিন প্যানেল</h2>
+            <button onclick="location.reload()" style="background: #f43f5e; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">লগআউট</button>
+        </div>
+        
+        <label>পরীক্ষার শিরোনাম (Exam Title):</label>
+        <input type="text" id="examTitle" placeholder="যেমন: ডেইলি মডেল টেস্ট - সাধারণ বিজ্ঞান">
+
+        <label>পরীক্ষার সময় (মিনিটে):</label>
+        <input type="number" id="examDuration" placeholder="15">
+
+        <h3 style="margin-top: 25px; color: #f43f5e;">প্রশ্নাবলি যুক্ত করুন</h3>
+        <div id="questionsContainer"></div>
+
+        <button type="button" onclick="addQuestionField()" style="background: #334155; color: #38bdf8; border: 1px solid #38bdf8; padding: 10px 18px; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: bold; width: 100%;">+ নতুন প্রশ্ন যোগ করুন</button>
+
+        <button type="button" class="btn-submit" onclick="saveExamData()">লাইভ পরীক্ষা পাবলিশ করুন 🚀</button>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (v10) -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -106,160 +85,94 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
 
-      let currentExamData = {
-        title: "লাইভ পরীক্ষা",
-        duration: 20,
-        questions: []
+      const SECRET_PASS = "GAIVEX#@004754Scholars";
+      let questionCount = 0;
+
+      // পাসওয়ার্ড যাচাইকরণ
+      window.verifyPassword = function(e) {
+        e.preventDefault();
+        const inputPass = document.getElementById('adminPassword').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        if (inputPass === SECRET_PASS) {
+          document.getElementById('loginBox').style.display = 'none';
+          document.getElementById('adminPanel').style.display = 'block';
+          document.body.style.alignItems = 'flex-start';
+          if(questionCount === 0) {
+            window.addQuestionField();
+          }
+        } else {
+          errorMsg.style.display = 'block';
+          document.getElementById('adminPassword').value = '';
+        }
       };
 
-      // ডেটাবেজ থেকে বিদ্যমান ডেটা লোড করা
-      async function loadExamData() {
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
-          if (snapshot.exists()) {
-            currentExamData = snapshot.val();
-            if (!currentExamData.questions) currentExamData.questions = [];
+      // ডায়নামিক প্রশ্ন যোগ করা
+      window.addQuestionField = function() {
+        questionCount++;
+        const container = document.getElementById('questionsContainer');
+        const div = document.createElement('div');
+        div.className = 'q-box';
+        div.id = `q_box_${questionCount}`;
+        div.innerHTML = `
+          <button type="button" class="remove-btn" onclick="document.getElementById('q_box_${questionCount}').remove()">মুছে ফেলুন</button>
+          <h4 style="color: #38bdf8;">প্রশ্ন #${questionCount}</h4>
+          <input type="text" class="q-text" placeholder="প্রশ্ন লিখুন" required>
+          <input type="text" class="opt-0" placeholder="অপশন ১ (ইনডেক্স 0)" required style="margin-top:5px;">
+          <input type="text" class="opt-1" placeholder="অপশন ২ (ইনডেক্স 1)" required style="margin-top:5px;">
+          <input type="text" class="opt-2" placeholder="অপশন ৩ (ইনডেক্স 2)" required style="margin-top:5px;">
+          <input type="text" class="opt-3" placeholder="অপশন ৪ (ইনডেক্স 3)" required style="margin-top:5px;">
+          <label>সঠিক অপশন ইনডেক্স (০, ১, ২, বা ৩):</label>
+          <input type="number" class="q-correct" placeholder="0" min="0" max="3" required>
+          <textarea class="q-exp" placeholder="উত্তর ব্যাখ্যা (ঐচ্ছিক)" style="margin-top:5px;" rows="2"></textarea>
+        `;
+        container.appendChild(div);
+      };
+
+      // ফায়ারবেসে ডেটা সেভ করা
+      window.saveExamData = async function() {
+        const title = document.getElementById('examTitle').value;
+        const duration = parseInt(document.getElementById('examDuration').value) || 15;
+        
+        const qBoxes = document.querySelectorAll('.q-box');
+        const questions = [];
+
+        qBoxes.forEach(box => {
+          const qText = box.querySelector('.q-text').value;
+          const opt0 = box.querySelector('.opt-0').value;
+          const opt1 = box.querySelector('.opt-1').value;
+          const opt2 = box.querySelector('.opt-2').value;
+          const opt3 = box.querySelector('.opt-3').value;
+          const correct = parseInt(box.querySelector('.q-correct').value) || 0;
+          const exp = box.querySelector('.q-exp').value;
+
+          if(qText) {
+            questions.push({
+              question: qText,
+              options: [opt0, opt1, opt2, opt3],
+              correct: correct,
+              explanation: exp
+            });
           }
-          document.getElementById('examTitle').value = currentExamData.title || '';
-          document.getElementById('examDuration').value = currentExamData.duration || 20;
-          renderAdminQuestions();
-        } catch(e) {
-          alert("ডেটা লোড করতে সমস্যা হয়েছে: " + e.message);
-        }
-      }
+        });
 
-      // তালিকা রেন্ডার করা
-      function renderAdminQuestions() {
-        const listDiv = document.getElementById('questionsList');
-        const qList = currentExamData.questions || [];
-        document.getElementById('totalQCount').innerText = qList.length;
-
-        if (qList.length === 0) {
-          listDiv.innerHTML = "<p style='color:#94a3b8;'>বর্তমানে কোনো প্রশ্ন যোগ করা নেই।</p>";
+        if(!title || questions.length === 0) {
+          alert("অনুগ্রহ করে পরীক্ষার শিরোনাম এবং অন্তত ১টি প্রশ্ন ঠিকভাবে পূরণ করুন!");
           return;
         }
 
-        listDiv.innerHTML = qList.map((q, index) => `
-          <div class="q-item">
-            <div class="q-text">
-              <b>${index + 1}. ${q.question}</b><br>
-              <small style="color: #10b981;">সঠিক উত্তর: ${q.options ? q.options[q.correct] : 'অজানা'}</small>
-            </div>
-            <div class="action-btns">
-              <button class="edit-btn" onclick="editQuestion(${index})">এডিট ✏️</button>
-              <button class="del-btn" onclick="deleteQuestion(${index})">ডিলিট 🗑️</button>
-            </div>
-          </div>
-        `).join('');
-
-        // প্রশ্ন এডিট করার ফাংশন
-        window.editQuestion = function(index) {
-          const q = currentExamData.questions[index];
-          document.getElementById('editIndex').value = index;
-          document.getElementById('qTitle').value = q.question || '';
-          document.getElementById('opt0').value = q.options ? q.options[0] : '';
-          document.getElementById('opt1').value = q.options ? q.options[1] : '';
-          document.getElementById('opt2').value = q.options ? q.options[2] : '';
-          document.getElementById('opt3').value = q.options ? q.options[3] : '';
-          document.getElementById('correctOpt').value = q.correct !== undefined ? q.correct : 0;
-          document.getElementById('qExplanation').value = q.explanation || '';
-
-          // ফর্মে এডিট মোড অন করা
-          document.getElementById('formHeaderTitle').innerText = `প্রশ্ন নং ${index + 1} এডিট করা হচ্ছে...`;
-          document.getElementById('formHeaderTitle').style.color = '#f59e0b';
-          const submitBtn = document.getElementById('submitFormBtn');
-          submitBtn.innerText = "প্রশ্ন আপডেট করুন 🔄";
-          submitBtn.style.background = "#f59e0b";
-          document.getElementById('cancelEditBtn').style.display = "block";
-          document.getElementById('questionFormCard').classList.add('editing-mode');
-
-          window.scrollTo({ top: document.getElementById('questionFormCard').offsetTop - 20, behavior: 'smooth' });
-        };
-
-        // প্রশ্ন ডিলিট করার ফাংশন
-        window.deleteQuestion = async function(index) {
-          if (confirm(`আপনি কি সত্যিই ${index + 1} নম্বর প্রশ্নটি ডিলিট করতে চান?`)) {
-            currentExamData.questions.splice(index, 1);
-            await saveToDatabase();
-            resetForm();
-            renderAdminQuestions();
-          }
-        };
-      }
-
-      // ফর্ম রিসেট
-      function resetForm() {
-        document.getElementById('editIndex').value = "-1";
-        document.getElementById('questionForm').reset();
-        document.getElementById('formHeaderTitle').innerText = "নতুন প্রশ্ন যোগ করুন";
-        document.getElementById('formHeaderTitle').style.color = '#38bdf8';
-        const submitBtn = document.getElementById('submitFormBtn');
-        submitBtn.innerText = "প্রশ্ন যোগ করুন ➕";
-        submitBtn.style.background = "#10b981";
-        document.getElementById('cancelEditBtn').style.display = "none";
-        document.getElementById('questionFormCard').classList.remove('editing-mode');
-      }
-
-      // ক্লাউড ডেটাবেজে সেভ করা
-      async function saveToDatabase() {
         try {
-          await set(ref(db, 'live_exams/live_daily_exam'), currentExamData);
-          alert("ডেটাবেজ সফলভাবে আপডেট করা হয়েছে!");
-        } catch(err) {
-          alert("সেভ করতে সমস্যা হয়েছে: " + err.message);
+          await set(ref(db, 'live_exams/live_daily_exam'), {
+            title: title,
+            duration: duration,
+            questions: questions
+          });
+          alert("🎉 সফলভাবে নতুন পরীক্ষা লাইভ পাবলিশ করা হয়েছে!");
+          location.reload();
+        } catch(e) {
+          alert("ত্রুটি ঘটেছে: " + e.message);
         }
-      }
-
-      // টাইটেল ও সময় সেভ
-      document.getElementById('saveHeaderBtn').addEventListener('click', async () => {
-        currentExamData.title = document.getElementById('examTitle').value;
-        currentExamData.duration = parseInt(document.getElementById('examDuration').value) || 20;
-        await saveToDatabase();
-      });
-
-      // নতুন প্রশ্ন যোগ বা আপডেট
-      document.getElementById('questionForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const editIndex = parseInt(document.getElementById('editIndex').value);
-
-        const qData = {
-          question: document.getElementById('qTitle').value,
-          options: [
-            document.getElementById('opt0').value,
-            document.getElementById('opt1').value,
-            document.getElementById('opt2').value,
-            document.getElementById('opt3').value
-          ],
-          correct: parseInt(document.getElementById('correctOpt').value),
-          explanation: document.getElementById('qExplanation').value || "কোনো ব্যাখ্যা নেই।"
-        };
-
-        if(!currentExamData.questions) currentExamData.questions = [];
-
-        if (editIndex >= 0) {
-          currentExamData.questions[editIndex] = qData; // আপডেট
-        } else {
-          currentExamData.questions.push(qData); // নতুন যোগ
-        }
-        
-        await saveToDatabase();
-        resetForm();
-        renderAdminQuestions();
-      });
-
-      document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
-
-      // সব প্রশ্ন মোছা
-      document.getElementById('deleteAllBtn').addEventListener('click', async () => {
-        if(confirm("সতর্কতা: আপনি কি সবগুলো প্রশ্ন মুছে ফেলতে চান?")) {
-          currentExamData.questions = [];
-          await saveToDatabase();
-          resetForm();
-          renderAdminQuestions();
-        }
-      });
-
-      loadExamData();
+      };
     </script>
 </body>
 </html>
