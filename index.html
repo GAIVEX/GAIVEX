@@ -19,7 +19,7 @@
             border-bottom: 1px solid #334155; 
             gap: 10px;
         }
-        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; white-space: nowrap; }
+        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
         .logo span { color: #f43f5e; }
         
         .nav-links { 
@@ -42,8 +42,8 @@
         }
         .nav-links a.active, .nav-links a:hover { color: #38bdf8; background: #334155; }
 
-        /* Responsive Auth Button */
-        #authNavContainer { margin-left: auto; flex-shrink: 0; }
+        /* Responsive Auth Button & Nav Container */
+        #authNavContainer { margin-left: auto; flex-shrink: 0; display: flex; gap: 8px; align-items: center; }
         .btn-auth { 
             background: #38bdf8; 
             color: #0f172a; 
@@ -68,6 +68,8 @@
             border-radius: 20px; 
             border: 1px solid #475569; 
             white-space: nowrap;
+            max-width: 140px;
+            overflow: hidden;
         }
         .user-avatar { 
             width: 26px; 
@@ -81,19 +83,46 @@
             color: #0f172a; 
             overflow: hidden; 
             font-size: 12px;
+            flex-shrink: 0;
         }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .hero-section { text-align: center; padding: 40px 15px; max-width: 1000px; margin: 0 auto; flex: 1; }
+        .hero-section { text-align: center; padding: 30px 15px; max-width: 1000px; margin: 0 auto; flex: 1; width: 100%; }
         .hero-section h1 { font-size: 24px; margin-bottom: 10px; color: #f8fafc; line-height: 1.4; }
         .highlight { color: #38bdf8; }
         .hero-section p { color: #94a3b8; margin-bottom: 25px; font-size: 14px; }
 
-        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .subject-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
         .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
         .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
         .subject-box h3 { font-size: 16px; color: #f8fafc; }
+
+        /* Live Exam Card Container */
+        .live-exam-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #f43f5e;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(244, 63, 94, 0.15);
+            text-align: left;
+        }
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f43f5e;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         /* Footer Section */
         .site-footer {
@@ -138,10 +167,7 @@
             border-color: #38bdf8;
             box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
         }
-        .social-btn svg {
-            width: 22px;
-            height: 22px;
-        }
+        .social-btn svg { width: 22px; height: 22px; }
 
         .copyright {
             margin-top: 15px;
@@ -153,8 +179,8 @@
         }
 
         /* Modal Layout */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:400px; max-height:85vh; overflow-y:auto; border:1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
+        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:500px; max-height:88vh; overflow-y:auto; border:1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:13px; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:9px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:8px; }
         
@@ -170,12 +196,19 @@
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
         .admin-trigger { position: fixed; bottom: 20px; right: 20px; background: #38bdf8; color: #0f172a; border: none; padding: 10px 16px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        /* Question & Exam Styling */
+        .q-card { background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 12px; text-align: left; }
+        .q-title { font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #f8fafc; }
+        .opt-label { display: block; background: #1e293b; padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; margin-bottom: 6px; cursor: pointer; font-size: 13px; color: #cbd5e1; }
+        .opt-label:hover { border-color: #38bdf8; }
+        .opt-label input { margin-right: 8px; width: auto; }
     </style>
 </head>
 <body>
 
     <header class="navbar">
-        <div class="logo">GAIVEX<span>.</span></div>
+        <a href="index.html" class="logo">GAIVEX<span>.</span></a>
         <nav class="nav-links">
             <a href="index.html" class="active">হোম</a>
             <a href="physics.html">পদার্থবিজ্ঞান</a>
@@ -193,6 +226,14 @@
         <h1>স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span class="highlight">GAIVEX</span> এর সাথে</h1>
         <p>মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট ও সমাধান।</p>
         
+        <!-- Live Exam Container -->
+        <div class="live-exam-banner">
+            <div class="live-badge">🔴 LIVE EXAM</div>
+            <h2 id="liveExamTitle" style="font-size: 18px; color: #38bdf8; margin-bottom: 6px;">অনলাইন ডেইলি লাইভ পরীক্ষা</h2>
+            <p id="liveExamMeta" style="font-size: 13px; color: #94a3b8; margin-bottom: 15px;">সকল বিষয়ের গুরুত্বপূর্ণ মডেল টেস্ট। অংশগ্রহণ করুন ও পারফরম্যান্স যাচাই করুন।</p>
+            <button class="btn btn-save" style="width: auto; padding: 8px 20px;" onclick="startLiveExamProcess()">পরীক্ষা দিন 📝</button>
+        </div>
+
         <div class="subject-grid">
             <a href="physics.html" class="subject-box">
                 <div class="icon">⚛️</div>
@@ -220,14 +261,11 @@
             <p class="footer-text">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
             
             <div class="social-links">
-                <!-- Facebook Official Logo -->
                 <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
                     <svg viewBox="0 0 24 24" fill="#1877F2">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
                 </a>
-                
-                <!-- Instagram Official Logo -->
                 <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
                     <svg viewBox="0 0 24 24">
                         <radialGradient id="rg" cx="30%" cy="107%" r="130%">
@@ -240,8 +278,6 @@
                         <path fill="url(#rg)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
                 </a>
-                
-                <!-- YouTube Official Logo -->
                 <a href="https://youtube.com/@gaivex-h5p?si=Pz1ZSUrYwxW_dobx" target="_blank" class="social-btn" title="YouTube">
                     <svg viewBox="0 0 24 24" fill="#FF0000">
                         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -263,7 +299,6 @@
             <button class="tab-btn" id="tabRegister" onclick="switchAuthTab('register')">রেজিস্ট্রেশন</button>
         </div>
 
-        <!-- Login Form -->
         <form id="loginForm" onsubmit="handleEmailLogin(event)">
             <label>ইমেইল:</label>
             <input type="email" id="loginEmail" required placeholder="example@mail.com">
@@ -272,7 +307,6 @@
             <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">লগইন করুন</button>
         </form>
 
-        <!-- Register Form -->
         <form id="registerForm" onsubmit="handleEmailRegister(event)" style="display:none;">
             <label>পূর্ণ নাম:</label>
             <input type="text" id="regName" required placeholder="আপনার নাম লিখুন">
@@ -295,15 +329,49 @@
       </div>
     </div>
 
-    <!-- User Profile Modal -->
+    <!-- User Profile & Performance Portal Modal -->
     <div id="profileModal" class="modal">
-      <div class="modal-content" style="text-align:center;">
-        <h3 style="color:#38bdf8; margin-bottom:15px;">ব্যবহারকারীর প্রোফাইল</h3>
-        <div id="profileDetails" style="margin-bottom:20px; font-size:14px; color:#cbd5e1;"></div>
-        <div class="btn-group">
+      <div class="modal-content" style="max-width: 550px;">
+        <h3 style="color:#38bdf8; text-align:center; margin-bottom:15px;">📊 স্টুডেন্ট পোর্টাল ও পারফরম্যান্স</h3>
+        
+        <div id="profileDetails" style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 15px; font-size: 13px;"></div>
+
+        <!-- Overall Performance Box -->
+        <div id="performanceBox" style="margin-bottom: 15px;"></div>
+
+        <h4 style="color: #38bdf8; margin-bottom: 10px; font-size: 15px;">📜 পূর্ববর্তী পরীক্ষার ইতিহাস:</h4>
+        <div id="examHistoryContainer" style="max-height: 200px; overflow-y: auto; background: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 10px;">
+            <p style="color:#94a3b8; text-align:center; font-size:12px;">হিস্টোরি লোড হচ্ছে...</p>
+        </div>
+
+        <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
             <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Live Exam Modal -->
+    <div id="liveExamModal" class="modal">
+      <div class="modal-content" style="max-width: 600px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:15px;">
+            <h3 style="color:#38bdf8; font-size:16px;">🔴 লাইভ পরীক্ষা চলছে</h3>
+            <div id="examTimer" style="background:#f43f5e; color:white; padding:4px 10px; border-radius:20px; font-weight:bold; font-size:13px;">সময়: --:--</div>
+        </div>
+
+        <form id="liveExamForm" onsubmit="submitLiveExam(event)">
+            <div id="liveQuestionsContainer"></div>
+            <button type="submit" class="btn btn-save" style="width:100%; margin-top:15px; padding:12px;">সাবমিট করুন 📤</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Exam Detail Review Modal -->
+    <div id="reviewModal" class="modal">
+      <div class="modal-content" style="max-width: 600px;">
+        <h3 style="color:#38bdf8; text-align:center; margin-bottom:15px;">🔍 উত্তর ও প্রশ্ন পর্যালোচনা</h3>
+        <div id="reviewContentContainer"></div>
+        <button type="button" class="btn btn-save" style="width:100%; margin-top:15px;" onclick="document.getElementById('reviewModal').style.display='none'">বন্ধ করুন</button>
       </div>
     </div>
 
@@ -401,6 +469,9 @@
 
       const ADMIN_PASS = "GAIVEX#@0987";
       let currentUser = null;
+      let activeExamId = "live_daily_exam"; // ডিফল্ট লাইভ এক্সাম আইডি
+      let currentQuestions = [];
+      let examTimerInterval = null;
 
       // Global Access Setup
       window.toggleAuthModal = toggleAuthModal;
@@ -417,6 +488,9 @@
       window.loadQuestionList = loadQuestionList;
       window.deleteQuestion = deleteQuestion;
       window.clearQuestionList = clearQuestionList;
+      window.startLiveExamProcess = startLiveExamProcess;
+      window.submitLiveExam = submitLiveExam;
+      window.viewExamDetails = viewExamDetails;
 
       // Auth State Change
       onAuthStateChanged(auth, (user) => {
@@ -424,11 +498,13 @@
         const container = document.getElementById('authNavContainer');
         if (user) {
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="avatar">` : (user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U');
-          const name = user.displayName || user.email.split('@')[0];
+          const fullName = user.displayName || user.email.split('@')[0];
+          const firstName = fullName.split(' ')[0];
+
           container.innerHTML = `
-            <div class="user-profile-btn" onclick="toggleProfileModal(true)">
+            <div class="user-profile-btn" onclick="toggleProfileModal(true)" title="${fullName}">
                 <div class="user-avatar">${photo}</div>
-                <span style="font-size:13px; font-weight:bold; color:#f8fafc;">${name}</span>
+                <span style="font-size:13px; font-weight:bold; color:#f8fafc;">${firstName}</span>
             </div>
           `;
         } else {
@@ -440,13 +516,20 @@
         document.getElementById('authModal').style.display = show ? 'flex' : 'none';
       }
 
-      function toggleProfileModal(show) {
+      async function toggleProfileModal(show) {
         const modal = document.getElementById('profileModal');
-        if (show && currentUser) {
+        if (show) {
+          if (!currentUser) {
+            alert("প্রোফাইল ও পারফরম্যান্স দেখতে আগে লগইন করুন!");
+            toggleAuthModal(true);
+            return;
+          }
+
           document.getElementById('profileDetails').innerHTML = `
-            <p><b>নাম:</b> ${currentUser.displayName || 'দেওয়া হয়নি'}</p>
-            <p style="margin-top:5px;"><b>ইমেইল:</b> ${currentUser.email}</p>
+            <p><b>শিক্ষার্থীর নাম:</b> ${currentUser.displayName || 'দেওয়া হয়নি'}</p>
+            <p style="margin-top:4px;"><b>ইমেইল:</b> ${currentUser.email}</p>
           `;
+          await loadStudentPortal();
         }
         modal.style.display = show ? 'flex' : 'none';
       }
@@ -504,7 +587,245 @@
         alert("লগআউট সম্পন্ন হয়েছে!");
       }
 
-      // Subject Chapters
+      // --- LIVE EXAM SYSTEM & PORTAL LOGIC ---
+
+      async function startLiveExamProcess() {
+        if (!currentUser) {
+          alert("লাইভ পরীক্ষা দিতে আপনাকে অবশ্যই আগে লগইন করতে হবে!");
+          toggleAuthModal(true);
+          return;
+        }
+
+        // ১. চেক করা ইউজার আগে পরীক্ষা দিয়েছে কিনা
+        try {
+          const attemptRef = ref(db, `exam_attempts/${currentUser.uid}/${activeExamId}`);
+          const attemptSnap = await get(attemptRef);
+
+          if (attemptSnap.exists()) {
+            alert("আপনি ইতোমধ্যে এই লাইভ পরীক্ষায় অংশগ্রহণ করেছেন! একজন শিক্ষার্থী শুধুমাত্র একবারই লাইভ পরীক্ষা দিতে পারবে। আপনার রেজাল্ট প্রোফাইল পোর্টালে যুক্ত হয়েছে।");
+            toggleProfileModal(true);
+            return;
+          }
+
+          // ২. প্রশ্ন লোড করা
+          const questionsRef = ref(db, `live_exams/${activeExamId}`);
+          const examSnap = await get(questionsRef);
+
+          if (!examSnap.exists()) {
+            alert("বর্তমানে কোনো লাইভ পরীক্ষা চালু নেই। অ্যাডমিন প্যানেল থেকে পরীক্ষা পাবলিশ করার পর আবার চেষ্টা করুন।");
+            return;
+          }
+
+          const examData = examSnap.val();
+          currentQuestions = examData.questions || [];
+          const durationMinutes = examData.duration || 10;
+
+          if (currentQuestions.length === 0) {
+            alert("পরীক্ষার কোনো প্রশ্ন খুঁজে পাওয়া যায়নি!");
+            return;
+          }
+
+          // ৩. UI গঠন ও পরীক্ষা শুরু
+          renderLiveQuestions(currentQuestions);
+          document.getElementById('liveExamModal').style.display = 'flex';
+          startExamTimer(durationMinutes * 60);
+
+        } catch (e) {
+          alert("পরীক্ষা শুরু করতে সমস্যা হয়েছে: " + e.message);
+        }
+      }
+
+      function renderLiveQuestions(questions) {
+        const container = document.getElementById('liveQuestionsContainer');
+        let html = '';
+
+        questions.forEach((q, idx) => {
+          html += `
+            <div class="q-card">
+              <div class="q-title">${idx + 1}. ${q.question}</div>
+              ${q.options.map((opt, oIdx) => `
+                <label class="opt-label">
+                  <input type="radio" name="q_${idx}" value="${oIdx}" required>
+                  ${opt}
+                </label>
+              `).join('')}
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function startExamTimer(secondsLeft) {
+        clearInterval(examTimerInterval);
+        const timerDisplay = document.getElementById('examTimer');
+
+        examTimerInterval = setInterval(() => {
+          const mins = Math.floor(secondsLeft / 60);
+          const secs = secondsLeft % 60;
+          timerDisplay.innerText = `সময়: ${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+          if (secondsLeft <= 0) {
+            clearInterval(examTimerInterval);
+            alert("সময় শেষ! আপনার উত্তর স্বয়ংক্রিয়ভাবে জমা হচ্ছে...");
+            submitLiveExam();
+          }
+          secondsLeft--;
+        }, 1000);
+      }
+
+      async function submitLiveExam(e) {
+        if (e) e.preventDefault();
+        clearInterval(examTimerInterval);
+
+        let userAnswers = [];
+        let score = 0;
+
+        currentQuestions.forEach((q, idx) => {
+          const selectedOpt = document.querySelector(`input[name="q_${idx}"]:checked`);
+          const ansVal = selectedOpt ? parseInt(selectedOpt.value) : -1;
+          userAnswers.push(ansVal);
+
+          if (ansVal === parseInt(q.correct)) {
+            score++;
+          }
+        });
+
+        try {
+          // ফায়ারবেজে রেজাল্ট সেভ
+          const attemptRef = ref(db, `exam_attempts/${currentUser.uid}/${activeExamId}`);
+          await set(attemptRef, {
+            examTitle: "লাইভ মডেল টেস্ট",
+            score: score,
+            total: currentQuestions.length,
+            userAnswers: userAnswers,
+            submittedAt: new Date().toISOString()
+          });
+
+          document.getElementById('liveExamModal').style.display = 'none';
+          alert(`পরীক্ষা সফলভাবে জমা দেওয়া হয়েছে!\nপ্রাপ্ত নম্বর: ${score}/${currentQuestions.length}`);
+          toggleProfileModal(true);
+
+        } catch (err) {
+          alert("রেজাল্ট সেভ করতে সমস্যা হয়েছে: " + err.message);
+        }
+      }
+
+      async function loadStudentPortal() {
+        if (!currentUser) return;
+
+        const historyContainer = document.getElementById('examHistoryContainer');
+        const perfBox = document.getElementById('performanceBox');
+
+        try {
+          const userAttemptsRef = ref(db, `exam_attempts/${currentUser.uid}`);
+          const snapshot = await get(userAttemptsRef);
+
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            let totalExams = 0;
+            let totalScore = 0;
+            let totalPossible = 0;
+            let historyHTML = '';
+
+            for (let examId in data) {
+              const item = data[examId];
+              totalExams++;
+              totalScore += item.score;
+              totalPossible += item.total;
+
+              const dateStr = new Date(item.submittedAt).toLocaleDateString('bn-BD', {
+                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+              });
+
+              historyHTML += `
+                <div style="background:#1e293b; padding:10px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="color:#38bdf8; font-weight:bold;">${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
+                    <div style="color:#94a3b8; font-size:11px;">তারিখ: ${dateStr}</div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div style="color:#10b981; font-weight:bold; font-size:14px;">${item.score}/${item.total}</div>
+                    <button onclick="viewExamDetails('${examId}')" style="background:#334155; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer; margin-top:4px;">উত্তর দেখুন 👁️</button>
+                  </div>
+                </div>
+              `;
+            }
+
+            const accuracy = totalPossible > 0 ? ((totalScore / totalPossible) * 100).toFixed(1) : 0;
+
+            perfBox.innerHTML = `
+              <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 12px; border-radius: 8px; border: 1px solid #38bdf8;">
+                <h4 style="color:#38bdf8; font-size:14px; margin-bottom:8px;">📈 পারফরম্যান্স সামারি</h4>
+                <div style="display:flex; justify-content:space-around; text-align:center;">
+                  <div>
+                    <div style="font-size:18px; font-weight:bold; color:#f8fafc;">${totalExams}</div>
+                    <div style="font-size:11px; color:#94a3b8;">মোট পরীক্ষা</div>
+                  </div>
+                  <div>
+                    <div style="font-size:18px; font-weight:bold; color:#10b981;">${accuracy}%</div>
+                    <div style="font-size:11px; color:#94a3b8;">গড় সঠিক উত্তর (Accuracy)</div>
+                  </div>
+                  <div>
+                    <div style="font-size:18px; font-weight:bold; color:#38bdf8;">${totalScore}/${totalPossible}</div>
+                    <div style="font-size:11px; color:#94a3b8;">মোট প্রাপ্ত নম্বর</div>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            historyContainer.innerHTML = historyHTML;
+          } else {
+            perfBox.innerHTML = '';
+            historyContainer.innerHTML = `<p style="color:#94a3b8; text-align:center; font-size:13px; padding:10px;">আপনি এখনো কোনো লাইভ পরীক্ষা দেননি।</p>`;
+          }
+        } catch (e) {
+          historyContainer.innerHTML = `<p style="color:#ef4444; font-size:12px;">ডাটা লোড সমস্যা: ${e.message}</p>`;
+        }
+      }
+
+      async function viewExamDetails(examId) {
+        try {
+          const attemptRef = ref(db, `exam_attempts/${currentUser.uid}/${examId}`);
+          const attemptSnap = await get(attemptRef);
+          
+          const examRef = ref(db, `live_exams/${examId}`);
+          const examSnap = await get(examRef);
+
+          if (attemptSnap.exists() && examSnap.exists()) {
+            const attemptData = attemptSnap.val();
+            const questions = examSnap.val().questions || [];
+            const userAns = attemptData.userAnswers || [];
+
+            let html = '';
+            questions.forEach((q, idx) => {
+              const uAns = userAns[idx];
+              const isCorrect = uAns === parseInt(q.correct);
+
+              html += `
+                <div class="q-card" style="border-color: ${isCorrect ? '#10b981' : '#ef4444'};">
+                  <div class="q-title">${idx + 1}. ${q.question}</div>
+                  <div style="font-size:13px; margin-bottom:4px;">
+                    আপনার উত্তর: <b style="color:${isCorrect ? '#10b981' : '#ef4444'}">${uAns >= 0 ? q.options[uAns] : 'উত্তর দেননি'} ${isCorrect ? '✅' : '❌'}</b>
+                  </div>
+                  <div style="font-size:13px; color:#10b981;">
+                    সঠিক উত্তর: <b>${q.options[q.correct]}</b>
+                  </div>
+                  ${q.explanation ? `<div style="font-size:12px; color:#94a3b8; margin-top:6px; background:#1e293b; padding:6px; border-radius:4px;">💡 <b>ব্যাখ্যা:</b> ${q.explanation}</div>` : ''}
+                </div>
+              `;
+            });
+
+            document.getElementById('reviewContentContainer').innerHTML = html;
+            document.getElementById('reviewModal').style.display = 'flex';
+          }
+        } catch (e) {
+          alert("উত্তর পর্যালোচনা করতে সমস্যা হয়েছে: " + e.message);
+        }
+      }
+
+      // --- SUBJECT CHAPTERS & ADMIN LOGIC ---
+
       const chaptersData = {
           physics: {
               paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
