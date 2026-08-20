@@ -3,62 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - Live Exam Room</title>
+    <title>লাইভ পরীক্ষা - GAIVEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; padding: 15px; min-height: 100vh; }
-        .exam-container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px; margin-bottom: 20px; }
-        .timer { background: #f43f5e; color: white; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-        .q-card { background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 15px; }
-        .q-title { font-weight: bold; margin-bottom: 10px; font-size: 15px; color: #f8fafc; }
-        .opt-label { display: block; background: #1e293b; padding: 10px 12px; border-radius: 6px; border: 1px solid #334155; margin-bottom: 8px; cursor: pointer; font-size: 14px; color: #cbd5e1; }
-        .opt-label:hover { border-color: #38bdf8; }
-        .opt-label input { margin-right: 10px; }
-        .btn-submit { width: 100%; background: #10b981; color: white; border: none; padding: 12px; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-        .explanation-box { background: #1e293b; border-left: 3px solid #38bdf8; padding: 8px 12px; margin-top: 8px; border-radius: 4px; font-size: 13px; color: #94a3b8; }
-        .correct-tag { color: #10b981; font-weight: bold; }
-        .wrong-tag { color: #ef4444; font-weight: bold; }
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; }
+        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
+        .logo span { color: #f43f5e; }
+
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
+        
+        .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .timer-box { font-size: 20px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
+
+        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; }
+        .question-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #f8fafc; line-height: 1.5; }
+        
+        .options-list { display: flex; flex-direction: column; gap: 8px; }
+        .option-item { background: #0f172a; border: 1px solid #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
+        .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.2); }
+
+        .btn-submit { background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; margin-bottom: 30px; transition: 0.3s; }
+        .btn-submit:hover { background: #059669; }
+
+        /* Result View */
+        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 10px; margin-top: 10px; border-radius: 0 6px 6px 0; font-size: 13px; color: #cbd5e1; }
+        .correct-opt { background: #064e3b !important; border-color: #10b981 !important; color: #a7f3d0; }
+        .wrong-opt { background: #881337 !important; border-color: #f43f5e !important; color: #fecdd3; }
+
+        .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="exam-container">
-    <div class="header" id="examHeader">
-        <div>
-            <h2 style="color: #38bdf8;" id="examTitle">লাইভ মডেল টেস্ট</h2>
-            <p style="font-size: 12px; color: #94a3b8;" id="examMeta">প্রশ্ন লোড হচ্ছে...</p>
-        </div>
-        <div class="timer" id="timerDisplay">--:--</div>
-    </div>
+    <header class="navbar">
+        <a href="index.html" class="logo">GAIVEX<span>.</span></a>
+        <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 14px;">🏠 হোম</a>
+    </header>
 
-    <!-- Questions Container -->
-    <form id="examForm" onsubmit="submitLiveExam(event)">
-        <div id="questionsContainer"></div>
-        <button type="submit" class="btn-submit" id="submitBtn" style="display:none;">পরীক্ষা জমা দিন 📤</button>
-    </form>
-
-    <!-- Review & Results Section -->
-    <div id="resultBox" style="display:none;">
-        <div style="text-align: center; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #38bdf8; margin-bottom: 20px;">
-            <h2 style="color: #38bdf8; margin-bottom: 5px;">🎉 পরীক্ষা সম্পূর্ণ হয়েছে!</h2>
-            <h3 id="scoreText" style="color: #10b981; font-size: 26px; margin: 8px 0;"></h3>
-            <p style="color: #94a3b8; font-size: 13px;">নিচে আপনার ভুল-সঠিক উত্তর ও ব্যাখ্যামূলক সমাধান দেওয়া হলো:</p>
-        </div>
+    <div class="container">
         
-        <div id="reviewContainer"></div>
+        <div class="timer-header">
+            <h3 id="examTitle" style="font-size: 16px; color: #38bdf8;">ভেক্টর - লাইভ মডেল টেস্ট</h3>
+            <div class="timer-box" id="timerDisplay">20:00</div>
+        </div>
 
-        <a href="index.html" class="btn-submit" style="display:block; text-align:center; text-decoration:none; margin-top:20px; background:#38bdf8; color:#0f172a;">🏠 মূল পাতায় ফিরে যান</a>
+        <div id="resultSummary" style="display: none;"></div>
+
+        <form id="examForm">
+            <div id="questionsContainer"></div>
+            <button type="submit" class="btn-submit" id="submitBtn">পরীক্ষা জমা দিন 🚀</button>
+        </form>
+
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <!-- Firebase SDK (v10) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const firebaseConfig = {
+      const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
         authDomain: "gaivexexam.firebaseapp.com",
         databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
@@ -66,147 +74,200 @@
         storageBucket: "gaivexexam.firebasestorage.app",
         messagingSenderId: "956204530190",
         appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
-    };
+      };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
 
-    let currentUser = null;
-    let examData = null;
-    let timerInterval = null;
+      let currentUser = null;
+      let timerInterval = null;
+      let timeRemaining = 1200; // 20 Minutes in seconds
 
-    onAuthStateChanged(auth, async (user) => {
-        currentUser = user;
-        if (!user) {
-            alert("পরীক্ষা দিতে হলে আপনাকে অবশ্যই লগইন করতে হবে!");
-            window.location.href = "index.html";
-            return;
-        }
-        await checkAttemptAndLoad();
-    });
+      // Default Exam Data (উভয় ক্ষেত্রেই ব্যাকআপ কাজ করবে)
+      let examData = {
+        title: "অধ্যায়: ভেক্টর (ভেক্টর রাশির মৌলিক ধারণা, সংযোজন, গুণন ও ক্যালকুলাস)",
+        duration: 20,
+        questions: [
+          { question: "১. কোনটি ভেক্টর রাশি?", options: ["কাজ", "তড়িৎ বিভব", "তড়িৎ তীব্রতা", "তাপমাত্রা"], correct: 2, explanation: "তড়িৎ তীব্রতার একটি নির্দিষ্ট মান ও দিক আছে, তাই এটি ভেক্টর রাশি। বাকিগুলো স্ক্যালার রাশি।" },
+          { question: "২. সমমানের দুটি ভেক্টরের লব্ধির মান তাদের যেকোনো একটির মানের সমান হলে, ভেক্টরদ্বয়ের মধ্যবর্তী কোণ কত?", options: ["0°", "60°", "90°", "120°"], correct: 3, explanation: "সূত্র: R² = P² + Q² + 2PQ cos α। এখানে P = Q = R বসালে, cos α = -1/2 ⟹ α = 120°।" },
+          { question: "৩. কোনো ভেক্টরের শীর্ষবিন্দু ও পাদবিন্দু একই হলে তাকে কী বলে?", options: ["একক ভেক্টর", "শূন্য ভেক্টর", "বিপ্রতীপ ভেক্টর", "সঠিক ভেক্টর"], correct: 1, explanation: "যে ভেক্টরের মান শূন্য, তার শীর্ষবিন্দু ও পাদবিন্দু একই বিন্দুতে অবস্থান করে।" },
+          { question: "৪. A⃗ = 3î - 4ĵ হলে, |A⃗| কত?", options: ["1", "5", "7", "25"], correct: 1, explanation: "|A⃗| = √(3² + (-4)²) = √(9 + 16) = 5।" },
+          { question: "৫. কার্তেসীয় স্থানাঙ্ক ব্যবস্থায় অক্ষ তিনটির ধনাত্মক দিকে গঠিত একক ভেক্টরগুলোকে কী বলে?", options: ["অবস্থান ভেক্টর", "সরণ ভেক্টর", "আয়ত একক ভেক্টর", "সমরেখ ভেক্টর"], correct: 2, explanation: "X, Y, Z অক্ষ বরাবর একক ভেক্টর î, ĵ, k̂-কে আয়ত একক ভেক্টর বলা হয়।" },
+          { question: "৬. কোনটি বিপ্রতীপ (Reciprocal) ভেক্টর জোড়া?", options: ["2î এবং -2î", "5î এবং 1/5î", "3î এবং 3ĵ", "î এবং k̂"], correct: 1, explanation: "দুটি সমান্তরাল ভেক্টরের একটির মান অপরটির গুণাত্মক বিপরীত হলে তাদেরকে বিপ্রতীপ ভেক্টর বলে (5 এর বিপরীত 1/5)।" },
+          { question: "৭. মূলবিন্দুর সাপেক্ষে কোনো বিন্দুর অবস্থান নির্দেশক ভেক্টরকে কী বলে?", options: ["সরণ ভেক্টর", "অবস্থান ভেক্টর", "একক ভেক্টর", "নাল ভেক্টর"], correct: 1, explanation: "প্রসংগ কাঠামোর মূলবিন্দুর সাপেক্ষে যেকোনো বিন্দুর অবস্থান নির্ধারণকারী ভেক্টরই হলো অবস্থান ভেক্টর।" },
+          { question: "৮. A⃗ ভেক্টরের অভিমুখে একক ভেক্টর কোনটি?", options: ["A⃗ · |A⃗|", "A⃗ / |A⃗|", "|A⃗| / A⃗", "A⃗ × |A⃗|"], correct: 1, explanation: "কোনো অশূন্য ভেক্টরকে তার মান দিয়ে ভাগ করলে ঐ ভেক্টরের দিকে একক ভেক্টর পাওয়া যায়।" },
+          { question: "৯. দুটি ভেক্টরের লব্ধির সর্বোচ্চ মান কখন পাওয়া যায়?", options: ["α = 0°", "α = 90°", "α = 180°", "α = 360°"], correct: 0, explanation: "ভেক্টর দুটি একই দিকে (α = 0°) ক্রিয়া করলে R_max = P + Q হয়।" },
+          { question: "১০. দুটি ভেক্টরের লব্ধির সর্বনিম্ন মান কত?", options: ["P + Q", "P - Q", "√(P² + Q²)", "0"], correct: 1, explanation: "ভেক্টর দুটি বিপরীত দিকে (α = 180°) ক্রিয়া করলে R_min = |P - Q| হয়।" },
 
-    async function checkAttemptAndLoad() {
+          { question: "১১. 5 N ও 10 N মানের দুটি বলের লব্ধির মান কোনটি হতে পারে না?", options: ["4 N", "5 N", "10 N", "15 N"], correct: 0, explanation: "লব্ধির মান R_min ≤ R ≤ R_max হয়। এখানে R_min = 5 N এবং R_max = 15 N। ফলে লব্ধি 4 N হতে পারে না।" },
+          { question: "১২. সমমানের দুটি ভেক্টর কোনো বিন্দুতে 90° কোণে ক্রিয়া করলে লব্ধির মান কত?", options: ["P", "√2 P", "2P", "P / √2"], correct: 1, explanation: "α = 90° হলে, R = √(P² + P² + 2P² cos 90°) = √(2P²) = √2 P।" },
+          { question: "১৩. দুটি বলের মানের যোগফল 16 N এবং লব্ধি 8 N। লব্ধি ক্ষুদ্রতর বলের সাথে লম্ব হলে বলদ্বয়ের মান কত?", options: ["6 N, 10 N", "4 N, 12 N", "8 N, 8 N", "2 N, 14 N"], correct: 0, explanation: "P + Q = 16 এবং Q² = P² + R² ⟹ Q² - P² = 64 ⟹ (Q-P)(Q+P) = 64 ⟹ Q-P = 4। সমাধান করলে P = 6 N, Q = 10 N।" },
+          { question: "১৪. P⃗ + Q⃗ = R⃗ এবং P + Q = R হলে, P⃗ ও Q⃗-এর মধ্যবর্তী কোণ কত?", options: ["0°", "45°", "90°", "180°"], correct: 0, explanation: "সরাসরি স্কেলার যোগফলের সমান লব্ধি কেবল তখনই হয় যখন ভেক্টর দুটি একই দিকে (α = 0°) ক্রিয়া করে।" },
+          { question: "১৫. P⃗ + Q⃗ = P⃗ - Q⃗ হলে, Q⃗ ভেক্টরটি কী?", options: ["একক ভেক্টর", "শূন্য ভেক্টর", "ঋণাত্মক ভেক্টর", "সমরেখ ভেক্টর"], correct: 1, explanation: "P⃗ + Q⃗ = P⃗ - Q⃗ ⟹ 2Q⃗ = 0 ⟹ Q⃗ = 0 (শূন্য ভেক্টর)।" },
+          { question: "১৬. 6 units মানের একটি ভেক্টরকে X অক্ষের সাথে 60° কোণে ভাঙলে X অক্ষ বরাবর উপাংশের মান কত?", options: ["3", "3√3", "6", "12"], correct: 0, explanation: "X অক্ষের অনুভূমিক উপাংশ R_x = R cos θ = 6 cos 60° = 6 × 0.5 = 3।" },
+          { question: "১৭. লম্ব উপাংশে বিভাজনের ক্ষেত্রে Y অক্ষ বরাবর উপাংশের মান কত?", options: ["R cos θ", "R sin θ", "R tan θ", "R sec θ"], correct: 1, explanation: "অনুভূমিক উপাংশ R cos θ হলে তার লম্ব উপাংশ বা উল্লম্ব উপাংশ হয় R sin θ।" },
+          { question: "১৮. তিনটি সমান মানের ভেক্টর একবিন্দুতে সাম্যাবস্থায় থাকলে তাদের মধ্যকার কোণগুলো কত?", options: ["60°", "90°", "120°", "180°"], correct: 2, explanation: "৩টি সমমানের ভেক্টর সাম্যাবস্থা তৈরি করলে কোণগুলো 360° / 3 = 120° হবে।" },
+          { question: "১৯. A⃗ = 2î + 3ĵ - k̂ ভেক্টরটির Y অক্ষের সাথে উৎপন্ন কোণ কত?", options: ["cos⁻¹(2/√14)", "cos⁻¹(3/√14)", "cos⁻¹(-1/√14)", "sin⁻¹(3/√14)"], correct: 1, explanation: "cos β = A_y / |A⃗| = 3 / √(2² + 3² + (-1)²) = 3 / √14।" },
+          { question: "২০. একটি ভেক্টর A⃗ = î + √3ĵ এর সাথে X অক্ষের উৎপন্ন কোণ কত?", options: ["30°", "45°", "60°", "90°"], correct: 2, explanation: "tan θ = A_y / A_x = √3 / 1 = √3 ⟹ θ = 60°।" },
+
+          { question: "২১. î · î = ?", options: ["0", "1", "k̂", "-î"], correct: 1, explanation: "একই আয়ত একক ভেক্টরের ডট গুণন: î · î = (1)(1) cos 0° = 1।" },
+          { question: "২২. দুটি ভেক্টর পরস্পর লম্ব হওয়ার শর্ত কোনটি?", options: ["A⃗ × B⃗ = 0", "A⃗ · B⃗ = 0", "A⃗ + B⃗ = 0", "A⃗ - B⃗ = 0"], correct: 1, explanation: "লম্ব হলে মধ্যবর্তী কোণ 90°, তাই A⃗ · B⃗ = AB cos 90° = 0।" },
+          { question: "২৩. A⃗ = 2î + mĵ - 3k̂ এবং B⃗ = 4î - 2ĵ + 6k̂ ভেক্টরদ্বয় লম্ব হলে m এর মান কত?", options: ["-5", "5", "-10", "10"], correct: 0, explanation: "A⃗ · B⃗ = 0 ⟹ (2)(4) + (m)(-2) + (-3)(6) = 0 ⟹ 8 - 2m - 18 = 0 ⟹ m = -5।" },
+          { question: "২৪. A⃗ = 2î + 2ĵ - k̂ এবং B⃗ = 6î - 3ĵ + 2k̂ ভেক্টরদ্বয়ের স্কেলার গুণফল কত?", options: ["4", "8", "12", "16"], correct: 0, explanation: "A⃗ · B⃗ = (2×6) + (2×-3) + (-1×2) = 12 - 6 - 2 = 4।" },
+          { question: "২৫. A⃗ = î + ĵ এবং B⃗ = ĵ + k̂ এর মধ্যবর্তী কোণ কত?", options: ["30°", "45°", "60°", "90°"], correct: 2, explanation: "cos θ = (A⃗ · B⃗) / (|A⃗||B⃗|) = (0+1+0) / (√2 × √2) = 1/2 ⟹ θ = 60°।" },
+          { question: "২৬. B⃗ ভেক্টরের উপর A⃗ ভেক্টরের অভিক্ষেপ (Projection) কোনটি?", options: ["(A⃗ · B⃗) / |B⃗|", "(A⃗ · B⃗) / |A⃗|", "|A⃗| sin θ", "A⃗ × B⃗"], correct: 0, explanation: "B⃗ এর দিকে A⃗ এর অভিক্ষেপ হলো A cos θ = (A⃗ · B⃗) / |B⃗|।" },
+          { question: "২৭. A⃗ = 3î + 4ĵ এর î অক্ষ বরাবর উপাংশ (Component) কত?", options: ["3", "3î", "4", "4ĵ"], correct: 1, explanation: "উপাংশ হলো একটি ভেক্টর রাশি। X অক্ষ বরাবর উপাংশ হবে 3î।" },
+          { question: "২৮. বল F⃗ = (2î + 3ĵ) N এবং সরণ r⃗ = (4î + 5k̂) m হলে কাজের মান কত?", options: ["8 J", "15 J", "23 J", "0 J"], correct: 0, explanation: "কাজ W = F⃗ · r⃗ = (2×4) + (3×0) + (0×5) = 8 J।" },
+          { question: "২৯. A⃗ · B⃗ = |A⃗ × B⃗| হলে ভেক্টরদ্বয়ের মধ্যবর্তী কোণ কত?", options: ["0°", "30°", "45°", "90°"], correct: 2, explanation: "AB cos θ = AB sin θ ⟹ tan θ = 1 ⟹ θ = 45°।" },
+          { question: "৩০. স্কেলার গুণন কোন নিয়মটি মেনে চলে?", options: ["বিনিময় নিয়ম", "বণ্টন নিয়ম", "ক ও খ উভয়ই", "কোনটিই নয়"], correct: 2, explanation: "স্কেলার গুণনে বিনিময় এবং বণ্টন দুটি নিয়মই সত্য।" },
+
+          { question: "৩১. î × ĵ = ?", options: ["0", "1", "k̂", "-k̂"], correct: 2, explanation: "ডানহাতি স্ক্রু নিয়ম বা ঘড়ির কাটার বিপরীত ঘূর্ণন অনুযায়ী î × ĵ = k̂।" },
+          { question: "৩২. ĵ × î = ?", options: ["k̂", "-k̂", "1", "0"], correct: 1, explanation: "ভেক্টর গুণন বিনিময় নিয়ম মেনে চলে না। সুতরাং ĵ × î = -k̂।" },
+          { question: "৩৩. দুটি ভেক্টর সমান্তরাল হওয়ার শর্ত কোনটি?", options: ["A⃗ · B⃗ = 0", "A⃗ × B⃗ = 0", "A⃗ · B⃗ = 1", "A⃗ × B⃗ = 1"], correct: 1, explanation: "সমান্তরাল হলে θ = 0°, ফলে |A⃗ × B⃗| = AB sin 0° = 0।" },
+          { question: "৩৪. A⃗ = 2î + 3ĵ এবং B⃗ = 4î + aĵ সমান্তরাল হলে a এর মান কত?", options: ["3", "6", "8", "12"], correct: 1, explanation: "সহগগুলোর অনুপাত সমান: 2/4 = 3/a ⟹ 2a = 12 ⟹ a = 6।" },
+          { question: "৩৫. দুটি ভেক্টরের ক্রস গুণফলের দিক কোনটি বরাবর নির্দেশিত হয়?", options: ["প্রথম ভেক্টরের দিকে", "দ্বিতীয় ভেক্টরের দিকে", "তলের সমান্তরালে", "তলের লম্বভাবে"], correct: 3, explanation: "ক্রস গুণফলের দিক হলো ঐ ভেক্টর দুটি যে তলে অবস্থিত তার লম্ব দিকে।" },
+          { question: "৩৬. সামান্তরিকের দুটি সংনিহিত বাহু A⃗ ও B⃗ হলে এর ক্ষেত্রফল কত?", options: ["A⃗ · B⃗", "|A⃗ × B⃗|", "1/2 |A⃗ × B⃗|", "|A⃗||B⃗|"], correct: 1, explanation: "সংনিহিত বাহু দ্বারা গঠিত সামান্তরিকের ক্ষেত্রফল = |A⃗ × B⃗|।" },
+          { question: "৩৭. সামান্তরিকের দুটি কর্ণ d⃗₁ ও d⃗₂ হলে তার ক্ষেত্রফল কত?", options: ["|d⃗₁ × d⃗₂|", "1/2 |d⃗₁ × d⃗₂|", "1/4 |d⃗₁ × d⃗₂|", "d⃗₁ · d⃗₂"], correct: 1, explanation: "কর্ণ দেওয়া থাকলে সামান্তরিকের ক্ষেত্রফল হলো ভেক্টরদ্বয়ের ক্রস গুণফলের মানের অর্ধেক।" },
+          { question: "৩৮. ত্রিভুজের দুটি সংনিহিত বাহু A⃗ ও B⃗ হলে ত্রিভুজটির ক্ষেত্রফল কত?", options: ["|A⃗ × B⃗|", "1/2 |A⃗ × B⃗|", "A⃗ · B⃗", "1/2 (A⃗ · B⃗)"], correct: 1, explanation: "সামান্তরিকের অর্ধেক হলো ত্রিভুজের ক্ষেত্রফল, অর্থাৎ 1/2 |A⃗ × B⃗|।" },
+          { question: "৩৯. A⃗ এবং B⃗ উভয়ের উপর লম্ব একক ভেক্টর কোনটি?", options: ["± (A⃗ × B⃗) / |A⃗ × B⃗|", "± (A⃗ · B⃗) / |A⃗ × B⃗|", "(A⃗ × B⃗) / |A⃗|", "(A⃗ × B⃗) / |B⃗|"], correct: 0, explanation: "ক্রস গুণনফলকে মান দিয়ে ভাগ করলে লম্ব একক ভেক্টর পাওয়া যায়।" },
+          { question: "৪০. তিনটি ভেক্টর A⃗, B⃗, C⃗ সমতলীয় (Coplanar) হওয়ার শর্ত কোনটি?", options: ["A⃗ · (B⃗ × C⃗) = 0", "A⃗ × (B⃗ · C⃗) = 0", "A⃗ + B⃗ + C⃗ = 0", "A⃗ · B⃗ · C⃗ = 0"], correct: 0, explanation: "গঠিত আয়তঘনের আয়তন শূন্য হলে ভেক্টর তিনটি সমতলীয় হয়, অর্থাৎ A⃗ · (B⃗ × C⃗) = 0।" },
+
+          { question: "৪১. কোনো স্ক্যালার ক্ষেত্র ϕ এর সর্বোচ্চ বৃদ্ধির হার নির্দেশ করে কোনটি?", options: ["ডাইভারজেন্স", "কার্ল", "গ্রেডিয়েন্ট", "ল্যাপলাসিয়ান"], correct: 2, explanation: "গ্রেডিয়েন্ট (∇ϕ) ঐ স্কেলারের পরিবর্তনের সর্বোচ্চ হার প্রকাশ করে।" },
+          { question: "৪২. ∇ · V⃗ = 0 হলে, ভেক্টর ক্ষেত্রটি কেমন?", options: ["সোলেনয়ডাল (Solenoidal)", "অঘূর্ণনশীল", "ঘূর্ণনশীল", "শূন্য"], correct: 0, explanation: "কোনো ভেক্টরের ডাইভারজেন্স শূন্য হওয়ার অর্থ এটি সোলেনয়ডাল।" },
+          { question: "৪৩. কোনো ভেক্টর ক্ষেত্রের কার্ল শূন্য হলে (∇ × V⃗ = 0), ক্ষেত্রটি কেমন হবে?", options: ["সোলেনয়ডাল", "ঘূর্ণনশীল", "অঘূর্ণনশীল ও সংরক্ষণশীল", "অ-সংরক্ষণশীল"], correct: 2, explanation: "কার্ল শূন্য হওয়া মানে অঘূর্ণনশীল এবং বল ক্ষেত্রটি সংরক্ষণশীল।" },
+          { question: "৪৪. ডেল অপারেটর (∇) একটি—", options: ["স্কেলার অপারেটর", "ভেক্টর ডিফারেন্সিয়াল অপারেটর", "টেনসর অপারেটর", "সাধারণ গুণক"], correct: 1, explanation: "∇ = î(∂/∂x) + ĵ(∂/∂y) + k̂(∂/∂z) একটি ভেক্টর ডিফারেন্সিয়াল অপারেটর।" },
+          { question: "৪৫. কার্ল-এর ভৌত তাৎপর্য কোনটি নির্দেশ করে?", options: ["আয়তন পরিবর্তনের হার", "ভেক্টরের ঘূর্ণন", "ক্ষেত্রফলের প্রসারণ", "ফ্লাক্সের মান"], correct: 1, explanation: "কার্ল মূলত কোনো ভেক্টর ক্ষেত্রের ঘূর্ণন প্রবণতা ও অক্ষ নির্দেশ করে।" },
+          { question: "৪৬. সর্বনিম্ন সময়ে নদী পার হতে হলে নৌকাকে কোন দিকে চালাতে হবে?", options: ["নদীর তীরের সাথে 90° কোণে", "স্রোতের সাথে 120° কোণে", "স্রোতের অনুকূলে", "স্রোতের প্রতিকূলে"], correct: 0, explanation: "সময় সর্বনিম্ন হতে হলে α = 90° (সোজা প্রস্থ বরাবর) হতে হবে।" },
+          { question: "৪৭. সোজাসুজি/নূন্যতম দূরত্বে নদী পার হতে হলে নৌকাকে স্রোতের সাথে কত কোণে চালাতে হয়? (যদি v > u হয়)", options: ["α = cos⁻¹(-u/v)", "α = sin⁻¹(-u/v)", "α = 90°", "α = 180°"], correct: 0, explanation: "লব্ধি বেগ প্রস্থ বরাবর হতে হলে, cos α = -u/v ⟹ α = cos⁻¹(-u/v)।" },
+          { question: "৪৮. বৃষ্টির দিনে হেঁটে যাওয়ার সময় ছাতা কীভাবে ধরতে হয়?", options: ["মানুষের সাপেক্ষে বৃষ্টির আপেক্ষিক বেগের দিকে", "ভূমির লম্বভাবে", "বাতাসের অভিমুখে", "বৃষ্টির প্রকৃত বেগের দিকে"], correct: 0, explanation: "আপেক্ষিক বেগ (v⃗_rain - v⃗_man) বিবেচনা করে সেই দিকে ছাতা মেলতে হয়।" },
+          { question: "৪৯. বৃষ্টি খাড়া নিচের দিকে 4 ms⁻¹ বেগে পড়ছে এবং একজন লোক 3 ms⁻¹ বেগে হাঁটছে। লোকের সাপেক্ষে বৃষ্টির আপেক্ষিক বেগ কত?", options: ["1 ms⁻¹", "5 ms⁻¹", "7 ms⁻¹", "12 ms⁻¹"], correct: 1, explanation: "আপেক্ষিক বেগ v_rel = √(4² + 3²) = 5 ms⁻¹।" },
+          { question: "৫০. r⃗ = xî + yĵ + zk̂ হলে, ∇ · r⃗ (অবস্থান ভেক্টরের ডাইভারজেন্স) এর মান কত?", options: ["0", "1", "3", "r⃗"], correct: 2, explanation: "∇ · r⃗ = ∂x/∂x + ∂y/∂y + ∂z/∂z = 1 + 1 + 1 = 3।" }
+        ]
+      };
+
+      async function checkAttemptAndLoad() {
         try {
-            // চেক আগে পরীক্ষা দিয়েছে কিনা
-            const attemptSnap = await get(ref(db, `exam_attempts/${currentUser.uid}/live_daily_exam`));
-            if(attemptSnap.exists()) {
-                alert("আপনি ইতোমধ্যে এই পরীক্ষাটি একবার দিয়ে ফেলেছেন! ফলাফল দেখুন।");
-                showReview(attemptSnap.val());
-                return;
-            }
+          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
+          if (snapshot.exists()) {
+            examData = snapshot.val();
+          }
+        } catch(e) {
+          console.log("Using default local exam questions.");
+        }
 
-            // পরীক্ষা লোড
-            const examSnap = await get(ref(db, 'live_exams/live_daily_exam'));
-            if(!examSnap.exists()) {
-                document.getElementById('questionsContainer').innerHTML = `<p style="text-align:center; color:#ef4444;">বর্তমানে কোনো লাইভ পরীক্ষা চালু নেই।</p>`;
-                return;
-            }
+        document.getElementById('examTitle').innerText = examData.title;
+        timeRemaining = (examData.duration || 20) * 60;
+        
+        renderQuestions();
+        startTimer();
+      }
 
-            examData = examSnap.val();
-            document.getElementById('examTitle').innerText = examData.title || "লাইভ মডেল টেস্ট";
-            document.getElementById('examMeta').innerText = `মোট প্রশ্ন: ${examData.questions.length}টি | সময়: ${examData.duration} মিনিট`;
-
-            renderQuestions(examData.questions);
-            startTimer(examData.duration * 60);
-
-        } catch(e) { alert("ত্রুটি: " + e.message); }
-    }
-
-    function renderQuestions(questions) {
-        const c = document.getElementById('questionsContainer');
-        c.innerHTML = questions.map((q, i) => `
-            <div class="q-card">
-                <div class="q-title">${i + 1}. ${q.question}</div>
-                ${q.options.map((opt, oIdx) => `
-                    <label class="opt-label">
-                        <input type="radio" name="q_${i}" value="${oIdx}" required> ${opt}
-                    </label>
-                `).join('')}
+      function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = examData.questions.map((q, qIndex) => `
+          <div class="question-card" id="q-box-${qIndex}">
+            <div class="question-title">${q.question}</div>
+            <div class="options-list">
+              ${q.options.map((opt, oIndex) => `
+                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
+                  <input type="radio" name="q_${qIndex}" value="${oIndex}" required>
+                  <span>${opt}</span>
+                </label>
+              `).join('')}
             </div>
+            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
+              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+            </div>
+          </div>
         `).join('');
-        document.getElementById('submitBtn').style.display = 'block';
-    }
+      }
 
-    function startTimer(seconds) {
-        const display = document.getElementById('timerDisplay');
+      function startTimer() {
+        updateTimerDisplay();
         timerInterval = setInterval(() => {
-            let m = Math.floor(seconds / 60);
-            let s = seconds % 60;
-            display.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-            if(seconds <= 0) {
-                clearInterval(timerInterval);
-                alert("সময় শেষ! স্বয়ংক্রিয়ভাবে উত্তর পত্র জমা হচ্ছে...");
-                submitLiveExam();
-            }
-            seconds--;
+          timeRemaining--;
+          updateTimerDisplay();
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert("সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
+            submitExam();
+          }
         }, 1000);
-    }
+      }
 
-    window.submitLiveExam = async (e) => {
+      function updateTimerDisplay() {
+        const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+        const s = (timeRemaining % 60).toString().padStart(2, '0');
+        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+      }
+
+      async function submitExam(e) {
         if(e) e.preventDefault();
         clearInterval(timerInterval);
 
-        const questions = examData.questions;
         let score = 0;
-        let userAnswers = [];
+        const total = examData.questions.length;
+        const formData = new FormData(document.getElementById('examForm'));
 
-        questions.forEach((q, i) => {
-            const selected = document.querySelector(`input[name="q_${i}"]:checked`);
-            const ansVal = selected ? parseInt(selected.value) : -1;
-            userAnswers.push(ansVal);
+        examData.questions.forEach((q, i) => {
+          const selected = parseInt(formData.get(`q_${i}`));
+          const expBox = document.getElementById(`exp-${i}`);
+          expBox.style.display = 'block';
 
-            if(ansVal === parseInt(q.correct)) score++;
+          q.options.forEach((_, oIndex) => {
+            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
+            const input = lbl.querySelector('input');
+            if(input) input.disabled = true;
+
+            if (oIndex === q.correct) {
+              lbl.classList.add('correct-opt');
+            }
+            if (selected === oIndex && selected !== q.correct) {
+              lbl.classList.add('wrong-opt');
+            }
+          });
+
+          if (selected === q.correct) {
+            score++;
+          }
         });
 
-        const resultPayload = {
-            examTitle: examData.title || "লাইভ মডেল টেস্ট",
-            score: score,
-            total: questions.length,
-            userAnswers: userAnswers,
-            submittedAt: new Date().toISOString()
-        };
+        document.getElementById('submitBtn').style.display = 'none';
 
-        try {
-            await set(ref(db, `exam_attempts/${currentUser.uid}/live_daily_exam`), resultPayload);
-            showReview(resultPayload);
-        } catch(err) { alert("রেজাল্ট সেভ করতে সমস্যা: " + err.message); }
-    };
+        // Display Summary
+        const resDiv = document.getElementById('resultSummary');
+        resDiv.style.display = 'block';
+        resDiv.innerHTML = `
+          <div class="score-board">
+            <h2>পরীক্ষার ফলাফল</h2>
+            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
+            <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা দেওয়া হলো।</p>
+          </div>
+        `;
 
-    function showReview(attemptData) {
-        document.getElementById('examForm').style.display = 'none';
-        document.getElementById('examHeader').style.display = 'none';
-        document.getElementById('resultBox').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        document.getElementById('scoreText').innerText = `প্রাপ্ত নম্বর: ${attemptData.score} / ${attemptData.total}`;
+        // Save performance to Firebase if user is logged in
+        if (currentUser) {
+          try {
+            await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
+              examTitle: examData.title,
+              score: score,
+              total: total,
+              submittedAt: new Date().toISOString()
+            });
+          } catch(err) { console.error("Error saving score:", err); }
+        }
+      }
 
-        get(ref(db, 'live_exams/live_daily_exam')).then(snap => {
-            if(!snap.exists()) return;
-            const questions = snap.val().questions;
-            const uAns = attemptData.userAnswers;
+      document.getElementById('examForm').addEventListener('submit', submitExam);
 
-            document.getElementById('reviewContainer').innerHTML = questions.map((q, i) => {
-                const userChoice = uAns[i];
-                const isCorrect = userChoice === parseInt(q.correct);
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+      });
 
-                return `
-                    <div class="q-card" style="border-color: ${isCorrect ? '#10b981' : '#ef4444'};">
-                        <div class="q-title">${i + 1}. ${q.question}</div>
-                        <div style="font-size:13px; margin-bottom:4px;">
-                            আপনার উত্তর: <span class="${isCorrect ? 'correct-tag' : 'wrong-tag'}">
-                                ${userChoice >= 0 ? q.options[userChoice] : 'উত্তর দেওয়া হয়নি'} ${isCorrect ? '✅' : '❌'}
-                            </span>
-                        </div>
-                        <div style="font-size:13px; color:#10b981;">
-                            সঠিক উত্তর: <b>${q.options[q.correct]}</b>
-                        </div>
-                        ${q.explanation ? `<div class="explanation-box">💡 <b>ব্যাখ্যা:</b> ${q.explanation}</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-        });
-    }
-</script>
-
+      checkAttemptAndLoad();
+    </script>
 </body>
 </html>
