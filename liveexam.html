@@ -21,18 +21,31 @@
         .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; }
         .question-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #f8fafc; line-height: 1.5; }
         
-        .options-list { display: flex; flex-direction: column; gap: 8px; }
-        .option-item { background: #0f172a; border: 1px solid #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        
+        /* অপশন ডিজাইনের আধুনিক ও স্পষ্ট স্টাইল */
+        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 15px; display: flex; align-items: center; gap: 12px; color: #f8fafc; }
         .option-item:hover { border-color: #38bdf8; background: #1e293b; }
-        .option-item.disabled-option { cursor: not-allowed; opacity: 0.8; }
-        .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.2); }
+        .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
+
+        /* উত্তর সিলেক্ট করলে উজ্জ্বল নীল রঙের বর্ডার ও স্পষ্ট ব্যাকগ্রাউন্ড */
+        .option-item.selected-option {
+            background: #1e3a8a !important;
+            border-color: #38bdf8 !important;
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .option-item.disabled-option { cursor: not-allowed; opacity: 0.7; }
+
+        /* রেজাল্ট দেখার সময় কালার পরিবর্তন */
+        .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
+        .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
 
         .btn-submit { background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; margin-bottom: 30px; transition: 0.3s; }
         .btn-submit:hover { background: #059669; }
 
-        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 10px; margin-top: 10px; border-radius: 0 6px 6px 0; font-size: 13px; color: #cbd5e1; }
-        .correct-opt { background: #064e3b !important; border-color: #10b981 !important; color: #a7f3d0 !important; }
-        .wrong-opt { background: #881337 !important; border-color: #f43f5e !important; color: #fecdd3 !important; }
+        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
 
         .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
@@ -67,22 +80,16 @@
         </form>
     </div>
 
-    <!-- Footer with Instagram and Social Links -->
     <footer class="site-footer">
         <div class="footer-logo">GAIVEX<span>.</span></div>
         <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
         <div class="social-links">
-            <!-- Facebook Button -->
             <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
                 <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             </a>
-            
-            <!-- Instagram Button -->
             <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
                 <svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             </a>
-
-            <!-- YouTube Button -->
             <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube">
                 <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
@@ -113,54 +120,65 @@
       let currentUser = null;
       let timerInterval = null;
       let timeRemaining = 1200;
-      const EXAM_KEY = "gaivex_live_exam_status";
+      let activeExamKey = "gaivex_exam_default";
 
-      // ব্যাকআপ / ডিফল্ট প্রশ্নাবলী (যদি ফায়ারবেসে ডেটা না থাকে)
-      const defaultExamData = {
-        title: "ডেইলি মডেল টেস্ট (সাধারণ বিজ্ঞান ও জ্ঞান)",
-        duration: 15,
+      // আপনার প্রদানকৃত ৩০টি MCQ প্রশ্ন ও উত্তর ডিফল্ট হিসেবে যুক্ত করা হলো
+      let examData = {
+        id: "biology_mcq_30_v1",
+        title: "🧬 প্রাণীর পরিচিতি — ৩০টি MCQ",
+        duration: 20,
         questions: [
-          {
-            question: "আলোর গতি সবচেয়ে বেশি কোন মাধ্যমে?",
-            options: ["পানি", "কাচ", "শূন্যাঞ্চল", "বায়ু"],
-            correct: 2,
-            explanation: "শূন্যাঞ্চলে আলোর বেগ সবচেয়ে বেশি, যা প্রায় ৩ × ১০^৮ মিটার/সেকেন্ড।"
-          },
-          {
-            question: "মানবদেহের সবচেয়ে বড় গ্রন্থি কোনটি?",
-            options: ["থাইরয়েড", "যকৃৎ (Liver)", "প্যানক্রিয়াস", "পিটুইটারি"],
-            correct: 1,
-            explanation: "যকৃৎ বা লিভার হলো মানবদেহের সবচেয়ে বড় অভ্যন্তরীণ অঙ্গ ও গ্রন্থি।"
-          },
-          {
-            question: "পানির রাসায়নিক সংকেত কোনটি?",
-            options: ["CO2", "H2O", "NaCl", "O2"],
-            correct: 1,
-            explanation: "দুইটি হাইড্রোজেন পরমাণু এবং একটি অক্সিজেন পরমাণু মিলে পানির অনু (H2O) গঠন করে।"
-          }
+          { question: "প্রাণীদের দেহের গঠনগত ও কার্যগত মৌলিক একক কোনটি?", options: ["টিস্যু", "অঙ্গ", "কোষ", "অঙ্গতন্ত্র"], correct: 2, explanation: "কোষ হলো জীবদেহের গঠন ও কাজের মৌলিক একক। এককোষী প্রাণীতে একটি কোষই সম্পূর্ণ জীবের যাবতীয় জীবনক্রিয়া সম্পন্ন করে। বহুকোষী প্রাণীতে বিভিন্ন কোষ বিশেষায়িত হয়ে টিস্যু, অঙ্গ ও অঙ্গতন্ত্র গঠন করে।" },
+          { question: "কোন বৈশিষ্ট্যটি প্রাণীদের উদ্ভিদ থেকে পৃথক করতে সবচেয়ে গুরুত্বপূর্ণ?", options: ["কোষীয় গঠন", "শ্বসন", "পরভোজী পুষ্টি", "বিপাক"], correct: 2, explanation: "প্রাণীরা সাধারণত নিজের খাদ্য নিজে তৈরি করতে পারে না; অন্য জীব বা জৈব পদার্থ থেকে খাদ্য গ্রহণ করে। তাই প্রাণীদের পুষ্টির ধরন পরভোজী (heterotrophic)।" },
+          { question: "প্রাণীর দেহে টিস্যু গঠিত হয়—", options: ["অঙ্গ থেকে", "একই ধরনের কোষের সমষ্টি থেকে", "অঙ্গতন্ত্র থেকে", "বিভিন্ন অঙ্গের সমন্বয়ে"], correct: 1, explanation: "একই গঠন ও একই ধরনের কাজ সম্পাদনকারী কোষসমূহের সমষ্টিকে টিস্যু বলে। যেমন—পেশি কোষের সমন্বয়ে পেশি টিস্যু গঠিত হয়।" },
+          { question: "প্রাণীর টিস্যুর প্রধান শ্রেণি কয়টি?", options: ["২টি", "৩টি", "৪টি", "৫টি"], correct: 2, explanation: "প্রাণীদেহের প্রধান চার ধরনের টিস্যু হলো— ১. আবরণী টিস্যু ২. যোজক টিস্যু ৩. পেশি টিস্যু ৪. স্নায়ু টিস্যু।" },
+          { question: "দেহের বাইরের আবরণ ও বিভিন্ন অঙ্গের অভ্যন্তরীণ আবরণ গঠন করে কোন টিস্যু?", options: ["যোজক", "আবরণী", "পেশি", "স্নায়ু"], correct: 1, explanation: "আবরণী টিস্যু দেহের বহিরাবরণ তৈরি করে এবং বিভিন্ন অঙ্গের অভ্যন্তরীণ পৃষ্ঠ আবৃত করে। এটি সুরক্ষা, শোষণ, ক্ষরণ ইত্যাদি কাজে অংশ নেয়।" },
+          { question: "রক্ত কোন ধরনের টিস্যু?", options: ["আবরণী", "পেশি", "যোজক", "স্নায়ু"], correct: 2, explanation: "রক্ত একটি তরল যোজক টিস্যু। এর প্লাজমা তরল ম্যাট্রিক্স হিসেবে কাজ করে এবং রক্তকণিকাগুলো সেই ম্যাট্রিক্সে অবস্থান করে।" },
+          { question: "কোন টিস্যুর প্রধান কাজ দেহের বিভিন্ন অংশের মধ্যে সংকেত পরিবহন?", options: ["আবরণী", "যোজক", "পেশি", "স্নায়ু"], correct: 3, explanation: "স্নায়ু টিস্যু উদ্দীপনা গ্রহণ ও বৈদ্যুতিক সংকেত পরিবহনে বিশেষায়িত। নিউরন হলো এর প্রধান কার্যকরী কোষ।" },
+          { question: "প্রাণীর দেহে চলন ও অঙ্গসঞ্চালনের জন্য প্রধানত কোন টিস্যু দায়ী?", options: ["পেশি", "আবরণী", "যোজক", "স্নায়ু"], correct: 0, explanation: "পেশি টিস্যু সংকোচন ও প্রসারণের মাধ্যমে দেহের চলন এবং বিভিন্ন অঙ্গের নড়াচড়া ঘটায়।" },
+          { question: "দ্বিপার্শ্বীয় প্রতিসাম্যকে কী বলা হয়?", options: ["Radial symmetry", "Bilateral symmetry", "Spherical symmetry", "Asymmetry"], correct: 1, explanation: "যে প্রাণীর দেহকে একটি নির্দিষ্ট সমতল বরাবর কাটলে ডান ও বাম দুটি সমান অংশ পাওয়া যায়, তাকে দ্বিপার্শ্বীয় প্রতিসাম্য বলে। মানুষ, কেঁচো ও তেলাপোকা এর উদাহরণ।" },
+          { question: "হাইড্রার দেহে কোন ধরনের প্রতিসাম্য দেখা যায়?", options: ["দ্বিপার্শ্বীয়", "অপ্রতিসাম্য", "অরীয়", "গোলীয়"], correct: 2, explanation: "হাইড্রার দেহের কেন্দ্রীয় অক্ষ বরাবর একাধিক সমতল দিয়ে কাটলে সমজাতীয় অংশ পাওয়া যায়। তাই হাইড্রার অরীয় প্রতিসাম্য (radial symmetry) রয়েছে।" },
+          { question: "কোন প্রাণী অপ্রতিসম?", options: ["Hydra", "Sycon", "Earthworm", "Cockroach"], correct: 1, explanation: "Sycon বা Scypha একটি স্পঞ্জ। এর দেহ সাধারণত অনিয়মিত বা অপ্রতিসম প্রকৃতির।" },
+          { question: "ভ্রূণের তিনটি জার্ম স্তর হলো—", options: ["Ectoderm, Mesoderm, Endoderm", "Epidermis, Dermis, Mesoderm", "Ectoderm, Epidermis, Endoderm", "Mesoderm, Dermis, Endoderm"], correct: 0, explanation: "ত্রিস্তরীয় প্রাণীর ভ্রূণে তিনটি প্রাথমিক জার্ম স্তর থাকে—এক্টোডার্ম, মেসোডার্ম ও এন্ডোডার্ম।" },
+          { question: "কোনটি দ্বিস্তরীয় (diploblastic) প্রাণী?", options: ["কেঁচো", "তেলাপোকা", "Hydra", "মানুষ"], correct: 2, explanation: "হাইড্রার ভ্রূণে দুটি জার্ম স্তর থাকে—এক্টোডার্ম ও এন্ডোডার্ম। তাই এটি diploblastic প্রাণী।" },
+          { question: "কোনটি ত্রিস্তরীয় প্রাণী?", options: ["Hydra", "Jellyfish", "Earthworm", "Sponge"], correct: 2, explanation: "কেঁচোর দেহ তিনটি জার্ম স্তর থেকে গঠিত—এক্টোডার্ম, মেসোডার্ম ও এন্ডোডার্ম। তাই এটি triploblastic প্রাণী।" },
+          { question: "Coelom বলতে কী বোঝায়?", options: ["অন্ত্রের গহ্বর", "দেহপ্রাচীর ও পরিপাকনালির মধ্যবর্তী মেসোডার্ম-আবৃত গহ্বর", "রক্তনালির গহ্বর", "শ্বাসনালির গহ্বর"], correct: 1, explanation: "প্রকৃত সিলোম হলো এমন একটি দেহগহ্বর যা মেসোডার্ম দ্বারা সম্পূর্ণ আবৃত থাকে।" },
+          { question: "কোন প্রাণী Acoelomate?", options: ["Earthworm", "Cockroach", "Planaria", "Human"], correct: 2, explanation: "Platyhelminthes পর্বের প্রাণী, যেমন Planaria, acoelomate। এদের দেহে প্রকৃত সিলোম থাকে না।" },
+          { question: "Pseudocoelom দেখা যায় কোন পর্বে?", options: ["Platyhelminthes", "Nematoda", "Annelida", "Mollusca"], correct: 1, explanation: "Nematoda পর্বের প্রাণীদের দেহগহ্বরকে pseudocoel বা ছদ্মসিলোম বলা হয়।" },
+          { question: "প্রকৃত সিলোম প্রথম সুস্পষ্টভাবে কোন পর্বে দেখা যায়?", options: ["Porifera", "Cnidaria", "Platyhelminthes", "Annelida"], correct: 3, explanation: "Annelida বা বলয়কৃমি প্রকৃত সিলোমযুক্ত প্রাণীর গুরুত্বপূর্ণ উদাহরণ।" },
+          { question: "প্রাণীদেহের খণ্ডায়নকে কী বলা হয়?", options: ["Cephalization", "Segmentation", "Metamerism", "Regeneration"], correct: 2, explanation: "দেহের অনুদৈর্ঘ্য অক্ষ বরাবর ধারাবাহিক অনুরূপ খণ্ডে বিভক্ত হওয়াকে metamerism বলে।" },
+          { question: "কেঁচোর দেহের খণ্ডায়ন কোন ধরনের?", options: ["Radial", "Metameric", "Asymmetrical", "Irregular"], correct: 1, explanation: "কেঁচোর দেহ বহু অনুরূপ খণ্ডে বিভক্ত। প্রতিটি খণ্ডকে metamer বলা হয়।" },
+          { question: "Cephalization বলতে বোঝায়—", options: ["দেহের খণ্ডায়ন", "মাথায় সংবেদী অঙ্গ ও স্নায়ুকেন্দ্রের ঘনীভবন", "দেহের অরীয় বিভাজন", "দেহের বৃদ্ধি"], correct: 1, explanation: "দ্বিপার্শ্বীয় প্রতিসাম্যযুক্ত প্রাণীদের বিবর্তনে দেহের সম্মুখ প্রান্তে মস্তিষ্ক ও সংবেদী অঙ্গের ঘনীভবনকে cephalization বলে।" },
+          { question: "নিচের কোন পর্বের প্রাণী জলনালিতন্ত্রের জন্য বিশেষভাবে পরিচিত?", options: ["Porifera", "Annelida", "Arthropoda", "Mollusca"], correct: 0, explanation: "Porifera বা স্পঞ্জের দেহে বিশেষ canal system বা জলনালিতন্ত্র থাকে।" },
+          { question: "Cnidaria পর্বের প্রাণীদের বিশেষ বৈশিষ্ট্য কোনটি?", options: ["Nephridia", "Cnidoblast", "Malpighian tubule", "Flame cell"], correct: 1, explanation: "Cnidaria পর্বের প্রাণীদের দেহে cnidoblast/cnidocyte থাকে। এতে nematocyst নামের বিশেষ গঠন থাকে।" },
+          { question: "Platyhelminthes-এর প্রধান বৈশিষ্ট্য কোনটি?", options: ["দেহ খণ্ডিত", "দেহ চ্যাপ্টা", "দেহে jointed appendage আছে", "জলনালিতন্ত্র আছে"], correct: 1, explanation: "Platyhelminthes-এর দেহ dorsoventrally অর্থাৎ উপর-নিচে চ্যাপ্টা। এরা triploblastic ও acoelomate প্রাণী।" },
+          { question: "Arthropoda পর্বের প্রধান বৈশিষ্ট্য কোনটি?", options: ["অখণ্ডিত দেহ", "সন্ধিযুক্ত উপাঙ্গ", "জলনালিতন্ত্র", "নেফ্রিডিয়া"], correct: 1, explanation: "Arthropoda-এর অর্থই হলো সন্ধিযুক্ত পা/উপাঙ্গ। এদের দেহ সাধারণত খণ্ডিত এবং কাইটিনযুক্ত বহিঃকঙ্কাল থাকে।" },
+          { question: "প্রাণীজগতের সবচেয়ে বড় পর্ব কোনটি?", options: ["Mollusca", "Annelida", "Arthropoda", "Chordata"], correct: 2, explanation: "প্রজাতির সংখ্যার দিক থেকে Arthropoda প্রাণীজগতের সবচেয়ে বৃহৎ পর্ব।" },
+          { question: "Mollusca পর্বের সাধারণ বৈশিষ্ট্য কোনটি?", options: ["সাধারণত নরম দেহ", "সন্ধিযুক্ত পা", "দেহে নেমাটোসিস্ট", "দেহ সবসময় খণ্ডিত"], correct: 0, explanation: "Mollusca-এর প্রাণীদের দেহ সাধারণত নরম ও অখণ্ডিত।" },
+          { question: "Echinodermata-এর একান্ত বৈশিষ্ট্য কোনটি?", options: ["জলসংবহন তন্ত্র", "জলনালিকা তন্ত্র বা water vascular system", "সন্ধিযুক্ত পা", "নেফ্রিডিয়া"], correct: 1, explanation: "Echinodermata-এর অন্যতম স্বাতন্ত্র্যসূচক বৈশিষ্ট্য হলো water vascular system।" },
+          { question: "Chordata পর্বের প্রধান শনাক্তকারী বৈশিষ্ট্য কোনটি?", options: ["Cnidoblast", "Notochord", "Flame cell", "Water vascular system"], correct: 1, explanation: "Chordata-এর গুরুত্বপূর্ণ বৈশিষ্ট্য হলো notochord।" },
+          { question: "নিচের কোনটি অমেরুদণ্ডী প্রাণী?", options: ["মাছ", "ব্যাঙ", "কেঁচো", "পাখি"], correct: 2, explanation: "কেঁচোর দেহে কোনো মেরুদণ্ড বা vertebral column নেই। তাই এটি অমেরুদণ্ডী প্রাণী।" }
         ]
       };
-
-      let examData = defaultExamData;
 
       async function checkAttemptAndLoad() {
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
           if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
             examData = snapshot.val();
-          } else {
-            console.log("Firebase-এ কোনো প্রশ্ন নেই। ডিফল্ট প্রশ্ন লোড করা হচ্ছে।");
           }
         } catch(e) {
-          console.log("Firebase Load Error:", e);
+          console.log("Firebase Load Error, using local default questions.");
         }
 
         document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
-        timeRemaining = (examData.duration || 15) * 60;
+        timeRemaining = (examData.duration || 20) * 60;
         
+        activeExamKey = "gaivex_submitted_" + (examData.id || examData.title || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
+
         renderQuestions();
 
-        const savedResult = localStorage.getItem(EXAM_KEY);
+        const savedResult = localStorage.getItem(activeExamKey);
         if (savedResult) {
           const resultData = JSON.parse(savedResult);
           showSubmittedResult(resultData.userAnswers, resultData.score);
@@ -172,10 +190,12 @@
       function renderQuestions() {
         const container = document.getElementById('questionsContainer');
         if(!examData.questions || examData.questions.length === 0) {
-          container.innerHTML = "<p style='text-align:center; padding: 20px; color: #94a3b8;'>বর্তমানে কোনো প্রশ্ন নেই!</p>";
+          container.innerHTML = "<p style='text-align:center; padding: 20px; color: #94a3b8;'>বর্তমানে কোনো পরীক্ষা চালু নেই!</p>";
           document.getElementById('submitBtn').style.display = 'none';
           return;
         }
+
+        const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
 
         container.innerHTML = examData.questions.map((q, qIndex) => `
           <div class="question-card" id="q-box-${qIndex}">
@@ -183,8 +203,8 @@
             <div class="options-list">
               ${(q.options || []).map((opt, oIndex) => `
                 <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
-                  <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="window.lockOptions(${qIndex})">
-                  <span>${opt}</span>
+                  <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="window.selectOption(${qIndex}, ${oIndex})">
+                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
                 </label>
               `).join('')}
             </div>
@@ -194,12 +214,14 @@
           </div>
         `).join('');
 
-        window.lockOptions = function(qIndex) {
-          const inputs = document.querySelectorAll(`input[name="q_${qIndex}"]`);
-          inputs.forEach(input => {
-            input.disabled = true;
-            input.parentElement.classList.add('disabled-option');
-          });
+        window.selectOption = function(qIndex, oIndex) {
+          const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
+          allLabels.forEach(lbl => lbl.classList.remove('selected-option'));
+          
+          const selectedLbl = document.getElementById(`opt-label-${qIndex}-${oIndex}`);
+          if(selectedLbl) {
+            selectedLbl.classList.add('selected-option');
+          }
         };
       }
 
@@ -233,15 +255,17 @@
 
         (examData.questions || []).forEach((q, i) => {
           const selectedVal = formData.get(`q_${i}`);
-          const selected = selectedVal !== null ? parseInt(selectedVal) : null;
+          const selected = selectedVal !== null ? parseInt(selectedVal, 10) : null;
+          const correctVal = parseInt(q.correct, 10);
+          
           userAnswers[i] = selected;
 
-          if (selected === q.correct) {
+          if (selected === correctVal) {
             score++;
           }
         });
 
-        localStorage.setItem(EXAM_KEY, JSON.stringify({
+        localStorage.setItem(activeExamKey, JSON.stringify({
           score: score,
           userAnswers: userAnswers
         }));
@@ -267,23 +291,28 @@
 
         (examData.questions || []).forEach((q, i) => {
           const selected = userAnswers[i];
+          const correctVal = parseInt(q.correct, 10);
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
 
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
             if(lbl) {
+              lbl.classList.remove('selected-option');
               const input = lbl.querySelector('input');
               if(input) {
                 input.disabled = true;
                 if (selected === oIndex) input.checked = true;
               }
 
-              if (oIndex === q.correct) {
+              if (oIndex === correctVal) {
                 lbl.classList.add('correct-opt');
               }
-              if (selected === oIndex && selected !== q.correct) {
+              if (selected === oIndex && selected !== correctVal) {
                 lbl.classList.add('wrong-opt');
+              }
+              if (selected !== oIndex && oIndex !== correctVal) {
+                lbl.classList.add('disabled-option');
               }
             }
           });
@@ -296,7 +325,7 @@
         resDiv.innerHTML = `
           <div class="score-board">
             <h2>পরীক্ষার ফলাফল</h2>
-            <p class="already-submitted-msg">⚠️ আপনি এই পরীক্ষাটি জমা দিয়েছেন!</p>
+            <p class="already-submitted-msg">⚠️ আপনি এই বিষয়টির পরীক্ষা ইতোমধ্যে জমা দিয়েছেন!</p>
             <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
             <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা দেওয়া হলো।</p>
           </div>
