@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAIVEX - Live Exam Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; padding: 15px; min-height: 100vh; }
+        .exam-container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px; margin-bottom: 20px; }
+        .timer { background: #f43f5e; color: white; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+        .q-card { background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 15px; }
+        .q-title { font-weight: bold; margin-bottom: 10px; font-size: 15px; color: #f8fafc; }
+        .opt-label { display: block; background: #1e293b; padding: 10px 12px; border-radius: 6px; border: 1px solid #334155; margin-bottom: 8px; cursor: pointer; font-size: 14px; color: #cbd5e1; }
+        .opt-label:hover { border-color: #38bdf8; }
+        .opt-label input { margin-right: 10px; }
+        .btn-submit { width: 100%; background: #10b981; color: white; border: none; padding: 12px; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .explanation-box { background: #1e293b; border-left: 3px solid #38bdf8; padding: 8px 12px; margin-top: 8px; border-radius: 4px; font-size: 13px; color: #94a3b8; }
+        .correct-tag { color: #10b981; font-weight: bold; }
+        .wrong-tag { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="exam-container">
+    <div class="header" id="examHeader">
+        <div>
+            <h2 style="color: #38bdf8;" id="examTitle">লাইভ মডেল টেস্ট</h2>
+            <p style="font-size: 12px; color: #94a3b8;" id="examMeta">প্রশ্ন লোড হচ্ছে...</p>
+        </div>
+        <div class="timer" id="timerDisplay">--:--</div>
+    </div>
+
+    <!-- Questions Container -->
+    <form id="examForm" onsubmit="submitLiveExam(event)">
+        <div id="questionsContainer"></div>
+        <button type="submit" class="btn-submit" id="submitBtn" style="display:none;">পরীক্ষা জমা দিন 📤</button>
+    </form>
+
+    <!-- Review & Results Section -->
+    <div id="resultBox" style="display:none;">
+        <div style="text-align: center; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #38bdf8; margin-bottom: 20px;">
+            <h2 style="color: #38bdf8; margin-bottom: 5px;">🎉 পরীক্ষা সম্পূর্ণ হয়েছে!</h2>
+            <h3 id="scoreText" style="color: #10b981; font-size: 26px; margin: 8px 0;"></h3>
+            <p style="color: #94a3b8; font-size: 13px;">নিচে আপনার ভুল-সঠিক উত্তর ও ব্যাখ্যামূলক সমাধান দেওয়া হলো:</p>
+        </div>
+        
+        <div id="reviewContainer"></div>
+
+        <a href="index.html" class="btn-submit" style="display:block; text-align:center; text-decoration:none; margin-top:20px; background:#38bdf8; color:#0f172a;">🏠 মূল পাতায় ফিরে যান</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+        authDomain: "gaivexexam.firebaseapp.com",
+        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+        projectId: "gaivexexam",
+        storageBucket: "gaivexexam.firebasestorage.app",
+        messagingSenderId: "956204530190",
+        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    let currentUser = null;
+    let examData = null;
+    let timerInterval = null;
+
+    onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        if (!user) {
+            alert("পরীক্ষা দিতে হলে আপনাকে অবশ্যই লগইন করতে হবে!");
+            window.location.href = "index.html";
+            return;
+        }
+        await checkAttemptAndLoad();
+    });
+
+    async function checkAttemptAndLoad() {
+        try {
+            // চেক আগে পরীক্ষা দিয়েছে কিনা
+            const attemptSnap = await get(ref(db, `exam_attempts/${currentUser.uid}/live_daily_exam`));
+            if(attemptSnap.exists()) {
+                alert("আপনি ইতোমধ্যে এই পরীক্ষাটি একবার দিয়ে ফেলেছেন! ফলাফল দেখুন।");
+                showReview(attemptSnap.val());
+                return;
+            }
+
+            // পরীক্ষা লোড
+            const examSnap = await get(ref(db, 'live_exams/live_daily_exam'));
+            if(!examSnap.exists()) {
+                document.getElementById('questionsContainer').innerHTML = `<p style="text-align:center; color:#ef4444;">বর্তমানে কোনো লাইভ পরীক্ষা চালু নেই।</p>`;
+                return;
+            }
+
+            examData = examSnap.val();
+            document.getElementById('examTitle').innerText = examData.title || "লাইভ মডেল টেস্ট";
+            document.getElementById('examMeta').innerText = `মোট প্রশ্ন: ${examData.questions.length}টি | সময়: ${examData.duration} মিনিট`;
+
+            renderQuestions(examData.questions);
+            startTimer(examData.duration * 60);
+
+        } catch(e) { alert("ত্রুটি: " + e.message); }
+    }
+
+    function renderQuestions(questions) {
+        const c = document.getElementById('questionsContainer');
+        c.innerHTML = questions.map((q, i) => `
+            <div class="q-card">
+                <div class="q-title">${i + 1}. ${q.question}</div>
+                ${q.options.map((opt, oIdx) => `
+                    <label class="opt-label">
+                        <input type="radio" name="q_${i}" value="${oIdx}" required> ${opt}
+                    </label>
+                `).join('')}
+            </div>
+        `).join('');
+        document.getElementById('submitBtn').style.display = 'block';
+    }
+
+    function startTimer(seconds) {
+        const display = document.getElementById('timerDisplay');
+        timerInterval = setInterval(() => {
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            display.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            if(seconds <= 0) {
+                clearInterval(timerInterval);
+                alert("সময় শেষ! স্বয়ংক্রিয়ভাবে উত্তর পত্র জমা হচ্ছে...");
+                submitLiveExam();
+            }
+            seconds--;
+        }, 1000);
+    }
+
+    window.submitLiveExam = async (e) => {
+        if(e) e.preventDefault();
+        clearInterval(timerInterval);
+
+        const questions = examData.questions;
+        let score = 0;
+        let userAnswers = [];
+
+        questions.forEach((q, i) => {
+            const selected = document.querySelector(`input[name="q_${i}"]:checked`);
+            const ansVal = selected ? parseInt(selected.value) : -1;
+            userAnswers.push(ansVal);
+
+            if(ansVal === parseInt(q.correct)) score++;
+        });
+
+        const resultPayload = {
+            examTitle: examData.title || "লাইভ মডেল টেস্ট",
+            score: score,
+            total: questions.length,
+            userAnswers: userAnswers,
+            submittedAt: new Date().toISOString()
+        };
+
+        try {
+            await set(ref(db, `exam_attempts/${currentUser.uid}/live_daily_exam`), resultPayload);
+            showReview(resultPayload);
+        } catch(err) { alert("রেজাল্ট সেভ করতে সমস্যা: " + err.message); }
+    };
+
+    function showReview(attemptData) {
+        document.getElementById('examForm').style.display = 'none';
+        document.getElementById('examHeader').style.display = 'none';
+        document.getElementById('resultBox').style.display = 'block';
+
+        document.getElementById('scoreText').innerText = `প্রাপ্ত নম্বর: ${attemptData.score} / ${attemptData.total}`;
+
+        get(ref(db, 'live_exams/live_daily_exam')).then(snap => {
+            if(!snap.exists()) return;
+            const questions = snap.val().questions;
+            const uAns = attemptData.userAnswers;
+
+            document.getElementById('reviewContainer').innerHTML = questions.map((q, i) => {
+                const userChoice = uAns[i];
+                const isCorrect = userChoice === parseInt(q.correct);
+
+                return `
+                    <div class="q-card" style="border-color: ${isCorrect ? '#10b981' : '#ef4444'};">
+                        <div class="q-title">${i + 1}. ${q.question}</div>
+                        <div style="font-size:13px; margin-bottom:4px;">
+                            আপনার উত্তর: <span class="${isCorrect ? 'correct-tag' : 'wrong-tag'}">
+                                ${userChoice >= 0 ? q.options[userChoice] : 'উত্তর দেওয়া হয়নি'} ${isCorrect ? '✅' : '❌'}
+                            </span>
+                        </div>
+                        <div style="font-size:13px; color:#10b981;">
+                            সঠিক উত্তর: <b>${q.options[q.correct]}</b>
+                        </div>
+                        ${q.explanation ? `<div class="explanation-box">💡 <b>ব্যাখ্যা:</b> ${q.explanation}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        });
+    }
+</script>
+
+</body>
+</html>
