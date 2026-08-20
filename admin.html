@@ -18,7 +18,7 @@
         .login-card button:hover { background: #7dd3fc; }
         .error-msg { color: #f43f5e; font-size: 13px; margin-top: 10px; display: none; }
 
-        .admin-card { display: none; width: 100%; max-width: 750px; background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .admin-card { display: none; width: 100%; max-width: 800px; background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .admin-card h2 { color: #38bdf8; margin-bottom: 20px; text-align: center; }
         label { font-weight: bold; margin-top: 12px; display: block; color: #cbd5e1; font-size: 14px; }
         input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 10px 12px; margin-top: 5px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; }
@@ -26,9 +26,12 @@
         
         .btn-submit { background: #10b981; color: #fff; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 25px; font-size: 16px; transition: 0.3s; }
         .btn-submit:hover { background: #059669; }
+        .btn-clear { background: #f43f5e; color: #fff; font-weight: bold; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .btn-clear:hover { background: #e11d48; }
         
         .q-box { background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 15px; position: relative; }
-        .remove-btn { position: absolute; top: 10px; right: 10px; background: #f43f5e; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .remove-btn { position: absolute; top: 10px; right: 10px; background: #f43f5e; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .status-badge { background: #0284c7; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -45,28 +48,36 @@
 
     <div class="admin-card" id="adminPanel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-            <h2 style="margin:0;">🛠️ GAIVEX অ্যাডমিন প্যানেল</h2>
-            <button onclick="location.reload()" style="background: #f43f5e; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">লগআউট</button>
+            <h2 style="margin:0;">🛠️ GAIVEX প্রশ্ন ব্যবস্থাপনা</h2>
+            <button onclick="location.reload()" style="background: #475569; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">লগআউট</button>
         </div>
-        
-        <label>পরীক্ষার শিরোনাম (Exam Title):</label>
-        <input type="text" id="examTitle" placeholder="যেমন: সাধারণ বিজ্ঞান - মডেল টেস্ট ১">
 
-        <label>পরীক্ষার সময় (মিনিটে):</label>
-        <input type="number" id="examDuration" placeholder="15">
+        <div id="loadingText" style="color: #38bdf8; text-align: center; margin: 15px 0;">ডাটাবেস থেকে প্রশ্ন লোড হচ্ছে...</div>
 
-        <h3 style="margin-top: 25px; color: #38bdf8;">প্রশ্নাবলি যুক্ত করুন</h3>
-        <div id="questionsContainer"></div>
+        <div id="examFormContent" style="display: none;">
+            <label>পরীক্ষার শিরোনাম (Exam Title):</label>
+            <input type="text" id="examTitle" placeholder="যেমন: প্রাণীর পরিচিতি — ৩০টি MCQ">
 
-        <button type="button" onclick="addQuestionField()" style="background: #334155; color: #38bdf8; border: 1px solid #38bdf8; padding: 10px 18px; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: bold; width: 100%;">+ নতুন প্রশ্ন যোগ করুন</button>
+            <label>পরীক্ষার সময় (মিনিটে):</label>
+            <input type="number" id="examDuration" placeholder="20">
 
-        <button type="button" class="btn-submit" onclick="saveExamData()">লাইভ পরীক্ষা পাবলিশ করুন 🚀</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="color: #38bdf8;">প্রশ্ন তালিকা (<span id="totalQCount">0</span>টি)</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn-clear" onclick="deleteAllQuestions()">🗑️ সকল প্রশ্ন ডিলিট করুন</button>
+                    <button type="button" onclick="addQuestionField()" style="background: #0284c7; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">+ নতুন প্রশ্ন</button>
+                </div>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <button type="button" class="btn-submit" onclick="saveExamData()">পরিবর্তন সেভ ও লাইভ আপডেট করুন 🚀</button>
+        </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -82,69 +93,130 @@
       const db = getDatabase(app);
 
       const SECRET_PASS = "GAIVEX#@004754Scholars";
-      let questionCount = 0;
 
       window.verifyPassword = function(e) {
         e.preventDefault();
         const inputPass = document.getElementById('adminPassword').value;
-        const errorMsg = document.getElementById('errorMsg');
-
         if (inputPass === SECRET_PASS) {
           document.getElementById('loginBox').style.display = 'none';
           document.getElementById('adminPanel').style.display = 'block';
           document.body.style.alignItems = 'flex-start';
-          if(questionCount === 0) {
-            window.addQuestionField();
-          }
+          loadExistingData();
         } else {
-          errorMsg.style.display = 'block';
+          document.getElementById('errorMsg').style.display = 'block';
           document.getElementById('adminPassword').value = '';
         }
       };
 
-      window.addQuestionField = function() {
-        questionCount++;
+      function cleanText(text, type = 'q') {
+        if (!text) return '';
+        let str = text.trim();
+        if (type === 'q') return str.replace(/^[\d১-৯]+\.\s*/, '');
+        if (type === 'opt') return str.replace(/^[ক-ঘa-dA-D]\)\s*/, '');
+        return str;
+      }
+
+      async function loadExistingData() {
+        try {
+          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
+          document.getElementById('loadingText').style.display = 'none';
+          document.getElementById('examFormContent').style.display = 'block';
+
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            document.getElementById('examTitle').value = data.title || '';
+            document.getElementById('examDuration').value = data.duration || 20;
+
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            if (data.questions && data.questions.length > 0) {
+              data.questions.forEach((q, index) => addQuestionField(q, index + 1));
+            } else {
+              addQuestionField();
+            }
+          } else {
+            addQuestionField();
+          }
+          updateQCount();
+        } catch (e) {
+          alert("ডাটা লোড করতে সমস্যা হয়েছে: " + e.message);
+        }
+      }
+
+      window.addQuestionField = function(qData = null) {
         const container = document.getElementById('questionsContainer');
+        const qIndex = container.children.length + 1;
+
         const div = document.createElement('div');
         div.className = 'q-box';
-        div.id = `q_box_${questionCount}`;
+        
+        const qText = qData ? cleanText(qData.question, 'q') : '';
+        const opts = qData ? (qData.options || []).map(o => cleanText(o, 'opt')) : ['', '', '', ''];
+        const correct = qData ? qData.correct : 0;
+        const exp = qData ? qData.explanation || '' : '';
+
         div.innerHTML = `
-          <button type="button" class="remove-btn" onclick="document.getElementById('q_box_${questionCount}').remove()">মুছে ফেলুন</button>
-          <h4 style="color: #38bdf8;">প্রশ্ন #${questionCount}</h4>
-          <input type="text" class="q-text" placeholder="প্রশ্নটি লিখুন" required>
-          <input type="text" class="opt-0" placeholder="ক) ১ম অপশন" required style="margin-top:5px;">
-          <input type="text" class="opt-1" placeholder="খ) ২য় অপশন" required style="margin-top:5px;">
-          <input type="text" class="opt-2" placeholder="গ) ৩য় অপশন" required style="margin-top:5px;">
-          <input type="text" class="opt-3" placeholder="ঘ) ৪র্থ অপশন" required style="margin-top:5px;">
+          <button type="button" class="remove-btn" onclick="this.parentElement.remove(); window.updateQCount();">🗑️ ডিলিট</button>
+          <span class="status-badge">প্রশ্ন #<span class="q-num">${qIndex}</span></span>
+          <input type="text" class="q-text" value="${qText}" placeholder="প্রশ্নটি লিখুন" required>
           
-          <label>সঠিক উত্তর বেছে নিন:</label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+            <input type="text" class="opt-0" value="${opts[0] || ''}" placeholder="ক অপশন" required>
+            <input type="text" class="opt-1" value="${opts[1] || ''}" placeholder="খ অপশন" required>
+            <input type="text" class="opt-2" value="${opts[2] || ''}" placeholder="গ অপশন" required>
+            <input type="text" class="opt-3" value="${opts[3] || ''}" placeholder="ঘ অপশন" required>
+          </div>
+          
+          <label style="margin-top:10px;">সঠিক উত্তর সিলেক্ট করুন:</label>
           <select class="q-correct">
-            <option value="0">ক) ১ম অপশন</option>
-            <option value="1">খ) ২য় অপশন</option>
-            <option value="2">গ) ৩য় অপশন</option>
-            <option value="3">ঘ) ৪র্থ অপশন</option>
+            <option value="0" ${correct === 0 ? 'selected' : ''}>ক) ১ম অপশন</option>
+            <option value="1" ${correct === 1 ? 'selected' : ''}>খ) ২য় অপশন</option>
+            <option value="2" ${correct === 2 ? 'selected' : ''}>গ) ৩য় অপশন</option>
+            <option value="3" ${correct === 3 ? 'selected' : ''}>ঘ) ৪র্থ অপশন</option>
           </select>
           
-          <textarea class="q-exp" placeholder="উত্তর ব্যাখ্যা (ঐচ্ছিক)" style="margin-top:8px;" rows="2"></textarea>
+          <textarea class="q-exp" placeholder="উত্তর ব্যাখ্যা (ঐচ্ছিক)" style="margin-top:8px;" rows="2">${exp}</textarea>
         `;
+        
         container.appendChild(div);
+        updateQCount();
+      };
+
+      window.updateQCount = function() {
+        const boxes = document.querySelectorAll('.q-box');
+        document.getElementById('totalQCount').innerText = boxes.length;
+        boxes.forEach((box, i) => {
+          const numSpan = box.querySelector('.q-num');
+          if(numSpan) numSpan.innerText = i + 1;
+        });
+      };
+
+      // সকল প্রশ্ন ডিলিট ফংশন
+      window.deleteAllQuestions = async function() {
+        if(confirm("⚠️ আপনি কি নিশ্চিত যে অ্যাডমিন প্যানেল থেকে সকল প্রশ্ন মুছে ফেলতে চান? এতে liveexam.html ফাইলে অটোমেটিক ডিফল্ট ৩০টি প্রশ্ন লোড হয়ে যাবে।")) {
+          try {
+            await remove(ref(db, 'live_exams/live_daily_exam'));
+            alert("✅ ফায়ারবেস থেকে সমস্ত প্রশ্ন সফলভাবে মুছে ফেলা হয়েছে!");
+            location.reload();
+          } catch(e) {
+            alert("ত্রুটি ঘটেছে: " + e.message);
+          }
+        }
       };
 
       window.saveExamData = async function() {
         const title = document.getElementById('examTitle').value;
-        const duration = parseInt(document.getElementById('examDuration').value, 10) || 15;
-        
+        const duration = parseInt(document.getElementById('examDuration').value, 10) || 20;
         const qBoxes = document.querySelectorAll('.q-box');
         const questions = [];
 
         qBoxes.forEach(box => {
-          const qText = box.querySelector('.q-text').value;
-          const opt0 = box.querySelector('.opt-0').value;
-          const opt1 = box.querySelector('.opt-1').value;
-          const opt2 = box.querySelector('.opt-2').value;
-          const opt3 = box.querySelector('.opt-3').value;
-          
-          // সঠিক উত্তরের ভ্যালু ইন্টারজারে কনভার্ট করা
+          const qText = cleanText(box.querySelector('.q-text').value, 'q');
+          const opt0 = cleanText(box.querySelector('.opt-0').value, 'opt');
+          const opt1 = cleanText(box.querySelector('.opt-1').value, 'opt');
+          const opt2 = cleanText(box.querySelector('.opt-2').value, 'opt');
+          const opt3 = cleanText(box.querySelector('.opt-3').value, 'opt');
           const correct = parseInt(box.querySelector('.q-correct').value, 10);
           const exp = box.querySelector('.q-exp').value;
 
@@ -159,7 +231,7 @@
         });
 
         if(!title || questions.length === 0) {
-          alert("অনুগ্রহ করে পরীক্ষার শিরোনাম এবং অন্তত ১টি প্রশ্ন পূরণ করুন!");
+          alert("অনুগ্রহ করে পরীক্ষার শিরোনাম এবং অন্তত ১টি প্রশ্ন রাখুন!");
           return;
         }
 
@@ -170,7 +242,7 @@
             duration: duration,
             questions: questions
           });
-          alert("🎉 নতুন পরীক্ষা সফলভাবে লাইভ পাবলিশ হয়েছে!");
+          alert("🎉 প্রশ্নগুলো সফলভাবে আপডেট ও সেভ হয়েছে!");
           location.reload();
         } catch(e) {
           alert("ত্রুটি ঘটেছে: " + e.message);
