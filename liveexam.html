@@ -24,6 +24,7 @@
         .options-list { display: flex; flex-direction: column; gap: 8px; }
         .option-item { background: #0f172a; border: 1px solid #475569; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 10px; }
         .option-item:hover { border-color: #38bdf8; background: #1e293b; }
+        .option-item.disabled-option { cursor: not-allowed; opacity: 0.8; }
         .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.2); }
 
         .btn-submit { background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; margin-bottom: 30px; transition: 0.3s; }
@@ -35,6 +36,7 @@
         .wrong-opt { background: #881337 !important; border-color: #f43f5e !important; color: #fecdd3; }
 
         .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -82,9 +84,9 @@
 
       let currentUser = null;
       let timerInterval = null;
-      let timeRemaining = 1200; // 20 Minutes in seconds
+      let timeRemaining = 1200; // 20 Minutes
+      const EXAM_KEY = "gaivex_vector_exam_status"; // Unique key for localstorage
 
-      // Default Exam Data (উভয় ক্ষেত্রেই ব্যাকআপ কাজ করবে)
       let examData = {
         title: "অধ্যায়: ভেক্টর (ভেক্টর রাশির মৌলিক ধারণা, সংযোজন, গুণন ও ক্যালকুলাস)",
         duration: 20,
@@ -160,7 +162,15 @@
         timeRemaining = (examData.duration || 20) * 60;
         
         renderQuestions();
-        startTimer();
+
+        // Check if already submitted
+        const savedResult = localStorage.getItem(EXAM_KEY);
+        if (savedResult) {
+          const resultData = JSON.parse(savedResult);
+          showSubmittedResult(resultData.userAnswers, resultData.score);
+        } else {
+          startTimer();
+        }
       }
 
       function renderQuestions() {
@@ -171,7 +181,7 @@
             <div class="options-list">
               ${q.options.map((opt, oIndex) => `
                 <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
-                  <input type="radio" name="q_${qIndex}" value="${oIndex}" required>
+                  <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="lockOptions(${qIndex})">
                   <span>${opt}</span>
                 </label>
               `).join('')}
@@ -181,6 +191,15 @@
             </div>
           </div>
         `).join('');
+
+        // Global scope access for lockOptions function
+        window.lockOptions = function(qIndex) {
+          const inputs = document.querySelectorAll(`input[name="q_${qIndex}"]`);
+          inputs.forEach(input => {
+            input.disabled = true;
+            input.parentElement.classList.add('disabled-option');
+          });
+        };
       }
 
       function startTimer() {
@@ -209,46 +228,27 @@
         let score = 0;
         const total = examData.questions.length;
         const formData = new FormData(document.getElementById('examForm'));
+        const userAnswers = {};
 
         examData.questions.forEach((q, i) => {
-          const selected = parseInt(formData.get(`q_${i}`));
-          const expBox = document.getElementById(`exp-${i}`);
-          expBox.style.display = 'block';
-
-          q.options.forEach((_, oIndex) => {
-            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
-            const input = lbl.querySelector('input');
-            if(input) input.disabled = true;
-
-            if (oIndex === q.correct) {
-              lbl.classList.add('correct-opt');
-            }
-            if (selected === oIndex && selected !== q.correct) {
-              lbl.classList.add('wrong-opt');
-            }
-          });
+          const selectedVal = formData.get(`q_${i}`);
+          const selected = selectedVal !== null ? parseInt(selectedVal) : null;
+          userAnswers[i] = selected;
 
           if (selected === q.correct) {
             score++;
           }
         });
 
-        document.getElementById('submitBtn').style.display = 'none';
+        // Save status locally so student can't re-take
+        localStorage.setItem(EXAM_KEY, JSON.stringify({
+          score: score,
+          userAnswers: userAnswers
+        }));
 
-        // Display Summary
-        const resDiv = document.getElementById('resultSummary');
-        resDiv.style.display = 'block';
-        resDiv.innerHTML = `
-          <div class="score-board">
-            <h2>পরীক্ষার ফলাফল</h2>
-            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
-            <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা দেওয়া হলো।</p>
-          </div>
-        `;
+        showSubmittedResult(userAnswers, score);
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Save performance to Firebase if user is logged in
+        // Save performance to Firebase if logged in
         if (currentUser) {
           try {
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
@@ -259,6 +259,48 @@
             });
           } catch(err) { console.error("Error saving score:", err); }
         }
+      }
+
+      function showSubmittedResult(userAnswers, score) {
+        const total = examData.questions.length;
+        document.getElementById('timerDisplay').innerText = "00:00";
+
+        examData.questions.forEach((q, i) => {
+          const selected = userAnswers[i];
+          const expBox = document.getElementById(`exp-${i}`);
+          expBox.style.display = 'block';
+
+          q.options.forEach((_, oIndex) => {
+            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
+            const input = lbl.querySelector('input');
+            if(input) {
+              input.disabled = true;
+              if (selected === oIndex) input.checked = true;
+            }
+
+            if (oIndex === q.correct) {
+              lbl.classList.add('correct-opt');
+            }
+            if (selected === oIndex && selected !== q.correct) {
+              lbl.classList.add('wrong-opt');
+            }
+          });
+        });
+
+        document.getElementById('submitBtn').style.display = 'none';
+
+        const resDiv = document.getElementById('resultSummary');
+        resDiv.style.display = 'block';
+        resDiv.innerHTML = `
+          <div class="score-board">
+            <h2>পরীক্ষার ফলাফল</h2>
+            <p class="already-submitted-msg">⚠️ আপনি ইতোমধ্যে এই পরীক্ষাটি সম্পন্ন করেছেন!</p>
+            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
+            <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা দেওয়া হলো।</p>
+          </div>
+        `;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       document.getElementById('examForm').addEventListener('submit', submitExam);
