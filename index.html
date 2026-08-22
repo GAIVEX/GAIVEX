@@ -174,7 +174,13 @@
         <form id="loginForm" onsubmit="handleEmailLogin(event)">
             <label>ইমেইল:</label><input type="email" id="loginEmail" required placeholder="example@mail.com">
             <label>পাসওয়ার্ড:</label><input type="password" id="loginPassword" required placeholder="******">
-            <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">লগইন করুন</button>
+            
+            <!-- পাসওয়ার্ড ভুলে গেছেন লিংক এখানে যুক্ত করা হয়েছে -->
+            <div style="text-align: right; margin-bottom: 5px;">
+                <a href="#" onclick="handleForgotPassword(event)" style="color: #38bdf8; font-size: 12px; text-decoration: none;">পাসওয়ার্ড ভুলে গেছেন?</a>
+            </div>
+
+            <button type="submit" class="btn btn-save" style="width:100%; margin-top:5px;">লগইন করুন</button>
         </form>
         <form id="registerForm" onsubmit="handleEmailRegister(event)" style="display:none;">
             <label>পূর্ণ নাম:</label><input type="text" id="regName" required placeholder="আপনার নাম">
@@ -206,7 +212,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-      import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -250,6 +256,23 @@
         toggleAuthModal(false);
       };
       window.handleEmailLogin = async (e) => { e.preventDefault(); await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); toggleAuthModal(false); };
+      
+      // পাসওয়ার্ড রিসেট করার নতুন ফাংশন এখানে যুক্ত করা হলো
+      window.handleForgotPassword = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        if (!email) {
+          alert("দয়া করে প্রথমে আপনার ইমেইল বক্সটি পূরণ করুন!");
+          return;
+        }
+        try {
+          await sendPasswordResetEmail(auth, email);
+          alert("পাসওয়ার্ড রিসেট করার লিংক আপনার ইমেইলে পাঠানো হয়েছে। অনুগ্রহ করে ইনবক্স বা স্প্যাম ফোল্ডার চেক করুন।");
+        } catch (error) {
+          alert("ত্রুটি: " + error.message);
+        }
+      };
+
       window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); };
 
       async function loadStudentHistory() {
