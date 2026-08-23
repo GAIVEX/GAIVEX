@@ -142,16 +142,16 @@
                 <div class="ai-avatar-box">AI</div>
                 <div>
                     <h4 style="font-size: 14px; color: #fff;">GAIVEX Assistant</h4>
-                    <span style="font-size: 10px; color: #38bdf8;">Online Portal Guide</span>
+                    <span style="font-size: 10px; color: #38bdf8;">Groq AI Powered Portal Guide</span>
                 </div>
             </div>
             <button class="modal-close-x" onclick="toggleAiModal()" style="font-size: 20px;">&times;</button>
         </div>
         <div class="ai-body" id="aiChatBody">
-            <div class="ai-msg bot">আমি GAIVEX এআই — আপনার পোর্টালের জন্য তৈরি সহকারী ভার্চুয়াল সহকারী! আমাকে আপনার কোর্স, পরীক্ষা, নোটিশ বা নোটস সম্পর্কে যেকোনো কিছু জিজ্ঞেস করতে পারেন। 😊</div>
+            <div class="ai-msg bot">হ্যালো! আমি GAIVEX এআই সহকারী। Groq API দ্বারা চালিত। আমাকে আপনার পোর্টালের পরীক্ষা, নোটস, নোটিশ বা যেকোনো একাডেমিক প্রশ্ন জিজ্ঞেস করতে পারেন! 😊</div>
         </div>
         <div class="ai-footer">
-            <input type="text" id="aiUserInput" placeholder="Ask anything..." onkeypress="handleAiKeyPress(event)">
+            <input type="text" id="aiUserInput" placeholder="এখানে কিছু লিখুন..." onkeypress="handleAiKeyPress(event)">
             <button class="ai-send-btn" onclick="sendAiMessage()">➤</button>
         </div>
     </div>
@@ -367,6 +367,8 @@
       const auth = getAuth(app);
       const googleProvider = new GoogleAuthProvider();
 
+      const GROQ_API_KEY = "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";
+
       let currentUser = null;
       let studentExamDataMap = {};
 
@@ -415,53 +417,66 @@
 
           // Add Thinking Message
           const loadingId = 'ai-loading-' + Date.now();
-          chatBody.innerHTML += `<div class="ai-msg bot" id="${loadingId}">খুঁজে দেখছি... ⏳</div>`;
+          chatBody.innerHTML += `<div class="ai-msg bot" id="${loadingId}">চিন্তা করছি... ⏳</div>`;
           chatBody.scrollTop = chatBody.scrollHeight;
 
-          let botResponse = "দুঃখিত, বিষয়টি এই মুহূর্তে বুঝতে পারিনি। আপনি নোটিশ, রেজাল্ট বা নোটস সম্পর্কে জিজ্ঞেস করতে পারেন।";
-
-          const lowerQ = query.toLowerCase();
+          let contextData = "";
 
           try {
-              if (lowerQ.includes('নোটিশ') || lowerQ.includes('notice')) {
-                  const snapshot = await get(ref(db, 'notices'));
-                  if (snapshot.exists()) {
-                      const notices = Object.values(snapshot.val());
-                      botResponse = "সর্বশেষ নোটিশগুলো নিচে দেওয়া হলো:\n\n";
-                      notices.slice(0, 2).forEach(n => {
-                          botResponse += `📌 **${n.title}**\n${n.description}\n\n`;
-                      });
-                  } else {
-                      botResponse = "বর্তমানে কোনো নোটিশ নেই।";
-                  }
-              } 
-              else if (lowerQ.includes('রেজাল্ট') || lowerQ.includes('result') || lowerQ.includes('নম্বর')) {
-                  if (!currentUser) {
-                      botResponse = "রেজাল্ট দেখতে হলে আপনাকে আগে পোর্টালে লগইন করতে হবে।";
-                  } else {
-                      const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
-                      if (snapshot.exists()) {
-                          const attempts = Object.values(snapshot.val());
-                          const lastExam = attempts[attempts.length - 1];
-                          botResponse = `আপনার সর্বশেষ পরীক্ষার ফলাফল:\nপরীক্ষা: ${lastExam.examTitle || 'মডেল টেস্ট'}\nপ্রাপ্ত নম্বর: ${lastExam.score}/${lastExam.total}`;
-                      } else {
-                          botResponse = "আপনার কোনো পরীক্ষার হিস্টোরি পাওয়া যায়নি।";
-                      }
-                  }
+              // Fetch latest context from Firebase to feed the AI
+              const noticeSnap = await get(ref(db, 'notices'));
+              if (noticeSnap.exists()) {
+                  const notices = Object.values(noticeSnap.val());
+                  contextData += "সর্বশেষ নোটিশসমূহ:\n" + JSON.stringify(notices.slice(0, 3)) + "\n\n";
               }
-              else if (lowerQ.includes('নোটস') || lowerQ.includes('note') || lowerQ.includes('পিডিএফ')) {
-                  botResponse = "আমাদের পোর্টালে পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান ও উচ্চতর গণিতের অধ্যায়ভিত্তিক নোটস রয়েছে। মেনু থেকে 'নোটস' অপশনে গিয়ে এগুলো দেখতে পারেন।";
-              }
-              else if (lowerQ.includes('কে তৈরি') || lowerQ.includes('কে বানিয়েছে') || lowerQ.includes('about')) {
-                  botResponse = "আমি GAIVEX এআই — আপনার অনলাইন পোর্টালের জন্য তৈরি একটি সহায়ক ভার্চুয়াল সহকারী। আপনার কোর্স, পরীক্ষা, ফলাফল এবং নোটিশ খুঁজতে আমি সাহায্য করতে পারি!";
+
+              if (currentUser) {
+                  const attemptSnap = await get(ref(db, `exam_attempts/${currentUser.uid}`));
+                  if (attemptSnap.exists()) {
+                      const attempts = Object.values(attemptSnap.val());
+                      contextData += `লগইন করা শিক্ষার্থীর পরীক্ষার হিস্টোরি: ${JSON.stringify(attempts.slice(-3))}\n\n`;
+                  }
               }
           } catch(e) {
-              botResponse = "তথ্য সংগ্রহ করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।";
+              console.error(e);
           }
 
-          // Remove loading and show bot response
-          document.getElementById(loadingId).remove();
-          chatBody.innerHTML += `<div class="ai-msg bot">${botResponse.replace(/\n/g, '<br>')}</div>`;
+          const systemPrompt = `তুমি GAIVEX পোর্টালের অফিসিয়াল এআই সহকারী। শিক্ষার্থীদের ভর্তি পরীক্ষা (মেডিকেল, ভার্সিটি, ইঞ্জিনিয়ারিং), ফিজিক্স, কেমিস্ট্রি, বায়োলজি, ম্যাথ এবং পোর্টালের বিভিন্ন ফিচার (নোটিশ, রেজাল্ট, নোটস) সম্পর্কে সাহায্য কর। বাংলায় সাবলীলভাবে উত্তর দাও।
+          
+          বর্তমান পোর্টালে উপলব্ধ রিয়েল-টাইম তথ্য:
+          ${contextData}`;
+
+          try {
+              const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                  method: "POST",
+                  headers: {
+                      "Authorization": `Bearer ${GROQ_API_KEY}`,
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                      model: "llama-3.3-70b-versatile",
+                      messages: [
+                          { role: "system", content: systemPrompt },
+                          { role: "user", content: query }
+                      ],
+                      temperature: 0.7
+                  })
+              });
+
+              const data = await response.json();
+              document.getElementById(loadingId).remove();
+
+              if (data.choices && data.choices.length > 0) {
+                  const botReply = data.choices[0].message.content;
+                  chatBody.innerHTML += `<div class="ai-msg bot">${botReply.replace(/\n/g, '<br>')}</div>`;
+              } else {
+                  chatBody.innerHTML += `<div class="ai-msg bot">দুঃখিত, এই মুহূর্তে উত্তর দিতে পারছি না। আবার চেষ্টা করুন।</div>`;
+              }
+          } catch (error) {
+              document.getElementById(loadingId).remove();
+              chatBody.innerHTML += `<div class="ai-msg bot">সার্ভার কানেকশনে সমস্যা হয়েছে। দя করে ইন্টারনেট কানেকশন চেক করুন।</div>`;
+          }
+
           chatBody.scrollTop = chatBody.scrollHeight;
       }
 
