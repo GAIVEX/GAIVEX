@@ -41,7 +41,7 @@
         .hero-section p { color: #94a3b8; margin-bottom: 25px; font-size: 14px; }
 
         .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .subject-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
+        .subject-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; cursor: pointer; }
         .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
         .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
 
@@ -85,11 +85,7 @@
             transform: translateY(-2px);
         }
 
-        /* নোটিশ বোর্ড বক্স স্টাইল (হোমপেজে শর্ট প্রিভিউ ও ক্লিকের ব্যবস্থা) */
-        .notice-box { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; margin-bottom: 30px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.3s; }
-        .notice-box:hover { border-color: #38bdf8; }
-        .notice-title { color: #38bdf8; font-size: 18px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
-        .notice-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+        .notice-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
         .notice-item h4 { color: #f8fafc; font-size: 15px; margin-bottom: 5px; }
         .notice-item p { color: #94a3b8; font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
         .notice-item img { max-width: 100%; border-radius: 6px; margin-top: 8px; border: 1px solid #334155; }
@@ -104,7 +100,7 @@
         .social-btn svg { width: 22px; height: 22px; }
 
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; border:1px solid #334155; }
+        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; border:1px solid #334155; position: relative; }
         .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:13px; }
         .modal-content input { width:100%; padding:9px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:8px; }
         
@@ -117,6 +113,12 @@
         .tab-menu { display:flex; border-bottom: 1px solid #334155; margin-bottom: 15px; }
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
+
+        /* পপআপ হেডার ও ক্রস বাটনের স্টাইল */
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .modal-header h3 { color: #38bdf8; font-size: 18px; margin: 0; }
+        .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
+        .modal-close-x:hover { color: #f43f5e; }
     </style>
 </head>
 <body>
@@ -158,7 +160,7 @@
             <a href="liveexam.html" class="btn btn-save" style="width: auto; padding: 10px 24px; display: inline-block;">পরীক্ষা দিন 📝</a>
         </div>
 
-        <!-- Practice Exam Box -->
+        <!-- Practice Exam Banner -->
         <div class="practice-exam-banner">
             <div class="practice-badge">📝 PRACTICE EXAM</div>
             <h2 style="font-size: 18px; color: #38bdf8; margin-bottom: 15px;">Practice Exam</h2>
@@ -170,23 +172,19 @@
             <a href="chemistry.html" class="subject-box"><div class="icon">🧪</div><h3>রসায়ন</h3></a>
             <a href="biology.html" class="subject-box"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></a>
             <a href="math.html" class="subject-box"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></a>
-        </div>
-
-        <!-- 📢 নোটিশ বোর্ড সেকশন (হোমপেজে দেখা যাবে এবং ক্লিক করলে পপআপ ওপেন হবে) -->
-        <div class="notice-box" onclick="openNoticeModal()">
-            <div class="notice-title">📢 নোটিশ বোর্ড</div>
-            <div id="homeNoticeDisplay">
-                <p style="color: #94a3b8; font-size: 13px; text-align: center;">নোটিশ লোড হচ্ছে...</p>
-            </div>
-            <span style="font-size: 11px; color: #38bdf8; display: block; margin-top: 10px; text-align: right;">সব নোটিশ দেখতে ক্লিক করুন 👆</span>
+            <!-- পদার্থবিজ্ঞান ও রসায়নের বক্সগুলোর মতো নতুন 'নোটিশ' বক্স -->
+            <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ</h3></div>
         </div>
     </main>
 
     <!-- নোটিশ পপআপ মডাল -->
     <div id="noticeModal" class="modal">
       <div class="modal-content">
-        <h3 style="color:#38bdf8; text-align:center; margin-bottom:15px;">📢 সকল গুরুত্বপূর্ণ নোটিশ</h3>
-        <div id="popupNoticeList" style="max-height:300px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
+        <div class="modal-header">
+            <h3>📢 সকল গুরুত্বপূর্ণ নোটিশ</h3>
+            <button class="modal-close-x" onclick="closeNoticeModal()">&times;</button>
+        </div>
+        <div id="popupNoticeList" style="max-height:350px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
             <p style="color:#94a3b8; text-align:center; font-size:13px;">নোটিশ লোড হচ্ছে...</p>
         </div>
         <div class="btn-group" style="margin-top: 15px;">
@@ -241,7 +239,10 @@
     <!-- Student Profile & Performance Portal Modal -->
     <div id="profileModal" class="modal">
       <div class="modal-content">
-        <h3 style="color:#38bdf8; text-align:center; margin-bottom:15px;">📊 স্টুডেন্ট পোর্টাল ও পারফরম্যান্স</h3>
+        <div class="modal-header">
+            <h3>📊 স্টুডেন্ট পোর্টাল ও পারফরম্যান্স</h3>
+            <button class="modal-close-x" onclick="toggleProfileModal(false)">&times;</button>
+        </div>
         <div id="profileDetails" style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; margin-bottom:12px; font-size:13px;"></div>
         <div id="performanceBox" style="margin-bottom: 15px;"></div>
         <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি:</h4>
@@ -380,9 +381,8 @@
         } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      // নোটিশ লোড করা (হোমপেজ প্রিভিউ এবং পপআপের জন্য একসাথে)
+      // নোটিশ লোড করা (পপআপের তালিকার জন্য)
       async function loadNotices() {
-          const homeDisplay = document.getElementById('homeNoticeDisplay');
           const popupList = document.getElementById('popupNoticeList');
           try {
               const snapshot = await get(ref(db, 'notices'));
@@ -390,24 +390,10 @@
                   const data = snapshot.val();
                   const sortedNotices = Object.values(data).sort((a, b) => b.date - a.date);
                   
-                  // ১. হোমপেজে শুধু লেটেস্ট নোটিশটি দেখানোর জন্য
-                  const latest = sortedNotices[0];
-                  const latestDate = new Date(latest.date).toLocaleDateString('bn-BD');
-                  let latestImg = latest.image ? `<img src="${latest.image}" alt="Notice Image">` : '';
-                  homeDisplay.innerHTML = `
-                      <div class="notice-item" style="margin-bottom: 0;">
-                          <h4>📌 ${latest.title}</h4>
-                          <p style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${latest.description}</p>
-                          ${latestImg}
-                          <span class="notice-date">তারিখ: ${latestDate}</span>
-                      </div>
-                  `;
-
-                  // ২. পপআপ উইন্ডোতে সব নোটিশ লিস্ট আকারে দেখানোর জন্য
                   popupList.innerHTML = '';
                   sortedNotices.forEach(item => {
                       const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
-                      let imgTag = item.image ? `<img src="${item.image}" alt="Notice Image">` : '';
+                      let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
                       popupList.innerHTML += `
                           <div class="notice-item">
                               <h4>📌 ${item.title}</h4>
@@ -418,11 +404,9 @@
                       `;
                   });
               } else {
-                  homeDisplay.innerHTML = '<p style="color:#94a3b8; font-size:13px; text-align:center;">বর্তমানে কোনো নোটিশ নেই।</p>';
                   popupList.innerHTML = '<p style="color:#94a3b8; font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
               }
           } catch (e) {
-              homeDisplay.innerHTML = '<p style="color:#f43f5e; font-size:13px; text-align:center;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
               popupList.innerHTML = '<p style="color:#f43f5e; font-size:13px; text-align:center;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
           }
       }
