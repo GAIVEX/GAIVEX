@@ -1,0 +1,3638 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GAIVEX AI - Student Assistant</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:'Hind Siliguri',sans-serif;
+}
+
+:root{
+    --bg:#020617;
+    --panel:#0f172a;
+    --panel2:#1e293b;
+    --border:#334155;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --blue:#38bdf8;
+    --blue2:#0284c7;
+    --green:#10b981;
+    --red:#f43f5e;
+    --yellow:#f59e0b;
+}
+
+body{
+    background:
+        radial-gradient(circle at 10% 10%,rgba(56,189,248,.12),transparent 25%),
+        radial-gradient(circle at 90% 80%,rgba(244,63,94,.08),transparent 25%),
+        var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* Background */
+
+.bg{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+}
+
+.bg span{
+    position:absolute;
+    font-size:42px;
+    opacity:.07;
+    animation:float 18s infinite linear;
+}
+
+.bg span:nth-child(1){top:10%;left:8%}
+.bg span:nth-child(2){top:30%;right:10%;animation-delay:3s}
+.bg span:nth-child(3){top:60%;left:15%;animation-delay:6s}
+.bg span:nth-child(4){bottom:10%;right:15%;animation-delay:9s}
+.bg span:nth-child(5){top:45%;left:50%;animation-delay:12s}
+
+@keyframes float{
+    0%{transform:translate(0,0) rotate(0deg)}
+    25%{transform:translate(70px,100px) rotate(90deg)}
+    50%{transform:translate(-60px,180px) rotate(180deg)}
+    75%{transform:translate(-100px,70px) rotate(270deg)}
+    100%{transform:translate(0,0) rotate(360deg)}
+}
+
+/* Header */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(15,23,42,.88);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    padding:12px 4%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    color:var(--blue);
+    font-size:23px;
+    font-weight:700;
+}
+
+.logo span{
+    color:var(--red);
+}
+
+.header-right{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.header-btn{
+    border:1px solid var(--border);
+    background:var(--panel2);
+    color:white;
+    padding:7px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.header-btn:hover{
+    border-color:var(--blue);
+}
+
+/* Main */
+
+.main{
+    position:relative;
+    z-index:2;
+    width:min(1000px,94%);
+    margin:auto;
+    padding:25px 0 40px;
+}
+
+.hero{
+    text-align:center;
+    padding:15px 0 25px;
+}
+
+.ai-icon{
+    width:78px;
+    height:78px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:38px;
+    background:linear-gradient(135deg,#0284c7,#38bdf8);
+    box-shadow:0 0 35px rgba(56,189,248,.25);
+}
+
+.hero h1{
+    margin-top:12px;
+    font-size:28px;
+}
+
+.hero h1 span{
+    color:var(--blue);
+}
+
+.hero p{
+    color:var(--muted);
+    margin-top:5px;
+    font-size:14px;
+}
+
+/* Status */
+
+.status{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin:10px 0 18px;
+}
+
+.status-item{
+    padding:5px 10px;
+    border-radius:20px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+}
+
+.status-item.online{
+    color:#6ee7b7;
+    border-color:#065f46;
+}
+
+/* Chat */
+
+.chat-card{
+    background:rgba(15,23,42,.88);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.chat-header{
+    padding:13px 15px;
+    background:rgba(30,41,59,.75);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.chat-title{
+    font-weight:700;
+}
+
+.chat-title small{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:400;
+}
+
+.chat-actions{
+    display:flex;
+    gap:5px;
+}
+
+.icon-btn{
+    width:35px;
+    height:35px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#0f172a;
+    color:white;
+    cursor:pointer;
+}
+
+.icon-btn:hover{
+    border-color:var(--blue);
+    color:var(--blue);
+}
+
+.chat-body{
+    height:470px;
+    overflow-y:auto;
+    padding:15px;
+    scroll-behavior:smooth;
+}
+
+.message{
+    display:flex;
+    margin-bottom:14px;
+}
+
+.message.user{
+    justify-content:flex-end;
+}
+
+.bubble{
+    max-width:85%;
+    padding:11px 13px;
+    border-radius:13px;
+    font-size:14px;
+    line-height:1.65;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.bot .bubble{
+    background:#1e293b;
+    border:1px solid #334155;
+}
+
+.user .bubble{
+    background:#075985;
+    border:1px solid #0369a1;
+}
+
+.bubble a{
+    color:#7dd3fc;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.bubble a:hover{
+    text-decoration:underline;
+}
+
+.time{
+    font-size:9px;
+    color:#64748b;
+    margin-top:3px;
+}
+
+/* Welcome */
+
+.welcome-box{
+    background:linear-gradient(135deg,rgba(2,132,199,.15),rgba(30,41,59,.7));
+    border:1px solid #075985;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:15px;
+}
+
+.welcome-box strong{
+    color:var(--blue);
+}
+
+.welcome-box ul{
+    margin:8px 0 0 20px;
+    color:#cbd5e1;
+}
+
+.welcome-box li{
+    margin:3px 0;
+}
+
+/* Quick actions */
+
+.quick{
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    padding:10px 12px;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+}
+
+.quick button{
+    white-space:nowrap;
+    background:#1e293b;
+    color:#cbd5e1;
+    border:1px solid #334155;
+    border-radius:20px;
+    padding:7px 11px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.quick button:hover{
+    color:var(--blue);
+    border-color:var(--blue);
+}
+
+/* Input */
+
+.input-area{
+    padding:12px;
+    background:#0b1220;
+}
+
+.input-row{
+    display:flex;
+    gap:7px;
+}
+
+#messageInput{
+    flex:1;
+    min-width:0;
+    background:#020617;
+    color:white;
+    border:1px solid #475569;
+    border-radius:10px;
+    padding:11px 12px;
+    outline:none;
+    font-size:14px;
+}
+
+#messageInput:focus{
+    border-color:var(--blue);
+}
+
+.send-btn{
+    width:45px;
+    border:0;
+    border-radius:10px;
+    background:var(--blue);
+    color:#082f49;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.voice-btn{
+    width:45px;
+    border:1px solid #475569;
+    border-radius:10px;
+    background:#1e293b;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.voice-btn.active{
+    background:var(--red);
+}
+
+.input-info{
+    color:#64748b;
+    font-size:10px;
+    margin-top:6px;
+}
+
+/* Cards */
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:10px;
+    margin-top:15px;
+}
+
+.info-card{
+    background:#0f172a;
+    border:1px solid #334155;
+    padding:13px;
+    border-radius:12px;
+}
+
+.info-card h3{
+    color:var(--blue);
+    font-size:15px;
+    margin-bottom:5px;
+}
+
+.info-card p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+/* Loader */
+
+.typing{
+    display:inline-flex;
+    gap:4px;
+}
+
+.typing i{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#94a3b8;
+    animation:blink 1s infinite;
+}
+
+.typing i:nth-child(2){animation-delay:.2s}
+.typing i:nth-child(3){animation-delay:.4s}
+
+@keyframes blink{
+    0%,100%{opacity:.2}
+    50%{opacity:1}
+}
+
+/* Modal */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.8);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:15px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(600px,100%);
+    max-height:88vh;
+    overflow-y:auto;
+    background:#1e293b;
+    border:1px solid #475569;
+    border-radius:14px;
+    padding:18px;
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    padding-bottom:10px;
+    border-bottom:1px solid #334155;
+}
+
+.modal-head h3{
+    color:var(--blue);
+}
+
+.close{
+    border:0;
+    background:none;
+    color:#94a3b8;
+    font-size:25px;
+    cursor:pointer;
+}
+
+.close:hover{
+    color:var(--red);
+}
+
+.data-box{
+    background:#0f172a;
+    border:1px solid #334155;
+    border-radius:9px;
+    padding:12px;
+    margin-bottom:8px;
+}
+
+.data-box h4{
+    color:var(--blue);
+    margin-bottom:4px;
+}
+
+.data-box p{
+    color:#cbd5e1;
+    font-size:13px;
+    line-height:1.6;
+}
+
+/* Search links */
+
+.search-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:10px;
+}
+
+.search-link{
+    display:inline-block;
+    background:#0f172a;
+    border:1px solid #475569;
+    color:#7dd3fc;
+    text-decoration:none;
+    padding:7px 10px;
+    border-radius:7px;
+    font-size:12px;
+}
+
+.search-link:hover{
+    border-color:var(--blue);
+}
+
+/* Footer */
+
+footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    border-top:1px solid #1e293b;
+    padding:20px;
+    color:#64748b;
+    font-size:11px;
+}
+
+footer strong{
+    color:var(--blue);
+}
+
+/* Mobile */
+
+@media(max-width:600px){
+    .hero h1{
+        font-size:24px;
+    }
+
+    .chat-body{
+        height:55vh;
+        min-height:400px;
+    }
+
+    .bubble{
+        max-width:92%;
+    }
+
+    .header-btn{
+        padding:6px 8px;
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg">
+    <span>🧬</span>
+    <span>⚛️</span>
+    <span>🧪</span>
+    <span>📚</span>
+    <span>📐</span>
+</div>
+
+<header>
+    <div class="logo">GAIVEX<span>.</span> AI</div>
+
+    <div class="header-right">
+        <button class="header-btn" onclick="openPortal()">🎓 Portal</button>
+        <button class="header-btn" onclick="openSettings()">⚙️</button>
+    </div>
+</header>
+
+<main class="main">
+
+<section class="hero">
+
+    <div class="ai-icon">🤖</div>
+
+    <h1>GAIVEX <span>AI Assistant</span></h1>
+
+    <p>
+        GAIVEX Admission Portal-এর Smart Student Assistant
+    </p>
+
+    <div class="status">
+        <div class="status-item online">● API ছাড়া চালু</div>
+        <div class="status-item" id="firebaseStatus">Firebase: Checking...</div>
+        <div class="status-item" id="userStatus">Guest Mode</div>
+    </div>
+
+</section>
+
+
+<div class="chat-card">
+
+    <div class="chat-header">
+
+        <div class="chat-title">
+            🤖 GAIVEX AI
+            <small>Website + Firebase Knowledge Assistant</small>
+        </div>
+
+        <div class="chat-actions">
+            <button class="icon-btn" onclick="refreshKnowledge()" title="Refresh">
+                ↻
+            </button>
+
+            <button class="icon-btn" onclick="clearChat()" title="Clear">
+                🗑
+            </button>
+        </div>
+
+    </div>
+
+
+    <div id="chatBody" class="chat-body">
+
+        <div class="welcome-box">
+
+            <strong>আসসালামু আলাইকুম! 👋</strong>
+
+            <p style="margin-top:5px;color:#cbd5e1">
+                আমি GAIVEX-এর Website ও Firebase data থেকে তথ্য খুঁজে
+                আপনাকে সাহায্য করতে পারি।
+            </p>
+
+            <ul>
+                <li>📢 নোটিশ সম্পর্কে জানতে পারবেন</li>
+                <li>📚 নোটস খুঁজতে পারবেন</li>
+                <li>📊 আপনার পরীক্ষার ফলাফল বিশ্লেষণ</li>
+                <li>📈 আপনার Performance সম্পর্কে জানতে পারবেন</li>
+                <li>🧬 Physics, Chemistry, Biology, Math সম্পর্কে GAIVEX-এর তথ্য</li>
+                <li>🔎 অজানা প্রশ্নে Google Search</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick">
+
+        <button onclick="quickAsk('আমার পরীক্ষার পারফরম্যান্স কেমন?')">
+            📊 আমার Performance
+        </button>
+
+        <button onclick="quickAsk('আমার পরীক্ষার ইতিহাস দেখাও')">
+            📜 Exam History
+        </button>
+
+        <button onclick="quickAsk('সাম্প্রতিক নোটিশ কী?')">
+            📢 Notices
+        </button>
+
+        <button onclick="quickAsk('আমার নোটস কী কী আছে?')">
+            📚 Notes
+        </button>
+
+        <button onclick="quickAsk('GAIVEX-এ কী কী সুবিধা আছে?')">
+            ✨ Features
+        </button>
+
+        <button onclick="quickAsk('আমার accuracy কত?')">
+            🎯 Accuracy
+        </button>
+
+    </div>
+
+
+    <div class="input-area">
+
+        <div class="input-row">
+
+            <button
+                class="voice-btn"
+                id="voiceBtn"
+                onclick="startVoice()"
+                title="Voice Input">
+                🎤
+            </button>
+
+            <input
+                id="messageInput"
+                type="text"
+                autocomplete="off"
+                placeholder="আপনার প্রশ্ন লিখুন..."
+                onkeydown="handleEnter(event)"
+            >
+
+            <button
+                class="send-btn"
+                onclick="sendMessage()">
+                ➤
+            </button>
+
+        </div>
+
+        <div class="input-info">
+            Enter চাপলে প্রশ্ন পাঠানো যাবে • 🎤 Voice input supported
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="info-grid">
+
+    <div class="info-card">
+        <h3>🧠 Smart Knowledge</h3>
+        <p>
+            আপনার ওয়েবসাইটের page এবং Firebase-এর তথ্য
+            keyword/context matching করে উত্তর বের করবে।
+        </p>
+    </div>
+
+    <div class="info-card">
+        <h3>📊 Student Analytics</h3>
+        <p>
+            Login করা শিক্ষার্থীর পরীক্ষার ফলাফল থেকে
+            total score, accuracy এবং performance বের করবে।
+        </p>
+    </div>
+
+    <div class="info-card">
+        <h3>🔎 Google Fallback</h3>
+        <p>
+            GAIVEX database-এ তথ্য না থাকলে
+            প্রশ্ন অনুযায়ী Google Search link তৈরি করবে।
+        </p>
+    </div>
+
+    <div class="info-card">
+        <h3>🔐 Student Privacy</h3>
+        <p>
+            exam_attempts থেকে শুধু বর্তমানে login করা
+            student's UID-এর data পড়া হবে।
+        </p>
+    </div>
+
+</div>
+
+</main>
+
+
+<footer>
+    © 2026 <strong>GAIVEX AI</strong> • Admission Preparation Platform
+</footer>
+
+
+<!-- Portal Modal -->
+
+<div id="portalModal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+            <h3>🎓 Student Portal</h3>
+            <button class="close" onclick="closeModal('portalModal')">×</button>
+        </div>
+
+        <div id="portalContent">
+            তথ্য লোড হচ্ছে...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Settings Modal -->
+
+<div id="settingsModal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+            <h3>⚙️ AI Settings</h3>
+            <button class="close" onclick="closeModal('settingsModal')">×</button>
+        </div>
+
+        <div class="data-box">
+
+            <h4>Knowledge Sources</h4>
+
+            <p>
+                ✅ GAIVEX Website<br>
+                ✅ Firebase Notices<br>
+                ✅ Firebase Notes<br>
+                ✅ Live Exam<br>
+                ✅ Practice Exam<br>
+                ✅ Student Exam History<br>
+                ✅ Student Performance
+            </p>
+
+        </div>
+
+        <div class="data-box">
+
+            <h4>AI Mode</h4>
+
+            <p>
+                API-free Rule Based Intelligence
+            </p>
+
+        </div>
+
+        <div class="data-box">
+
+            <h4>Search Fallback</h4>
+
+            <p>
+                GAIVEX-এর তথ্য পাওয়া না গেলে Google Search,
+                Wikipedia এবং YouTube search link তৈরি করা হবে।
+            </p>
+
+        </div>
+
+        <button
+            class="header-btn"
+            style="width:100%;margin-top:8px"
+            onclick="refreshKnowledge();closeModal('settingsModal')">
+
+            🔄 Knowledge Refresh
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    get
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+    apiKey:"AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+
+    authDomain:"gaivexexam.firebaseapp.com",
+
+    databaseURL:
+    "https://gaivexexam-default-rtdb.firebaseio.com",
+
+    projectId:"gaivexexam",
+
+    storageBucket:
+    "gaivexexam.firebasestorage.app",
+
+    messagingSenderId:"956204530190",
+
+    appId:
+    "1:956204530190:web:4e5550afefa3e314c99a5f"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+const auth = getAuth(app);
+
+
+let currentUser = null;
+
+let knowledge = {
+
+    website:[],
+
+    notices:[],
+
+    notes:[],
+
+    liveExam:{},
+
+    practiceExam:{},
+
+    studentAttempts:{}
+
+};
+
+
+/* =========================================================
+   WEBSITE PAGES
+========================================================= */
+
+const websitePages = [
+
+    {
+        name:"GAIVEX Home",
+        url:"index.html",
+        keywords:[
+            "home",
+            "হোম",
+            "gaivex",
+            "admission",
+            "portal"
+        ]
+    },
+
+    {
+        name:"Physics",
+        url:"physics.html",
+        keywords:[
+            "physics",
+            "পদার্থবিজ্ঞান",
+            "পদার্থ",
+            "physics 1st",
+            "physics 2nd"
+        ]
+    },
+
+    {
+        name:"Chemistry",
+        url:"chemistry.html",
+        keywords:[
+            "chemistry",
+            "রসায়ন",
+            "রসায়ন"
+        ]
+    },
+
+    {
+        name:"Biology",
+        url:"biology.html",
+        keywords:[
+            "biology",
+            "জীববিজ্ঞান",
+            "জীববিজ্ঞান ১ম",
+            "জীববিজ্ঞান ২য়"
+        ]
+    },
+
+    {
+        name:"Higher Mathematics",
+        url:"math.html",
+        keywords:[
+            "math",
+            "mathematics",
+            "গণিত",
+            "উচ্চতর গণিত"
+        ]
+    },
+
+    {
+        name:"Live Exam",
+        url:"liveexam.html",
+        keywords:[
+            "live exam",
+            "লাইভ পরীক্ষা",
+            "লাইভ এক্সাম",
+            "daily exam",
+            "দৈনিক পরীক্ষা"
+        ]
+    }
+
+];
+
+
+/* =========================================================
+   CHAPTER DATABASE
+========================================================= */
+
+const chapters = {
+
+physics:{
+
+paper1:[
+"ভৌতজগৎ ও পরিমাপ",
+"ভেক্টর",
+"গতিবিদ্যা",
+"নিউটনীয় বলবিজ্ঞান",
+"কাজ, শক্তি ও ক্ষমতা",
+"মহাকর্ষ ও অভিকর্ষ",
+"পদার্থের গাঠনিক ধর্ম",
+"পর্যায়বৃত্ত গতি",
+"তরঙ্গ",
+"আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"
+],
+
+paper2:[
+"তাপগতিবিদ্যা",
+"স্থির তড়িৎ",
+"চল তড়িৎ",
+"তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব",
+"তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",
+"জ্যামিতিক আলোকবিজ্ঞান",
+"ভৌত আলোকবিজ্ঞান",
+"আধুনিক পদার্থবিজ্ঞানের সূচনা",
+"পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
+"সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
+"জ্যোতির্বিজ্ঞান"
+]
+
+},
+
+chemistry:{
+
+paper1:[
+"ল্যাবরেটরি নিরাপদ ব্যবহার",
+"গুণগত রসায়ন",
+"মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন",
+"রাসায়নিক পরিবর্তন",
+"কর্মমুখী রসায়ন"
+],
+
+paper2:[
+"পরিবেশ রসায়ন",
+"জৈব রসায়ন",
+"পরিমাণগত রসায়ন",
+"তড়িৎ রসায়ন",
+"অর্থনৈতিক রসায়ন"
+]
+
+},
+
+biology:{
+
+paper1:[
+"কোষ ও এর গঠন",
+"কোষ বিভাজন",
+"কোষ রসায়ন",
+"অণুজীব",
+"শৈবাল ও ছত্রাক",
+"ব্রায়োফাইটা ও টেরোডোফাইটা",
+"নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",
+"টিস্যু ও টিস্যুতন্ত্র",
+"উদ্ভিদ শারীরতত্ত্ব",
+"উদ্ভিদ প্রজনন",
+"জীবপ্রযুক্তি",
+"জীবের পরিবেশ ও বিস্তার"
+],
+
+paper2:[
+"প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
+"প্রাণীর পরিচিতি",
+"মানব শারীরতত্ত্ব: পরিপাক ও শোষণ",
+"মানব শারীরতত্ত্ব: রক্ত ও সংবহন",
+"মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া",
+"মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন",
+"মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা",
+"মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ",
+"মানব জীবনের ধারাবাহিকতা",
+"মানবদেহের প্রতিরক্ষা",
+"জিনতত্ত্ব ও বিবর্তন",
+"প্রাণীর আচরণ"
+]
+
+},
+
+math:{
+
+paper1:[
+"ম্যাট্রিক্স ও নির্ণায়ক",
+"ভেক্টর",
+"সরলরেখা",
+"বৃত্ত",
+"বিন্যাস ও সমাবেশ",
+"ত্রিকোণমিতিক অনুপাত",
+"সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",
+"ফাংশন ও ফাংশনের লেখচিত্র",
+"অন্তরীকরণ",
+"যোগজীকরণ"
+],
+
+paper2:[
+"বাস্তব সংখ্যা ও অসমতা",
+"রৈখিক প্রোগ্রামন",
+"জটিল সংখ্যা",
+"বহুপদী ও বহুপদী সমীকরণ",
+"দ্বিপদী বিস্তৃতি",
+"কনিক",
+"বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",
+"স্থিতিবিদ্যা",
+"সমতলে বস্তুকণার গতি",
+"সম্ভাবনা"
+]
+
+}
+
+};
+
+
+/* =========================================================
+   SECURITY HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+    if(value === null || value === undefined){
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
+
+function normalize(text){
+
+    return String(text || "")
+        .toLowerCase()
+        .replace(/[।,!?;:()[\]{}"'`]/g," ")
+        .replace(/\s+/g," ")
+        .trim();
+
+}
+
+
+/* =========================================================
+   TOKENIZE
+========================================================= */
+
+function tokenize(text){
+
+    return normalize(text)
+        .split(" ")
+        .filter(x => x.length > 1);
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(value){
+
+    if(!value){
+        return "তারিখ নেই";
+    }
+
+    const d = new Date(value);
+
+    if(isNaN(d)){
+        return "তারিখ নেই";
+    }
+
+    return d.toLocaleDateString("bn-BD",{
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+    });
+
+}
+
+
+/* =========================================================
+   FIREBASE KNOWLEDGE LOADER
+========================================================= */
+
+async function loadFirebaseKnowledge(){
+
+    setStatus("Firebase: Loading...");
+
+    try{
+
+        const noticeSnap =
+            await get(ref(db,"notices"));
+
+        if(noticeSnap.exists()){
+
+            const data = noticeSnap.val();
+
+            knowledge.notices =
+                Object.values(data || {});
+        }
+
+    }catch(error){
+
+        console.warn("Notice:",error);
+
+    }
+
+
+    try{
+
+        const notesSnap =
+            await get(ref(db,"notes"));
+
+        if(notesSnap.exists()){
+
+            const data = notesSnap.val();
+
+            knowledge.notes =
+                Object.values(data || {});
+        }
+
+    }catch(error){
+
+        console.warn("Notes:",error);
+
+    }
+
+
+    try{
+
+        const liveSnap =
+            await get(
+                ref(
+                    db,
+                    "live_exams/live_daily_exam"
+                )
+            );
+
+        if(liveSnap.exists()){
+
+            knowledge.liveExam =
+                liveSnap.val();
+
+        }
+
+    }catch(error){
+
+        console.warn("Live exam:",error);
+
+    }
+
+
+    try{
+
+        const practiceSnap =
+            await get(
+                ref(db,"practice_exams")
+            );
+
+        if(practiceSnap.exists()){
+
+            knowledge.practiceExam =
+                practiceSnap.val();
+
+        }
+
+    }catch(error){
+
+        console.warn("Practice:",error);
+
+    }
+
+
+    if(currentUser){
+
+        try{
+
+            const attemptsSnap =
+                await get(
+                    ref(
+                        db,
+                        `exam_attempts/${currentUser.uid}`
+                    )
+                );
+
+            if(attemptsSnap.exists()){
+
+                knowledge.studentAttempts =
+                    attemptsSnap.val();
+
+            }else{
+
+                knowledge.studentAttempts = {};
+
+            }
+
+        }catch(error){
+
+            console.warn("Attempts:",error);
+
+            knowledge.studentAttempts = {};
+
+        }
+
+    }
+
+
+    setStatus("Firebase: Connected");
+
+}
+
+
+/* =========================================================
+   WEBSITE CONTENT LOADER
+========================================================= */
+
+async function loadWebsiteKnowledge(){
+
+    knowledge.website = [];
+
+    for(const page of websitePages){
+
+        try{
+
+            const response =
+                await fetch(page.url,{
+                    cache:"no-store"
+                });
+
+            if(!response.ok){
+                continue;
+            }
+
+            const html =
+                await response.text();
+
+            const parser =
+                new DOMParser();
+
+            const doc =
+                parser.parseFromString(
+                    html,
+                    "text/html"
+                );
+
+            doc
+                .querySelectorAll(
+                    "script,style,noscript"
+                )
+                .forEach(el => el.remove());
+
+            const text =
+                doc.body ?
+                doc.body.innerText :
+                "";
+
+            knowledge.website.push({
+
+                name:page.name,
+
+                url:page.url,
+
+                keywords:page.keywords,
+
+                text:text.slice(0,50000)
+
+            });
+
+        }catch(error){
+
+            console.warn(
+                "Website page:",
+                page.url,
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD ALL KNOWLEDGE
+========================================================= */
+
+async function loadKnowledge(){
+
+    await loadFirebaseKnowledge();
+
+    await loadWebsiteKnowledge();
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setStatus(text){
+
+    const el =
+        document.getElementById(
+            "firebaseStatus"
+        );
+
+    el.innerText = text;
+
+}
+
+
+/* =========================================================
+   STUDENT ANALYTICS
+========================================================= */
+
+function getStudentAnalytics(){
+
+    const data =
+        knowledge.studentAttempts || {};
+
+    const exams =
+        Object.values(data);
+
+    let totalExams = 0;
+
+    let totalScore = 0;
+
+    let totalPossible = 0;
+
+    let bestScore = -Infinity;
+
+    let bestExam = null;
+
+    let weakest = {};
+
+    exams.forEach(exam => {
+
+        const score =
+            Number(exam.score) || 0;
+
+        const total =
+            Number(exam.total) || 0;
+
+        totalExams++;
+
+        totalScore += score;
+
+        totalPossible += total;
+
+        if(score > bestScore){
+
+            bestScore = score;
+
+            bestExam = exam;
+
+        }
+
+
+        if(
+            Array.isArray(exam.questions) &&
+            exam.userAnswers
+        ){
+
+            exam.questions.forEach(
+                (q,index) => {
+
+                    const answer =
+                        exam.userAnswers[index];
+
+                    let answerText =
+                        answer;
+
+                    if(
+                        typeof answer === "number" &&
+                        q.options &&
+                        q.options[answer] !== undefined
+                    ){
+
+                        answerText =
+                            q.options[answer];
+
+                    }
+
+                    if(
+                        answerText !== q.correctAnswer
+                    ){
+
+                        const topic =
+                            q.chapter ||
+                            q.subject ||
+                            "সাধারণ";
+
+                        weakest[topic] =
+                            (weakest[topic] || 0) + 1;
+
+                    }
+
+                }
+            );
+
+        }
+
+    });
+
+
+    const accuracy =
+        totalPossible > 0 ?
+        (totalScore / totalPossible) * 100 :
+        0;
+
+
+    const weakestTopics =
+        Object.entries(weakest)
+        .sort((a,b)=>b[1]-a[1]);
+
+
+    return {
+
+        exams,
+
+        totalExams,
+
+        totalScore,
+
+        totalPossible,
+
+        accuracy,
+
+        bestExam,
+
+        weakestTopics
+
+    };
+
+}
+
+
+/* =========================================================
+   WEBSITE FEATURE KNOWLEDGE
+========================================================= */
+
+function getFeatureKnowledge(){
+
+    return `
+
+GAIVEX একটি Admission Preparation Portal।
+
+GAIVEX-এর প্রধান ফিচার:
+
+🏠 Home
+📢 Notice Board
+📊 Result
+📚 Chapter-based Notes
+🔴 Live Exam
+📝 Practice Exam
+⚛️ Physics
+🧪 Chemistry
+🧬 Biology
+📐 Higher Mathematics
+🎓 Student Profile
+📜 Exam History
+📈 Performance Analysis
+🔐 Email/Password Login
+🌐 Google Login
+🔑 Password Reset
+📊 Exam Result Review
+📖 Question Explanation
+🔎 External Search
+
+বিষয়সমূহ:
+• Physics
+• Chemistry
+• Biology
+• Higher Mathematics
+
+শিক্ষার্থী Login করলে তার নিজের পরীক্ষার history এবং performance দেখা যায়।
+
+অজানা প্রশ্নের জন্য Google Search fallback ব্যবহার করা হয়।
+
+`;
+
+}
+
+
+/* =========================================================
+   CHAPTER SEARCH
+========================================================= */
+
+function findChapterMatches(query){
+
+    const q =
+        normalize(query);
+
+    const results = [];
+
+    for(const subject in chapters){
+
+        for(const paper in chapters[subject]){
+
+            chapters[subject][paper]
+            .forEach((chapter,index)=>{
+
+                if(
+                    normalize(chapter)
+                    .includes(q) ||
+                    q.includes(
+                        normalize(chapter)
+                    )
+                ){
+
+                    results.push({
+
+                        subject,
+
+                        paper,
+
+                        chapter,
+
+                        index:index + 1
+
+                    });
+
+                }
+
+            });
+
+        }
+
+    }
+
+    return results;
+
+}
+
+
+/* =========================================================
+   GENERATE SEARCH LINKS
+========================================================= */
+
+function createSearchLinks(query){
+
+    const q =
+        encodeURIComponent(query);
+
+    return `
+
+        <div class="search-links">
+
+            <a
+                class="search-link"
+                target="_blank"
+                href="https://www.google.com/search?q=${q}">
+                🔎 Google Search
+            </a>
+
+            <a
+                class="search-link"
+                target="_blank"
+                href="https://www.google.com/search?q=site%3Agaivexexam.web.app+${q}">
+                🌐 GAIVEX Web Search
+            </a>
+
+            <a
+                class="search-link"
+                target="_blank"
+                href="https://www.youtube.com/results?search_query=${q}">
+                ▶️ YouTube
+            </a>
+
+            <a
+                class="search-link"
+                target="_blank"
+                href="https://bn.wikipedia.org/w/index.php?search=${q}">
+                📖 Wikipedia
+            </a>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   FIND NOTICES
+========================================================= */
+
+function searchNotices(query){
+
+    const tokens =
+        tokenize(query);
+
+    return knowledge.notices
+        .map(item => {
+
+            const text =
+                normalize(
+                    `${item.title || ""}
+                     ${item.description || ""}`
+                );
+
+            let score = 0;
+
+            tokens.forEach(token=>{
+
+                if(text.includes(token)){
+                    score++;
+                }
+
+            });
+
+            return {
+                item,
+                score
+            };
+
+        })
+        .filter(x=>x.score > 0)
+        .sort((a,b)=>b.score-a.score)
+        .map(x=>x.item);
+
+}
+
+
+/* =========================================================
+   FIND NOTES
+========================================================= */
+
+function searchNotes(query){
+
+    const tokens =
+        tokenize(query);
+
+    return knowledge.notes
+        .map(item=>{
+
+            const text =
+                normalize(
+                    `${item.title || ""}
+                     ${item.subject || ""}
+                     ${item.paper || ""}
+                     ${item.chapter || ""}
+                     ${item.textContent || ""}`
+                );
+
+            let score = 0;
+
+            tokens.forEach(token=>{
+
+                if(text.includes(token)){
+                    score++;
+                }
+
+            });
+
+            return {
+                item,
+                score
+            };
+
+        })
+        .filter(x=>x.score > 0)
+        .sort((a,b)=>b.score-a.score)
+        .map(x=>x.item);
+
+}
+
+
+/* =========================================================
+   SEARCH WEBSITE
+========================================================= */
+
+function searchWebsite(query){
+
+    const tokens =
+        tokenize(query);
+
+    return knowledge.website
+        .map(page=>{
+
+            const text =
+                normalize(
+                    page.name +
+                    " " +
+                    page.text
+                );
+
+            let score = 0;
+
+            tokens.forEach(token=>{
+
+                if(text.includes(token)){
+                    score++;
+                }
+
+            });
+
+            page.keywords.forEach(keyword=>{
+
+                if(
+                    normalize(query)
+                    .includes(
+                        normalize(keyword)
+                    )
+                ){
+
+                    score += 3;
+
+                }
+
+            });
+
+            return {
+                page,
+                score
+            };
+
+        })
+        .filter(x=>x.score > 0)
+        .sort((a,b)=>b.score-a.score);
+
+}
+
+
+/* =========================================================
+   NOTICE RESPONSE
+========================================================= */
+
+function noticeResponse(){
+
+    const notices =
+        knowledge.notices
+        .slice()
+        .sort(
+            (a,b)=>
+            Number(b.date || 0) -
+            Number(a.date || 0)
+        );
+
+    if(!notices.length){
+
+        return `
+            বর্তমানে Firebase-এ কোনো নোটিশ পাওয়া যায়নি।
+
+            ${createSearchLinks("GAIVEX notice")}
+        `;
+
+    }
+
+
+    let html =
+        `<strong>📢 GAIVEX-এর সাম্প্রতিক নোটিশ:</strong><br><br>`;
+
+
+    notices.slice(0,5).forEach(
+        (item,index)=>{
+
+            html += `
+
+                <div class="data-box">
+
+                    <h4>
+                        ${index+1}.
+                        ${escapeHTML(item.title || "নোটিশ")}
+                    </h4>
+
+                    <p>
+                        ${escapeHTML(
+                            item.description ||
+                            "বিবরণ নেই"
+                        )}
+                    </p>
+
+                    <p style="color:#38bdf8">
+                        📅 ${formatDate(item.date)}
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   NOTES RESPONSE
+========================================================= */
+
+function notesResponse(query){
+
+    let notes =
+        searchNotes(query);
+
+
+    if(!notes.length){
+
+        notes =
+            knowledge.notes.slice(0,8);
+
+    }
+
+
+    if(!notes.length){
+
+        return `
+            কোনো নোট পাওয়া যায়নি।
+
+            ${createSearchLinks(
+                "GAIVEX admission notes"
+            )}
+        `;
+
+    }
+
+
+    let html =
+        `<strong>📚 পাওয়া নোট:</strong><br><br>`;
+
+
+    notes.slice(0,8).forEach(
+        note=>{
+
+            html += `
+
+                <div class="data-box">
+
+                    <h4>
+                        📌
+                        ${escapeHTML(
+                            note.title ||
+                            "Untitled Note"
+                        )}
+                    </h4>
+
+                    <p>
+
+                        বিষয়:
+                        ${escapeHTML(
+                            note.subject || "-"
+                        )}
+
+                        <br>
+
+                        পত্র:
+                        ${escapeHTML(
+                            note.paper || "-"
+                        )}
+
+                        <br>
+
+                        অধ্যায়:
+                        ${escapeHTML(
+                            note.chapter || "-"
+                        )}
+
+                    </p>
+
+                    ${
+                        note.contentUrl
+                        ?
+                        `
+                        <p>
+                            <a
+                                target="_blank"
+                                href="${escapeHTML(
+                                    note.contentUrl
+                                )}"
+                                style="color:#38bdf8">
+                                📄 নোট খুলুন
+                            </a>
+                        </p>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   PERFORMANCE RESPONSE
+========================================================= */
+
+function performanceResponse(){
+
+    if(!currentUser){
+
+        return `
+
+            আপনার personal performance দেখতে
+            প্রথমে GAIVEX-এ Login করতে হবে।
+
+            <br><br>
+
+            🔐 Login করার পর আবার প্রশ্ন করুন:
+
+            <br>
+
+            "আমার performance কেমন?"
+
+        `;
+
+    }
+
+
+    const a =
+        getStudentAnalytics();
+
+
+    if(!a.totalExams){
+
+        return `
+
+            আপনার কোনো পরীক্ষার history এখনো পাওয়া যায়নি।
+
+            <br><br>
+
+            পরীক্ষা দেওয়ার পর এখান থেকে
+            আপনার performance analysis করা যাবে।
+
+        `;
+
+    }
+
+
+    let html = `
+
+        <strong>📊 আপনার Performance</strong>
+
+        <div class="data-box">
+
+            <h4>মোট পরীক্ষা</h4>
+
+            <p>
+                ${a.totalExams} টি
+            </p>
+
+        </div>
+
+        <div class="data-box">
+
+            <h4>মোট নম্বর</h4>
+
+            <p>
+                ${a.totalScore}
+                /
+                ${a.totalPossible}
+            </p>
+
+        </div>
+
+        <div class="data-box">
+
+            <h4>Accuracy</h4>
+
+            <p>
+                ${a.accuracy.toFixed(1)}%
+            </p>
+
+        </div>
+
+    `;
+
+
+    if(a.bestExam){
+
+        html += `
+
+            <div class="data-box">
+
+                <h4>🏆 সেরা পরীক্ষা</h4>
+
+                <p>
+
+                    ${
+                        escapeHTML(
+                            a.bestExam.examTitle ||
+                            "Exam"
+                        )
+                    }
+
+                    <br>
+
+                    Score:
+                    ${Number(a.bestExam.score)||0}
+                    /
+                    ${Number(a.bestExam.total)||0}
+
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    if(a.weakestTopics.length){
+
+        html += `
+
+            <div class="data-box">
+
+                <h4>⚠️ বেশি ভুলের জায়গা</h4>
+
+                <p>
+
+        `;
+
+        a.weakestTopics
+            .slice(0,5)
+            .forEach(item=>{
+
+                html +=
+                    `${escapeHTML(item[0])}
+                     — ${item[1]} ভুল<br>`;
+
+            });
+
+        html += `
+
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   EXAM HISTORY RESPONSE
+========================================================= */
+
+function examHistoryResponse(){
+
+    if(!currentUser){
+
+        return `
+            আপনার পরীক্ষার history দেখতে Login করুন।
+        `;
+
+    }
+
+
+    const exams =
+        Object.values(
+            knowledge.studentAttempts || {}
+        );
+
+
+    if(!exams.length){
+
+        return `
+            আপনার কোনো পরীক্ষার history পাওয়া যায়নি।
+        `;
+
+    }
+
+
+    exams.sort(
+        (a,b)=>
+        new Date(b.submittedAt || 0) -
+        new Date(a.submittedAt || 0)
+    );
+
+
+    let html =
+        `<strong>📜 আপনার পরীক্ষার ইতিহাস:</strong><br><br>`;
+
+
+    exams.slice(0,10)
+        .forEach((exam,index)=>{
+
+            html += `
+
+                <div class="data-box">
+
+                    <h4>
+                        ${index+1}.
+                        ${escapeHTML(
+                            exam.examTitle ||
+                            "Live Model Test"
+                        )}
+                    </h4>
+
+                    <p>
+
+                        Score:
+                        ${Number(exam.score)||0}
+                        /
+                        ${Number(exam.total)||0}
+
+                        <br>
+
+                        তারিখ:
+                        ${formatDate(
+                            exam.submittedAt
+                        )}
+
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   LIVE EXAM RESPONSE
+========================================================= */
+
+function liveExamResponse(){
+
+    const live =
+        knowledge.liveExam || {};
+
+
+    const title =
+        live.title ||
+        "অনলাইন ডেইলি লাইভ পরীক্ষা";
+
+
+    return `
+
+        <strong>🔴 Live Exam</strong>
+
+        <br><br>
+
+        বর্তমান Live Exam:
+
+        <br>
+
+        <b>
+            ${escapeHTML(title)}
+        </b>
+
+        <br><br>
+
+        <a
+            target="_blank"
+            href="liveexam.html"
+            style="color:#38bdf8">
+            🔴 Live Exam খুলুন
+        </a>
+
+    `;
+
+}
+
+
+/* =========================================================
+   PRACTICE EXAM RESPONSE
+========================================================= */
+
+function practiceExamResponse(){
+
+    const practice =
+        knowledge.practiceExam || {};
+
+
+    const title =
+        practice.title ||
+        "Practice Exam";
+
+
+    return `
+
+        <strong>📝 Practice Exam</strong>
+
+        <br><br>
+
+        ${escapeHTML(title)}
+
+        <br><br>
+
+        <a
+            target="_blank"
+            href="https://sites.google.com/view/gaivexexam"
+            style="color:#38bdf8">
+
+            📝 Practice Exam খুলুন
+
+        </a>
+
+    `;
+
+}
+
+
+/* =========================================================
+   SUBJECT RESPONSE
+========================================================= */
+
+function subjectResponse(query){
+
+    const q =
+        normalize(query);
+
+
+    const map = [
+
+        {
+            names:[
+                "physics",
+                "পদার্থবিজ্ঞান",
+                "পদার্থ"
+            ],
+            label:"⚛️ পদার্থবিজ্ঞান",
+            page:"physics.html"
+        },
+
+        {
+            names:[
+                "chemistry",
+                "রসায়ন",
+                "রসায়ন"
+            ],
+            label:"🧪 রসায়ন",
+            page:"chemistry.html"
+        },
+
+        {
+            names:[
+                "biology",
+                "জীববিজ্ঞান",
+                "জীববিজ্ঞান"
+            ],
+            label:"🧬 জীববিজ্ঞান",
+            page:"biology.html"
+        },
+
+        {
+            names:[
+                "math",
+                "mathematics",
+                "গণিত",
+                "উচ্চতর গণিত"
+            ],
+            label:"📐 উচ্চতর গণিত",
+            page:"math.html"
+        }
+
+    ];
+
+
+    for(const item of map){
+
+        if(
+            item.names.some(
+                x=>q.includes(normalize(x))
+            )
+        ){
+
+            return `
+
+                <strong>
+                    ${item.label}
+                </strong>
+
+                <br><br>
+
+                GAIVEX-এ এই বিষয়ের জন্য
+                আলাদা preparation section রয়েছে।
+
+                <br><br>
+
+                <a
+                    target="_blank"
+                    href="${item.page}"
+                    style="color:#38bdf8">
+
+                    📚 ${item.label} খুলুন
+
+                </a>
+
+            `;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   CHAPTER RESPONSE
+========================================================= */
+
+function chapterResponse(query){
+
+    const q =
+        normalize(query);
+
+
+    let found = [];
+
+
+    for(const subject in chapters){
+
+        for(const paper in chapters[subject]){
+
+            chapters[subject][paper]
+            .forEach(chapter=>{
+
+                const c =
+                    normalize(chapter);
+
+                const tokens =
+                    tokenize(q);
+
+                let score = 0;
+
+                tokens.forEach(token=>{
+
+                    if(
+                        c.includes(token)
+                    ){
+                        score++;
+                    }
+
+                });
+
+
+                if(score > 0){
+
+                    found.push({
+
+                        subject,
+                        paper,
+                        chapter,
+                        score
+
+                    });
+
+                }
+
+            });
+
+        }
+
+    }
+
+
+    found.sort(
+        (a,b)=>b.score-a.score
+    );
+
+
+    if(!found.length){
+        return null;
+    }
+
+
+    let html =
+        `<strong>📚 সম্পর্কিত অধ্যায়:</strong><br><br>`;
+
+
+    found.slice(0,8)
+        .forEach(item=>{
+
+            html += `
+
+                <div class="data-box">
+
+                    <h4>
+                        ${escapeHTML(
+                            item.chapter
+                        )}
+                    </h4>
+
+                    <p>
+
+                        বিষয়:
+                        ${item.subject}
+
+                        <br>
+
+                        ${
+                            item.paper === "paper1"
+                            ?
+                            "১ম পত্র"
+                            :
+                            "২য় পত্র"
+                        }
+
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+
+    html +=
+        createSearchLinks(query);
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   HELP RESPONSE
+========================================================= */
+
+function helpResponse(){
+
+    return `
+
+        <strong>🤖 আমি যেসব বিষয়ে সাহায্য করতে পারি:</strong>
+
+        <br><br>
+
+        📊 "আমার performance কেমন?"
+
+        <br>
+
+        📜 "আমার পরীক্ষার history দেখাও"
+
+        <br>
+
+        📢 "সাম্প্রতিক notice কী?"
+
+        <br>
+
+        📚 "কোষ বিভাজনের নোট আছে?"
+
+        <br>
+
+        🔴 "আজকের live exam কী?"
+
+        <br>
+
+        📝 "Practice exam কোথায়?"
+
+        <br>
+
+        ⚛️ "Physics কোথায়?"
+
+        <br>
+
+        🧬 "Biology chapters কী কী?"
+
+        <br>
+
+        🧪 "Chemistry আছে?"
+
+        <br>
+
+        📐 "Math কোথায়?"
+
+        <br><br>
+
+        কোনো তথ্য GAIVEX-এ না থাকলে আমি
+        Google Search link তৈরি করে দিতে পারি।
+
+    `;
+
+}
+
+
+/* =========================================================
+   MAIN AI ENGINE
+========================================================= */
+
+async function generateAnswer(query){
+
+    const q =
+        normalize(query);
+
+
+    if(!q){
+
+        return "দয়া করে একটি প্রশ্ন লিখুন।";
+
+    }
+
+
+    /* Help */
+
+    if(
+        q.includes("কি করতে পার") ||
+        q.includes("কী করতে পার") ||
+        q.includes("help") ||
+        q.includes("সাহায্য")
+    ){
+
+        return helpResponse();
+
+    }
+
+
+    /* Greeting */
+
+    if(
+        q === "hi" ||
+        q === "hello" ||
+        q.includes("হ্যালো") ||
+        q.includes("আসসালামু")
+    ){
+
+        return `
+
+            ওয়ালাইকুম আসসালাম! 👋
+
+            <br><br>
+
+            আমি GAIVEX AI Assistant।
+
+            <br>
+
+            আপনার Website এবং Firebase-এর
+            তথ্য থেকে উত্তর দেওয়ার চেষ্টা করব।
+
+            <br><br>
+
+            আপনি চাইলে লিখতে পারেন:
+
+            <br>
+
+            "আমার performance কেমন?"
+
+        `;
+
+    }
+
+
+    /* Performance */
+
+    if(
+        q.includes("performance") ||
+        q.includes("পারফরম্যান্স") ||
+        q.includes("accuracy") ||
+        q.includes("এক্যুরেসি") ||
+        q.includes("কত নম্বর")
+    ){
+
+        return performanceResponse();
+
+    }
+
+
+    /* History */
+
+    if(
+        q.includes("history") ||
+        q.includes("হিস্টোরি") ||
+        q.includes("আগের পরীক্ষা") ||
+        q.includes("পরীক্ষার ইতিহাস")
+    ){
+
+        return examHistoryResponse();
+
+    }
+
+
+    /* Notice */
+
+    if(
+        q.includes("notice") ||
+        q.includes("নোটিশ") ||
+        q.includes("ঘোষণা")
+    ){
+
+        return noticeResponse();
+
+    }
+
+
+    /* Notes */
+
+    if(
+        q.includes("note") ||
+        q.includes("নোট") ||
+        q.includes("নোটস")
+    ){
+
+        return notesResponse(query);
+
+    }
+
+
+    /* Live */
+
+    if(
+        q.includes("live exam") ||
+        q.includes("লাইভ পরীক্ষা") ||
+        q.includes("লাইভ এক্সাম") ||
+        q.includes("আজকের পরীক্ষা")
+    ){
+
+        return liveExamResponse();
+
+    }
+
+
+    /* Practice */
+
+    if(
+        q.includes("practice") ||
+        q.includes("প্র্যাকটিস")
+    ){
+
+        return practiceExamResponse();
+
+    }
+
+
+    /* Features */
+
+    if(
+        q.includes("feature") ||
+        q.includes("ফিচার") ||
+        q.includes("সুবিধা") ||
+        q.includes("কি কি আছে") ||
+        q.includes("কী কী আছে")
+    ){
+
+        return getFeatureKnowledge();
+
+    }
+
+
+    /* Subject */
+
+    const subjectResult =
+        subjectResponse(query);
+
+    if(subjectResult){
+
+        return subjectResult;
+
+    }
+
+
+    /* Chapter */
+
+    const chapterResult =
+        chapterResponse(query);
+
+    if(chapterResult){
+
+        return chapterResult;
+
+    }
+
+
+    /* Notice search */
+
+    const notices =
+        searchNotices(query);
+
+    if(notices.length){
+
+        let html =
+            `<strong>📢 আপনার প্রশ্নের সাথে সম্পর্কিত নোটিশ:</strong><br><br>`;
+
+        notices.slice(0,5)
+        .forEach(item=>{
+
+            html += `
+
+                <div class="data-box">
+
+                    <h4>
+                        ${escapeHTML(
+                            item.title
+                        )}
+                    </h4>
+
+                    <p>
+                        ${escapeHTML(
+                            item.description || ""
+                        )}
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+        return html;
+
+    }
+
+
+    /* Notes search */
+
+    const notes =
+        searchNotes(query);
+
+    if(notes.length){
+
+        return notesResponse(query);
+
+    }
+
+
+    /* Website */
+
+    const website =
+        searchWebsite(query);
+
+    if(website.length){
+
+        let html =
+            `<strong>🌐 GAIVEX Website-এ সম্পর্কিত তথ্য পেয়েছি:</strong><br><br>`;
+
+        website.slice(0,4)
+        .forEach(item=>{
+
+            const snippet =
+                item.page.text
+                .replace(/\s+/g," ")
+                .slice(0,500);
+
+
+            html += `
+
+                <div class="data-box">
+
+                    <h4>
+                        ${escapeHTML(
+                            item.page.name
+                        )}
+                    </h4>
+
+                    <p>
+                        ${escapeHTML(snippet)}
+                    </p>
+
+                    <a
+                        target="_blank"
+                        href="${item.page.url}"
+                        style="color:#38bdf8">
+
+                        🔗 Page খুলুন
+
+                    </a>
+
+                </div>
+
+            `;
+
+        });
+
+
+        return html;
+
+    }
+
+
+    /* Unknown */
+
+    return `
+
+        <strong>🔎 GAIVEX-এ সরাসরি তথ্য পাওয়া যায়নি।</strong>
+
+        <br><br>
+
+        আপনার প্রশ্নের জন্য নিচের Search ব্যবহার করতে পারেন:
+
+        ${createSearchLinks(query)}
+
+    `;
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+window.sendMessage = async function(){
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+    const query =
+        input.value.trim();
+
+
+    if(!query){
+        return;
+    }
+
+
+    addMessage(
+        "user",
+        escapeHTML(query)
+    );
+
+
+    input.value = "";
+
+
+    const loadingId =
+        showTyping();
+
+
+    try{
+
+        const answer =
+            await generateAnswer(query);
+
+
+        removeTyping(loadingId);
+
+
+        addMessage(
+            "bot",
+            answer
+        );
+
+
+        speak(stripHTML(answer));
+
+
+    }catch(error){
+
+        console.error(error);
+
+        removeTyping(loadingId);
+
+        addMessage(
+            "bot",
+            `
+            দুঃখিত, তথ্য বিশ্লেষণ করার সময়
+            একটি সমস্যা হয়েছে।
+
+            <br><br>
+
+            ${createSearchLinks(query)}
+            `
+        );
+
+    }
+
+};
+
+
+window.quickAsk = function(question){
+
+    document.getElementById(
+        "messageInput"
+    ).value = question;
+
+    sendMessage();
+
+};
+
+
+window.handleEnter = function(event){
+
+    if(event.key === "Enter"){
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+};
+
+
+/* =========================================================
+   ADD MESSAGE
+========================================================= */
+
+function addMessage(type,html){
+
+    const body =
+        document.getElementById(
+            "chatBody"
+        );
+
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        `message ${type}`;
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble";
+
+
+    bubble.innerHTML =
+        html;
+
+
+    wrapper.appendChild(bubble);
+
+
+    body.appendChild(wrapper);
+
+
+    body.scrollTop =
+        body.scrollHeight;
+
+
+    saveChat();
+
+}
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+function showTyping(){
+
+    const id =
+        "typing_" +
+        Date.now();
+
+
+    const body =
+        document.getElementById(
+            "chatBody"
+        );
+
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "message bot";
+
+    wrapper.id = id;
+
+
+    wrapper.innerHTML = `
+
+        <div class="bubble">
+
+            <div class="typing">
+
+                <i></i>
+                <i></i>
+                <i></i>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    body.appendChild(wrapper);
+
+
+    body.scrollTop =
+        body.scrollHeight;
+
+
+    return id;
+
+}
+
+
+function removeTyping(id){
+
+    const el =
+        document.getElementById(id);
+
+    if(el){
+        el.remove();
+    }
+
+}
+
+
+/* =========================================================
+   CHAT HISTORY
+========================================================= */
+
+function saveChat(){
+
+    const body =
+        document.getElementById(
+            "chatBody"
+        );
+
+    localStorage.setItem(
+        "gaivex_ai_chat",
+        body.innerHTML
+    );
+
+}
+
+
+function loadChat(){
+
+    const saved =
+        localStorage.getItem(
+            "gaivex_ai_chat"
+        );
+
+    if(saved){
+
+        document.getElementById(
+            "chatBody"
+        ).innerHTML = saved;
+
+    }
+
+}
+
+
+window.clearChat = function(){
+
+    localStorage.removeItem(
+        "gaivex_ai_chat"
+    );
+
+
+    document.getElementById(
+        "chatBody"
+    ).innerHTML = `
+
+        <div class="welcome-box">
+
+            <strong>
+                🤖 Chat পরিষ্কার করা হয়েছে।
+            </strong>
+
+            <p style="margin-top:5px;color:#cbd5e1">
+                আবার আপনার প্রশ্ন করুন।
+            </p>
+
+        </div>
+
+    `;
+
+};
+
+
+/* =========================================================
+   VOICE INPUT
+========================================================= */
+
+let recognition = null;
+
+window.startVoice = function(){
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if(!SpeechRecognition){
+
+        alert(
+            "আপনার browser-এ Voice Input support নেই।"
+        );
+
+        return;
+
+    }
+
+
+    if(recognition){
+
+        recognition.stop();
+
+        recognition = null;
+
+        return;
+
+    }
+
+
+    recognition =
+        new SpeechRecognition();
+
+
+    recognition.lang =
+        "bn-BD";
+
+    recognition.continuous =
+        false;
+
+    recognition.interimResults =
+        false;
+
+
+    const button =
+        document.getElementById(
+            "voiceBtn"
+        );
+
+    button.classList.add("active");
+
+    button.innerText = "🔴";
+
+
+    recognition.onresult =
+        function(event){
+
+            const text =
+                event.results[0][0].transcript;
+
+
+            document.getElementById(
+                "messageInput"
+            ).value = text;
+
+
+            button.classList.remove(
+                "active"
+            );
+
+            button.innerText = "🎤";
+
+            recognition = null;
+
+        };
+
+
+    recognition.onerror =
+        function(){
+
+            button.classList.remove(
+                "active"
+            );
+
+            button.innerText = "🎤";
+
+            recognition = null;
+
+        };
+
+
+    recognition.onend =
+        function(){
+
+            button.classList.remove(
+                "active"
+            );
+
+            button.innerText = "🎤";
+
+            recognition = null;
+
+        };
+
+
+    recognition.start();
+
+};
+
+
+/* =========================================================
+   VOICE OUTPUT
+========================================================= */
+
+function stripHTML(html){
+
+    const div =
+        document.createElement("div");
+
+    div.innerHTML = html;
+
+    return div.innerText;
+
+}
+
+
+function speak(text){
+
+    if(
+        !window.speechSynthesis ||
+        !text
+    ){
+        return;
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text.slice(0,1000)
+        );
+
+
+    utterance.lang =
+        "bn-BD";
+
+    utterance.rate =
+        0.95;
+
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =========================================================
+   PORTAL
+========================================================= */
+
+window.openPortal = function(){
+
+    document.getElementById(
+        "portalModal"
+    ).classList.add("show");
+
+
+    const content =
+        document.getElementById(
+            "portalContent"
+        );
+
+
+    if(!currentUser){
+
+        content.innerHTML = `
+
+            <div class="data-box">
+
+                <h4>🔐 Login Required</h4>
+
+                <p>
+                    Student Portal-এর ব্যক্তিগত
+                    তথ্য দেখতে আপনাকে Login করতে হবে।
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const a =
+        getStudentAnalytics();
+
+
+    content.innerHTML = `
+
+        <div class="data-box">
+
+            <h4>👤 Student</h4>
+
+            <p>
+
+                নাম:
+                ${escapeHTML(
+                    currentUser.displayName ||
+                    "নাম নেই"
+                )}
+
+                <br>
+
+                Email:
+                ${escapeHTML(
+                    currentUser.email ||
+                    ""
+                )}
+
+            </p>
+
+        </div>
+
+        <div class="data-box">
+
+            <h4>📊 Performance</h4>
+
+            <p>
+
+                মোট পরীক্ষা:
+                ${a.totalExams}
+
+                <br>
+
+                মোট নম্বর:
+                ${a.totalScore}/${a.totalPossible}
+
+                <br>
+
+                Accuracy:
+                ${a.accuracy.toFixed(1)}%
+
+            </p>
+
+        </div>
+
+        <div class="data-box">
+
+            <h4>📜 Exam History</h4>
+
+            <p>
+
+                ${
+                    a.exams.length
+                    ?
+                    a.exams
+                    .slice()
+                    .reverse()
+                    .slice(0,10)
+                    .map(
+                        (exam,i)=>
+                        `${i+1}. ${
+                            escapeHTML(
+                                exam.examTitle ||
+                                "Exam"
+                            )
+                        }
+                        — ${
+                            Number(exam.score)||0
+                        }/${
+                            Number(exam.total)||0
+                        }`
+                    )
+                    .join("<br>")
+                    :
+                    "কোনো পরীক্ষা নেই।"
+                }
+
+            </p>
+
+        </div>
+
+    `;
+
+};
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+window.openSettings = function(){
+
+    document.getElementById(
+        "settingsModal"
+    ).classList.add("show");
+
+};
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+window.closeModal = function(id){
+
+    document.getElementById(id)
+        .classList.remove("show");
+
+};
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+window.refreshKnowledge = async function(){
+
+    addMessage(
+        "bot",
+        "🔄 Website ও Firebase-এর তথ্য আবার লোড করছি..."
+    );
+
+
+    try{
+
+        await loadKnowledge();
+
+        addMessage(
+            "bot",
+            `
+            ✅ Knowledge Base Refresh সম্পন্ন হয়েছে।
+
+            এখন আবার প্রশ্ন করতে পারেন।
+            `
+        );
+
+    }catch(error){
+
+        addMessage(
+            "bot",
+            "❌ Knowledge refresh করতে সমস্যা হয়েছে।"
+        );
+
+    }
+
+};
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async(user)=>{
+
+        currentUser =
+            user || null;
+
+
+        const status =
+            document.getElementById(
+                "userStatus"
+            );
+
+
+        if(user){
+
+            status.innerText =
+                "● " +
+                (
+                    user.displayName ||
+                    user.email ||
+                    "Student"
+                );
+
+
+            status.classList.add(
+                "online"
+            );
+
+        }else{
+
+            status.innerText =
+                "Guest Mode";
+
+
+            status.classList.remove(
+                "online"
+            );
+
+        }
+
+
+        await loadKnowledge();
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+loadChat();
+
+
+(async function(){
+
+    try{
+
+        await loadWebsiteKnowledge();
+
+    }catch(e){
+
+        console.warn(e);
+
+    }
+
+})();
+
+</script>
+
+</body>
+</html>
