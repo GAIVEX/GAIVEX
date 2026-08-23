@@ -34,7 +34,7 @@
         .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
 
         .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; }
-        .option-item.disabled-option { cursor: not-allowed; opacity: 0.7; }
+        .option-item.locked-option { cursor: not-allowed; opacity: 0.8; }
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
 
@@ -180,7 +180,6 @@
       let bookmarkedQuestions = {};
       let isSubmitted = false;
 
-      // admin.html বা ফায়ারবেস থেকে প্রশ্ন না থাকলে ডিফল্ট ৩০টি প্রশ্ন লোড হবে
       const defaultExamData = {
         id: "biology_mcq_30_v1",
         title: "🧬 প্রাণীর পরিচিতি — ৩০টি MCQ",
@@ -267,7 +266,7 @@
               <div class="question-title">${qIndex + 1}. ${q.question}</div>
               <button type="button" class="bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
             </div>
-            <div class="options-list">
+            <div class="options-list" id="options-list-${qIndex}">
               ${(q.options || []).map((opt, oIndex) => `
                 <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
                   <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="window.selectOption(${qIndex}, ${oIndex})">
@@ -282,14 +281,20 @@
         `).join('');
 
         window.selectOption = function(qIndex, oIndex) {
-          if (isSubmitted) return;
+          if (isSubmitted || userSelections[qIndex] !== undefined) return;
+          
           userSelections[qIndex] = oIndex;
           
+          // অপশন লক করে দেওয়া
           const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
-          allLabels.forEach(lbl => lbl.classList.remove('selected-option'));
-          
-          const selectedLbl = document.getElementById(`opt-label-${qIndex}-${oIndex}`);
-          if(selectedLbl) selectedLbl.classList.add('selected-option');
+          allLabels.forEach((lbl, idx) => {
+            const input = lbl.querySelector('input');
+            if(input) input.disabled = true;
+            lbl.classList.add('locked-option');
+            if(idx === oIndex) {
+              lbl.classList.add('selected-option');
+            }
+          });
 
           updatePalette();
         };
@@ -436,7 +441,7 @@
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
             if(lbl) {
-              lbl.classList.remove('selected-option');
+              lbl.classList.remove('selected-option', 'locked-option');
               const input = lbl.querySelector('input');
               if(input) {
                 input.disabled = true;
@@ -471,6 +476,7 @@
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
 
+        examData.questions.questions?.forEach ? null : null; // Safe check
         examData.questions.forEach((q, i) => {
           const card = document.getElementById(`q-box-${i}`);
           const selected = userSelections[i];
