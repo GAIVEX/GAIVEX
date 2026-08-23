@@ -32,9 +32,12 @@
         .q-box { background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 15px; position: relative; }
         .remove-btn { position: absolute; top: 10px; right: 10px; background: #f43f5e; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .status-badge { background: #0284c7; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin-bottom: 10px; }
-        .mode-toggle { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
-        .mode-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; background: #0f172a; color: #94a3b8; border: 1px solid #475569; }
+        
+        .mode-toggle { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px; flex-wrap: wrap; }
+        .mode-btn { flex: 1; min-width: 130px; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; background: #0f172a; color: #94a3b8; border: 1px solid #475569; }
         .mode-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        
+        .notice-card-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -66,13 +69,36 @@
     <!-- মূল অ্যাডমিন প্যানেল -->
     <div class="admin-card" id="adminPanel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-            <h2 style="margin:0;">🛠️ GAIVEX প্রশ্ন ব্যবস্থাপনা</h2>
+            <h2 style="margin:0;">🛠️ GAIVEX অ্যাডমিন প্যানেল</h2>
             <button onclick="logoutAdmin()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">লগআউট</button>
         </div>
 
         <div class="mode-toggle">
             <button class="mode-btn active" id="btnLiveMode" onclick="switchMode('live')">🔥 লাইভ ডেইলি এক্সাম</button>
-            <button class="mode-btn" id="btnChapterMode" onclick="switchMode('chapter')">📚 বিষয়ভিত্তিক অধ্যায় এক্সাম</button>
+            <button class="mode-btn" id="btnChapterMode" onclick="switchMode('chapter')">📚 বিষয়ভিত্তিক এক্সাম</button>
+            <button class="mode-btn" id="btnNoticeMode" onclick="switchMode('notice')">📢 নোটিশ বোর্ড</button>
+        </div>
+
+        <!-- নোটিশ বোর্ড সেকশন -->
+        <div id="noticeSection" style="display: none;">
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">নতুন নোটিশ প্রকাশ করুন</h3>
+            <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+                <label>নোটিশের শিরোনাম:</label>
+                <input type="text" id="noticeTitle" placeholder="যেমন: নতুন রুটিন প্রকাশ সম্পর্কিত নোটিশ">
+
+                <label>নোটিশের বিবরণ:</label>
+                <textarea id="noticeDesc" rows="4" placeholder="বিস্তারিত লিখুন..."></textarea>
+
+                <label>ছবির লিংক (Image URL - ঐচ্ছিক):</label>
+                <input type="text" id="noticeImg" placeholder="যেমন: https://i.ibb.co/... বা ছবির ডিরেক্ট লিংক">
+
+                <button type="button" class="btn-submit" onclick="publishNotice()" style="margin-top: 15px;">নোটিশ পাবলিশ করুন 📢</button>
+            </div>
+
+            <h3 style="color: #38bdf8; margin-top: 25px; margin-bottom: 10px;">বর্তমান নোটিশসমূহ</h3>
+            <div id="adminNoticeList" style="max-height: 250px; overflow-y: auto;">
+                <p style="color: #94a3b8; font-size: 13px;">নোটিশ লোড হচ্ছে...</p>
+            </div>
         </div>
 
         <div id="chapterSelectionBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 20px;">
@@ -98,7 +124,7 @@
 
         <div id="loadingText" style="color: #38bdf8; text-align: center; margin: 15px 0; display: none;">ডাটাবেস থেকে ডেটা লোড হচ্ছে...</div>
 
-        <div id="examFormContent" style="display: none;">
+        <div id="examFormContent">
             <label id="titleLabel">পরীক্ষার শিরোনাম (Exam Title):</label>
             <input type="text" id="examTitle" placeholder="যেমন: প্রাণীর পরিচিতি — ৩০টি MCQ">
 
@@ -123,7 +149,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, set, get, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -162,10 +188,8 @@
           }
       };
 
-      // ফায়ারবেস অথ স্টেট চেক
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          // ফায়ারবেসে লগইন থাকলে এখন সিক্রেট লক বক্স দেখাবে (যদি লোকাল স্টোরেজে ভেরিফাইড না থাকে)
           if (sessionStorage.getItem('admin_fully_verified') === 'true') {
             showAdminPanel();
           } else {
@@ -181,7 +205,6 @@
         }
       });
 
-      // ধাপ ১: ফায়ারবেস লগইন
       window.verifyFirebaseLogin = function(e) {
         e.preventDefault();
         const email = document.getElementById('adminEmail').value;
@@ -193,13 +216,12 @@
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('secretLockBox').style.display = 'block';
           })
-          .catch((error) => {
+          .catch(() => {
             document.getElementById('errorMsg').style.display = 'block';
             document.getElementById('adminPassword').value = '';
           });
       };
 
-      // ধাপ ২: সিক্রেট নম্বর ও পাসওয়ার্ড ভেরিফিকেশন
       window.verifySecretCredentials = function(e) {
         e.preventDefault();
         const inputNum = document.getElementById('adminNumber').value.trim();
@@ -222,31 +244,108 @@
         loadExistingData();
       }
 
-      // লগআউট করার ফাংশন
       window.logoutAdmin = function() {
         sessionStorage.removeItem('admin_fully_verified');
-        signOut(auth).then(() => {
-          location.reload();
-        });
+        signOut(auth).then(() => { location.reload(); });
       };
 
       window.switchMode = function(mode) {
         currentMode = mode;
         document.getElementById('btnLiveMode').classList.toggle('active', mode === 'live');
         document.getElementById('btnChapterMode').classList.toggle('active', mode === 'chapter');
+        document.getElementById('btnNoticeMode').classList.toggle('active', mode === 'notice');
         
         const chapBox = document.getElementById('chapterSelectionBox');
-        if (mode === 'chapter') {
+        const examForm = document.getElementById('examFormContent');
+        const noticeSec = document.getElementById('noticeSection');
+
+        if (mode === 'notice') {
+          chapBox.style.display = 'none';
+          examForm.style.display = 'none';
+          noticeSec.style.display = 'block';
+          loadAdminNotices();
+        } else if (mode === 'chapter') {
           chapBox.style.display = 'block';
-          document.getElementById('examFormContent').style.display = 'none';
+          noticeSec.style.display = 'none';
+          examForm.style.display = 'none';
           document.getElementById('titleLabel').style.display = 'none';
           document.getElementById('examTitle').style.display = 'none';
         } else {
           chapBox.style.display = 'none';
+          noticeSec.style.display = 'none';
           document.getElementById('titleLabel').style.display = 'block';
           document.getElementById('examTitle').style.display = 'block';
           loadExistingData();
         }
+      };
+
+      // নোটিশ পাবলিশ করার ফাংশন
+      window.publishNotice = async function() {
+          const title = document.getElementById('noticeTitle').value.trim();
+          const description = document.getElementById('noticeDesc').value.trim();
+          const image = document.getElementById('noticeImg').value.trim();
+
+          if (!title || !description) {
+              alert("দয়া করে নোটিশের শিরোনাম এবং বিবরণ লিখুন!");
+              return;
+          }
+
+          try {
+              const noticeRef = ref(db, 'notices');
+              await push(noticeRef, {
+                  title: title,
+                  description: description,
+                  image: image,
+                  date: Date.now()
+              });
+              alert("✅ নোটিশ সফলভাবে পাবলিশ করা হয়েছে!");
+              document.getElementById('noticeTitle').value = '';
+              document.getElementById('noticeDesc').value = '';
+              document.getElementById('noticeImg').value = '';
+              loadAdminNotices();
+          } catch(e) {
+              alert("ত্রুটি: " + e.message);
+          }
+      };
+
+      // অ্যাডমিন প্যানেলে নোটিশ লিস্ট লোড ও ডিলিট করার ব্যবস্থা
+      async function loadAdminNotices() {
+          const listContainer = document.getElementById('adminNoticeList');
+          try {
+              const snapshot = await get(ref(db, 'notices'));
+              if (snapshot.exists()) {
+                  listContainer.innerHTML = '';
+                  const data = snapshot.val();
+                  for (let key in data) {
+                      const item = data[key];
+                      listContainer.innerHTML += `
+                          <div class="notice-card-item">
+                              <div>
+                                  <strong style="color: #38bdf8;">${item.title}</strong>
+                                  <div style="font-size: 12px; color: #94a3b8;">${new Date(item.date).toLocaleDateString('bn-BD')}</div>
+                              </div>
+                              <button onclick="deleteNotice('${key}')" style="background: #f43f5e; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">ডিলিট</button>
+                          </div>
+                      `;
+                  }
+              } else {
+                  listContainer.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">কোনো নোটিশ নেই।</p>';
+              }
+          } catch(e) {
+              listContainer.innerHTML = '<p style="color: #f43f5e; font-size: 13px;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
+          }
+      }
+
+      window.deleteNotice = async function(noticeId) {
+          if (confirm("আপনি কি এই নোটিশটি ডিলিট করতে চান?")) {
+              try {
+                  await remove(ref(db, `notices/${noticeId}`));
+                  alert("নোটিশটি মুছে ফেলা হয়েছে।");
+                  loadAdminNotices();
+              } catch(e) {
+                  alert("ত্রুটি: " + e.message);
+              }
+          }
       };
 
       window.updatePaperOptions = function() {
@@ -281,7 +380,7 @@
       function getStoragePath() {
         if (currentMode === 'live') {
           return 'live_exams/live_daily_exam';
-        } else {
+        } else if (currentMode === 'chapter') {
           const sub = document.getElementById('admSubject').value;
           const paper = document.getElementById('admPaper').value;
           const chapter = document.getElementById('admChapter').value;
@@ -289,6 +388,7 @@
           const cleanChapter = chapter.replace(/[.#$/[\]]/g, "_");
           return `exams/${sub}/${paper}/${cleanChapter}`;
         }
+        return null;
       }
 
       async function loadExistingData() {
