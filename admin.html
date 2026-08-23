@@ -39,16 +39,28 @@
 </head>
 <body>
 
-    <!-- ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করার ফর্ম -->
+    <!-- ধাপ ১: ফায়ারবেস ইমেইল ও পাসওয়ার্ড লগইন -->
     <div class="login-card" id="loginBox">
         <h2>🔒 GAIVEX অ্যাডমিন লগইন</h2>
-        <p>আপনার অ্যাডমিন ইমেইল ও পাসওয়ার্ড প্রদান করুন</p>
-        <form onsubmit="verifyLogin(event)">
-            <input type="email" id="adminEmail" placeholder="অ্যাডমিন ইমেইল (Email)..." required>
-            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড (Password)..." required>
-            <button type="submit">লগইন করুন 🔓</button>
+        <p>ধাপ ১: ফায়ারবেস ইমেইল ও পাসওয়ার্ড দিন</p>
+        <form onsubmit="verifyFirebaseLogin(event)">
+            <input type="email" id="adminEmail" placeholder="অ্যাডমিন ইমেইল..." required>
+            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড..." required>
+            <button type="submit">পরবর্তী ধাপ ➡️</button>
         </form>
-        <div class="error-msg" id="errorMsg">❌ ভুল ইমেইল বা পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
+        <div class="error-msg" id="errorMsg">❌ ভুল ইমেইল বা পাসওয়ার্ড!</div>
+    </div>
+
+    <!-- ধাপ ২: সিক্রেট অ্যাডমিন নম্বর ও পাসওয়ার্ড লক -->
+    <div class="login-card" id="secretLockBox" style="display: none;">
+        <h2>🛡️ সিকিউরিটি ভেরিফিকেশন</h2>
+        <p>ধাপ ২: সিক্রেট অ্যাডমিন নম্বর ও পাসওয়ার্ড দিন</p>
+        <form onsubmit="verifySecretCredentials(event)">
+            <input type="text" id="adminNumber" placeholder="Admin Number..." required>
+            <input type="password" id="adminSecretPass" placeholder="Admin Password..." required>
+            <button type="submit">প্যানেল আনলক করুন 🔓</button>
+        </form>
+        <div class="error-msg" id="secretErrorMsg" style="display: none;">❌ ভুল Admin Number বা Password!</div>
     </div>
 
     <!-- মূল অ্যাডমিন প্যানেল -->
@@ -127,6 +139,8 @@
       const auth = getAuth(app);
       const db = getDatabase(app);
 
+      const CORRECT_ADMIN_NUM = "GAIVEXScholars70160";
+      const CORRECT_SECRET_PASS = "GAIVEXScholars#@70160tamim";
       let currentMode = 'live';
 
       const chaptersData = {
@@ -148,22 +162,27 @@
           }
       };
 
-      // ফায়ারবেস অথ স্টেট চেক: ইউজার অলরেডি লগইন করা থাকলে প্যানেল দেখাবে, না হলে লগইন ফর্ম দেখাবে
+      // ফায়ারবেস অথ স্টেট চেক
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          document.getElementById('loginBox').style.display = 'none';
-          document.getElementById('adminPanel').style.display = 'block';
-          document.body.style.alignItems = 'flex-start';
-          loadExistingData();
+          // ফায়ারবেসে লগইন থাকলে এখন সিক্রেট লক বক্স দেখাবে (যদি লোকাল স্টোরেজে ভেরিফাইড না থাকে)
+          if (sessionStorage.getItem('admin_fully_verified') === 'true') {
+            showAdminPanel();
+          } else {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('secretLockBox').style.display = 'block';
+            document.body.style.alignItems = 'center';
+          }
         } else {
           document.getElementById('loginBox').style.display = 'block';
+          document.getElementById('secretLockBox').style.display = 'none';
           document.getElementById('adminPanel').style.display = 'none';
           document.body.style.alignItems = 'center';
         }
       });
 
-      // ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করার ফাংশন
-      window.verifyLogin = function(e) {
+      // ধাপ ১: ফায়ারবেস লগইন
+      window.verifyFirebaseLogin = function(e) {
         e.preventDefault();
         const email = document.getElementById('adminEmail').value;
         const password = document.getElementById('adminPassword').value;
@@ -171,6 +190,8 @@
         signInWithEmailAndPassword(auth, email, password)
           .then(() => {
             document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('secretLockBox').style.display = 'block';
           })
           .catch((error) => {
             document.getElementById('errorMsg').style.display = 'block';
@@ -178,8 +199,32 @@
           });
       };
 
+      // ধাপ ২: সিক্রেট নম্বর ও পাসওয়ার্ড ভেরিফিকেশন
+      window.verifySecretCredentials = function(e) {
+        e.preventDefault();
+        const inputNum = document.getElementById('adminNumber').value.trim();
+        const inputPass = document.getElementById('adminSecretPass').value.trim();
+
+        if (inputNum === CORRECT_ADMIN_NUM && inputPass === CORRECT_SECRET_PASS) {
+          sessionStorage.setItem('admin_fully_verified', 'true');
+          showAdminPanel();
+        } else {
+          document.getElementById('secretErrorMsg').style.display = 'block';
+          document.getElementById('adminSecretPass').value = '';
+        }
+      };
+
+      function showAdminPanel() {
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('secretLockBox').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        document.body.style.alignItems = 'flex-start';
+        loadExistingData();
+      }
+
       // লগআউট করার ফাংশন
       window.logoutAdmin = function() {
+        sessionStorage.removeItem('admin_fully_verified');
         signOut(auth).then(() => {
           location.reload();
         });
