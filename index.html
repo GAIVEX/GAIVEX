@@ -23,7 +23,7 @@
 
         .container { max-width: 600px; margin: 0 auto; }
         
-        /* নোটিশ বোর্ড বক্স ডিজাইন */
+        /* নোটিশ বোর্ড বক্স */
         .notice-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .notice-title { color: #38bdf8; font-size: 18px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
         .notice-content-area { max-height: 220px; overflow-y: auto; padding-right: 5px; }
@@ -39,10 +39,13 @@
         
         .btn { display: block; width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; text-align: center; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 16px; transition: 0.3s; margin-top: 15px; }
         .btn:hover { background: #7dd3fc; }
-        
-        .select-box { width: 100%; padding: 10px 12px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; margin-bottom: 12px; outline: none; }
-        .select-box:focus { border-color: #38bdf8; }
-        label { font-weight: bold; display: block; color: #cbd5e1; font-size: 13px; margin-bottom: 5px; }
+
+        /* সাবজেক্ট গ্রিড ডিজাইন (আপনার আগের মতো) */
+        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .subject-card { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 12px; text-align: center; text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .subject-card:hover { border-color: #38bdf8; transform: translateY(-3px); }
+        .subject-card span { font-size: 28px; }
+        .subject-card p { font-size: 15px; color: #f8fafc; }
     </style>
 </head>
 <body>
@@ -75,30 +78,25 @@
             <a href="#" id="startLiveBtn" class="btn" style="display: none;">এক্সাম শুরু করুন 🎯</a>
         </div>
 
-        <!-- 📚 চ্যাপ্টার ভিত্তিক এক্সাম কার্ড -->
-        <div class="card">
-            <h2>📚 বিষয়ভিত্তিক ও অধ্যায়ভিত্তিক এক্সাম</h2>
-            
-            <label>বিষয় নির্বাচন করুন:</label>
-            <select id="userSubject" class="select-box" onchange="updateUserPaperOptions()">
-                <option value="">-- বিষয় বেছে নিন --</option>
-                <option value="physics">পদার্থবিজ্ঞান (Physics)</option>
-                <option value="chemistry">রসায়ন (Chemistry)</option>
-                <option value="biology">জীববিজ্ঞান (Biology)</option>
-                <option value="math">উচ্চতর গণিত (Math)</option>
-            </select>
-
-            <label>পত্র নির্বাচন করুন:</label>
-            <select id="userPaper" class="select-box" onchange="updateUserChapterOptions()">
-                <option value="">-- আগে বিষয় বেছে নিন --</option>
-            </select>
-
-            <label>অধ্যায় নির্বাচন করুন:</label>
-            <select id="userChapter" class="select-box">
-                <option value="">-- আগে পত্র বেছে নিন --</option>
-            </select>
-
-            <button type="button" class="btn" onclick="startChapterExam()">চ্যাপ্টার এক্সাম দিন 📝</button>
+        <!-- 📚 বিষয়ভিত্তিক সাবজেক্ট গ্রিড (পদার্থ, রসায়ন, জীববিজ্ঞান, উচ্চতর গণিত) -->
+        <div style="color: #38bdf8; font-weight: bold; font-size: 18px; margin-bottom: 12px;">📚 বিষয়ভিত্তিক এক্সাম</div>
+        <div class="subject-grid">
+            <a href="chapter-select.html?sub=physics" class="subject-card">
+                <span>⚛️</span>
+                <p>পদার্থবিজ্ঞান</p>
+            </a>
+            <a href="chapter-select.html?sub=chemistry" class="subject-card">
+                <span>🧪</span>
+                <p>রসায়ন</p>
+            </a>
+            <a href="chapter-select.html?sub=biology" class="subject-card">
+                <span>🧬</span>
+                <p>জীববিজ্ঞান</p>
+            </a>
+            <a href="chapter-select.html?sub=math" class="subject-card">
+                <span>📐</span>
+                <p>উচ্চতর গণিত</p>
+            </a>
         </div>
     </div>
 
@@ -139,25 +137,6 @@
           }
       }
 
-      const chaptersData = {
-          physics: {
-              paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
-              paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"]
-          },
-          chemistry: {
-              paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"],
-              paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
-          },
-          biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
-              paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
-          },
-          math: {
-              paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
-              paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
-          }
-      };
-
       // হোম পেজে নোটিশ লোড করা
       async function loadHomeNotices() {
           const container = document.getElementById('homeNoticeContainer');
@@ -166,7 +145,6 @@
               if (snapshot.exists()) {
                   container.innerHTML = '';
                   const data = snapshot.val();
-                  // লেটেস্ট নোটিশ উপরে দেখানোর জন্য সর্ট করা
                   const sortedNotices = Object.values(data).sort((a, b) => b.date - a.date);
                   
                   sortedNotices.forEach(item => {
@@ -210,39 +188,6 @@
           }
       }
 
-      window.updateUserPaperOptions = function() {
-          const sub = document.getElementById('userSubject').value;
-          const paperSelect = document.getElementById('userPaper');
-          paperSelect.innerHTML = '<option value="">-- পত্র বেছে নিন --</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
-          document.getElementById('userChapter').innerHTML = '<option value="">-- আগে পত্র বেছে নিন --</option>';
-      };
-
-      window.updateUserChapterOptions = function() {
-          const sub = document.getElementById('userSubject').value;
-          const paper = document.getElementById('userPaper').value;
-          const chapSelect = document.getElementById('userChapter');
-          chapSelect.innerHTML = '<option value="">-- অধ্যায় বেছে নিন --</option>';
-          if(sub && paper && chaptersData[sub][paper]) {
-              chaptersData[sub][paper].forEach((chap) => {
-                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-              });
-          }
-      };
-
-      window.startChapterExam = function() {
-          const sub = document.getElementById('userSubject').value;
-          const paper = document.getElementById('userPaper').value;
-          const chapter = document.getElementById('userChapter').value;
-
-          if(!sub || !paper || !chapter) {
-              alert("দয়া করে বিষয়, পত্র এবং অধ্যায় সঠিকভাবে নির্বাচন করুন!");
-              return;
-          }
-          const cleanChapter = chapter.replace(/[.#$/[\]]/g, "_");
-          window.location.href = `exam.html?type=chapter&sub=${sub}&paper=${paper}&chap=${cleanChapter}`;
-      }
-
-      // পেজ লোড হওয়ার সাথে সাথে ফাংশনগুলো রান হবে
       loadHomeNotices();
       loadLiveExam();
     </script>
