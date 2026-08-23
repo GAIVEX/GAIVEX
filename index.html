@@ -11,14 +11,12 @@
         
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; gap: 10px; position: relative; }
         
-        /* বামপাশের গ্রুপ: থ্রি-ডট মেনু এবং লোগো */
         .nav-left-group { display: flex; align-items: center; gap: 10px; }
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
         .logo span { color: #f43f5e; }
         
         .nav-right-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
-        /* ৩-ডট মেনু স্টাইল (লোগোর সামনে) */
         .menu-container { position: relative; }
         .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
@@ -49,41 +47,10 @@
         .live-badge { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* Practice Exam Banner Styles */
-        .practice-exam-banner {
-            background: linear-gradient(135deg, #1e293b 0%, #0f2744 100%);
-            border: 2px solid #38bdf8;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: left;
-        }
-        .practice-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #0284c7;
-            color: #fff;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-        }
-        .btn-practice {
-            background: #38bdf8;
-            color: #0f172a;
-            padding: 10px 24px;
-            display: inline-block;
-            border-radius: 8px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .btn-practice:hover {
-            background: #7dd3fc;
-            transform: translateY(-2px);
-        }
+        .practice-exam-banner { background: linear-gradient(135deg, #1e293b 0%, #0f2744 100%); border: 2px solid #38bdf8; border-radius: 16px; padding: 20px; margin-bottom: 30px; text-align: left; }
+        .practice-badge { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+        .btn-practice { background: #38bdf8; color: #0f172a; padding: 10px 24px; display: inline-block; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.3s; }
+        .btn-practice:hover { background: #7dd3fc; transform: translateY(-2px); }
 
         .notice-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
         .notice-item h4 { color: #f8fafc; font-size: 15px; margin-bottom: 5px; }
@@ -114,17 +81,19 @@
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
-        /* পপআপ হেডার ও ক্রস বাটনের স্টাইল */
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
         .modal-header h3 { color: #38bdf8; font-size: 18px; margin: 0; }
         .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
         .modal-close-x:hover { color: #f43f5e; }
+
+        /* হিস্ট্রি আইটেম যাতে ক্লিকযোগ্য মনে হয় */
+        .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
+        .history-item:hover { border-color:#38bdf8; background:#253346; }
     </style>
 </head>
 <body>
 
     <header class="navbar">
-        <!-- বামপাশে ৩-ডট মেনু এবং GAIVEX লোগো -->
         <div class="nav-left-group">
             <div class="menu-container">
                 <button class="menu-btn" onclick="toggleMenu()">⋮</button>
@@ -134,7 +103,6 @@
                     <a href="chemistry.html">🧪 রসায়ন</a>
                     <a href="biology.html">🧬 জীববিজ্ঞান</a>
                     <a href="math.html">📐 উচ্চতর গণিত</a>
-                    <!-- থ্রি-ডটে নোটিশ অপশন যুক্ত করা হয়েছে -->
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
                 </div>
             </div>
@@ -152,7 +120,6 @@
         <h1>স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span class="highlight">GAIVEX</span> এর সাথে</h1>
         <p>মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট ও সমাধান।</p>
         
-        <!-- Live Exam Banner -->
         <div class="live-exam-banner">
             <div class="live-badge">🔴 LIVE EXAM</div>
             <h2 id="liveExamTitle" style="font-size: 18px; color: #38bdf8; margin-bottom: 6px;">অনলাইন ডেইলি লাইভ পরীক্ষা</h2>
@@ -160,7 +127,6 @@
             <a href="liveexam.html" class="btn btn-save" style="width: auto; padding: 10px 24px; display: inline-block;">পরীক্ষা দিন 📝</a>
         </div>
 
-        <!-- Practice Exam Banner -->
         <div class="practice-exam-banner">
             <div class="practice-badge">📝 PRACTICE EXAM</div>
             <h2 style="font-size: 18px; color: #38bdf8; margin-bottom: 15px;">Practice Exam</h2>
@@ -172,12 +138,10 @@
             <a href="chemistry.html" class="subject-box"><div class="icon">🧪</div><h3>রসায়ন</h3></a>
             <a href="biology.html" class="subject-box"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></a>
             <a href="math.html" class="subject-box"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></a>
-            <!-- পদার্থবিজ্ঞান ও রসায়নের বক্সগুলোর মতো নতুন 'নোটিশ' বক্স -->
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ</h3></div>
         </div>
     </main>
 
-    <!-- নোটিশ পপআপ মডাল -->
     <div id="noticeModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -210,7 +174,6 @@
         <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
     </footer>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="modal">
       <div class="modal-content">
         <div class="tab-menu">
@@ -245,11 +208,27 @@
         </div>
         <div id="profileDetails" style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; margin-bottom:12px; font-size:13px;"></div>
         <div id="performanceBox" style="margin-bottom: 15px;"></div>
-        <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি:</h4>
+        <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি (বিস্তারিত দেখতে ক্লিক করুন):</h4>
         <div id="examHistoryContainer" style="max-height:220px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;"></div>
         <div class="btn-group">
             <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
             <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exam Detailed Review Modal (ভুল-ঠিক এবং ব্যাখ্যা দেখার পপআপ) -->
+    <div id="examReviewModal" class="modal">
+      <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3 id="reviewExamTitle">পরীক্ষার বিস্তারিত সমাধান</h3>
+            <button class="modal-close-x" onclick="closeExamReviewModal()">&times;</button>
+        </div>
+        <div id="examReviewBody" style="max-height: 400px; overflow-y: auto; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
+            <!-- প্রশ্ন ও উত্তরের বিবরণ এখানে ডাইনামিক লোড হবে -->
+        </div>
+        <div class="btn-group" style="margin-top: 15px;">
+            <button type="button" class="btn btn-save" onclick="closeExamReviewModal()" style="flex: 1;">ফিরে যান</button>
         </div>
       </div>
     </div>
@@ -276,30 +255,23 @@
       const googleProvider = new GoogleAuthProvider();
 
       let currentUser = null;
+      let studentExamDataMap = {}; // ইউজারের সব পরীক্ষার ডেটা ক্যাশ করে রাখার জন্য
 
-      // ৩-ডট মেনু টগল ফাংশন
       window.toggleMenu = function() {
-          const menu = document.getElementById('dropdownMenu');
-          menu.classList.toggle('show');
+          document.getElementById('dropdownMenu').classList.toggle('show');
       }
 
-      // মেনুর বাইরে ক্লিক করলে মেনু বন্ধ হয়ে যাবে
       window.onclick = function(event) {
           if (!event.target.matches('.menu-btn') && !event.target.closest('.menu-btn')) {
               const dropdowns = document.getElementsByClassName("dropdown-menu");
               for (let i = 0; i < dropdowns.length; i++) {
-                  let openDropdown = dropdowns[i];
-                  if (openDropdown.classList.contains('show')) {
-                      openDropdown.classList.remove('show');
-                  }
+                  dropdowns[i].classList.remove('show');
               }
           }
       }
 
-      // নোটিশ পপআপ ওপেন ও ক্লোজ ফাংশন
       window.openNoticeModal = function() {
           document.getElementById('noticeModal').style.display = 'flex';
-          // মেনু খোলা থাকলে তা বন্ধ করে দেওয়া
           document.getElementById('dropdownMenu').classList.remove('show');
       }
 
@@ -308,6 +280,7 @@
       }
 
       window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
+      
       window.toggleProfileModal = async (show) => {
         if(show) {
           if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
@@ -345,6 +318,7 @@
 
       window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); };
 
+      // পরীক্ষার হিস্টোরি এবং পারফরম্যান্স নিখুঁতভাবে লোড করার ফাংশন
       async function loadStudentHistory() {
         const historyContainer = document.getElementById('examHistoryContainer');
         const perfBox = document.getElementById('performanceBox');
@@ -352,18 +326,34 @@
           const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
           if (snapshot.exists()) {
             const data = snapshot.val();
+            studentExamDataMap = data; // ডেটা সেভ করে রাখলাম যাতে ক্লিকের পর রিভিউ দেখানো যায়
             let totalExams = 0, totalScore = 0, totalPossible = 0, historyHTML = '';
 
             for (let id in data) {
               const item = data[id];
-              totalExams++; totalScore += item.score; totalPossible += item.total;
+              const score = Number(item.score) || 0;
+              const total = Number(item.total) || 0;
+
+              totalExams++; 
+              totalScore += score; 
+              totalPossible += total;
+
+              let dateStr = 'তারিখ নেই';
+              if (item.submittedAt) {
+                const parsedDate = new Date(item.submittedAt);
+                if (!isNaN(parsedDate)) {
+                  dateStr = parsedDate.toLocaleDateString('bn-BD');
+                }
+              }
+
+              // প্রতিটি হিস্টোরি আইটেমে onclick যুক্ত করা হয়েছে যাতে ক্লিক করলে রিভিউ দেখা যায়
               historyHTML += `
-                <div style="background:#1e293b; padding:8px 12px; border-radius:6px; margin-bottom:6px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
+                <div class="history-item" onclick="openExamReview('${id}')">
                   <div>
                     <div style="color:#38bdf8; font-weight:bold;">${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:#94a3b8; font-size:11px;">${new Date(item.submittedAt).toLocaleDateString('bn-BD')}</div>
+                    <div style="color:#94a3b8; font-size:11px;">${dateStr} (বিস্তারিত দেখতে ক্লিক করুন)</div>
                   </div>
-                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${item.score}/${item.total}</div>
+                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
                 </div>`;
             }
             const accuracy = totalPossible > 0 ? ((totalScore / totalPossible) * 100).toFixed(1) : 0;
@@ -381,7 +371,44 @@
         } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      // নোটিশ লোড করা (পপআপের তালিকার জন্য)
+      // নির্দিষ্ট পরীক্ষার ভুল, ঠিক এবং ব্যাখ্যা সহ রিভিউ দেখানোর ফাংশন
+      window.openExamReview = function(examId) {
+          const exam = studentExamDataMap[examId];
+          if (!exam) return;
+
+          document.getElementById('reviewExamTitle').innerText = exam.examTitle || 'পরীক্ষার বিস্তারিত সমাধান';
+          const reviewBody = document.getElementById('examReviewBody');
+          
+          // যদি ডেটাবেজে পরীক্ষার প্রশ্নের বিবরণ (questions array) সেভ করা থাকে
+          if (exam.questions && Array.isArray(exam.questions)) {
+              let html = '';
+              exam.questions.forEach((q, index) => {
+                  const userAns = exam.userAnswers ? exam.userAnswers[index] : null;
+                  const isCorrect = userAns === q.correctAnswer;
+                  const statusColor = isCorrect ? '#10b981' : '#ef4444';
+                  const statusText = isCorrect ? '✅ সঠিক' : '❌ ভুল';
+
+                  html += `
+                    <div style="background:#1e293b; padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor};">
+                        <div style="font-weight:bold; margin-bottom:6px;">প্রশ্ন ${index + 1}: ${q.question || q.title || ''}</div>
+                        <div style="font-size:12px; color:#94a3b8; margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAns !== undefined ? userAns : 'উত্তর দেননি'}</span></div>
+                        <div style="font-size:12px; color:#38bdf8; margin-bottom:4px;">সঠিক উত্তর: <b>${q.correctAnswer}</b></div>
+                        <div style="font-size:12px; color:#cbd5e1; background:#0f172a; padding:6px; border-radius:4px; margin-top:6px;"><b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
+                    </div>
+                  `;
+              });
+              reviewBody.innerHTML = html;
+          } else {
+              reviewBody.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; padding:20px;">এই পরীক্ষার বিস্তারিত প্রশ্ন বা ব্যাখ্যা ডেটাবেজে সংরক্ষণ করা হয়নি।</p>';
+          }
+
+          document.getElementById('examReviewModal').style.display = 'flex';
+      }
+
+      window.closeExamReviewModal = function() {
+          document.getElementById('examReviewModal').style.display = 'none';
+      }
+
       async function loadNotices() {
           const popupList = document.getElementById('popupNoticeList');
           try {
