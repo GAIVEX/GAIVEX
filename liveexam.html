@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Exam - GAIVEX</title>
+    <title>লাইভ পরীক্ষা - GAIVEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -13,24 +13,14 @@
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
         .logo span { color: #f43f5e; }
 
-        .main-layout { display: flex; max-width: 1200px; margin: 20px auto; padding: 0 15px; width: 100%; gap: 20px; flex: 1; align-items: flex-start; }
-        .container { flex: 1; min-width: 0; }
+        .container { max-width: 850px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
         
-        /* Sidebar Palette */
-        .palette-sidebar { width: 300px; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 15px; position: sticky; top: 80px; display: flex; flex-direction: column; gap: 12px; }
-        .palette-title { font-size: 16px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; }
-        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-height: 350px; overflow-y: auto; padding: 4px; }
-        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .palette-btn.answered { background: #1e3a8a; border-color: #38bdf8; color: #fff; }
-        .palette-btn.bookmarked { background: #ca8a04; border-color: #facc15; color: #fff; }
-        .palette-btn.skipped { background: #9f1239; border-color: #f43f5e; color: #fff; }
-
-        .palette-legend { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 10px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; }
-        .legend-box { width: 12px; height: 12px; border-radius: 3px; }
-
-        .timer-header { background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .timer-box { font-size: 20px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
+        /* Sticky Timer Header with Submit Button */
+        .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 15px; flex-wrap: wrap; }
+        .timer-info { display: flex; align-items: center; gap: 15px; }
+        .timer-box { font-size: 18px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
+        .btn-top-submit { background: #10b981; color: white; border: none; padding: 8px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .btn-top-submit:hover { background: #059669; }
 
         .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
         .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
@@ -48,16 +38,33 @@
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
 
+        /* Bottom Palette Section */
+        .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 30px; margin-bottom: 30px; }
+        .palette-title { font-size: 16px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; padding: 4px; }
+        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .palette-btn.answered { background: #1e3a8a; border-color: #38bdf8; color: #fff; }
+        .palette-btn.bookmarked { background: #ca8a04; border-color: #facc15; color: #fff; }
+
+        .palette-legend { display: flex; gap: 15px; font-size: 12px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 12px; margin-top: 15px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 3px; }
+
         .filter-bar { display: none; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .filter-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
         .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
 
-        .btn-submit { background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; margin-bottom: 30px; transition: 0.3s; }
-        .btn-submit:hover { background: #059669; }
-
         .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
         .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
+
+        /* Custom Modal for Confirmation */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+        .modal-btn { padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; }
+        .btn-confirm { background: #10b981; color: white; }
+        .btn-cancel { background: #475569; color: white; }
 
         .site-footer { background: #1e293b; border-top: 1px solid #334155; padding: 25px 20px 20px; margin-top: auto; text-align: center; }
         .footer-logo { font-size: 20px; font-weight: 700; color: #38bdf8; }
@@ -66,12 +73,6 @@
         .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
         .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
         .social-btn svg { width: 22px; height: 22px; }
-
-        @media(max-width: 900px) {
-            .main-layout { flex-direction: column-reverse; }
-            .palette-sidebar { width: 100%; position: static; margin-bottom: 20px; }
-            .palette-grid { grid-template-columns: repeat(8, 1fr); }
-        }
     </style>
 </head>
 <body>
@@ -81,41 +82,54 @@
         <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 14px;">🏠 হোম</a>
     </header>
 
-    <div class="main-layout">
-        <div class="container">
-            <div class="timer-header">
-                <h3 id="examTitle" style="font-size: 16px; color: #38bdf8;">পরীক্ষা লোড হচ্ছে...</h3>
+    <div class="container">
+        <!-- স্টিকি টাইমার ও সাবমিট বাটন হেডার -->
+        <div class="timer-header">
+            <div class="timer-info">
+                <h3 id="examTitle" style="font-size: 15px; color: #38bdf8;">পরীক্ষা লোড হচ্ছে...</h3>
                 <div class="timer-box" id="timerDisplay">00:00</div>
             </div>
-
-            <div id="resultSummary" style="display: none;"></div>
-
-            <!-- ফিল্টার বার (ফলাফল দেখার পর সক্রিয় হবে) -->
-            <div class="filter-bar" id="filterBar">
-                <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
-                <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
-                <button class="filter-btn" onclick="filterQuestions('wrong')">ভুল উত্তর</button>
-                <button class="filter-btn" onclick="filterQuestions('skipped')">স্কিপড</button>
-                <button class="filter-btn" onclick="filterQuestions('bookmarked')">বুকমার্কড</button>
-            </div>
-
-            <form id="examForm">
-                <div id="questionsContainer"></div>
-                <button type="submit" class="btn-submit" id="submitBtn">পরীক্ষা জমা দিন 🚀</button>
-            </form>
+            <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">পরীক্ষা জমা দিন 🚀</button>
         </div>
 
-        <!-- সাইডবার প্যালেট -->
-        <div class="palette-sidebar">
+        <div id="resultSummary" style="display: none;"></div>
+
+        <!-- ফিল্টার বার -->
+        <div class="filter-bar" id="filterBar">
+            <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
+            <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
+            <button class="filter-btn" onclick="filterQuestions('wrong')">ভুল উত্তর</button>
+            <button class="filter-btn" onclick="filterQuestions('skipped')">স্কিপড</button>
+            <button class="filter-btn" onclick="filterQuestions('bookmarked')">বুকমার্কড</button>
+        </div>
+
+        <form id="examForm" onsubmit="event.preventDefault();">
+            <div id="questionsContainer"></div>
+        </form>
+
+        <!-- নিচের প্রশ্ন প্যালেট -->
+        <div class="palette-section" id="paletteSection">
             <div class="palette-title">
-                <span>প্রশ্ন প্যালেট</span>
+                <span>প্রশ্ন প্যালেট (নেভিগেশন)</span>
                 <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৩০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
             <div class="palette-legend">
-                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> উত্তর দেওয়া হয়েছে</div>
-                <div class="legend-item"><div class="legend-box" style="background:#ca8a04;"></div> বুকমার্ক করা</div>
-                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> বাকি/উত্তরহীন</div>
+                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> উত্তর দেওয়া</div>
+                <div class="legend-item"><div class="legend-box" style="background:#ca8a04;"></div> বুকমার্ক</div>
+                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> বাকি</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- সাবমিট কনফার্মেশন মডাল -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box">
+            <h3 style="color: #38bdf8; margin-bottom: 10px;">পরীক্ষা জমা দিতে চান?</h3>
+            <p id="modalStatsText" style="color: #cbd5e1; font-size: 15px; line-height: 1.5;"></p>
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn btn-cancel" onclick="closeConfirmModal()">ফিরে যান</button>
+                <button type="button" class="modal-btn btn-confirm" onclick="confirmAndSubmit()">হ্যাঁ, জমা দিন</button>
             </div>
         </div>
     </div>
@@ -164,8 +178,9 @@
       let examTimerKey = "gaivex_timer_default";
       let userSelections = {};
       let bookmarkedQuestions = {};
+      let isSubmitted = false;
 
-      // ফায়ারবেসে এডমিন প্যানেল থেকে প্রশ্ন না থাকলে এই ডিফল্ট ৩০টি প্রশ্ন লোড হবে
+      // admin.html বা ফায়ারবেস থেকে প্রশ্ন না থাকলে ডিফল্ট ৩০টি প্রশ্ন লোড হবে
       const defaultExamData = {
         id: "biology_mcq_30_v1",
         title: "🧬 প্রাণীর পরিচিতি — ৩০টি MCQ",
@@ -205,11 +220,9 @@
       };
 
       let examData = defaultExamData;
-      let isSubmitted = false;
 
       async function checkAttemptAndLoad() {
         try {
-          // প্রথমে admin.html বা ফায়ারবেসের ডেটাসেট চেক করা হবে
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
           if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
             examData = snapshot.val();
@@ -321,13 +334,12 @@
         document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
       }
 
-      window.scrollToFunction = function(index) {
+      window.scrollToQuestion = function(index) {
         const box = document.getElementById(`q-box-${index}`);
         if(box) {
           box.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       };
-      window.scrollToQuestion = window.scrollToFunction;
 
       function startTimer() {
         updateTimerDisplay();
@@ -340,7 +352,7 @@
             clearInterval(timerInterval);
             localStorage.removeItem(examTimerKey);
             alert("সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
-            submitExam();
+            submitExamAction();
           }
         }, 1000);
       }
@@ -351,9 +363,31 @@
         document.getElementById('timerDisplay').innerText = `${m}:${s}`;
       }
 
-      async function submitExam(e) {
-        if(e) e.preventDefault();
-        if(isSubmitted) return;
+      window.openConfirmModal = function() {
+        if (isSubmitted) return;
+        const total = examData.questions.length;
+        const answered = Object.keys(userSelections).length;
+        const unanswered = total - answered;
+
+        document.getElementById('modalStatsText').innerHTML = `
+          মোট প্রশ্ন রয়েছে: <b>${total}টি</b><br>
+          আপনি দাগিয়েছেন: <span style="color: #10b981; font-weight: bold;">${answered}টি</span><br>
+          বাকি আছে: <span style="color: #f43f5e; font-weight: bold;">${unanswered}টি</span>
+        `;
+        document.getElementById('confirmModal').style.display = 'flex';
+      };
+
+      window.closeConfirmModal = function() {
+        document.getElementById('confirmModal').style.display = 'none';
+      };
+
+      window.confirmAndSubmit = function() {
+        closeConfirmModal();
+        submitExamAction();
+      };
+
+      async function submitExamAction() {
+        if (isSubmitted) return;
 
         clearInterval(timerInterval);
         localStorage.removeItem(examTimerKey);
@@ -416,8 +450,8 @@
           });
         });
 
-        const submitBtn = document.getElementById('submitBtn');
-        if(submitBtn) submitBtn.style.display = 'none';
+        const topSubmitBtn = document.getElementById('topSubmitBtn');
+        if(topSubmitBtn) topSubmitBtn.style.display = 'none';
 
         const resDiv = document.getElementById('resultSummary');
         resDiv.style.display = 'block';
@@ -433,7 +467,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      // ফিল্টারিং লজিক
       window.filterQuestions = function(type) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
@@ -459,8 +492,6 @@
           card.style.display = show ? 'block' : 'none';
         });
       };
-
-      document.getElementById('examForm').addEventListener('submit', submitExam);
 
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
