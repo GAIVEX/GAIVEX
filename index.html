@@ -100,6 +100,9 @@
 
         .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
         .history-item:hover { border-color:#38bdf8; background:#253346; }
+
+        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
+        select:focus { border-color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -121,8 +124,8 @@
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="index.html" class="active">🏠 হোম</a>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
-                    <!-- থ্রি-ডটস মেনুতে রেজাল্ট অপশনটি রাখা হলো -->
                     <button onclick="openResultModal()">📊 রেজাল্ট</button>
+                    <button onclick="openNotesModal()">📚 নোটস</button>
                     <div id="dropdownAuthAction"></div>
                 </div>
             </div>
@@ -147,10 +150,11 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
-        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট এবং রসায়ন, পদার্থবিজ্ঞান, জীববিজ্ঞান, ম্যাথ বক্সসমূহ -->
+        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
+            <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
             <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
             <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
@@ -158,6 +162,7 @@
         </div>
     </main>
 
+    <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -173,6 +178,7 @@
       </div>
     </div>
 
+    <!-- রেজাল্ট মোডাল -->
     <div id="resultListModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -187,6 +193,45 @@
             <button type="button" class="btn btn-close" onclick="closeResultModal()" style="flex: 1;">বন্ধ করুন</button>
         </div>
       </div>
+    </div>
+
+    <!-- নোটস মোডাল -->
+    <div id="notesModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>📚 অধ্যায়ভিত্তিক নোটস</h3>
+                <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
+            </div>
+            
+            <!-- ফিল্টার ড্রপডাউন -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <select id="filterSubject" onchange="updateStudentPaperOptions()">
+                    <option value="">বিষয় বাছুন</option>
+                    <option value="physics">পদার্থবিজ্ঞান</option>
+                    <option value="chemistry">রসায়ন</option>
+                    <option value="biology">জীববিজ্ঞান</option>
+                    <option value="math">উচ্চতর গণিত</option>
+                </select>
+                <select id="filterPaper" onchange="updateStudentChapterOptions()">
+                    <option value="">পত্র বাছুন</option>
+                    <option value="paper1">১ম পত্র</option>
+                    <option value="paper2">২য় পত্র</option>
+                </select>
+            </div>
+
+            <select id="filterChapter" onchange="fetchStudentNotes()">
+                <option value="">আগে বিষয় ও পত্র বাছুন</option>
+            </select>
+
+            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
+            <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
+                <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
+            </div>
+
+            <div class="btn-group" style="margin-top: 15px;">
+                <button type="button" class="btn btn-close" onclick="closeNotesModal()" style="flex: 1;">বন্ধ করুন</button>
+            </div>
+        </div>
     </div>
 
     <footer class="site-footer">
@@ -208,6 +253,7 @@
         <div style="margin-top:20px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
     </footer>
 
+    <!-- অথেন্টিকেশন মোডাল -->
     <div id="authModal" class="modal">
       <div class="modal-content">
         <div class="tab-menu">
@@ -233,6 +279,7 @@
       </div>
     </div>
 
+    <!-- প্রোফাইল মোডাল -->
     <div id="profileModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -250,6 +297,7 @@
       </div>
     </div>
 
+    <!-- পরীক্ষার রিভিউ মোডাল -->
     <div id="examReviewModal" class="modal">
       <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
@@ -286,6 +334,26 @@
       let currentUser = null;
       let studentExamDataMap = {};
 
+      // অ্যাডমিন প্যানেলের সাথে সামঞ্জস্যपूर्ण অধ্যায়ের ডেটা
+      const chaptersData = {
+          physics: {
+              paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
+              paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"]
+          },
+          chemistry: {
+              paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"],
+              paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
+          },
+          biology: {
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
+              paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
+          },
+          math: {
+              paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
+              paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
+          }
+      };
+
       window.toggleMenu = function() {
           document.getElementById('dropdownMenu').classList.toggle('show');
       }
@@ -317,6 +385,82 @@
 
       window.closeResultModal = function() {
           document.getElementById('resultListModal').style.display = 'none';
+      }
+
+      // নোটস মোডাল কন্ট্রোল ফাংশন
+      window.openNotesModal = () => {
+          document.getElementById('notesModal').style.display = 'flex';
+          document.getElementById('dropdownMenu').classList.remove('show');
+      }
+      window.closeNotesModal = () => document.getElementById('notesModal').style.display = 'none';
+
+      // স্টুডেন্ট নোট ফিল্টার হ্যান্ডলার
+      window.updateStudentPaperOptions = function() {
+          const paperSelect = document.getElementById('filterPaper');
+          paperSelect.innerHTML = '<option value="">পত্র বাছুন</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
+          document.getElementById('filterChapter').innerHTML = '<option value="">আগে পত্র বাছুন</option>';
+          document.getElementById('notesListContainer').innerHTML = '<p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে পত্র ও অধ্যায় সিলেক্ট করুন।</p>';
+      };
+
+      window.updateStudentChapterOptions = function() {
+          const sub = document.getElementById('filterSubject').value;
+          const paper = document.getElementById('filterPaper').value;
+          const chapSelect = document.getElementById('filterChapter');
+          chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
+          if(sub && paper && chaptersData[sub][paper]) {
+              chaptersData[sub][paper].forEach((chap) => {
+                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
+              });
+          }
+      };
+
+      // ফায়ারবেস থেকে নোট ফেচ করে স্টুডেন্টদের দেখানো
+      window.fetchStudentNotes = async function() {
+          const subject = document.getElementById('filterSubject').value;
+          const paper = document.getElementById('filterPaper').value;
+          const chapter = document.getElementById('filterChapter').value;
+          const container = document.getElementById('notesListContainer');
+
+          if (!subject || !paper || !chapter) {
+              container.innerHTML = '<p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে সবগুলো অপশন সিলেক্ট করুন।</p>';
+              return;
+          }
+
+          container.innerHTML = '<p style="color: #38bdf8; text-align: center; font-size: 13px; margin-top: 20px;">নোট লোড হচ্ছে...</p>';
+
+          try {
+              const snapshot = await get(ref(db, 'notes'));
+              if (snapshot.exists()) {
+                  const data = snapshot.val();
+                  let html = '';
+                  
+                  for (let id in data) {
+                      let note = data[id];
+                      if (note.subject === subject && note.paper === paper && note.chapter === chapter) {
+                          let contentDisplay = '';
+                          if (note.contentType === 'pdf') {
+                              contentDisplay = `<a href="${note.contentUrl}" target="_blank" style="display:inline-block; margin-top:10px; background:#0284c7; color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:bold;">📄 পিডিএফ ফাইল দেখুন / ডাউনলোড করুন</a>`;
+                          } else if (note.contentType === 'image') {
+                              contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid #334155;">`;
+                          } else {
+                              contentDisplay = `<p style="color:#cbd5e1; font-size:13px; margin-top:10px; white-space:pre-wrap; background:#0f172a; padding:10px; border-radius:6px;">${note.textContent}</p>`;
+                          }
+
+                          html += `
+                              <div style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:12px; border:1px solid #334155;">
+                                  <h4 style="color:#38bdf8; font-size:15px; margin-bottom:4px;">📌 ${note.title}</h4>
+                                  ${contentDisplay}
+                              </div>
+                          `;
+                      }
+                  }
+                  container.innerHTML = html !== '' ? html : '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top: 20px;">এই অধ্যায়ে কোনো নোট আপলোড করা হয়নি।</p>';
+              } else {
+                  container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top: 20px;">কোনো নোট পাওয়া যায়নি।</p>';
+              }
+          } catch(e) {
+              container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:13px; margin-top: 20px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
+          }
       }
 
       window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
