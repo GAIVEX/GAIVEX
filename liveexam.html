@@ -8,15 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #0b0f19; color: #f8fafc; }
-      .card-bg { background-color: #151c2c; border: 1px solid #2a3447; }
-      .option-locked { pointer-events: none; opacity: 0.8; }
-      .palette-btn { width: 36px; height: 36px; border-radius: 6px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 1px solid #2a3447; }
-      .palette-pending { background: #151c2c; }
-      .palette-answered { background: #06b6d4; color: #0b0f19; }
-      .palette-bookmarked { background: #f59e0b; color: #0b0f19; }
-      .correct { background: #065f46!important; border-color: #10b981!important; }
-      .wrong { background: #9f1239!important; border-color: #ef4444!important; }
-      .timer-warning { color: #ef4444!important; animation: pulse 1s infinite; }
+       .card-bg { background-color: #151c2c; border: 1px solid #2a3447; }
+       .option-locked { pointer-events: none; opacity: 0.7; }
+       .selected-option { border-color: #06b6d4!important; background: #1e3a8a!important; }
+       .palette-btn { width: 36px; height: 36px; border-radius: 6px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 1px solid #2a3447; }
+       .palette-pending { background: #374151; color: #d1d5db; }
+       .palette-answered { background: #06b6d4; color: #0b0f19; }
+       .palette-bookmarked { background: #f59e0b; color: #0b0f19; }
+       .correct { background: #065f46!important; border-color: #10b981!important; }
+       .wrong { background: #9f1239!important; border-color: #ef4444!important; }
+       .timer-warning { color: #ef4444!important; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
@@ -52,6 +53,11 @@
 
             <aside class="w-full lg:w-1/4 card-bg p-4 fixed right-0 top-20 h-[calc(100vh-80px)] overflow-y-auto hidden lg:block">
                 <h4 class="font-bold mb-3">প্রশ্ন প্যালেট</h4>
+                <div class="flex gap-4 mb-3 text-xs">
+                    <span><div class="w-3 h-3 inline-block palette-pending rounded"></div> বাকি</span>
+                    <span><div class="w-3 h-3 inline-block palette-answered rounded"></div> উত্তর</span>
+                    <span><div class="w-3 h-3 inline-block palette-bookmarked rounded"></div> বুকমার্ক</span>
+                </div>
                 <div id="paletteGrid" class="grid grid-cols-5 gap-2"></div>
                 <div class="mt-4 pt-4 border-t border-[#2a3447]">
                     <p>উত্তর: <span id="answeredCount">0</span> / <span id="totalCount">0</span></p>
@@ -99,14 +105,39 @@ const auth = getAuth(app);
 
 let examData, userAnswers = {}, bookmarked = {}, timeLeft = 0, timerInterval, currentUser;
 
-// DEFAULT QUESTIONS - Admin এ না থাকলে এটা আসবে
-const defaultQuestions = Array.from({length: 30}, (_, i) => ({
-    id: i+1, topic: "সাধারণ জ্ঞান",
-    question: `${i+1}. এটি ডিফল্ট প্রশ্ন নম্বর ${i+1}. নিচের কোনটি প্রাণীর বৈশিষ্ট্য?`,
-    options: ["স্বভোজী", "পরভোজী", "আলোকসংশ্লেষণ", "স্থির"],
-    correct: 1,
-    explanation: "প্রাণীরা পরভোজী হয়ে থাকে।"
-}));
+// তোমার দেওয়া ৩০টা প্রশ্ন Full
+const defaultQuestions = [
+{question:"কোষে সবচেয়ে বেশি পরিমাণে প্রাপ্ত অজৈব উপাদান কোনটি?", options:["কার্বন ডাইঅক্সাইড","পানি","খনিজ লবণ","অক্সিজেন"], correct:1, explanation:"প্রোটোপ্লাজমের প্রধান মাধ্যম হলো পানি।", topic:"কোষ রসায়ন"},
+{question:"ডিএনএ অণুতে অ্যাডেনিনের সাথে থাইমিন কয়টি হাইড্রোজেন বন্ড দ্বারা যুক্ত থাকে?", options:["১টি","২টি","৩টি","৪টি"], correct:1, explanation:"A-T এর মধ্যে ২টি হাইড্রোজেন বন্ধন।", topic:"কোষ রসায়ন"},
+{question:"কোনটি প্রোটিনের গঠনকারী একক?", options:["ফ্যাটি অ্যাসিড","গ্লুকোজ","অ্যামিনো অ্যাসিড","নিউক্লিওটাইড"], correct:2, explanation:"অ্যামিনো অ্যাসিড পেপটাইড বন্ড দ্বারা যুক্ত হয়ে প্রোটিন গঠন করে।", topic:"কোষ রসায়ন"},
+{question:"গ্লাইকোসাইডিক বন্ধন কোথায় পাওয়া যায়?", options:["প্রোটিনে","কার্বোহাইড্রেটে","lipids-এ","নিউক্লিক অ্যাসিডে"], correct:1, explanation:"দুটি মনোস্যাকারাইড যুক্ত হওয়ার সময় গ্লাইকোসাইডিক বন্ধন গঠিত হয়।", topic:"কোষ রসায়ন"},
+{question:"লিপিড পানিতে অদ্রবণীয় কেন?", options:["এটি পোলার বলে","এটি অপোলার বলে","এর আণবিক ওজন কম বলে","এতে কার্বন কম থাকে বলে"], correct:1, explanation:"লিপিড অপোলার Hydrocarbon চেইন নিয়ে গঠিত।", topic:"কোষ রসায়ন"},
+{question:"কোষের 'মাস্টার মলিকিউল' বা মূল অণু বলা হয় কাকে?", options:["RNA","DNA","Protein","ATP"], correct:1, explanation:"DNA কোষের সমস্ত জৈবিক কার্যক্রম নিয়ন্ত্রণ করে।", topic:"কোষ রসায়ন"},
+{question:"প্রোটিন অনুতে অ্যামিনো অ্যাসিডগুলোকে কোন বন্ধন দ্বারা যুক্ত থাকে?", options:["গ্লাইকোসাইডিক বন্ধন","পেপটাইড বন্ধন","এস্টার বন্ধন","হাইড্রোজেন বন্ধন"], correct:1, explanation:"পেপটাইড বন্ধন -CO-NH-", topic:"কোষ রসায়ন"},
+{question:"নিচের কোনটি রিডিউসিং বা বিজারক শর্করা?", options:["সুক্রোজ","স্টার্চ","গ্লুকোজ","সেলুলোজ"], correct:2, explanation:"গ্লুকোজ একটি রিডিউসিং শর্করা।", topic:"কোষ রসায়ন"},
+{question:"কোন এনজাইমের প্রোটিন বহির্ভূত অংশকে কী বলা হয়?", options:["কো-এনজাইম","অ্যাপোএনজাইম","হলোএনজাইম","প্রোস্টেটিক গ্রুপ"], correct:1, explanation:"প্রোটিন অংশকে অ্যাপোএনজাইম বলে।", topic:"কোষ রসায়ন"},
+{question:"উদ্ভিদের কোষপ্রাচীরের প্রধান উপাদান কোনটি?", options:["পেকটিন","লিগনিন","সেলুলোজ","কাইটিন"], correct:2, explanation:"সেলুলোজ উদ্ভিদের কোষপ্রাচীরের প্রধান উপাদান।", topic:"কোষ রসায়ন"},
+{question:"ফ্যাটি অ্যাসিড এবং গ্লিসারল মিলে কি তৈরি করে?", options:["কার্বোহাইড্রেট","লিপিড","প্রোটিন","নিউক্লিক অ্যাসিড"], correct:1, explanation:"লিপিড বা ট্রাইগ্লিসারাইড গঠন করে।", topic:"কোষ রসায়ন"},
+{question:"আরএনএ (RNA)-তে থাইমিনের পরিবর্তে কোন নাইট্রোজেনাস বেস থাকে?", options:["ইউরাসিল","অ্যাডেনিন","সাইটোসিন","গুয়ানিন"], correct:0, explanation:"RNA-তে U থাকে।", topic:"কোষ রসায়ন"},
+{question:"কোন ভিটামিনটি পানিতে দ্রবণীয়?", options:["ভিটামিন এ","ভিটামিন সি","ভিটামিন ডি","ভিটামিন কে"], correct:1, explanation:"ভিটামিন B ও C পানিতে দ্রবণীয়।", topic:"কোষ রসায়ন"},
+{question:"ATP-এর পূর্ণরূপ কী?", options:["Adenosine Triphosphate","Adenine Triphosphate","Adenosine Diphosphate","Adenosine Tetraphosphate"], correct:0, explanation:"কোষের শক্তি মুদ্রা।", topic:"কোষ রসায়ন"},
+{question:"এনজাইমের প্রকৃতি কীরূপ?", options:["লিপিড জাতীয়","প্রোটিন জাতীয়","শর্করা জাতীয়","হরমোন জাতীয়"], correct:1, explanation:"প্রায় সব এনজাইমই প্রোটিন।", topic:"কোষ রসায়ন"},
+{question:"কোনটি হেপটিক বা স্টোরেজ পলিস্যাকারাইড?", options:["সেলুলোজ","গ্লাইকোজেন","কাইটিন","পেকটিন"], correct:1, explanation:"প্রাণীদেহে গ্লাইকোজেন সঞ্চিত থাকে।", topic:"কোষ রসায়ন"},
+{question:"ডিএনএ অণুর দ্বিতন্ত্রী কাঠামোর ব্যাস কত?", options:["২০ ন্যানোমিটার","২ ন্যানোমিটার (বা ২০ Å)","৩৪ ন্যানোমিটার","৩.৪ ন্যানোমিটার"], correct:1, explanation:"ডিএনএ ডাবল হেলিক্সের ব্যাস ২ ন্যানোমিটার।", topic:"কোষ রসায়ন"},
+{question:"পতঙ্গের কঙ্কাল তৈরিতে কোন পলিস্যাকারাইডটি ব্যবহৃত হয়?", options:["সেলুলোজ","কাইটিন","হেপারিন","ইনুলিন"], correct:1, explanation:"আর্থোপোডার কঙ্কাল কাইটিন দিয়ে গঠিত।", topic:"কোষ রসায়ন"},
+{question:"একটি আদর্শ নিউক্লিওটাইডের কয়টি অংশ থাকে?", options:["২টি","৩টি","৪টি","৫টি"], correct:1, explanation:"বেস + শর্করা + ফসফেট", topic:"কোষ রসায়ন"},
+{question:"প্রোটিনের দ্বিতীয় স্তরের গঠনে কোন বন্ধন প্রধানত দেখা যায়?", options:["পেপটাইড বন্ধন","হাইড্রোজেন বন্ধন","ডাইসালফাইড বন্ধন","গ্লাইকোসাইডিক বন্ধন"], correct:1, explanation:"আলফা-হেলিক্সে H-bond", topic:"কোষ রসায়ন"},
+{question:"কোনটি প্রোটিন তৈরির সবচেয়ে ক্ষুদ্রতম একক?", options:["পেপটাইড","অ্যামিনো অ্যাসিড","নিউক্লিওসাইড","ফ্যাটি অ্যাসিড"], correct:1, explanation:"অ্যামিনো অ্যাসিড", topic:"কোষ রসায়ন"},
+{question:"কোষের মোট ওজনের শতকরা কত ভাগ পানি থাকে?", options:["১০-২০ ভাগ","৩০-৪০ ভাগ","৭০-৯০ ভাগ","১০০ ভাগ"], correct:2, explanation:"৭০-৯০%", topic:"কোষ রসায়ন"},
+{question:"ফ্যাটের আদ্রবিশ্লেষণে কোনটি উৎপন্ন হয়?", options:["গ্লুকোজ ও ফ্রুক্টোজ","গ্লিসারল ও ফ্যাটি অ্যাসিড","অ্যামিনো অ্যাসিড","নিউক্লিওটাইড"], correct:1, explanation:"গ্লিসারল ও ফ্যাটি অ্যাসিড", topic:"কোষ রসায়ন"},
+{question:"উদ্ভিদ কোষে সঞ্চিত খাদ্য হিসেবে কোনটি থাকে?", options:["গ্লাইকোজেন","স্টার্চ বা শ্বেতসার","সুক্রোজ","সেলুলোজ"], correct:1, explanation:"উদ্ভিদে স্টার্চ", topic:"কোষ রসায়ন"},
+{question:"মানুষের রক্তে গ্লুকোজের স্বাভাবিক মাত্রা কত?", options:["২-৩ মিলিগ্রাম/ডিএল","৮০-১২০ মিলিগ্রাম/ডিএল","২০০-৩০০ মিলিগ্রাম/ডিএল","৫০ মিলিগ্রাম/ডিএল"], correct:1, explanation:"৮০-১২০ mg/dL", topic:"কোষ রসায়ন"},
+{question:"কোন নিউক্লিক অ্যাসিডকে 'অ্যাডাপ্টর মলিকিউল' বলা হয়?", options:["mRNA","tRNA","rRNA","DNA"], correct:1, explanation:"tRNA অ্যামিনো অ্যাসিড বহন করে।", topic:"কোষ রসায়ন"},
+{question:"নিচের কোনটি অ্যারোমেটিক অ্যামিনো অ্যাসিড?", options:["গ্লাইসিন","ট্রিপটোফ্যান","অ্যালানিন","ভ্যালিন"], correct:1, explanation:"ট্রিপটোফ্যান", topic:"কোষ রসায়ন"},
+{question:"এনজাইমের কাজ কী?", options:["রাসায়নিক বিক্রিয়ার গতি বৃদ্ধি করা","কোষ বিভাজন বন্ধ করা","শক্তি শোষণ করা","নতুন কোষ তৈরি করা"], correct:0, explanation:"জৈব অনুঘটক", topic:"কোষ রসায়ন"},
+{question:"ডিএনএ অণুর প্রতি প্যাঁচের দৈর্ঘ্য কত?", options:["০.৩৪ ন্যানোমিটার","৩.৪ ন্যানোমিটার (বা ৩৪ Å)","২০ ন্যানোমিটার","১০ ন্যানোমিটার"], correct:1, explanation:"প্রতি প্যাঁচে ৩.৪ nm", topic:"কোষ রসায়ন"},
+{question:"লিপিডের দ্রাবক কোনটি?", options:["পানি","এসিটোন","লঘু এসিড","এসিটিক এসিড"], correct:1, explanation:"এসিটোন, ইথার, ক্লোরোফর্ম", topic:"কোষ রসায়ন"}
+];
 
 onAuthStateChanged(auth, (user) => {
     if (!user) { alert("পরীক্ষা দিতে লগইন করুন"); window.location.href = "index.html"; return; }
@@ -115,36 +146,45 @@ onAuthStateChanged(auth, (user) => {
 });
 
 async function loadExamData() {
-    const snap = await get(ref(db, 'live_exams/live_daily_exam'));
-
-    // DYNAMIC: Admin এ যা আছে তাই নিবে। না থাকলে Default 30 টা 20 মিনিট
-    if (snap.exists() && snap.val().questions?.length > 0) {
-        examData = snap.val();
-    } else {
-        examData = { title: "ডিফল্ট লাইভ পরীক্ষা", duration: 20, questions: defaultQuestions };
+    try {
+        const snap = await get(ref(db, 'live_exams/live_daily_exam'));
+        if (snap.exists() && snap.val().questions?.length > 0) {
+            examData = snap.val();
+        } else {
+            examData = { title: "কোষ রসায়ন: গুরুত্বপূর্ণ ৩০টি MCQ", duration: 60, questions: defaultQuestions };
+        }
+    } catch (error) {
+        examData = { title: "কোষ রসায়ন: গুরুত্বপূর্ণ ৩০টি MCQ", duration: 60, questions: defaultQuestions };
     }
 
     const totalQ = examData.questions.length;
-    const totalMin = examData.duration || 20;
-    timeLeft = totalMin * 60; // সেকেন্ডে কনভার্ট
-
-    // Start Screen এ Dynamic ডাটা বসানো
+    const totalMin = examData.duration || 60;
+    timeLeft = totalMin * 60;
     document.getElementById('totalQ').innerText = totalQ;
     document.getElementById('totalTime').innerText = totalMin;
     document.getElementById('totalCount').innerText = totalQ;
     document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
-
-    renderPalette(totalQ);
+    updateTimer();
+    renderPalette();
 }
 
-function renderPalette(total) {
+function renderPalette() {
     const grid = document.getElementById('paletteGrid');
-    // Grid column Dynamic: 10 টা হলে 5 কলাম, 100 টা হলে 10 কলাম
-    const cols = total > 50? 10 : total > 20? 5 : 4;
-    grid.className = `grid grid-cols-${cols} gap-2`;
     grid.innerHTML = examData.questions.map((q, i) =>
         `<div class="palette-btn palette-pending" id="p-${i}" onclick="scrollToQ(${i})">${i+1}</div>`
     ).join('');
+}
+
+function updatePaletteStatus(i) {
+    const btn = document.getElementById(`p-${i}`);
+    if(!btn) return;
+    if(bookmarked[i]) {
+        btn.className = "palette-btn palette-bookmarked";
+    } else if(userAnswers[i]!== undefined) {
+        btn.className = "palette-btn palette-answered";
+    } else {
+        btn.className = "palette-btn palette-pending";
+    }
 }
 
 window.startExam = () => {
@@ -160,44 +200,45 @@ function renderQuestions() {
         <div class="card-bg p-4 rounded-lg mb-4" id="q-${i}">
             <div class="flex justify-between">
                 <p class="font-bold">${i+1}. ${q.question}</p>
-                <button onclick="toggleBookmark(${i})" class="text-2xl">${bookmarked[i]? '★' : '☆'}</button>
+                <button onclick="toggleBookmark(${i})" id="bookmark-${i}" class="text-2xl">${bookmarked[i]? '★' : '☆'}</button>
             </div>
             <div class="mt-3 space-y-2">
                 ${q.options.map((opt, j) => `
-                    <label class="flex items-center gap-3 p-2 rounded border-[#2a3447] cursor-pointer hover:border-cyan-500" onclick="selectAnswer(${i}, ${j}, this)">
+                    <label id="opt-${i}-${j}" class="flex items-center gap-3 p-3 rounded border-[#2a3447] cursor-pointer hover:border-cyan-500" onclick="selectAnswer(${i}, ${j}, this)">
                         <input type="radio" name="q${i}" value="${j}" class="hidden">
                         <span>${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</span>
                     </label>
                 `).join('')}
             </div>
-            <div class="explanation mt-3 p-3 bg-[#0b0f19] rounded hidden" id="exp-${i}"></div>
         </div>
     `).join('');
 }
 
 window.selectAnswer = (qIndex, oIndex, el) => {
-    if(userAnswers[qIndex]!== undefined) return; // Lock System
+    if(userAnswers[qIndex]!== undefined) return;
     userAnswers[qIndex] = oIndex;
     el.parentElement.querySelectorAll('label').forEach(l => l.classList.add('option-locked'));
-    el.classList.add('border-cyan-400');
-    document.getElementById(`p-${qIndex}`).className = "palette-btn palette-answered";
+    el.classList.add('selected-option');
     document.getElementById('answeredCount').innerText = Object.keys(userAnswers).length;
+    updatePaletteStatus(qIndex);
 }
 
 window.toggleBookmark = (i) => {
     bookmarked[i] =!bookmarked[i];
-    const cls = bookmarked[i]? 'palette-bookmarked' : userAnswers[i]!== undefined? 'palette-answered' : 'palette-pending';
-    document.getElementById(`p-${i}`).className = `palette-btn ${cls}`;
+    document.getElementById(`bookmark-${i}`).innerText = bookmarked[i]? '★' : '☆';
+    updatePaletteStatus(i);
 }
 
 window.scrollToQ = (i) => document.getElementById(`q-${i}`).scrollIntoView({behavior: 'smooth'});
 
 function startTimer() {
-    updateTimer();
     timerInterval = setInterval(() => {
         timeLeft--;
         updateTimer();
-        if(timeLeft <= 0) submitExam();
+        if(timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitExam();
+        }
     }, 1000);
 }
 
@@ -205,8 +246,7 @@ function updateTimer() {
     const m = Math.floor(timeLeft/60), s = timeLeft%60;
     const timerEl = document.getElementById('timer');
     timerEl.innerText = `${m}:${s.toString().padStart(2,'0')}`;
-    // শেষ 5 মিনিট বা মোট সময়ের 10% বাকি থাকলে Warning
-    if(timeLeft <= 300 || timeLeft <= (examData.duration*60*0.1)) timerEl.classList.add('timer-warning');
+    if(timeLeft <= 300) timerEl.classList.add('timer-warning');
 }
 
 window.openSubmitModal = () => {
@@ -218,20 +258,17 @@ window.closeSubmitModal = () => document.getElementById('submitModal').style.dis
 window.submitExam = async () => {
     clearInterval(timerInterval);
     closeSubmitModal();
-    let correct=0, wrong=0, topicStats={};
+    let correct=0, wrong=0;
 
     examData.questions.forEach((q,i) => {
         const ans = userAnswers[i];
         if(ans === undefined) return;
         if(ans === q.correct) correct++; else wrong++;
-        topicStats[q.topic] = topicStats[q.topic] || {total:0, correct:0};
-        topicStats[q.topic].total++;
-        if(ans === q.correct) topicStats[q.topic].correct++;
     });
 
     const total = examData.questions.length;
     const skipped = total - correct - wrong;
-    const score = (correct - wrong*0.25).toFixed(2);
+    const score = Math.max(0, correct - (wrong * 0.25)).toFixed(2);
 
     document.getElementById('resultModal').style.display = 'flex';
     document.getElementById('scoreBoard').innerHTML = `
@@ -241,28 +278,35 @@ window.submitExam = async () => {
             <div><p class="text-2xl font-bold text-red-400">${wrong}</p><p>ভুল</p></div>
             <div><p class="text-2xl font-bold">${skipped}</p><p>স্কিপ</p></div>
         </div>
-        <h3 class="font-bold mt-6 mb-2">টপিক ভিত্তিক বিশ্লেষণ</h3>
-        ${Object.keys(topicStats).map(t => `<div class="mb-2"><p>${t}: ${((topicStats[t].correct/topicStats[t].total)*100).toFixed(0)}%</p><div class="w-full bg-gray-700 rounded-full h-2"><div class="bg-cyan-400 h-2 rounded-full" style="width:${(topicStats[t].correct/topicStats[t].total)*100}%"></div></div></div>`).join('')}
     `;
-    if(currentUser) await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {examTitle: examData.title, score, correct, wrong, skipped});
-    renderResults('all');
+
+    if(currentUser) {
+        try {
+            await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {examTitle: examData.title, score, correct, wrong, skipped});
+        } catch (e) {}
+    }
+    filterQ('all');
 }
 
-function renderResults(filter) {
+window.filterQ = (filter) => {
     const container = document.getElementById('resultContainer');
     container.innerHTML = examData.questions.map((q,i) => {
         const ans = userAnswers[i];
-        let show = filter === 'all' || (filter==='correct' && ans===q.correct) || (filter==='wrong' && ans!==q.correct && ans!==undefined) || (filter==='skipped' && ans===undefined);
+        let show = filter === 'all' ||
+                   (filter === 'correct' && ans === q.correct) ||
+                   (filter === 'wrong' && ans!== q.correct && ans!== undefined) ||
+                   (filter === 'skipped' && ans === undefined);
         if(!show) return '';
         return `
         <div class="card-bg p-4 rounded mb-3">
-            <p class="font-bold">${i+1}. ${q.question}</p>
-            ${q.options.map((opt,j) => `<p class="p-1 rounded ${j===q.correct? 'correct' : ans===j? 'wrong' : ''}">${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</p>`).join('')}
-            <div class="explanation mt-2 p-2 bg-[#0b0f19] rounded"><b>ব্যাখ্যা:</b> ${q.explanation}</div>
-        </div>`
+            <p class="font-bold mb-2">${i+1}. ${q.question}</p>
+            <div class="space-y-1">
+                ${q.options.map((opt,j) => `<p class="p-2 rounded border border-[#2a3447] ${j === q.correct? 'correct' : (ans === j? 'wrong' : '')}">${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</p>`).join('')}
+            </div>
+            <div class="explanation mt-3 p-2 bg-[#0b0f19] rounded text-sm"><b>ব্যাখ্যা:</b> ${q.explanation}</div>
+        </div>`;
     }).join('');
 }
-window.filterQ = renderResults;
 </script>
 </body>
 </html>
