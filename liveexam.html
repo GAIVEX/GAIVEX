@@ -4,324 +4,265 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>লাইভ পরীক্ষা - GAIVEX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
-        
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; }
-        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
-        .logo span { color: #f43f5e; }
-
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
-        
-        .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .timer-box { font-size: 20px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
-
-        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; }
-        .question-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #f8fafc; line-height: 1.5; }
-        
-        .options-list { display: flex; flex-direction: column; gap: 10px; }
-        
-        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 15px; display: flex; align-items: center; gap: 12px; color: #f8fafc; }
-        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
-        .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
-
-        .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; }
-        .option-item.disabled-option { cursor: not-allowed; opacity: 0.7; }
-
-        .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
-        .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
-
-        .btn-submit { background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; margin-bottom: 30px; transition: 0.3s; }
-        .btn-submit:hover { background: #059669; }
-
-        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
-
-        .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-        .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
-
-        .site-footer { background: #1e293b; border-top: 1px solid #334155; padding: 25px 20px 20px; margin-top: auto; text-align: center; }
-        .footer-logo { font-size: 20px; font-weight: 700; color: #38bdf8; }
-        .footer-logo span { color: #f43f5e; }
-        .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 10px; }
-        .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
-        .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .social-btn svg { width: 22px; height: 22px; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #0b0f19; color: #f8fafc; }
+      .card-bg { background-color: #151c2c; border: 1px solid #2a3447; }
+      .option-locked { pointer-events: none; opacity: 0.8; }
+      .palette-btn { width: 36px; height: 36px; border-radius: 6px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 1px solid #2a3447; }
+      .palette-pending { background: #151c2c; }
+      .palette-answered { background: #06b6d4; color: #0b0f19; }
+      .palette-bookmarked { background: #f59e0b; color: #0b0f19; }
+      .correct { background: #065f46!important; border-color: #10b981!important; }
+      .wrong { background: #9f1239!important; border-color: #ef4444!important; }
+      .timer-warning { color: #ef4444!important; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <header class="navbar">
-        <a href="index.html" class="logo">GAIVEX<span>.</span></a>
-        <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 14px;">🏠 হোম</a>
-    </header>
-
-    <div class="container">
-        <div class="timer-header">
-            <h3 id="examTitle" style="font-size: 16px; color: #38bdf8;">পরীক্ষা লোড হচ্ছে...</h3>
-            <div class="timer-box" id="timerDisplay">00:00</div>
+    <!-- START SCREEN MODAL -->
+    <div id="startModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+        <div class="card-bg p-8 rounded-xl max-w-2xl w-full">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">GAIVEX লাইভ পরীক্ষার নিয়মাবলী</h2>
+            <ul class="space-y-2 text-gray-300">
+                <li>১. মোট প্রশ্ন: <b id="totalQ">0</b> টি MCQ</li>
+                <li>২. সময়: <b id="totalTime">0</b> মিনিট</li>
+                <li>৩. নেগেটিভ মার্কিং: প্রতিটি ভুল উত্তরের জন্য <b>-0.25</b></li>
+                <li>৪. একবার উত্তর দিলে আর পরিবর্তন করা যাবে না</li>
+                <li>৫. প্রশ্ন বুকমার্ক করে পরে রিভিউ করতে পারবেন</li>
+            </ul>
+            <button onclick="startExam()" class="w-full mt-6 bg-cyan-500 text-black font-bold py-3 rounded-lg hover:bg-cyan-400">পরীক্ষা শুরু করুন</button>
         </div>
-
-        <div id="resultSummary" style="display: none;"></div>
-
-        <form id="examForm">
-            <div id="questionsContainer"></div>
-            <button type="submit" class="btn-submit" id="submitBtn">পরীক্ষা জমা দিন 🚀</button>
-        </form>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-logo">GAIVEX<span>.</span></div>
-        <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
-        <div class="social-links">
-            <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
-                <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-            <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
-                <svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
-            <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube">
-                <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
+    <!-- MAIN LAYOUT -->
+    <div id="examUI" class="hidden">
+        <header class="fixed top-0 left-0 right-0 card-bg p-4 flex justify-between items-center z-40 border-b border-[#2a3447]">
+            <h3 id="examTitle" class="font-bold text-cyan-400">লাইভ মডেল টেস্ট</h3>
+            <div id="timer" class="text-xl font-bold">00:00</div>
+        </header>
+
+        <div class="flex pt-20">
+            <main class="w-full lg:w-3/4 p-4">
+                <div id="questionsContainer"></div>
+                <button onclick="openSubmitModal()" class="w-full mt-6 bg-green-600 text-white font-bold py-3 rounded-lg">পরীক্ষা সাবমিট করুন</button>
+            </main>
+
+            <aside class="w-full lg:w-1/4 card-bg p-4 fixed right-0 top-20 h-[calc(100vh-80px)] overflow-y-auto hidden lg:block">
+                <h4 class="font-bold mb-3">প্রশ্ন প্যালেট</h4>
+                <div id="paletteGrid" class="grid grid-cols-5 gap-2"></div>
+                <div class="mt-4 pt-4 border-t border-[#2a3447]">
+                    <p>উত্তর: <span id="answeredCount">0</span> / <span id="totalCount">0</span></p>
+                </div>
+            </aside>
         </div>
-        <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
-    </footer>
+    </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
-        authDomain: "gaivexexam.firebaseapp.com",
-        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-        projectId: "gaivexexam",
-        storageBucket: "gaivexexam.firebasestorage.app",
-        messagingSenderId: "956204530190",
-        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      const auth = getAuth(app);
-
-      let currentUser = null;
-      let timerInterval = null;
-      let timeRemaining = 1200;
-      let activeExamKey = "gaivex_exam_default";
-
-      // ডিফল্ট ৩০টি MCQ প্রশ্ন
-      const defaultExamData = {
-        id: "biology_mcq_30_v1",
-        title: "🧬 প্রাণীর পরিচিতি — ৩০টি MCQ",
-        duration: 20,
-        questions: [
-          { question: "প্রাণীদের দেহের গঠনগত ও কার্যগত মৌলিক একক কোনটি?", options: ["টিস্যু", "অঙ্গ", "কোষ", "অঙ্গতন্ত্র"], correct: 2, explanation: "কোষ হলো জীবদেহের গঠন ও কাজের মৌলিক একক।" },
-          { question: "কোন বৈশিষ্ট্যটি প্রাণীদের উদ্ভিদ থেকে পৃথক করতে সবচেয়ে গুরুত্বপূর্ণ?", options: ["কোষীয় গঠন", "শ্বসন", "পরভোজী পুষ্টি", "বিপাক"], correct: 2, explanation: "প্রাণীদের পুষ্টির ধরন পরভোজী (heterotrophic)।" },
-          { question: "প্রাণীর দেহে টিস্যু গঠিত হয়—", options: ["অঙ্গ থেকে", "একই ধরনের কোষের সমষ্টি থেকে", "অঙ্গতন্ত্র থেকে", "বিভিন্ন অঙ্গের সমন্বয়ে"], correct: 1, explanation: "একই গঠন ও কাজের কোষসমূহের সমষ্টিকে টিস্যু বলে।" },
-          { question: "প্রাণীর টিস্যুর প্রধান শ্রেণি কয়টি?", options: ["২টি", "৩টি", "৪টি", "৫টি"], correct: 2, explanation: "আবরণী, যোজক, পেশি ও স্নায়ু টিস্যু।" },
-          { question: "দেহের বাইরের আবরণ ও বিভিন্ন অঙ্গের অভ্যন্তরীণ আবরণ গঠন করে কোন টিস্যু?", options: ["যোজক", "আবরণী", "পেশি", "স্নায়ু"], correct: 1, explanation: "আবরণী টিস্যু বহিরাবরণ তৈরি করে।" },
-          { question: "রক্ত কোন ধরনের টিস্যু?", options: ["আবরণী", "পেশি", "যোজক", "স্নায়ু"], correct: 2, explanation: "রক্ত একটি তরল যোজক টিস্যু।" },
-          { question: "কোন টিস্যুর প্রধান কাজ দেহের বিভিন্ন অংশের মধ্যে সংকেত পরিবহন?", options: ["আবরণী", "যোজক", "পেশি", "স্নায়ু"], correct: 3, explanation: "স্নায়ু টিস্যু সংকেত পরিবহনে কাজ করে।" },
-          { question: "প্রাণীর দেহে চলন ও অঙ্গসঞ্চালনের জন্য প্রধানত কোন টিস্যু দায়ী?", options: ["পেশি", "আবরণী", "যোজক", "স্নায়ু"], correct: 0, explanation: "পেশি টিস্যু চলন ও অঙ্গসঞ্চালন ঘটায়।" },
-          { question: "দ্বিপার্শ্বীয় প্রতিসাম্যকে কী বলা হয়?", options: ["Radial symmetry", "Bilateral symmetry", "Spherical symmetry", "Asymmetry"], correct: 1, explanation: "ডান ও বাম দুটি সমান অংশ পাওয়া গেলে তাকে Bilateral symmetry বলে।" },
-          { question: "হাইড্রার দেহে কোন ধরনের প্রতিসাম্য দেখা যায়?", options: ["দ্বিপার্শ্বীয়", "অপ্রতিসাম্য", "অরীয়", "গোলীয়"], correct: 2, explanation: "হাইড্রার অরীয় প্রতিসাম্য (radial symmetry) রয়েছে।" },
-          { question: "কোন প্রাণী অপ্রতিসম?", options: ["Hydra", "Sycon", "Earthworm", "Cockroach"], correct: 1, explanation: "Sycon একটি অপ্রতিসম স্পঞ্জ।" },
-          { question: "ভ্রূণের তিনটি জার্ম স্তর হলো—", options: ["Ectoderm, Mesoderm, Endoderm", "Epidermis, Dermis, Mesoderm", "Ectoderm, Epidermis, Endoderm", "Mesoderm, Dermis, Endoderm"], correct: 0, explanation: "এক্টোডার্ম, মেসোডার্ম ও এন্ডোডার্ম।" },
-          { question: "কোনটি দ্বিস্তরীয় (diploblastic) প্রাণী?", options: ["কেঁচো", "তেলাপোকা", "Hydra", "মানুষ"], correct: 2, explanation: "হাইড্রার ভ্রূণে দুটি জার্ম স্তর থাকে।" },
-          { question: "কোনটি ত্রিস্তরীয় প্রাণী?", options: ["Hydra", "Jellyfish", "Earthworm", "Sponge"], correct: 2, explanation: "কেঁচো একটি triploblastic প্রাণী।" },
-          { question: "Coelom বলতে কী বোঝায়?", options: ["অন্ত্রের গহ্বর", "দেহপ্রাচীর ও পরিপাকনালির মধ্যবর্তী মেসোডার্ম-আবৃত গহ্বর", "রক্তনালির গহ্বর", "শ্বাসনালির গহ্বর"], correct: 1, explanation: "মেসোডার্ম দ্বারা সম্পূর্ণ আবৃত দেহগহ্বর।" },
-          { question: "কোন প্রাণী Acoelomate?", options: ["Earthworm", "Cockroach", "Planaria", "Human"], correct: 2, explanation: "Planaria হলো acoelomate।" },
-          { question: "Pseudocoelom দেখা যায় কোন পর্বে?", options: ["Platyhelminthes", "Nematoda", "Annelida", "Mollusca"], correct: 1, explanation: "Nematoda পর্বে ছদ্মসিলোম থাকে।" },
-          { question: "প্রকৃত সিলোম প্রথম সুস্পষ্টভাবে কোন পর্বে দেখা যায়?", options: ["Porifera", "Cnidaria", "Platyhelminthes", "Annelida"], correct: 3, explanation: "Annelida পর্বে প্রকৃত সিলোম থাকে।" },
-          { question: "প্রাণীদেহের খণ্ডায়নকে কী বলা হয়?", options: ["Cephalization", "Segmentation", "Metamerism", "Regeneration"], correct: 2, explanation: "অনুদৈর্ঘ্য খণ্ডায়নকে metamerism বলে।" },
-          { question: "কেঁচোর দেহের খণ্ডায়ন কোন ধরনের?", options: ["Radial", "Metameric", "Asymmetrical", "Irregular"], correct: 1, explanation: "কেঁচোর দেহে Metameric খণ্ডায়ন থাকে।" },
-          { question: "Cephalization বলতে বোঝায়—", options: ["দেহের খণ্ডায়ন", "মাথায় সংবেদী অঙ্গ ও স্নায়ুকেন্দ্রের ঘনীভবন", "দেহের অরীয় বিভাজন", "দেহের বৃদ্ধি"], correct: 1, explanation: "মাথায় স্নায়ুকেন্দ্রের ঘনীভবন।" },
-          { question: "নিচের কোন পর্বের প্রাণী জলনালিতন্ত্রের জন্য বিশেষভাবে পরিচিত?", options: ["Porifera", "Annelida", "Arthropoda", "Mollusca"], correct: 0, explanation: "Porifera পর্বে canal system থাকে।" },
-          { question: "Cnidaria পর্বের প্রাণীদের বিশেষ বৈশিষ্ট্য কোনটি?", options: ["Nephridia", "Cnidoblast", "Malpighian tubule", "Flame cell"], correct: 1, explanation: "Cnidaria পর্বের বৈশিষ্ট্য Cnidoblast।" },
-          { question: "Platyhelminthes-এর প্রধান বৈশিষ্ট্য কোনটি?", options: ["দেহ খণ্ডিত", "দেহ চ্যাপ্টা", "দেহে jointed appendage আছে", "জলনালিতন্ত্র আছে"], correct: 1, explanation: "এদের দেহ চ্যাপ্টা প্রকৃতির।" },
-          { question: "Arthropoda পর্বের প্রধান বৈশিষ্ট্য কোনটি?", options: ["অখণ্ডিত দেহ", "সন্ধিযুক্ত উপাঙ্গ", "জলনালিতন্ত্র", "নেফ্রিডিয়া"], correct: 1, explanation: "এদের সন্ধিযুক্ত পা/উপাঙ্গ থাকে।" },
-          { question: "প্রাণীজগতের সবচেয়ে বড় পর্ব কোনটি?", options: ["Mollusca", "Annelida", "Arthropoda", "Chordata"], correct: 2, explanation: "Arthropoda হলো বৃহত্তম পর্ব।" },
-          { question: "Mollusca পর্বের সাধারণ বৈশিষ্ট্য কোনটি?", options: ["সাধারণত নরম দেহ", "সন্ধিযুক্ত পা", "দেহে নেমাটোসিস্ট", "দেহ সবসময় খণ্ডিত"], correct: 0, explanation: "মলাস্ক পর্বের প্রাণী নরম দেহযুক্ত।" },
-          { question: "Echinodermata-এর একান্ত বৈশিষ্ট্য কোনটি?", options: ["জলসংবহন তন্ত্র", "জলনালিকা তন্ত্র বা water vascular system", "সন্ধিযুক্ত পা", "নেফ্রিডিয়া"], correct: 1, explanation: "এদের water vascular system থাকে।" },
-          { question: "Chordata পর্বের প্রধান শনাক্তকারী বৈশিষ্ট্য কোনটি?", options: ["Cnidoblast", "Notochord", "Flame cell", "Water vascular system"], correct: 1, explanation: "Chordata-এর মূল বৈশিষ্ট্য Notochord।" },
-          { question: "নিচের কোনটি অমেরুদণ্ডী প্রাণী?", options: ["মাছ", "ব্যাঙ", "কেঁচো", "পাখি"], correct: 2, explanation: "কেঁচো অমেরুদণ্ডী প্রাণী।" }
-        ]
-      };
-
-      let examData = defaultExamData;
-
-      async function checkAttemptAndLoad() {
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
-          // ফায়ারবেসে ডাটা এবং প্রশ্ন থাকলে সেটি দেখাবে, না থাকলে ডিফল্ট ৩০টি প্রশ্ন লোড করবে
-          if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
-            examData = snapshot.val();
-          } else {
-            examData = defaultExamData;
-          }
-        } catch(e) {
-          console.log("Database fetch fallback: Loading default questions.");
-          examData = defaultExamData;
-        }
-
-        document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
-        timeRemaining = (examData.duration || 20) * 60;
-        activeExamKey = "gaivex_submitted_" + (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
-
-        renderQuestions();
-
-        const savedResult = localStorage.getItem(activeExamKey);
-        if (savedResult) {
-          const resultData = JSON.parse(savedResult);
-          showSubmittedResult(resultData.userAnswers, resultData.score);
-        } else {
-          startTimer();
-        }
-      }
-
-      function renderQuestions() {
-        const container = document.getElementById('questionsContainer');
-        const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
-
-        container.innerHTML = examData.questions.map((q, qIndex) => `
-          <div class="question-card" id="q-box-${qIndex}">
-            <div class="question-title">${qIndex + 1}. ${q.question}</div>
-            <div class="options-list">
-              ${(q.options || []).map((opt, oIndex) => `
-                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
-                  <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="window.selectOption(${qIndex}, ${oIndex})">
-                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
-                </label>
-              `).join('')}
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div id="submitModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
+        <div class="card-bg p-8 rounded-xl max-w-md w-full text-center">
+            <h3 class="text-xl font-bold mb-4">পরীক্ষা সাবমিট করবেন?</h3>
+            <p>আপনি <b id="confirmAnswered">0</b> টি প্রশ্নের উত্তর দিয়েছেন।</p>
+            <div class="flex gap-4 mt-6">
+                <button onclick="submitExam()" class="flex-1 bg-green-600 py-2 rounded">হ্যাঁ, সাবমিট</button>
+                <button onclick="closeSubmitModal()" class="flex-1 bg-red-600 py-2 rounded">না</button>
             </div>
-            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
-              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+        </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="card-bg p-6 rounded-xl max-w-4xl w-full my-8">
+            <h2 class="text-2xl font-bold text-center text-cyan-400 mb-4">ফলাফল</h2>
+            <div id="scoreBoard"></div>
+            <div id="filterBar" class="flex gap-2 my-4 flex-wrap">
+                <button onclick="filterQ('all')" class="px-3 py-1 bg-cyan-500 rounded text-black">সবগুলো</button>
+                <button onclick="filterQ('correct')" class="px-3 py-1 bg-green-600 rounded">সঠিক</button>
+                <button onclick="filterQ('wrong')" class="px-3 py-1 bg-red-600 rounded">ভুল</button>
+                <button onclick="filterQ('skipped')" class="px-3 py-1 bg-gray-600 rounded">স্কিপ</button>
             </div>
-          </div>
-        `).join('');
+            <div id="resultContainer"></div>
+        </div>
+    </div>
 
-        window.selectOption = function(qIndex, oIndex) {
-          const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
-          allLabels.forEach(lbl => lbl.classList.remove('selected-option'));
-          
-          const selectedLbl = document.getElementById(`opt-label-${qIndex}-${oIndex}`);
-          if(selectedLbl) {
-            selectedLbl.classList.add('selected-option');
-          }
-        };
-      }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-      function startTimer() {
-        updateTimerDisplay();
-        timerInterval = setInterval(() => {
-          timeRemaining--;
-          updateTimerDisplay();
-          if (timeRemaining <= 0) {
-            clearInterval(timerInterval);
-            alert("সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
-            submitExam();
-          }
-        }, 1000);
-      }
+const firebaseConfig = { apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ", authDomain: "gaivexexam.firebaseapp.com", databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com", projectId: "gaivexexam", storageBucket: "gaivexexam.firebasestorage.app", messagingSenderId: "956204530190", appId: "1:956204530190:web:4e5550afefa3e314c99a5f" };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
 
-      function updateTimerDisplay() {
-        const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
-        const s = (timeRemaining % 60).toString().padStart(2, '0');
-        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-      }
+let examData, userAnswers = {}, bookmarked = {}, timeLeft = 0, timerInterval, currentUser;
 
-      async function submitExam(e) {
-        if(e) e.preventDefault();
-        clearInterval(timerInterval);
+// DEFAULT QUESTIONS - Admin এ না থাকলে এটা আসবে
+const defaultQuestions = Array.from({length: 30}, (_, i) => ({
+    id: i+1, topic: "সাধারণ জ্ঞান",
+    question: `${i+1}. এটি ডিফল্ট প্রশ্ন নম্বর ${i+1}. নিচের কোনটি প্রাণীর বৈশিষ্ট্য?`,
+    options: ["স্বভোজী", "পরভোজী", "আলোকসংশ্লেষণ", "স্থির"],
+    correct: 1,
+    explanation: "প্রাণীরা পরভোজী হয়ে থাকে।"
+}));
 
-        let score = 0;
-        const total = (examData.questions || []).length;
-        const formData = new FormData(document.getElementById('examForm'));
-        const userAnswers = {};
+onAuthStateChanged(auth, (user) => {
+    if (!user) { alert("পরীক্ষা দিতে লগইন করুন"); window.location.href = "index.html"; return; }
+    currentUser = user;
+    loadExamData();
+});
 
-        (examData.questions || []).forEach((q, i) => {
-          const selectedVal = formData.get(`q_${i}`);
-          const selected = selectedVal !== null ? parseInt(selectedVal, 10) : null;
-          const correctVal = parseInt(q.correct, 10);
-          
-          userAnswers[i] = selected;
-          if (selected === correctVal) score++;
-        });
+async function loadExamData() {
+    const snap = await get(ref(db, 'live_exams/live_daily_exam'));
 
-        localStorage.setItem(activeExamKey, JSON.stringify({
-          score: score,
-          userAnswers: userAnswers
-        }));
+    // DYNAMIC: Admin এ যা আছে তাই নিবে। না থাকলে Default 30 টা 20 মিনিট
+    if (snap.exists() && snap.val().questions?.length > 0) {
+        examData = snap.val();
+    } else {
+        examData = { title: "ডিফল্ট লাইভ পরীক্ষা", duration: 20, questions: defaultQuestions };
+    }
 
-        showSubmittedResult(userAnswers, score);
+    const totalQ = examData.questions.length;
+    const totalMin = examData.duration || 20;
+    timeLeft = totalMin * 60; // সেকেন্ডে কনভার্ট
 
-        if (currentUser) {
-          try {
-            await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
-              examTitle: examData.title,
-              score: score,
-              total: total,
-              submittedAt: new Date().toISOString()
-            });
-          } catch(err) { console.error("Error saving score:", err); }
-        }
-      }
+    // Start Screen এ Dynamic ডাটা বসানো
+    document.getElementById('totalQ').innerText = totalQ;
+    document.getElementById('totalTime').innerText = totalMin;
+    document.getElementById('totalCount').innerText = totalQ;
+    document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
 
-      function showSubmittedResult(userAnswers, score) {
-        const total = (examData.questions || []).length;
-        clearInterval(timerInterval);
-        document.getElementById('timerDisplay').innerText = "00:00";
+    renderPalette(totalQ);
+}
 
-        (examData.questions || []).forEach((q, i) => {
-          const selected = userAnswers[i];
-          const correctVal = parseInt(q.correct, 10);
-          const expBox = document.getElementById(`exp-${i}`);
-          if(expBox) expBox.style.display = 'block';
+function renderPalette(total) {
+    const grid = document.getElementById('paletteGrid');
+    // Grid column Dynamic: 10 টা হলে 5 কলাম, 100 টা হলে 10 কলাম
+    const cols = total > 50? 10 : total > 20? 5 : 4;
+    grid.className = `grid grid-cols-${cols} gap-2`;
+    grid.innerHTML = examData.questions.map((q, i) =>
+        `<div class="palette-btn palette-pending" id="p-${i}" onclick="scrollToQ(${i})">${i+1}</div>`
+    ).join('');
+}
 
-          (q.options || []).forEach((_, oIndex) => {
-            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
-            if(lbl) {
-              lbl.classList.remove('selected-option');
-              const input = lbl.querySelector('input');
-              if(input) {
-                input.disabled = true;
-                if (selected === oIndex) input.checked = true;
-              }
+window.startExam = () => {
+    document.getElementById('startModal').style.display = 'none';
+    document.getElementById('examUI').classList.remove('hidden');
+    renderQuestions();
+    startTimer();
+}
 
-              if (oIndex === correctVal) lbl.classList.add('correct-opt');
-              if (selected === oIndex && selected !== correctVal) lbl.classList.add('wrong-opt');
-              if (selected !== oIndex && oIndex !== correctVal) lbl.classList.add('disabled-option');
-            }
-          });
-        });
+function renderQuestions() {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = examData.questions.map((q, i) => `
+        <div class="card-bg p-4 rounded-lg mb-4" id="q-${i}">
+            <div class="flex justify-between">
+                <p class="font-bold">${i+1}. ${q.question}</p>
+                <button onclick="toggleBookmark(${i})" class="text-2xl">${bookmarked[i]? '★' : '☆'}</button>
+            </div>
+            <div class="mt-3 space-y-2">
+                ${q.options.map((opt, j) => `
+                    <label class="flex items-center gap-3 p-2 rounded border-[#2a3447] cursor-pointer hover:border-cyan-500" onclick="selectAnswer(${i}, ${j}, this)">
+                        <input type="radio" name="q${i}" value="${j}" class="hidden">
+                        <span>${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <div class="explanation mt-3 p-3 bg-[#0b0f19] rounded hidden" id="exp-${i}"></div>
+        </div>
+    `).join('');
+}
 
-        document.getElementById('submitBtn').style.display = 'none';
+window.selectAnswer = (qIndex, oIndex, el) => {
+    if(userAnswers[qIndex]!== undefined) return; // Lock System
+    userAnswers[qIndex] = oIndex;
+    el.parentElement.querySelectorAll('label').forEach(l => l.classList.add('option-locked'));
+    el.classList.add('border-cyan-400');
+    document.getElementById(`p-${qIndex}`).className = "palette-btn palette-answered";
+    document.getElementById('answeredCount').innerText = Object.keys(userAnswers).length;
+}
 
-        const resDiv = document.getElementById('resultSummary');
-        resDiv.style.display = 'block';
-        resDiv.innerHTML = `
-          <div class="score-board">
-            <h2>পরীক্ষার ফলাফল</h2>
-            <p class="already-submitted-msg">⚠️ আপনি এই বিষয়টির পরীক্ষা ইতোমধ্যে জমা দিয়েছেন!</p>
-            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
-            <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা দেওয়া হলো।</p>
-          </div>
-        `;
+window.toggleBookmark = (i) => {
+    bookmarked[i] =!bookmarked[i];
+    const cls = bookmarked[i]? 'palette-bookmarked' : userAnswers[i]!== undefined? 'palette-answered' : 'palette-pending';
+    document.getElementById(`p-${i}`).className = `palette-btn ${cls}`;
+}
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+window.scrollToQ = (i) => document.getElementById(`q-${i}`).scrollIntoView({behavior: 'smooth'});
 
-      document.getElementById('examForm').addEventListener('submit', submitExam);
+function startTimer() {
+    updateTimer();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        if(timeLeft <= 0) submitExam();
+    }, 1000);
+}
 
-      onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-      });
+function updateTimer() {
+    const m = Math.floor(timeLeft/60), s = timeLeft%60;
+    const timerEl = document.getElementById('timer');
+    timerEl.innerText = `${m}:${s.toString().padStart(2,'0')}`;
+    // শেষ 5 মিনিট বা মোট সময়ের 10% বাকি থাকলে Warning
+    if(timeLeft <= 300 || timeLeft <= (examData.duration*60*0.1)) timerEl.classList.add('timer-warning');
+}
 
-      checkAttemptAndLoad();
-    </script>
+window.openSubmitModal = () => {
+    document.getElementById('confirmAnswered').innerText = Object.keys(userAnswers).length;
+    document.getElementById('submitModal').style.display = 'flex';
+}
+window.closeSubmitModal = () => document.getElementById('submitModal').style.display = 'none';
+
+window.submitExam = async () => {
+    clearInterval(timerInterval);
+    closeSubmitModal();
+    let correct=0, wrong=0, topicStats={};
+
+    examData.questions.forEach((q,i) => {
+        const ans = userAnswers[i];
+        if(ans === undefined) return;
+        if(ans === q.correct) correct++; else wrong++;
+        topicStats[q.topic] = topicStats[q.topic] || {total:0, correct:0};
+        topicStats[q.topic].total++;
+        if(ans === q.correct) topicStats[q.topic].correct++;
+    });
+
+    const total = examData.questions.length;
+    const skipped = total - correct - wrong;
+    const score = (correct - wrong*0.25).toFixed(2);
+
+    document.getElementById('resultModal').style.display = 'flex';
+    document.getElementById('scoreBoard').innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div><p class="text-2xl font-bold text-green-400">${score}</p><p>মোট নম্বর</p></div>
+            <div><p class="text-2xl font-bold">${correct}</p><p>সঠিক</p></div>
+            <div><p class="text-2xl font-bold text-red-400">${wrong}</p><p>ভুল</p></div>
+            <div><p class="text-2xl font-bold">${skipped}</p><p>স্কিপ</p></div>
+        </div>
+        <h3 class="font-bold mt-6 mb-2">টপিক ভিত্তিক বিশ্লেষণ</h3>
+        ${Object.keys(topicStats).map(t => `<div class="mb-2"><p>${t}: ${((topicStats[t].correct/topicStats[t].total)*100).toFixed(0)}%</p><div class="w-full bg-gray-700 rounded-full h-2"><div class="bg-cyan-400 h-2 rounded-full" style="width:${(topicStats[t].correct/topicStats[t].total)*100}%"></div></div></div>`).join('')}
+    `;
+    if(currentUser) await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {examTitle: examData.title, score, correct, wrong, skipped});
+    renderResults('all');
+}
+
+function renderResults(filter) {
+    const container = document.getElementById('resultContainer');
+    container.innerHTML = examData.questions.map((q,i) => {
+        const ans = userAnswers[i];
+        let show = filter === 'all' || (filter==='correct' && ans===q.correct) || (filter==='wrong' && ans!==q.correct && ans!==undefined) || (filter==='skipped' && ans===undefined);
+        if(!show) return '';
+        return `
+        <div class="card-bg p-4 rounded mb-3">
+            <p class="font-bold">${i+1}. ${q.question}</p>
+            ${q.options.map((opt,j) => `<p class="p-1 rounded ${j===q.correct? 'correct' : ans===j? 'wrong' : ''}">${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</p>`).join('')}
+            <div class="explanation mt-2 p-2 bg-[#0b0f19] rounded"><b>ব্যাখ্যা:</b> ${q.explanation}</div>
+        </div>`
+    }).join('');
+}
+window.filterQ = renderResults;
+</script>
 </body>
 </html>
