@@ -86,7 +86,6 @@
         .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
         .modal-close-x:hover { color: #f43f5e; }
 
-        /* হিস্ট্রি আইটেম যাতে ক্লিকযোগ্য মনে হয় */
         .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
         .history-item:hover { border-color:#38bdf8; background:#253346; }
     </style>
@@ -346,7 +345,6 @@
                 }
               }
 
-              // প্রতিটি হিস্টোরি আইটেমে onclick যুক্ত করা হয়েছে যাতে ক্লিক করলে রিভিউ দেখা যায়
               historyHTML += `
                 <div class="history-item" onclick="openExamReview('${id}')">
                   <div>
@@ -371,7 +369,7 @@
         } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      // নির্দিষ্ট পরীক্ষার ভুল, ঠিক এবং ব্যাখ্যা সহ রিভিউ দেখানোর ফাংশন
+      // নির্দিষ্ট পরীক্ষার ভুল, ঠিক এবং ব্যাখ্যা সহ রিভিউ দেখানোর ফাংশন (আপডেট করা হয়েছে যাতে নাম্বারের বদলে আসল অপশনের টেক্সট দেখায়)
       window.openExamReview = function(examId) {
           const exam = studentExamDataMap[examId];
           if (!exam) return;
@@ -379,19 +377,29 @@
           document.getElementById('reviewExamTitle').innerText = exam.examTitle || 'পরীক্ষার বিস্তারিত সমাধান';
           const reviewBody = document.getElementById('examReviewBody');
           
-          // যদি ডেটাবেজে পরীক্ষার প্রশ্নের বিবরণ (questions array) সেভ করা থাকে
           if (exam.questions && Array.isArray(exam.questions)) {
               let html = '';
               exam.questions.forEach((q, index) => {
-                  const userAns = exam.userAnswers ? exam.userAnswers[index] : null;
-                  const isCorrect = userAns === q.correctAnswer;
+                  const userAnsRaw = exam.userAnswers ? exam.userAnswers[index] : null;
+                  
+                  // ব্যবহারকারীর উত্তর যদি ইনডেক্স (0, 1, 2, 3) হয়, তবে অপশন থেকে আসল টেক্সট বের করে নেওয়া
+                  let userAnsText = 'উত্তর দেননি';
+                  if (userAnsRaw !== null && userAnsRaw !== undefined) {
+                      if (typeof userAnsRaw === 'number' && q.options && q.options[userAnsRaw] !== undefined) {
+                          userAnsText = q.options[userAnsRaw];
+                      } else {
+                          userAnsText = userAnsRaw;
+                      }
+                  }
+
+                  const isCorrect = userAnsText === q.correctAnswer;
                   const statusColor = isCorrect ? '#10b981' : '#ef4444';
                   const statusText = isCorrect ? '✅ সঠিক' : '❌ ভুল';
 
                   html += `
                     <div style="background:#1e293b; padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor};">
                         <div style="font-weight:bold; margin-bottom:6px;">প্রশ্ন ${index + 1}: ${q.question || q.title || ''}</div>
-                        <div style="font-size:12px; color:#94a3b8; margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAns !== undefined ? userAns : 'উত্তর দেননি'}</span></div>
+                        <div style="font-size:12px; color:#94a3b8; margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAnsText}</span></div>
                         <div style="font-size:12px; color:#38bdf8; margin-bottom:4px;">সঠিক উত্তর: <b>${q.correctAnswer}</b></div>
                         <div style="font-size:12px; color:#cbd5e1; background:#0f172a; padding:6px; border-radius:4px; margin-top:6px;"><b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
                     </div>
