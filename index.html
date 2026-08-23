@@ -103,6 +103,7 @@
                     <a href="biology.html">🧬 জীববিজ্ঞান</a>
                     <a href="math.html">📐 উচ্চতর গণিত</a>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
+                    <button onclick="openResultModalFromMenu()">📊 রেজাল্ট</button>
                 </div>
             </div>
             <a href="index.html" class="logo">GAIVEX<span>.</span></a>
@@ -138,6 +139,7 @@
             <a href="biology.html" class="subject-box"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></a>
             <a href="math.html" class="subject-box"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></a>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ</h3></div>
+            <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
         </div>
     </main>
 
@@ -152,6 +154,23 @@
         </div>
         <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-close" onclick="closeNoticeModal()" style="flex: 1;">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- স্বতন্ত্র রেজাল্ট লিস্ট পপআপ মোডাল -->
+    <div id="resultListModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h3>📊 সকল পরীক্ষার রেজাল্ট</h3>
+            <button class="modal-close-x" onclick="closeResultModal()">&times;</button>
+        </div>
+        <div style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">যে পরীক্ষার রেজাল্ট ও সমাধান দেখতে চান তার ওপর ক্লিক করুন:</div>
+        <div id="allExamResultListContainer" style="max-height:320px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
+            <p style="color:#94a3b8; text-align:center; font-size:13px;">লোড হচ্ছে...</p>
+        </div>
+        <div class="btn-group" style="margin-top: 15px;">
+            <button type="button" class="btn btn-close" onclick="closeResultModal()" style="flex: 1;">বন্ধ করুন</button>
         </div>
       </div>
     </div>
@@ -278,6 +297,22 @@
           document.getElementById('noticeModal').style.display = 'none';
       }
 
+      // আলাদা রেজাল্ট পপআপ ওপেন ও ক্লোজ করার ফাংশন
+      window.openResultModal = async function() {
+          if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
+          document.getElementById('resultListModal').style.display = 'flex';
+          document.getElementById('dropdownMenu').classList.remove('show');
+          await loadAllExamResultsList();
+      }
+
+      window.openResultModalFromMenu = function() {
+          openResultModal();
+      }
+
+      window.closeResultModal = function() {
+          document.getElementById('resultListModal').style.display = 'none';
+      }
+
       window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
       
       window.toggleProfileModal = async (show) => {
@@ -317,7 +352,46 @@
 
       window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); };
 
-      // পরীক্ষার হিস্টোরি এবং পারফরম্যান্স নিখুঁতভাবে লোড করার ফাংশন
+      // সব পরীক্ষার রেজাল্ট লিস্ট আলাদা পপআপে লোড করার ফাংশন
+      async function loadAllExamResultsList() {
+        const container = document.getElementById('allExamResultListContainer');
+        try {
+          const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            studentExamDataMap = data;
+            let listHTML = '';
+
+            for (let id in data) {
+              const item = data[id];
+              const score = Number(item.score) || 0;
+              const total = Number(item.total) || 0;
+
+              let dateStr = 'তারিখ নেই';
+              if (item.submittedAt) {
+                const parsedDate = new Date(item.submittedAt);
+                if (!isNaN(parsedDate)) {
+                  dateStr = parsedDate.toLocaleDateString('bn-BD');
+                }
+              }
+
+              listHTML += `
+                <div class="history-item" onclick="closeResultModal(); openExamReview('${id}')">
+                  <div>
+                    <div style="color:#38bdf8; font-weight:bold;">📌 ${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
+                    <div style="color:#94a3b8; font-size:11px;">${dateStr} (সমাধান দেখতে ক্লিক করুন)</div>
+                  </div>
+                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
+                </div>`;
+            }
+            container.innerHTML = listHTML;
+          } else {
+            container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:12px;">কোনো পরীক্ষার রেজাল্ট পাওয়া যায়নি।</p>';
+          }
+        } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
+      }
+
+      // পরীক্ষার হিস্টোরি এবং পারফরম্যান্স প্রোফাইল পপআপের জন্য
       async function loadStudentHistory() {
         const historyContainer = document.getElementById('examHistoryContainer');
         const perfBox = document.getElementById('performanceBox');
@@ -325,7 +399,7 @@
           const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
           if (snapshot.exists()) {
             const data = snapshot.val();
-            studentExamDataMap = data; // ডেটা সেভ করে রাখলাম যাতে ক্লিকের পর রিভিউ দেখানো যায়
+            studentExamDataMap = data;
             let totalExams = 0, totalScore = 0, totalPossible = 0, historyHTML = '';
 
             for (let id in data) {
@@ -346,7 +420,7 @@
               }
 
               historyHTML += `
-                <div class="history-item" onclick="openExamReview('${id}')">
+                <div class="history-item" onclick="toggleProfileModal(false); openExamReview('${id}')">
                   <div>
                     <div style="color:#38bdf8; font-weight:bold;">${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
                     <div style="color:#94a3b8; font-size:11px;">${dateStr} (বিস্তারিত দেখতে ক্লিক করুন)</div>
@@ -369,7 +443,7 @@
         } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      // নির্দিষ্ট পরীক্ষার ভুল, ঠিক এবং ব্যাখ্যা সহ রিভিউ দেখানোর ফাংশন (আপডেট করা হয়েছে যাতে নাম্বারের বদলে আসল অপশনের টেক্সট দেখায়)
+      // নির্দিষ্ট পরীক্ষার ভুল, ঠিক এবং ব্যাখ্যা সহ রিভিউ দেখানোর ফাংশন
       window.openExamReview = function(examId) {
           const exam = studentExamDataMap[examId];
           if (!exam) return;
@@ -382,7 +456,6 @@
               exam.questions.forEach((q, index) => {
                   const userAnsRaw = exam.userAnswers ? exam.userAnswers[index] : null;
                   
-                  // ব্যবহারকারীর উত্তর যদি ইনডেক্স (0, 1, 2, 3) হয়, তবে অপশন থেকে আসল টেক্সট বের করে নেওয়া
                   let userAnsText = 'উত্তর দেননি';
                   if (userAnsRaw !== null && userAnsRaw !== undefined) {
                       if (typeof userAnsRaw === 'number' && q.options && q.options[userAnsRaw] !== undefined) {
@@ -394,7 +467,6 @@
 
                   const isCorrect = userAnsText === q.correctAnswer;
                   const statusColor = isCorrect ? '#10b981' : '#ef4444';
-                  const statusText = isCorrect ? '✅ সঠিক' : '❌ ভুল';
 
                   html += `
                     <div style="background:#1e293b; padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor};">
