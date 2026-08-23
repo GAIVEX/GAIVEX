@@ -666,6 +666,12 @@
 
       // Exam System Functions
       async function openExam(subject, paper, chapter) {
+        if (!currentUser) {
+          alert("পরীক্ষা দিতে হলে আগে অবশ্যই লগইন করতে হবে!");
+          toggleAuthModal(true);
+          return;
+        }
+
         const cleanChapter = chapter.replace(/[.#$/[\]]/g, "_");
         activeStorageKey = `${subject}/${paper}/${cleanChapter}`;
 
