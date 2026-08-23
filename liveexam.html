@@ -15,7 +15,7 @@
 
         .container { max-width: 850px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
         
-        /* Sticky Timer Header with Submit Button */
+        /* Sticky Timer Header with English Submit Button */
         .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 15px; flex-wrap: wrap; }
         .timer-info { display: flex; align-items: center; gap: 15px; }
         .timer-box { font-size: 18px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
@@ -83,13 +83,13 @@
     </header>
 
     <div class="container">
-        <!-- স্টিকি টাইমার ও সাবমিট বাটন হেডার -->
+        <!-- স্টিকি টাইমার ও ইংলিশ সাবমিট বাটন হেডার -->
         <div class="timer-header">
             <div class="timer-info">
                 <h3 id="examTitle" style="font-size: 15px; color: #38bdf8;">পরীক্ষা লোড হচ্ছে...</h3>
                 <div class="timer-box" id="timerDisplay">00:00</div>
             </div>
-            <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">পরীক্ষা জমা দিন 🚀</button>
+            <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
         </div>
 
         <div id="resultSummary" style="display: none;"></div>
@@ -125,11 +125,11 @@
     <!-- সাবমিট কনফার্মেশন মডাল -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-box">
-            <h3 style="color: #38bdf8; margin-bottom: 10px;">পরীক্ষা জমা দিতে চান?</h3>
+            <h3 style="color: #38bdf8; margin-bottom: 10px;">Are you sure you want to submit?</h3>
             <p id="modalStatsText" style="color: #cbd5e1; font-size: 15px; line-height: 1.5;"></p>
             <div class="modal-buttons">
                 <button type="button" class="modal-btn btn-cancel" onclick="closeConfirmModal()">ফিরে যান</button>
-                <button type="button" class="modal-btn btn-confirm" onclick="confirmAndSubmit()">হ্যাঁ, জমা দিন</button>
+                <button type="button" class="modal-btn btn-confirm" onclick="confirmAndSubmit()">Yes, Submit</button>
             </div>
         </div>
     </div>
@@ -375,9 +375,9 @@
         const unanswered = total - answered;
 
         document.getElementById('modalStatsText').innerHTML = `
-          মোট প্রশ্ন রয়েছে: <b>${total}টি</b><br>
-          আপনি দাগিয়েছেন: <span style="color: #10b981; font-weight: bold;">${answered}টি</span><br>
-          বাকি আছে: <span style="color: #f43f5e; font-weight: bold;">${unanswered}টি</span>
+          Total Questions: <b>${total}</b><br>
+          Answered: <span style="color: #10b981; font-weight: bold;">${answered}</span><br>
+          Unanswered: <span style="color: #f43f5e; font-weight: bold;">${unanswered}</span>
         `;
         document.getElementById('confirmModal').style.display = 'flex';
       };
@@ -398,27 +398,38 @@
         localStorage.removeItem(examTimerKey);
         isSubmitted = true;
 
-        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
         const total = (examData.questions || []).length;
 
         (examData.questions || []).forEach((q, i) => {
           const selected = userSelections[i];
           const correctVal = parseInt(q.correct, 10);
-          if (selected === correctVal) score++;
+          if (selected !== undefined) {
+            if (selected === correctVal) {
+              correctCount++;
+            } else {
+              wrongCount++;
+            }
+          }
         });
 
+        // Calculate score with 0.25 negative marking per wrong answer
+        let finalScore = correctCount - (wrongCount * 0.25);
+        if (finalScore < 0) finalScore = 0;
+
         localStorage.setItem(activeExamKey, JSON.stringify({
-          score: score,
+          score: finalScore,
           userAnswers: userSelections
         }));
 
-        showSubmittedResult(userSelections, score);
+        showSubmittedResult(userSelections, finalScore);
 
         if (currentUser) {
           try {
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
               examTitle: examData.title,
-              score: score,
+              score: finalScore,
               total: total,
               submittedAt: new Date().toISOString()
             });
@@ -450,7 +461,6 @@
 
               if (oIndex === correctVal) lbl.classList.add('correct-opt');
               if (selected === oIndex && selected !== correctVal) lbl.classList.add('wrong-opt');
-              if (selected !== oIndex && oIndex !== correctVal) lbl.classList.add('disabled-option');
             }
           });
         });
@@ -464,7 +474,7 @@
           <div class="score-board">
             <h2>পরীক্ষার ফলাফল</h2>
             <p class="already-submitted-msg">⚠️ আপনি এই বিষয়টির পরীক্ষা ইতোমধ্যে জমা দিয়েছেন!</p>
-            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
+            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total} (প্রতি ভুল উত্তরে ০.২৫ কাটা হয়েছে)</p>
             <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা ফিল্টার করে দেখতে পারেন।</p>
           </div>
         `;
@@ -476,7 +486,6 @@
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
 
-        examData.questions.questions?.forEach ? null : null; // Safe check
         examData.questions.forEach((q, i) => {
           const card = document.getElementById(`q-box-${i}`);
           const selected = userSelections[i];
