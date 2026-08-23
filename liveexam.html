@@ -15,11 +15,12 @@
 
         .container { max-width: 850px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
         
-        /* Sticky Timer Header with English Submit Button */
-        .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 15px; flex-wrap: wrap; }
-        .timer-info { display: flex; align-items: center; gap: 15px; }
-        .timer-box { font-size: 18px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
-        .btn-top-submit { background: #10b981; color: white; border: none; padding: 8px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        /* Sticky Timer Header - Fixed Layout to Keep Button Side by Side */
+        .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; flex-wrap: nowrap; }
+        .timer-info { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        #examTitle { font-size: 13px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        .timer-box { font-size: 16px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #f43f5e; white-space: nowrap; }
+        .btn-top-submit { background: #10b981; color: white; border: none; padding: 7px 14px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
         .btn-top-submit:hover { background: #059669; }
 
         .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
@@ -83,10 +84,10 @@
     </header>
 
     <div class="container">
-        <!-- স্টিকি টাইমার ও ইংলিশ সাবমিট বাটন হেডার -->
+        <!-- স্টিকি টাইমার ও সাবমিট বাটন হেডার (এক লাইনে ফিক্সড) -->
         <div class="timer-header">
             <div class="timer-info">
-                <h3 id="examTitle" style="font-size: 15px; color: #38bdf8;">পরীক্ষা লোড হচ্ছে...</h3>
+                <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
                 <div class="timer-box" id="timerDisplay">00:00</div>
             </div>
             <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
@@ -285,7 +286,6 @@
           
           userSelections[qIndex] = oIndex;
           
-          // অপশন লক করে দেওয়া
           const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
           allLabels.forEach((lbl, idx) => {
             const input = lbl.querySelector('input');
@@ -414,7 +414,6 @@
           }
         });
 
-        // Calculate score with 0.25 negative marking per wrong answer
         let finalScore = correctCount - (wrongCount * 0.25);
         if (finalScore < 0) finalScore = 0;
 
@@ -499,7 +498,7 @@
           } else if (type === 'wrong' && selected !== undefined && selected !== correctVal) {
             show = true;
           } else if (type === 'skipped' && selected === undefined) {
-            show = true;
+            show, show = true;
           } else if (type === 'bookmarked' && bookmarkedQuestions[i]) {
             show = true;
           }
