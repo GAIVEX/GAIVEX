@@ -43,14 +43,12 @@
         .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
         .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
 
-        .live-exam-banner { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #f43f5e; border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: left; }
-        .live-badge { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-        .practice-exam-banner { background: linear-gradient(135deg, #1e293b 0%, #0f2744 100%); border: 2px solid #38bdf8; border-radius: 16px; padding: 20px; margin-bottom: 30px; text-align: left; }
-        .practice-badge { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
-        .btn-practice { background: #38bdf8; color: #0f172a; padding: 10px 24px; display: inline-block; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.3s; }
-        .btn-practice:hover { background: #7dd3fc; transform: translateY(-2px); }
+        /* নতুন স্টাইলের Live ও Practice Exam বক্স */
+        .exam-banner-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 20px; text-align: left; transition: 0.3s; text-decoration: none; display: block; color: white; }
+        .exam-banner-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #253346; }
+        
+        .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+        .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
 
         .notice-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
         .notice-item h4 { color: #f8fafc; font-size: 15px; margin-bottom: 5px; }
@@ -120,18 +118,17 @@
         <h1>স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span class="highlight">GAIVEX</span> এর সাথে</h1>
         <p>মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট ও সমাধান।</p>
         
-        <div class="live-exam-banner">
-            <div class="live-badge">🔴 LIVE EXAM</div>
-            <h2 id="liveExamTitle" style="font-size: 18px; color: #38bdf8; margin-bottom: 6px;">অনলাইন ডেইলি লাইভ পরীক্ষা</h2>
-            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px;">সকল বিষয়ের গুরুত্বপূর্ণ মডেল টেস্ট। এখনই পরীক্ষা দিয়ে সমাধান দেখুন।</p>
-            <a href="liveexam.html" class="btn btn-save" style="width: auto; padding: 10px 24px; display: inline-block;">পরীক্ষা দিন 📝</a>
-        </div>
+        <!-- নতুন ডিজাইনের Live Exam বক্স -->
+        <a href="liveexam.html" class="exam-banner-box">
+            <div class="live-badge-new">🔴 LIVE EXAM</div>
+            <h2 id="liveExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">অনলাইন ডেইলি লাইভ পরীক্ষা</h2>
+        </a>
 
-        <div class="practice-exam-banner">
-            <div class="practice-badge">📝 PRACTICE EXAM</div>
-            <h2 style="font-size: 18px; color: #38bdf8; margin-bottom: 15px;">Practice Exam</h2>
-            <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="btn-practice">Practice Exam 📚</a>
-        </div>
+        <!-- নতুন ডিজাইনের Practice Exam বক্স -->
+        <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="exam-banner-box">
+            <div class="practice-badge-new">📝 PRACTICE EXAM</div>
+            <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
+        </a>
 
         <div class="subject-grid">
             <a href="physics.html" class="subject-box"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></a>
@@ -217,7 +214,7 @@
       </div>
     </div>
 
-    <!-- Student Profile & Performance Portal Modal -->
+    <!-- Student Profile Modal -->
     <div id="profileModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -235,16 +232,14 @@
       </div>
     </div>
 
-    <!-- Exam Detailed Review Modal (ভুল-ঠিক এবং ব্যাখ্যা দেখার পপআপ) -->
+    <!-- Exam Review Modal -->
     <div id="examReviewModal" class="modal">
       <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
             <h3 id="reviewExamTitle">পরীক্ষার বিস্তারিত সমাধান</h3>
             <button class="modal-close-x" onclick="closeExamReviewModal()">&times;</button>
         </div>
-        <div id="examReviewBody" style="max-height: 400px; overflow-y: auto; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
-            <!-- প্রশ্ন ও উত্তরের বিবরণ এখানে ডাইনামিক লোড হবে -->
-        </div>
+        <div id="examReviewBody" style="max-height: 400px; overflow-y: auto; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;"></div>
         <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-save" onclick="closeExamReviewModal()" style="flex: 1;">ফিরে যান</button>
         </div>
@@ -273,7 +268,7 @@
       const googleProvider = new GoogleAuthProvider();
 
       let currentUser = null;
-      let studentExamDataMap = {}; // ইউজারের সব পরীক্ষার ডেটা ক্যাশ করে রাখার জন্য
+      let studentExamDataMap = {};
 
       window.toggleMenu = function() {
           document.getElementById('dropdownMenu').classList.toggle('show');
@@ -297,7 +292,6 @@
           document.getElementById('noticeModal').style.display = 'none';
       }
 
-      // আলাদা রেজাল্ট পপআপ ওপেন ও ক্লোজ করার ফাংশন
       window.openResultModal = async function() {
           if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
           document.getElementById('resultListModal').style.display = 'flex';
@@ -352,7 +346,6 @@
 
       window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); };
 
-      // সব পরীক্ষার রেজাল্ট লিস্ট আলাদা পপআপে লোড করার ফাংশন
       async function loadAllExamResultsList() {
         const container = document.getElementById('allExamResultListContainer');
         try {
@@ -391,7 +384,6 @@
         } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      // পরীক্ষার হিস্টোরি এবং পারফরম্যান্স প্রোফাইল পপআপের জন্য
       async function loadStudentHistory() {
         const historyContainer = document.getElementById('examHistoryContainer');
         const perfBox = document.getElementById('performanceBox');
@@ -443,7 +435,6 @@
         } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      // নির্দিষ্ট পরীক্ষার ভুল, ঠিক এবং ব্যাখ্যা সহ রিভিউ দেখানোর ফাংশন
       window.openExamReview = function(examId) {
           const exam = studentExamDataMap[examId];
           if (!exam) return;
@@ -518,11 +509,22 @@
           }
       }
 
+      // লাইভ এক্সাম শিরোনাম বা অধ্যায়ের নাম লোড করা
       async function loadLiveExamTitle() {
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam/title'));
           if(snapshot.exists()) {
             document.getElementById('liveExamTitle').innerText = snapshot.val();
+          }
+        } catch(e) {}
+      }
+
+      // প্র্যাকটিস এক্সাম শিরোনাম বা অধ্যায়ের নাম লোড করা (যদি ফায়ারবেজে থাকে)
+      async function loadPracticeExamTitle() {
+        try {
+          const snapshot = await get(ref(db, 'practice_exams/title'));
+          if(snapshot.exists()) {
+            document.getElementById('practiceExamTitle').innerText = snapshot.val();
           }
         } catch(e) {}
       }
@@ -539,6 +541,7 @@
       });
 
       loadLiveExamTitle();
+      loadPracticeExamTitle();
       loadNotices();
     </script>
 </body>
