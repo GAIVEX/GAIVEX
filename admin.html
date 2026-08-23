@@ -21,7 +21,7 @@
         .admin-card { display: none; width: 100%; max-width: 800px; background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .admin-card h2 { color: #38bdf8; margin-bottom: 20px; text-align: center; }
         label { font-weight: bold; margin-top: 12px; display: block; color: #cbd5e1; font-size: 14px; }
-        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 10px 12px; margin-top: 5px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"], select, textarea { width: 100%; padding: 10px 12px; margin-top: 5px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; }
         input:focus, select:focus, textarea:focus { border-color: #38bdf8; }
         
         .btn-submit { background: #10b981; color: #fff; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 25px; font-size: 16px; transition: 0.3s; }
@@ -39,29 +39,30 @@
 </head>
 <body>
 
+    <!-- ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করার ফর্ম -->
     <div class="login-card" id="loginBox">
-        <h2>🔒 GAIVEX অ্যাডমিন লক</h2>
-        <p>অ্যাডমিন প্যানেলে প্রবেশ করতে পাসওয়ার্ড লিখুন</p>
-        <form onsubmit="verifyPassword(event)">
-            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড লিখুন..." required>
-            <button type="submit">আনলক করুন 🔓</button>
+        <h2>🔒 GAIVEX অ্যাডমিন লগইন</h2>
+        <p>আপনার অ্যাডমিন ইমেইল ও পাসওয়ার্ড প্রদান করুন</p>
+        <form onsubmit="verifyLogin(event)">
+            <input type="email" id="adminEmail" placeholder="অ্যাডমিন ইমেইল (Email)..." required>
+            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড (Password)..." required>
+            <button type="submit">লগইন করুন 🔓</button>
         </form>
-        <div class="error-msg" id="errorMsg">❌ ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
+        <div class="error-msg" id="errorMsg">❌ ভুল ইমেইল বা পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
     </div>
 
+    <!-- মূল অ্যাডমিন প্যানেল -->
     <div class="admin-card" id="adminPanel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
             <h2 style="margin:0;">🛠️ GAIVEX প্রশ্ন ব্যবস্থাপনা</h2>
-            <button onclick="location.reload()" style="background: #475569; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">লগআউট</button>
+            <button onclick="logoutAdmin()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">লগআউট</button>
         </div>
 
-        <!-- মোড পরিবর্তন করার বাটন -->
         <div class="mode-toggle">
             <button class="mode-btn active" id="btnLiveMode" onclick="switchMode('live')">🔥 লাইভ ডেইলি এক্সাম</button>
             <button class="mode-btn" id="btnChapterMode" onclick="switchMode('chapter')">📚 বিষয়ভিত্তিক অধ্যায় এক্সাম</button>
         </div>
 
-        <!-- চ্যাপ্টার ভিত্তিক এক্সাম সিলেকশন সেকশন -->
         <div id="chapterSelectionBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 20px;">
             <label>বিষয় নির্বাচন করুন:</label>
             <select id="admSubject" onchange="updatePaperOptions()">
@@ -106,8 +107,10 @@
         </div>
     </div>
 
+    <!-- ফায়ারবেস স্ক্রিপ্ট এবং লজিক -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
@@ -121,10 +124,10 @@
       };
 
       const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
       const db = getDatabase(app);
 
-      const SECRET_PASS = "GAIVEX#@004754Scholars";
-      let currentMode = 'live'; // 'live' অথবা 'chapter'
+      let currentMode = 'live';
 
       const chaptersData = {
           physics: {
@@ -145,18 +148,41 @@
           }
       };
 
-      window.verifyPassword = function(e) {
-        e.preventDefault();
-        const inputPass = document.getElementById('adminPassword').value;
-        if (inputPass === SECRET_PASS) {
+      // ফায়ারবেস অথ স্টেট চেক: ইউজার অলরেডি লগইন করা থাকলে প্যানেল দেখাবে, না হলে লগইন ফর্ম দেখাবে
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
           document.getElementById('loginBox').style.display = 'none';
           document.getElementById('adminPanel').style.display = 'block';
           document.body.style.alignItems = 'flex-start';
           loadExistingData();
         } else {
-          document.getElementById('errorMsg').style.display = 'block';
-          document.getElementById('adminPassword').value = '';
+          document.getElementById('loginBox').style.display = 'block';
+          document.getElementById('adminPanel').style.display = 'none';
+          document.body.style.alignItems = 'center';
         }
+      });
+
+      // ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করার ফাংশন
+      window.verifyLogin = function(e) {
+        e.preventDefault();
+        const email = document.getElementById('adminEmail').value;
+        const password = document.getElementById('adminPassword').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            document.getElementById('errorMsg').style.display = 'none';
+          })
+          .catch((error) => {
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('adminPassword').value = '';
+          });
+      };
+
+      // লগআউট করার ফাংশন
+      window.logoutAdmin = function() {
+        signOut(auth).then(() => {
+          location.reload();
+        });
       };
 
       window.switchMode = function(mode) {
@@ -242,7 +268,6 @@
             }
             document.getElementById('examDuration').value = data.duration || data.timeLimit || 20;
 
-            // ডাটাবেজে প্রশ্নগুলো অবজেক্ট ফরম্যাটে থাকতে পারে (চ্যাপ্টার এক্সামের জন্য) অথবা অ্যারে হতে পারে (লাইভ এক্সামের জন্য)
             let qArray = [];
             if (data.questions) {
               if (Array.isArray(data.questions)) {
@@ -394,7 +419,6 @@
           saveData.id = "exam_" + Date.now();
           saveData.title = title;
         } else {
-          // চ্যাপ্টার এক্সামের জন্য ওয়েবসাইটের সিস্টেম অনুযায়ী timeLimit ও সেভ করে দিচ্ছি
           saveData.timeLimit = duration;
         }
 
