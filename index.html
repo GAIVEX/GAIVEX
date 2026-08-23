@@ -1,704 +1,2834 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - Admission Exam Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
-        
-        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন (ডিএনএ ও অন্যান্য সায়েন্টিফিক আইকন) */
-        .global-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-        .floating-element { position: absolute; font-size: 45px; opacity: 0.18; animation: floatRotateAnim 15s infinite linear; }
-        
-        @keyframes floatRotateAnim {
-            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-            25% { transform: translateY(180px) translateX(120px) rotate(90deg); }
-            50% { transform: translateY(350px) translateX(-80px) rotate(180deg); }
-            75% { transform: translateY(180px) translateX(-120px) rotate(270deg); }
-            100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-        /* হেডার ও অন্যান্য উপাদান যেন ব্যাকগ্রাউন্ডের উপরে স্পষ্টভাবে থাকে */
-        .navbar, .hero-section, .site-footer, .modal { position: relative; z-index: 10; }
+<title>GAIVEX.AI</title>
 
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid #334155; gap: 10px; position: sticky; top: 0; z-index: 100; }
-        
-        .nav-left-group { display: flex; align-items: center; gap: 10px; }
-        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
-        .logo span { color: #f43f5e; }
-        
-        .nav-right-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        .menu-container { position: relative; }
-        .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
-        .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
-        .dropdown-menu a:last-child, .dropdown-menu button:last-child { border-bottom: none; }
-        .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: #334155; color: #38bdf8; }
-        .dropdown-menu.show { display: block; }
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:'Hind Siliguri',sans-serif;
+}
 
-        #authNavContainer { display: flex; gap: 8px; align-items: center; }
-        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
-        .btn-auth:hover { background: #7dd3fc; }
-        
-        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 4px 10px; border-radius: 20px; border: 1px solid #475569; max-width: 140px; overflow: hidden; }
-        .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; flex-shrink: 0; }
-        .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+html,body{
+    width:100%;
+    height:100%;
+    background:#06101f;
+    color:#f8fafc;
+    overflow:hidden;
+}
 
-        .hero-section { text-align: center; padding: 30px 15px; max-width: 1000px; margin: 0 auto; flex: 1; width: 100%; }
-        
-        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; margin-top: 20px; }
-        .subject-box { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(5px); border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; cursor: pointer; }
-        .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
-        .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
+body{
+    display:flex;
+    flex-direction:column;
+}
 
-        .exam-banner-box { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(5px); border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; text-align: left; transition: 0.3s; text-decoration: none; display: block; color: white; }
-        .exam-banner-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #253346; }
-        
-        .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
-        .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+/* =========================
+   HEADER
+========================= */
 
-        .notice-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
-        .notice-item h4 { color: #f8fafc; font-size: 15px; margin-bottom: 5px; }
-        .notice-item p { color: #94a3b8; font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
-        .notice-item img { max-width: 100%; border-radius: 6px; margin-top: 8px; border: 1px solid #334155; }
-        .notice-date { font-size: 11px; color: #38bdf8; margin-top: 5px; display: block; }
+.header{
+    height:76px;
+    min-height:76px;
+    display:flex;
+    align-items:center;
+    padding:0 22px;
+    background:#0b172a;
+    border-bottom:1px solid #263852;
+    position:relative;
+    z-index:10;
+}
 
-        .site-footer { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(8px); border-top: 1px solid #334155; padding: 30px 20px 20px; margin-top: auto; text-align: center; }
-        .footer-logo { font-size: 22px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; }
-        .footer-logo span { color: #f43f5e; }
-        .footer-tagline { font-size: 16px; color: #f8fafc; font-weight: 600; margin-bottom: 6px; }
-        .footer-subtagline { color: #94a3b8; font-size: 13px; margin-bottom: 15px; line-height: 1.4; }
-        
-        .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 15px; }
-        .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
-        .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .social-btn svg { width: 22px; height: 22px; }
+.logo{
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:.3px;
+    color:#06b6f4;
+}
 
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; border:1px solid #334155; position: relative; }
-        .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:13px; }
-        .modal-content input { width:100%; padding:9px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:8px; }
-        
-        .btn-group { display:flex; gap:10px; margin-top:15px; }
-        .btn { padding:10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; text-align: center; font-size: 14px; text-decoration: none; }
-        .btn-save { background:#10b981; color:white; }
-        .btn-close { background:#ef4444; color:white; }
-        .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; padding: 10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
-        
-        .tab-menu { display:flex; border-bottom: 1px solid #334155; margin-bottom: 15px; }
-        .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
-        .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
+.logo-dot{
+    color:#f43f5e;
+}
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-        .modal-header h3 { color: #38bdf8; font-size: 18px; margin: 0; }
-        .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
-        .modal-close-x:hover { color: #f43f5e; }
+.logo-ai{
+    color:#06b6f4;
+}
 
-        .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
-        .history-item:hover { border-color:#38bdf8; background:#253346; }
+/* =========================
+   MAIN CHAT
+========================= */
 
-        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
-        select:focus { border-color: #38bdf8; }
-    </style>
+.chat-wrapper{
+    flex:1;
+    min-height:0;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    padding:18px;
+}
+
+.chat-container{
+    width:100%;
+    max-width:850px;
+    height:100%;
+    min-height:0;
+    background:rgba(10,25,44,.96);
+    border:1px solid #29405d;
+    border-radius:20px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 15px 50px rgba(0,0,0,.25);
+}
+
+/* =========================
+   CHAT HEADER
+========================= */
+
+.chat-header{
+    padding:15px 18px;
+    background:#14243a;
+    border-bottom:1px solid #29405d;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.bot-avatar{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#08baf3,#0879c9);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    box-shadow:0 0 20px rgba(0,191,255,.18);
+}
+
+.bot-info{
+    flex:1;
+}
+
+.bot-name{
+    font-size:19px;
+    font-weight:700;
+    color:#08baf3;
+}
+
+.bot-status{
+    color:#94a3b8;
+    font-size:12px;
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
+.messages{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:20px;
+    scroll-behavior:smooth;
+}
+
+.messages::-webkit-scrollbar{
+    width:5px;
+}
+
+.messages::-webkit-scrollbar-thumb{
+    background:#30465f;
+    border-radius:20px;
+}
+
+.message-row{
+    display:flex;
+    margin-bottom:15px;
+    width:100%;
+}
+
+.message-row.bot{
+    justify-content:flex-start;
+}
+
+.message-row.user{
+    justify-content:flex-end;
+}
+
+.message{
+    max-width:82%;
+    padding:12px 15px;
+    border-radius:16px;
+    font-size:15px;
+    line-height:1.65;
+    word-wrap:break-word;
+    white-space:pre-wrap;
+}
+
+.message.bot{
+    background:#172a40;
+    border:1px solid #2b435d;
+    border-bottom-left-radius:5px;
+    color:#e2e8f0;
+}
+
+.message.user{
+    background:#008fd0;
+    border-bottom-right-radius:5px;
+    color:white;
+}
+
+.message strong{
+    color:#38bdf8;
+}
+
+.message a{
+    color:#38bdf8;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.message a:hover{
+    text-decoration:underline;
+}
+
+/* typing */
+
+.typing{
+    display:none;
+    align-items:center;
+    gap:5px;
+    background:#172a40;
+    border:1px solid #2b435d;
+    padding:11px 14px;
+    border-radius:15px;
+    width:max-content;
+    margin-bottom:12px;
+}
+
+.typing.show{
+    display:flex;
+}
+
+.typing span{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#38bdf8;
+    animation:typing .9s infinite;
+}
+
+.typing span:nth-child(2){
+    animation-delay:.15s;
+}
+
+.typing span:nth-child(3){
+    animation-delay:.3s;
+}
+
+@keyframes typing{
+    0%,60%,100%{
+        transform:translateY(0);
+        opacity:.4;
+    }
+    30%{
+        transform:translateY(-4px);
+        opacity:1;
+    }
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.input-area{
+    padding:13px;
+    background:#0d1d31;
+    border-top:1px solid #29405d;
+}
+
+.input-box{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.voice-btn,
+.send-btn{
+    width:54px;
+    height:54px;
+    min-width:54px;
+    border-radius:14px;
+    border:1px solid #3b526c;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+    transition:.2s;
+}
+
+.voice-btn{
+    background:#1a2d43;
+    color:#e2e8f0;
+}
+
+.voice-btn:hover{
+    border-color:#06b6f4;
+}
+
+.voice-btn.listening{
+    background:#ef4444;
+    border-color:#ef4444;
+    animation:pulseMic 1.2s infinite;
+}
+
+@keyframes pulseMic{
+    0%{
+        box-shadow:0 0 0 0 rgba(239,68,68,.55);
+    }
+    70%{
+        box-shadow:0 0 0 12px rgba(239,68,68,0);
+    }
+    100%{
+        box-shadow:0 0 0 0 rgba(239,68,68,0);
+    }
+}
+
+.question-input{
+    flex:1;
+    height:54px;
+    border-radius:14px;
+    border:1px solid #40566f;
+    background:#050b16;
+    color:white;
+    padding:0 15px;
+    outline:none;
+    font-size:16px;
+    min-width:0;
+}
+
+.question-input::placeholder{
+    color:#64748b;
+}
+
+.question-input:focus{
+    border-color:#06b6f4;
+    box-shadow:0 0 0 2px rgba(6,182,244,.08);
+}
+
+.send-btn{
+    background:#08baf3;
+    color:#02101c;
+    border-color:#08baf3;
+    font-size:27px;
+    font-weight:bold;
+}
+
+.send-btn:hover{
+    background:#38c9f7;
+}
+
+.send-btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.input-hint{
+    font-size:11px;
+    color:#64748b;
+    padding:6px 4px 0;
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+    text-align:center;
+    padding:35px 15px;
+}
+
+.welcome-icon{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    margin:0 auto 15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#079dd8,#0878c5);
+    font-size:50px;
+    box-shadow:0 0 30px rgba(0,174,255,.18);
+}
+
+.welcome h1{
+    font-size:26px;
+    margin-bottom:6px;
+    color:#f8fafc;
+}
+
+.welcome h1 span{
+    color:#08baf3;
+}
+
+.welcome p{
+    color:#94a3b8;
+    font-size:14px;
+}
+
+/* =========================
+   SEARCH BUTTON
+========================= */
+
+.search-card{
+    margin-top:8px;
+    background:#14243a;
+    border:1px solid #29405d;
+    padding:12px;
+    border-radius:12px;
+}
+
+.search-card a{
+    display:inline-block;
+    margin-top:8px;
+    padding:8px 12px;
+    border-radius:8px;
+    background:#008fd0;
+    color:white;
+    text-decoration:none;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+    .header{
+        height:68px;
+        min-height:68px;
+        padding:0 18px;
+    }
+
+    .logo{
+        font-size:28px;
+    }
+
+    .chat-wrapper{
+        padding:0;
+    }
+
+    .chat-container{
+        border-radius:0;
+        border-left:none;
+        border-right:none;
+        border-bottom:none;
+    }
+
+    .chat-header{
+        padding:11px 15px;
+    }
+
+    .messages{
+        padding:15px;
+    }
+
+    .message{
+        max-width:88%;
+        font-size:15px;
+    }
+
+    .input-area{
+        padding:9px;
+        padding-bottom:calc(9px + env(safe-area-inset-bottom));
+    }
+
+    .voice-btn,
+    .send-btn{
+        width:50px;
+        min-width:50px;
+        height:50px;
+    }
+
+    .question-input{
+        height:50px;
+        font-size:15px;
+    }
+
+    .welcome{
+        padding:25px 10px;
+    }
+
+    .welcome-icon{
+        width:75px;
+        height:75px;
+        font-size:40px;
+    }
+
+    .welcome h1{
+        font-size:23px;
+    }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media(max-width:360px){
+
+    .logo{
+        font-size:24px;
+    }
+
+    .voice-btn,
+    .send-btn{
+        width:46px;
+        min-width:46px;
+        height:46px;
+    }
+
+    .question-input{
+        height:46px;
+        padding:0 10px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
-    <div class="global-bg-container">
-        <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
-        <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
-        <div class="floating-element" style="top: 50%; left: 75%; animation-duration: 14s; animation-delay: 4s;">🧪</div>
-        <div class="floating-element" style="top: 70%; left: 15%; animation-duration: 18s; animation-delay: 1s;">📚</div>
-        <div class="floating-element" style="top: 88%; left: 80%; animation-duration: 13s; animation-delay: 3s;">🧬</div>
-        <div class="floating-element" style="top: 40%; left: 5%; animation-duration: 17s; animation-delay: 5s;">⚛️</div>
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="header">
+    <div class="logo">
+        GAIVEX<span class="logo-dot">.</span><span class="logo-ai">AI</span>
     </div>
+</header>
 
-    <header class="navbar">
-        <div class="nav-left-group">
-            <div class="menu-container">
-                <button class="menu-btn" onclick="toggleMenu()">⋮</button>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <a href="index.html" class="active">🏠 হোম</a>
-                    <a href="gaivexai.html">🤖 GAIVEX AI</a>
-                    <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
-                    <button onclick="openResultModal()">📊 রেজাল্ট</button>
-                    <button onclick="openNotesModal()">📚 নোটস</button>
-                    <div id="dropdownAuthAction"></div>
-                </div>
-            </div>
-            <a href="index.html" class="logo">GAIVEX<span>.</span></a>
-        </div>
-        
-        <div class="nav-right-group">
-            <div id="authNavContainer">
-                <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
-            </div>
-        </div>
-    </header>
 
-    <main class="hero-section">
-        <a href="liveexam.html" class="exam-banner-box">
-            <div class="live-badge-new">🔴 LIVE EXAM</div>
-            <h2 id="liveExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">অনলাইন ডেইলি লাইভ পরীক্ষা</h2>
-        </a>
+<!-- =========================
+     CHAT
+========================= -->
 
-        <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="exam-banner-box">
-            <div class="practice-badge-new">📝 PRACTICE EXAM</div>
-            <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
-        </a>
+<main class="chat-wrapper">
 
-        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
-        <div class="subject-grid">
-            <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
-            <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
-            <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
-            <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
-            <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
-            <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
-            <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
-            <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
-        </div>
-    </main>
+<div class="chat-container">
 
-    <!-- নোটিশ বোর্ড মোডাল -->
-    <div id="noticeModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-            <h3>📢 সকল গুরুত্বপূর্ণ নোটিশ</h3>
-            <button class="modal-close-x" onclick="closeNoticeModal()">&times;</button>
-        </div>
-        <div id="popupNoticeList" style="max-height:350px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
-            <p style="color:#94a3b8; text-align:center; font-size:13px;">নোটিশ লোড হচ্ছে...</p>
-        </div>
-        <div class="btn-group" style="margin-top: 15px;">
-            <button type="button" class="btn btn-close" onclick="closeNoticeModal()" style="flex: 1;">বন্ধ করুন</button>
-        </div>
-      </div>
-    </div>
+    <div class="chat-header">
+        <div class="bot-avatar">🤖</div>
 
-    <!-- রেজাল্ট মোডাল -->
-    <div id="resultListModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-            <h3>📊 সকল পরীক্ষার রেজাল্ট</h3>
-            <button class="modal-close-x" onclick="closeResultModal()">&times;</button>
-        </div>
-        <div style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">যে পরীক্ষার রেজাল্ট ও সমাধান দেখতে চান তার ওপর ক্লিক করুন:</div>
-        <div id="allExamResultListContainer" style="max-height:320px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
-            <p style="color:#94a3b8; text-align:center; font-size:13px;">লোড হচ্ছে...</p>
-        </div>
-        <div class="btn-group" style="margin-top: 15px;">
-            <button type="button" class="btn btn-close" onclick="closeResultModal()" style="flex: 1;">বন্ধ করুন</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- নোটস মোডাল -->
-    <div id="notesModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3>📚 অধ্যায়ভিত্তিক নোটস</h3>
-                <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
-            </div>
-            
-            <!-- ফিল্টার ড্রপডাউন -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <select id="filterSubject" onchange="updateStudentPaperOptions()">
-                    <option value="">বিষয় বাছুন</option>
-                    <option value="physics">পদার্থবিজ্ঞান</option>
-                    <option value="chemistry">রসায়ন</option>
-                    <option value="biology">জীববিজ্ঞান</option>
-                    <option value="math">উচ্চতর গণিত</option>
-                </select>
-                <select id="filterPaper" onchange="updateStudentChapterOptions()">
-                    <option value="">পত্র বাছুন</option>
-                    <option value="paper1">১ম পত্র</option>
-                    <option value="paper2">২য় পত্র</option>
-                </select>
-            </div>
-
-            <select id="filterChapter" onchange="fetchStudentNotes()">
-                <option value="">আগে বিষয় ও পত্র বাছুন</option>
-            </select>
-
-            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
-            <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
-                <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
-            </div>
-
-            <div class="btn-group" style="margin-top: 15px;">
-                <button type="button" class="btn btn-close" onclick="closeNotesModal()" style="flex: 1;">বন্ধ করুন</button>
+        <div class="bot-info">
+            <div class="bot-name">GAIVEX AI</div>
+            <div class="bot-status" id="botStatus">
+                আপনার প্রশ্নের অপেক্ষায়...
             </div>
         </div>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-logo">GAIVEX<span>.</span></div>
-        <div class="footer-tagline">স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span style="color: #38bdf8;">GAIVEX</span> এর সাথে</div>
-        <div class="footer-subtagline">মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট ও সমাধান।</div>
-        
-        <div class="social-links">
-            <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
-                <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-            <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
-                <svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
-            <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube">
-                <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-        </div>
-        <div style="margin-top:20px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
-    </footer>
 
-    <!-- অথেন্টিকেশন মোডাল -->
-    <div id="authModal" class="modal">
-      <div class="modal-content">
-        <div class="tab-menu">
-            <button class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">লগইন</button>
-            <button class="tab-btn" id="tabRegister" onclick="switchAuthTab('register')">রেজিস্ট্রেশন</button>
-        </div>
-        <form id="loginForm" onsubmit="handleEmailLogin(event)">
-            <label>ইমেইল:</label><input type="email" id="loginEmail" required placeholder="example@mail.com">
-            <label>পাসওয়ার্ড:</label><input type="password" id="loginPassword" required placeholder="******">
-            <div style="text-align: right; margin-bottom: 5px;">
-                <a href="#" onclick="handleForgotPassword(event)" style="color: #38bdf8; font-size: 12px; text-decoration: none;">পাসওয়ার্ড ভুলে গেছেন?</a>
+    <div class="messages" id="messages">
+
+        <div class="welcome" id="welcomeMessage">
+
+            <div class="welcome-icon">
+                🤖
             </div>
-            <button type="submit" class="btn btn-save" style="width:100%; margin-top:5px;">লগইন করুন</button>
-        </form>
-        <form id="registerForm" onsubmit="handleEmailRegister(event)" style="display:none;">
-            <label>পূর্ণ নাম:</label><input type="text" id="regName" required placeholder="আপনার নাম">
-            <label>ইমেইল:</label><input type="email" id="regEmail" required placeholder="example@mail.com">
-            <label>পাসওয়ার্ড:</label><input type="password" id="regPassword" required placeholder="******">
-            <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">অ্যাকাউন্ট তৈরি করুন</button>
-        </form>
-        <button type="button" class="btn-google" onclick="handleGoogleSignIn()">🌐 Google দিয়ে লগইন করুন</button>
-        <div class="btn-group"><button type="button" class="btn btn-close" onclick="toggleAuthModal(false)">বন্ধ করুন</button></div>
-      </div>
+
+            <h1>
+                GAIVEX <span>AI</span>
+            </h1>
+
+            <p>
+                GAIVEX Admission Portal-এর Smart Assistant
+            </p>
+
+        </div>
+
+        <div class="typing" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
     </div>
 
-    <!-- প্রোফাইল মোডাল -->
-    <div id="profileModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-            <h3>📊 স্টুডেন্ট পোর্টাল ও পারফরম্যান্স</h3>
-            <button class="modal-close-x" onclick="toggleProfileModal(false)">&times;</button>
+
+    <!-- INPUT -->
+
+    <div class="input-area">
+
+        <div class="input-box">
+
+            <button
+                type="button"
+                class="voice-btn"
+                id="voiceButton"
+                title="কথা বলে প্রশ্ন করুন">
+                🎤
+            </button>
+
+            <input
+                type="text"
+                id="questionInput"
+                class="question-input"
+                placeholder="আপনার প্রশ্ন লিখুন..."
+                autocomplete="off"
+                enterkeyhint="send"
+            >
+
+            <button
+                type="button"
+                class="send-btn"
+                id="sendButton"
+                title="প্রশ্ন পাঠান">
+                ➤
+            </button>
+
         </div>
-        <div id="profileDetails" style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; margin-bottom:12px; font-size:13px;"></div>
-        <div id="performanceBox" style="margin-bottom: 15px;"></div>
-        <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি (বিস্তারিত দেখতে ক্লিক করুন):</h4>
-        <div id="examHistoryContainer" style="max-height:220px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;"></div>
-        <div class="btn-group">
-            <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
-            <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
+
+        <div class="input-hint" id="inputHint">
+            Enter চাপলে প্রশ্ন পাঠানো যাবে • 🎤 মাইক্রোফোনে কথা বলুন
         </div>
-      </div>
+
     </div>
 
-    <!-- পরীক্ষার রিভিউ মোডাল -->
-    <div id="examReviewModal" class="modal">
-      <div class="modal-content" style="max-width: 600px;">
-        <div class="modal-header">
-            <h3 id="reviewExamTitle">পরীক্ষার বিস্তারিত সমাধান</h3>
-            <button class="modal-close-x" onclick="closeExamReviewModal()">&times;</button>
-        </div>
-        <div id="examReviewBody" style="max-height: 400px; overflow-y: auto; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;"></div>
-        <div class="btn-group" style="margin-top: 15px;">
-            <button type="button" class="btn btn-save" onclick="closeExamReviewModal()" style="flex: 1;">ফিরে যান</button>
-        </div>
-      </div>
-    </div>
+</div>
 
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-      import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+</main>
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
-        authDomain: "gaivexexam.firebaseapp.com",
-        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-        projectId: "gaivexexam",
-        storageBucket: "gaivexexam.firebasestorage.app",
-        messagingSenderId: "956204530190",
-        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
-      };
 
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      const auth = getAuth(app);
-      const googleProvider = new GoogleAuthProvider();
+<script type="module">
 
-      let currentUser = null;
-      let studentExamDataMap = {};
+/* =========================================================
+   FIREBASE IMPORT
+========================================================= */
 
-      const chaptersData = {
-          physics: {
-              paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
-              paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"]
-          },
-          chemistry: {
-              paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"],
-              paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
-          },
-          biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
-              paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
-          },
-          math: {
-              paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
-              paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
-          }
-      };
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-      window.toggleMenu = function() {
-          document.getElementById('dropdownMenu').classList.toggle('show');
-      }
+import {
+    getDatabase,
+    ref,
+    get
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-      window.onclick = function(event) {
-          if (!event.target.matches('.menu-btn') && !event.target.closest('.menu-btn')) {
-              const dropdowns = document.getElementsByClassName("dropdown-menu");
-              for (let i = 0; i < dropdowns.length; i++) {
-                  dropdowns[i].classList.remove('show');
-              }
-          }
-      }
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-      window.openNoticeModal = function() {
-          document.getElementById('noticeModal').style.display = 'flex';
-          document.getElementById('dropdownMenu').classList.remove('show');
-      }
 
-      window.closeNoticeModal = function() {
-          document.getElementById('noticeModal').style.display = 'none';
-      }
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
-      window.openResultModal = async function() {
-          if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
-          document.getElementById('resultListModal').style.display = 'flex';
-          document.getElementById('dropdownMenu').classList.remove('show');
-          await loadAllExamResultsList();
-      }
+const firebaseConfig = {
 
-      window.closeResultModal = function() {
-          document.getElementById('resultListModal').style.display = 'none';
-      }
+    apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
 
-      window.openNotesModal = () => {
-          document.getElementById('notesModal').style.display = 'flex';
-          document.getElementById('dropdownMenu').classList.remove('show');
-      }
-      window.closeNotesModal = () => document.getElementById('notesModal').style.display = 'none';
+    authDomain:
+        "gaivexexam.firebaseapp.com",
 
-      window.updateStudentPaperOptions = function() {
-          const paperSelect = document.getElementById('filterPaper');
-          paperSelect.innerHTML = '<option value="">পত্র বাছুন</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
-          document.getElementById('filterChapter').innerHTML = '<option value="">আগে পত্র বাছুন</option>';
-          document.getElementById('notesListContainer').innerHTML = '<p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে পত্র ও অধ্যায় সিলেক্ট করুন।</p>';
-      };
+    databaseURL:
+        "https://gaivexexam-default-rtdb.firebaseio.com",
 
-      window.updateStudentChapterOptions = function() {
-          const sub = document.getElementById('filterSubject').value;
-          const paper = document.getElementById('filterPaper').value;
-          const chapSelect = document.getElementById('filterChapter');
-          chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
-          if(sub && paper && chaptersData[sub][paper]) {
-              chaptersData[sub][paper].forEach((chap) => {
-                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-              });
-          }
-      };
+    projectId:
+        "gaivexexam",
 
-      window.fetchStudentNotes = async function() {
-          const subject = document.getElementById('filterSubject').value;
-          const paper = document.getElementById('filterPaper').value;
-          const chapter = document.getElementById('filterChapter').value;
-          const container = document.getElementById('notesListContainer');
+    storageBucket:
+        "gaivexexam.firebasestorage.app",
 
-          if (!subject || !paper || !chapter) {
-              container.innerHTML = '<p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে সবগুলো অপশন সিলেক্ট করুন।</p>';
-              return;
-          }
+    messagingSenderId:
+        "956204530190",
 
-          container.innerHTML = '<p style="color: #38bdf8; text-align: center; font-size: 13px; margin-top: 20px;">নোট লোড হচ্ছে...</p>';
+    appId:
+        "1:956204530190:web:4e5550afefa3e314c99a5f"
+};
 
-          try {
-              const snapshot = await get(ref(db, 'notes'));
-              if (snapshot.exists()) {
-                  const data = snapshot.val();
-                  let html = '';
-                  
-                  for (let id in data) {
-                      let note = data[id];
-                      if (note.subject === subject && note.paper === paper && note.chapter === chapter) {
-                          let contentDisplay = '';
-                          if (note.contentType === 'pdf') {
-                              contentDisplay = `<a href="${note.contentUrl}" target="_blank" style="display:inline-block; margin-top:10px; background:#0284c7; color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:bold;">📄 পিডিএফ ফাইল দেখুন / ডাউনলোড করুন</a>`;
-                          } else if (note.contentType === 'image') {
-                              contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid #334155;">`;
-                          } else {
-                              contentDisplay = `<p style="color:#cbd5e1; font-size:13px; margin-top:10px; white-space:pre-wrap; background:#0f172a; padding:10px; border-radius:6px;">${note.textContent}</p>`;
-                          }
 
-                          html += `
-                              <div style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:12px; border:1px solid #334155;">
-                                  <h4 style="color:#38bdf8; font-size:15px; margin-bottom:4px;">📌 ${note.title}</h4>
-                                  ${contentDisplay}
-                              </div>
-                          `;
-                      }
-                  }
-                  container.innerHTML = html !== '' ? html : '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top: 20px;">এই অধ্যায়ে কোনো নোট আপলোড করা হয়নি।</p>';
-              } else {
-                  container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top: 20px;">কোনো নোট পাওয়া যায়নি।</p>';
-              }
-          } catch(e) {
-              container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:13px; margin-top: 20px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
-          }
-      }
+const app = initializeApp(firebaseConfig);
 
-      window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
-      
-      window.toggleProfileModal = async (show) => {
-        if(show) {
-          if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
-          document.getElementById('profileDetails').innerHTML = `<b>শিক্ষার্থী:</b> ${currentUser.displayName || 'নাম নেই'}<br><b>ইমেইল:</b> ${currentUser.email}`;
-          await loadStudentHistory();
+const db = getDatabase(app);
+
+const auth = getAuth(app);
+
+
+/* =========================================================
+   GLOBAL DATA
+========================================================= */
+
+let currentUser = null;
+
+let knowledgeBase = {
+
+    notices: [],
+
+    notes: [],
+
+    exams: [],
+
+    liveExam: null,
+
+    practiceExam: null
+
+};
+
+let studentAttempts = {};
+
+let isDataLoaded = false;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const messages =
+    document.getElementById("messages");
+
+const input =
+    document.getElementById("questionInput");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const voiceButton =
+    document.getElementById("voiceButton");
+
+const typingIndicator =
+    document.getElementById("typingIndicator");
+
+const welcomeMessage =
+    document.getElementById("welcomeMessage");
+
+const botStatus =
+    document.getElementById("botStatus");
+
+const inputHint =
+    document.getElementById("inputHint");
+
+
+/* =========================================================
+   UTILITY: HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+    if(value === null || value === undefined){
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =========================================================
+   TEXT NORMALIZATION
+========================================================= */
+
+function normalizeText(text){
+
+    return String(text || "")
+        .toLowerCase()
+        .replace(/[।,!?;:()[\]{}"'`]/g," ")
+        .replace(/\s+/g," ")
+        .trim();
+}
+
+
+/* =========================================================
+   BANGLA NUMBER
+========================================================= */
+
+function bnNumber(number){
+
+    const map = {
+        "0":"০",
+        "1":"১",
+        "2":"২",
+        "3":"৩",
+        "4":"৪",
+        "5":"৫",
+        "6":"৬",
+        "7":"৭",
+        "8":"৮",
+        "9":"৯"
+    };
+
+    return String(number)
+        .split("")
+        .map(x => map[x] || x)
+        .join("");
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(value){
+
+    if(!value){
+        return "তারিখ নেই";
+    }
+
+    const d = new Date(value);
+
+    if(isNaN(d.getTime())){
+        return "তারিখ নেই";
+    }
+
+    return d.toLocaleDateString("bn-BD",{
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+    });
+}
+
+
+/* =========================================================
+   LOAD FIREBASE KNOWLEDGE
+========================================================= */
+
+async function loadKnowledge(){
+
+    botStatus.textContent =
+        "তথ্য প্রস্তুত করা হচ্ছে...";
+
+    try{
+
+        /* -------------------------
+           NOTICES
+        ------------------------- */
+
+        const noticeSnap =
+            await get(ref(db,"notices"));
+
+        if(noticeSnap.exists()){
+
+            const data = noticeSnap.val();
+
+            knowledgeBase.notices =
+                Object.values(data || {});
         }
-        document.getElementById('profileModal').style.display = show ? 'flex' : 'none';
-      };
 
-      window.switchAuthTab = (tab) => {
-        document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-        document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
-        document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-        document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
-      };
 
-      window.handleGoogleSignIn = async () => { await signInWithPopup(auth, googleProvider); toggleAuthModal(false); };
-      window.handleEmailRegister = async (e) => {
-        e.preventDefault();
-        const res = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
-        await updateProfile(res.user, { displayName: document.getElementById('regName').value });
-        toggleAuthModal(false);
-      };
-      window.handleEmailLogin = async (e) => { e.preventDefault(); await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); toggleAuthModal(false); };
-      
-      window.handleForgotPassword = async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        if (!email) { alert("দয়া করে প্রথমে আপনার ইমেইল বক্সটি পূরণ করুন!"); return; }
-        try {
-          await sendPasswordResetEmail(auth, email);
-          alert("পাসওয়ার্ড রিসেট করার লিংক আপনার ইমেইলে পাঠানো হয়েছে।");
-        } catch (error) { alert("ত্রুটি: " + error.message); }
-      };
+        /* -------------------------
+           NOTES
+        ------------------------- */
 
-      window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); };
+        const notesSnap =
+            await get(ref(db,"notes"));
 
-      async function loadAllExamResultsList() {
-        const container = document.getElementById('allExamResultListContainer');
-        try {
-          const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            studentExamDataMap = data;
-            let listHTML = '';
+        if(notesSnap.exists()){
 
-            for (let id in data) {
-              const item = data[id];
-              const score = Number(item.score) || 0;
-              const total = Number(item.total) || 0;
+            const data = notesSnap.val();
 
-              let dateStr = 'তারিখ নেই';
-              if (item.submittedAt) {
-                const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate)) {
-                  dateStr = parsedDate.toLocaleDateString('bn-BD');
-                }
-              }
+            knowledgeBase.notes =
+                Object.values(data || {});
+        }
 
-              listHTML += `
-                <div class="history-item" onclick="closeResultModal(); openExamReview('${id}')">
-                  <div>
-                    <div style="color:#38bdf8; font-weight:bold;">📌 ${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:#94a3b8; font-size:11px;">${dateStr} (সমাধান দেখতে ক্লিক করুন)</div>
-                  </div>
-                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
-                </div>`;
+
+        /* -------------------------
+           LIVE EXAM
+        ------------------------- */
+
+        const liveSnap =
+            await get(
+                ref(db,"live_exams/live_daily_exam")
+            );
+
+        if(liveSnap.exists()){
+
+            knowledgeBase.liveExam =
+                liveSnap.val();
+        }
+
+
+        /* -------------------------
+           PRACTICE EXAM
+        ------------------------- */
+
+        const practiceSnap =
+            await get(
+                ref(db,"practice_exams")
+            );
+
+        if(practiceSnap.exists()){
+
+            knowledgeBase.practiceExam =
+                practiceSnap.val();
+        }
+
+
+        /* -------------------------
+           STUDENT EXAMS
+        ------------------------- */
+
+        if(currentUser){
+
+            const examSnap =
+                await get(
+                    ref(
+                        db,
+                        `exam_attempts/${currentUser.uid}`
+                    )
+                );
+
+            if(examSnap.exists()){
+
+                studentAttempts =
+                    examSnap.val() || {};
+
+            }else{
+
+                studentAttempts = {};
             }
-            container.innerHTML = listHTML;
-          } else {
-            container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:12px;">কোনো পরীক্ষার রেজাল্ট পাওয়া যায়নি।</p>';
-          }
-        } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
-      }
 
-      async function loadStudentHistory() {
-        const historyContainer = document.getElementById('examHistoryContainer');
-        const perfBox = document.getElementById('performanceBox');
-        try {
-          const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            studentExamDataMap = data;
-            let totalExams = 0, totalScore = 0, totalPossible = 0, historyHTML = '';
+        }else{
 
-            for (let id in data) {
-              const item = data[id];
-              const score = Number(item.score) || 0;
-              const total = Number(item.total) || 0;
+            studentAttempts = {};
+        }
 
-              totalExams++; 
-              totalScore += score; 
-              totalPossible += total;
 
-              let dateStr = 'তারিখ নেই';
-              if (item.submittedAt) {
-                const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate)) {
-                  dateStr = parsedDate.toLocaleDateString('bn-BD');
-                }
-              }
+        isDataLoaded = true;
 
-              historyHTML += `
-                <div class="history-item" onclick="toggleProfileModal(false); openExamReview('${id}')">
-                  <div>
-                    <div style="color:#38bdf8; font-weight:bold;">${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:#94a3b8; font-size:11px;">${dateStr} (বিস্তারিত দেখতে ক্লিক করুন)</div>
-                  </div>
-                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
-                </div>`;
-            }
-            const accuracy = totalPossible > 0 ? ((totalScore / totalPossible) * 100).toFixed(1) : 0;
-            perfBox.innerHTML = `
-              <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #38bdf8; display:flex; justify-content:space-around; text-align:center;">
-                <div><b style="font-size:16px;">${totalExams}</b><br><small style="color:#94a3b8;">মোট পরীক্ষা</small></div>
-                <div><b style="font-size:16px; color:#10b981;">${accuracy}%</b><br><small style="color:#94a3b8;">এক্যুরেসি</small></div>
-                <div><b style="font-size:16px; color:#38bdf8;">${totalScore}/${totalPossible}</b><br><small style="color:#94a3b8;">মোট নম্বর</small></div>
-              </div>`;
-            historyContainer.innerHTML = historyHTML;
-          } else {
-            perfBox.innerHTML = '';
-            historyContainer.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:12px;">কোনো ইতিহাস পাওয়া যায়নি।</p>';
-          }
-        } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
-      }
+        botStatus.textContent =
+            "আপনার প্রশ্নের অপেক্ষায়...";
 
-      window.openExamReview = function(examId) {
-          const exam = studentExamDataMap[examId];
-          if (!exam) return;
+    }catch(error){
 
-          document.getElementById('reviewExamTitle').innerText = exam.examTitle || 'পরীক্ষার বিস্তারিত সমাধান';
-          const reviewBody = document.getElementById('examReviewBody');
-          
-          if (exam.questions && Array.isArray(exam.questions)) {
-              let html = '';
-              exam.questions.forEach((q, index) => {
-                  const userAnsRaw = exam.userAnswers ? exam.userAnswers[index] : null;
-                  
-                  let userAnsText = 'উত্তর দেননি';
-                  if (userAnsRaw !== null && userAnsRaw !== undefined) {
-                      if (typeof userAnsRaw === 'number' && q.options && q.options[userAnsRaw] !== undefined) {
-                          userAnsText = q.options[userAnsRaw];
-                      } else {
-                          userAnsText = userAnsRaw;
-                      }
-                  }
+        console.error(
+            "Knowledge load error:",
+            error
+        );
 
-                  const isCorrect = userAnsText === q.correctAnswer;
-                  const statusColor = isCorrect ? '#10b981' : '#ef4444';
+        botStatus.textContent =
+            "প্রশ্ন করুন";
 
-                  html += `
-                    <div style="background:#1e293b; padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor};">
-                        <div style="font-weight:bold; margin-bottom:6px;">প্রশ্ন ${index + 1}: ${q.question || q.title || ''}</div>
-                        <div style="font-size:12px; color:#94a3b8; margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAnsText}</span></div>
-                        <div style="font-size:12px; color:#38bdf8; margin-bottom:4px;">সঠিক উত্তর: <b>${q.correctAnswer}</b></div>
-                        <div style="font-size:12px; color:#cbd5e1; background:#0f172a; padding:6px; border-radius:4px; margin-top:6px;"><b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
-                    </div>
-                  `;
-              });
-              reviewBody.innerHTML = html;
-          } else {
-              reviewBody.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; padding:20px;">এই পরীক্ষার বিস্তারিত প্রশ্ন বা ব্যাখ্যা ডেটাবেজে সংরক্ষণ করা হয়নি।</p>';
-          }
+        isDataLoaded = true;
+    }
+}
 
-          document.getElementById('examReviewModal').style.display = 'flex';
-      }
 
-      window.closeExamReviewModal = function() {
-          document.getElementById('examReviewModal').style.display = 'none';
-      }
+/* =========================================================
+   AUTH
+========================================================= */
 
-      async function loadNotices() {
-          const popupList = document.getElementById('popupNoticeList');
-          try {
-              const snapshot = await get(ref(db, 'notices'));
-              if (snapshot.exists()) {
-                  const data = snapshot.val();
-                  const sortedNotices = Object.values(data).sort((a, b) => b.date - a.date);
-                  
-                  popupList.innerHTML = '';
-                  sortedNotices.forEach(item => {
-                      const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
-                      let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
-                      popupList.innerHTML += `
-                          <div class="notice-item">
-                              <h4>📌 ${item.title}</h4>
-                              <p>${item.description}</p>
-                              ${imgTag}
-                              <span class="notice-date">তারিখ: ${dateStr}</span>
-                          </div>
-                      `;
-                  });
-              } else {
-                  popupList.innerHTML = '<p style="color:#94a3b8; font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
-              }
-          } catch (e) {
-              popupList.innerHTML = '<p style="color:#f43f5e; font-size:13px; text-align:center;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
-          }
-      }
+onAuthStateChanged(
+    auth,
+    async(user)=>{
 
-      async function loadLiveExamTitle() {
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam/title'));
-          if(snapshot.exists()) {
-            document.getElementById('liveExamTitle').innerText = snapshot.val();
-          }
-        } catch(e) {}
-      }
-
-      async function loadPracticeExamTitle() {
-        try {
-          const snapshot = await get(ref(db, 'practice_exams/title'));
-          if(snapshot.exists()) {
-            document.getElementById('practiceExamTitle').innerText = snapshot.val();
-          }
-        } catch(e) {}
-      }
-
-      onAuthStateChanged(auth, (user) => {
         currentUser = user;
-        const c = document.getElementById('authNavContainer');
-        const dropdownAuth = document.getElementById('dropdownAuthAction');
-        
-        if (user) {
-          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
-          c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
-          dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
-        } else {
-          c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
-          dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
-        }
-      });
 
-      loadLiveExamTitle();
-      loadPracticeExamTitle();
-      loadNotices();
-    </script>
+        await loadKnowledge();
+
+    }
+);
+
+
+/* =========================================================
+   REFRESH STUDENT DATA
+========================================================= */
+
+async function refreshStudentData(){
+
+    if(!currentUser){
+
+        studentAttempts = {};
+
+        return;
+    }
+
+    try{
+
+        const snap =
+            await get(
+                ref(
+                    db,
+                    `exam_attempts/${currentUser.uid}`
+                )
+            );
+
+        studentAttempts =
+            snap.exists()
+                ? snap.val() || {}
+                : {};
+
+    }catch(error){
+
+        console.error(error);
+    }
+}
+
+
+/* =========================================================
+   REMOVE WELCOME
+========================================================= */
+
+function removeWelcome(){
+
+    if(welcomeMessage){
+
+        welcomeMessage.remove();
+
+    }
+}
+
+
+/* =========================================================
+   ADD MESSAGE
+========================================================= */
+
+function addMessage(
+    text,
+    type="bot"
+){
+
+    removeWelcome();
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        `message-row ${type}`;
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        `message ${type}`;
+
+    bubble.innerHTML =
+        formatResponse(text);
+
+    row.appendChild(bubble);
+
+    messages.insertBefore(
+        row,
+        typingIndicator
+    );
+
+    scrollToBottom();
+
+}
+
+
+/* =========================================================
+   RESPONSE FORMAT
+========================================================= */
+
+function formatResponse(text){
+
+    let safe =
+        escapeHTML(text);
+
+    /*
+      URLsকে clickable করার জন্য
+    */
+
+    safe =
+        safe.replace(
+            /(https?:\/\/[^\s<]+)/g,
+            function(url){
+
+                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+
+            }
+        );
+
+
+    /*
+      Bold
+    */
+
+    safe =
+        safe.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+
+    return safe.replace(
+        /\n/g,
+        "<br>"
+    );
+}
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+function scrollToBottom(){
+
+    setTimeout(()=>{
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+    },50);
+}
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+function showTyping(){
+
+    typingIndicator.classList.add("show");
+
+    scrollToBottom();
+}
+
+function hideTyping(){
+
+    typingIndicator.classList.remove("show");
+
+}
+
+
+/* =========================================================
+   KEYWORD MATCH
+========================================================= */
+
+function containsAny(
+    text,
+    words
+){
+
+    return words.some(
+        word => text.includes(
+            normalizeText(word)
+        )
+    );
+}
+
+
+/* =========================================================
+   GOOGLE SEARCH
+========================================================= */
+
+function googleSearchLink(query){
+
+    const url =
+        "https://www.google.com/search?q=" +
+        encodeURIComponent(query);
+
+    return url;
+}
+
+
+/* =========================================================
+   GOOGLE RESPONSE
+========================================================= */
+
+function googleFallback(query){
+
+    const url =
+        googleSearchLink(query);
+
+    return `
+এই প্রশ্নের নির্দিষ্ট তথ্য GAIVEX-এর বর্তমান Knowledge Base-এ পাওয়া যায়নি।
+
+Google-এ এই বিষয়ে খুঁজতে নিচের লিংকে যান:
+
+${url}
+`;
+}
+
+
+/* =========================================================
+   STUDENT ANALYTICS
+========================================================= */
+
+function getStudentAnalytics(){
+
+    const attempts =
+        Object.values(studentAttempts || {});
+
+    if(attempts.length === 0){
+
+        return {
+            totalExams:0,
+            totalScore:0,
+            totalPossible:0,
+            accuracy:0,
+            average:0,
+            best:null,
+            worst:null
+        };
+    }
+
+
+    let totalScore = 0;
+
+    let totalPossible = 0;
+
+    let best = null;
+
+    let worst = null;
+
+
+    attempts.forEach(item=>{
+
+        const score =
+            Number(item.score) || 0;
+
+        const total =
+            Number(item.total) || 0;
+
+
+        totalScore += score;
+
+        totalPossible += total;
+
+
+        if(
+            !best ||
+            score / Math.max(total,1) >
+            Number(best.score || 0) /
+            Math.max(Number(best.total || 1),1)
+        ){
+
+            best = item;
+
+        }
+
+
+        if(
+            !worst ||
+            score / Math.max(total,1) <
+            Number(worst.score || 0) /
+            Math.max(Number(worst.total || 1),1)
+        ){
+
+            worst = item;
+
+        }
+
+    });
+
+
+    const accuracy =
+        totalPossible > 0
+        ? (totalScore / totalPossible) * 100
+        : 0;
+
+
+    return {
+
+        totalExams:attempts.length,
+
+        totalScore,
+
+        totalPossible,
+
+        accuracy,
+
+        average:
+            totalScore / attempts.length,
+
+        best,
+
+        worst
+
+    };
+}
+
+
+/* =========================================================
+   ANSWER: STUDENT RESULT
+========================================================= */
+
+function answerStudentResult(){
+
+    if(!currentUser){
+
+        return `
+আপনার পরীক্ষার ফলাফল দেখতে আগে GAIVEX Portal-এ লগইন করুন।
+
+Portal থেকে লগইন করার পর আবার এখানে প্রশ্ন করুন।
+`;
+    }
+
+
+    const analytics =
+        getStudentAnalytics();
+
+
+    if(analytics.totalExams === 0){
+
+        return `
+আপনার নামে এখনো কোনো পরীক্ষার রেজাল্ট পাওয়া যায়নি।
+
+আপনি পরীক্ষা দেওয়ার পর আপনার ফলাফল ও performance এখানে দেখা যাবে।
+`;
+    }
+
+
+    return `
+আপনার পরীক্ষার সংক্ষিপ্ত ফলাফল:
+
+📊 মোট পরীক্ষা: ${bnNumber(analytics.totalExams)}টি
+
+🎯 মোট নম্বর: ${bnNumber(analytics.totalScore)}/${bnNumber(analytics.totalPossible)}
+
+📈 Accuracy: ${analytics.accuracy.toFixed(1)}%
+
+🏆 সেরা পরীক্ষা:
+${analytics.best?.examTitle || "তথ্য নেই"}
+
+📉 তুলনামূলক কম স্কোরের পরীক্ষা:
+${analytics.worst?.examTitle || "তথ্য নেই"}
+`;
+}
+
+
+/* =========================================================
+   ANSWER: EXAM HISTORY
+========================================================= */
+
+function answerExamHistory(){
+
+    if(!currentUser){
+
+        return `
+পরীক্ষার History দেখতে আগে Portal-এ লগইন করুন।
+`;
+    }
+
+
+    const attempts =
+        Object.values(studentAttempts || {});
+
+
+    if(attempts.length === 0){
+
+        return `
+আপনার কোনো পরীক্ষার History এখনো পাওয়া যায়নি।
+`;
+    }
+
+
+    attempts.sort(
+        (a,b)=>
+        new Date(b.submittedAt || 0) -
+        new Date(a.submittedAt || 0)
+    );
+
+
+    let result =
+        `📜 আপনার পরীক্ষার History:\n\n`;
+
+
+    attempts.slice(0,10).forEach(
+        (item,index)=>{
+
+            const score =
+                Number(item.score) || 0;
+
+            const total =
+                Number(item.total) || 0;
+
+            result +=
+`📌 ${bnNumber(index+1)}. ${item.examTitle || "মডেল টেস্ট"}
+নম্বর: ${bnNumber(score)}/${bnNumber(total)}
+তারিখ: ${formatDate(item.submittedAt)}
+
+`;
+
+        }
+    );
+
+
+    if(attempts.length > 10){
+
+        result +=
+            `\nআরও ${bnNumber(attempts.length-10)}টি পরীক্ষার তথ্য Portal-এ রয়েছে।`;
+
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
+   ANSWER: PERFORMANCE
+========================================================= */
+
+function answerPerformance(){
+
+    if(!currentUser){
+
+        return `
+Performance analysis দেখতে আগে Portal-এ লগইন করুন।
+`;
+    }
+
+
+    const analytics =
+        getStudentAnalytics();
+
+
+    if(!analytics.totalExams){
+
+        return `
+আপনার পর্যাপ্ত পরীক্ষার তথ্য এখনো নেই।
+
+কয়েকটি পরীক্ষা দেওয়ার পর আমি আপনার performance বিশ্লেষণ করতে পারব।
+`;
+    }
+
+
+    let advice = "";
+
+
+    if(analytics.accuracy >= 80){
+
+        advice =
+            "আপনার সামগ্রিক accuracy ভালো। এখন ভুল প্রশ্নগুলো বেশি করে revise করুন।";
+
+    }else if(analytics.accuracy >= 60){
+
+        advice =
+            "আপনার performance মাঝারি। যেসব প্রশ্ন ভুল হচ্ছে সেগুলো বিশ্লেষণ করে chapter-wise practice করুন।";
+
+    }else{
+
+        advice =
+            "আপনার আরও নিয়মিত practice দরকার। ছোট ছোট chapter test দিয়ে শুরু করে ভুল প্রশ্নগুলো revise করুন।";
+    }
+
+
+    return `
+📊 আপনার Performance Analysis
+
+মোট পরীক্ষা: ${bnNumber(analytics.totalExams)}টি
+
+মোট নম্বর:
+${bnNumber(analytics.totalScore)}/${bnNumber(analytics.totalPossible)}
+
+Accuracy:
+${analytics.accuracy.toFixed(1)}%
+
+পরামর্শ:
+${advice}
+`;
+}
+
+
+/* =========================================================
+   ANSWER: NOTICES
+========================================================= */
+
+function answerNotices(){
+
+    const notices =
+        knowledgeBase.notices || [];
+
+
+    if(!notices.length){
+
+        return `
+বর্তমানে GAIVEX-এর কোনো Notice পাওয়া যায়নি।
+`;
+    }
+
+
+    const sorted =
+        [...notices]
+        .sort(
+            (a,b)=>
+            Number(b.date || 0) -
+            Number(a.date || 0)
+        );
+
+
+    let result =
+        "📢 সাম্প্রতিক GAIVEX Notice:\n\n";
+
+
+    sorted.slice(0,5).forEach(
+        (item,index)=>{
+
+            result +=
+`📌 ${bnNumber(index+1)}. ${item.title || "নোটিশ"}
+
+${item.description || ""}
+
+তারিখ: ${formatDate(item.date)}
+
+`;
+
+        }
+    );
+
+
+    return result;
+}
+
+
+/* =========================================================
+   ANSWER: NOTES
+========================================================= */
+
+function answerNotes(query){
+
+    const notes =
+        knowledgeBase.notes || [];
+
+
+    if(!notes.length){
+
+        return `
+বর্তমানে Knowledge Base-এ কোনো Notes পাওয়া যায়নি।
+`;
+    }
+
+
+    const words =
+        normalizeText(query)
+        .split(" ")
+        .filter(x=>x.length>2);
+
+
+    const matched =
+        notes.filter(note=>{
+
+            const combined =
+                normalizeText(
+                    `${note.title || ""}
+                     ${note.subject || ""}
+                     ${note.paper || ""}
+                     ${note.chapter || ""}
+                     ${note.textContent || ""}`
+                );
+
+            return words.some(
+                word=>combined.includes(word)
+            );
+
+        });
+
+
+    if(!matched.length){
+
+        return googleFallback(
+            query
+        );
+    }
+
+
+    let result =
+        "📚 আপনার প্রশ্নের সাথে সম্পর্কিত Notes:\n\n";
+
+
+    matched.slice(0,5).forEach(
+        (note,index)=>{
+
+            result +=
+`📌 ${bnNumber(index+1)}. ${note.title || "Note"}
+
+বিষয়: ${note.subject || "তথ্য নেই"}
+পত্র: ${note.paper || "তথ্য নেই"}
+অধ্যায়: ${note.chapter || "তথ্য নেই"}
+
+`;
+
+            if(note.contentType === "pdf"){
+
+                result +=
+                    `PDF: ${note.contentUrl || ""}\n\n`;
+
+            }else if(
+                note.contentType === "image"
+            ){
+
+                result +=
+                    `Image: ${note.contentUrl || ""}\n\n`;
+
+            }else if(note.textContent){
+
+                result +=
+                    `${String(note.textContent).slice(0,500)}\n\n`;
+
+            }
+
+        }
+    );
+
+
+    return result;
+}
+
+
+/* =========================================================
+   ANSWER: LIVE EXAM
+========================================================= */
+
+function answerLiveExam(){
+
+    const exam =
+        knowledgeBase.liveExam;
+
+
+    if(!exam){
+
+        return `
+বর্তমানে Live Exam-এর কোনো তথ্য পাওয়া যায়নি।
+
+Portal-এর Live Exam section থেকে সর্বশেষ তথ্য দেখুন।
+`;
+    }
+
+
+    return `
+🔴 Live Exam
+
+পরীক্ষার নাম:
+${exam.title || "অনলাইন ডেইলি লাইভ পরীক্ষা"}
+
+সময়:
+${exam.duration || exam.time || "Portal-এ দেখুন"}
+
+পরীক্ষা শুরু করতে:
+https://gaivexexam.web.app/liveexam.html
+`;
+}
+
+
+/* =========================================================
+   ANSWER: PRACTICE
+========================================================= */
+
+function answerPracticeExam(){
+
+    const exam =
+        knowledgeBase.practiceExam;
+
+
+    return `
+📝 Practice Exam
+
+${exam?.title || "Practice Exam"}
+
+Practice পরীক্ষা দিতে নিচের লিংকে যান:
+
+https://sites.google.com/view/gaivexexam
+`;
+}
+
+
+/* =========================================================
+   ANSWER: SUBJECT
+========================================================= */
+
+function answerSubject(query){
+
+    const q =
+        normalizeText(query);
+
+
+    if(
+        containsAny(q,[
+            "পদার্থ",
+            "physics",
+            "ভৌত"
+        ])
+    ){
+
+        return `
+⚛️ পদার্থবিজ্ঞান
+
+GAIVEX-এ পদার্থবিজ্ঞানের ১ম ও ২য় পত্রের বিভিন্ন অধ্যায় নিয়ে পরীক্ষা ও প্রস্তুতির ব্যবস্থা রয়েছে।
+
+আপনি চাইলে নির্দিষ্ট অধ্যায়ের নাম লিখে প্রশ্ন করতে পারেন।
+
+উদাহরণ:
+"ভেক্টর সম্পর্কে বলো"
+"আদর্শ গ্যাসের নোট আছে?"
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "রসায়ন",
+            "chemistry",
+            "chemical"
+        ])
+    ){
+
+        return `
+🧪 রসায়ন
+
+GAIVEX-এ রসায়নের ১ম ও ২য় পত্রের বিভিন্ন অধ্যায়ের প্রস্তুতি ও Notes রয়েছে।
+
+নির্দিষ্ট chapter-এর নাম লিখে প্রশ্ন করুন।
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "জীববিজ্ঞান",
+            "biology",
+            "জীববিজ্ঞান"
+        ])
+    ){
+
+        return `
+🧬 জীববিজ্ঞান
+
+GAIVEX-এ জীববিজ্ঞানের ১ম ও ২য় পত্রের বিভিন্ন অধ্যায়ের প্রস্তুতি ও Notes রয়েছে।
+
+যেমন:
+"কোষ বিভাজন"
+"প্রাণীর পরিচিতি"
+"রক্ত ও সংবহন"
+ইত্যাদি লিখে প্রশ্ন করতে পারেন।
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "গণিত",
+            "math",
+            "উচ্চতর গণিত"
+        ])
+    ){
+
+        return `
+📐 উচ্চতর গণিত
+
+GAIVEX-এ উচ্চতর গণিতের ১ম ও ২য় পত্রের বিভিন্ন অধ্যায়ের প্রস্তুতি রয়েছে।
+
+নির্দিষ্ট chapter লিখে প্রশ্ন করুন।
+`;
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   ANSWER: WEBSITE PAGES
+========================================================= */
+
+function answerWebsite(query){
+
+    const q =
+        normalizeText(query);
+
+
+    if(
+        containsAny(q,[
+            "হোম",
+            "home",
+            "মূল পেজ"
+        ])
+    ){
+
+        return `
+🏠 GAIVEX Home
+
+মূল পেজ:
+index.html
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "physics",
+            "পদার্থবিজ্ঞান"
+        ])
+    ){
+
+        return `
+⚛️ পদার্থবিজ্ঞান পেজ:
+
+physics.html
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "chemistry",
+            "রসায়ন"
+        ])
+    ){
+
+        return `
+🧪 রসায়ন পেজ:
+
+chemistry.html
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "biology",
+            "জীববিজ্ঞান"
+        ])
+    ){
+
+        return `
+🧬 জীববিজ্ঞান পেজ:
+
+biology.html
+`;
+    }
+
+
+    if(
+        containsAny(q,[
+            "math",
+            "গণিত"
+        ])
+    ){
+
+        return `
+📐 উচ্চতর গণিত পেজ:
+
+math.html
+`;
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   GENERAL KNOWLEDGE
+========================================================= */
+
+function answerGeneral(query){
+
+    const q =
+        normalizeText(query);
+
+
+    /* Greeting */
+
+    if(
+        containsAny(q,[
+            "হ্যালো",
+            "হাই",
+            "hello",
+            "hi",
+            "assalamualaikum",
+            "আসসালামু"
+        ])
+    ){
+
+        return `
+হ্যালো! 👋
+
+আমি GAIVEX AI।
+
+আপনি GAIVEX-এর পরীক্ষা, রেজাল্ট, নোটস, নোটিশ, Live Exam, Practice Exam অথবা আপনার নিজের performance সম্পর্কে প্রশ্ন করতে পারেন।
+
+আপনার প্রশ্ন করুন।
+`;
+    }
+
+
+    /* Identity */
+
+    if(
+        containsAny(q,[
+            "তুমি কে",
+            "তোমার নাম",
+            "কে তুমি",
+            "who are you"
+        ])
+    ){
+
+        return `
+আমি GAIVEX AI — GAIVEX Admission Portal-এর Student Assistant।
+
+আমি GAIVEX-এর ওয়েবসাইট ও Firebase-এর available তথ্য থেকে উত্তর দেওয়ার চেষ্টা করি।
+`;
+    }
+
+
+    /* GAIVEX */
+
+    if(
+        containsAny(q,[
+            "gaivex কি",
+            "gaivex সম্পর্কে",
+            "gaivex কী"
+        ])
+    ){
+
+        return `
+GAIVEX হলো একটি Admission Preparation Portal যেখানে মেডিক্যাল, বিশ্ববিদ্যালয় ও ইঞ্জিনিয়ারিং ভর্তি পরীক্ষার প্রস্তুতির জন্য বিভিন্ন পরীক্ষা, Notes, Result ও অন্যান্য শিক্ষামূলক সুবিধা রাখা হয়েছে।
+`;
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   MAIN AI ENGINE
+========================================================= */
+
+async function generateAnswer(query){
+
+    const q =
+        normalizeText(query);
+
+
+    /* -------------------------
+       EMPTY
+    ------------------------- */
+
+    if(!q){
+
+        return "দয়া করে একটি প্রশ্ন লিখুন।";
+    }
+
+
+    /* -------------------------
+       REFRESH
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "refresh",
+            "রিফ্রেশ",
+            "নতুন তথ্য",
+            "তথ্য আপডেট"
+        ])
+    ){
+
+        await loadKnowledge();
+
+        return `
+Knowledge Base সফলভাবে আপডেট করা হয়েছে।
+
+এখন আবার আপনার প্রশ্ন করুন।
+`;
+    }
+
+
+    /* -------------------------
+       RESULT
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "আমার রেজাল্ট",
+            "আমার ফলাফল",
+            "আমার স্কোর",
+            "আমার নম্বর",
+            "result",
+            "score",
+            "ফলাফল"
+        ])
+    ){
+
+        return answerStudentResult();
+    }
+
+
+    /* -------------------------
+       HISTORY
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "exam history",
+            "পরীক্ষার history",
+            "পরীক্ষার হিস্টোরি",
+            "আগের পরীক্ষা",
+            "কতটি পরীক্ষা",
+            "কয়টি পরীক্ষা"
+        ])
+    ){
+
+        return answerExamHistory();
+    }
+
+
+    /* -------------------------
+       PERFORMANCE
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "performance",
+            "পারফরম্যান্স",
+            "দুর্বল",
+            "আমার অবস্থান",
+            "accuracy",
+            "এক্যুরেসি"
+        ])
+    ){
+
+        return answerPerformance();
+    }
+
+
+    /* -------------------------
+       NOTICES
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "notice",
+            "নোটিশ",
+            "ঘোষণা",
+            "নোটিশ বোর্ড"
+        ])
+    ){
+
+        return answerNotices();
+    }
+
+
+    /* -------------------------
+       LIVE EXAM
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "live exam",
+            "লাইভ পরীক্ষা",
+            "লাইভ এক্সাম",
+            "আজকের পরীক্ষা",
+            "daily exam"
+        ])
+    ){
+
+        return answerLiveExam();
+    }
+
+
+    /* -------------------------
+       PRACTICE
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "practice",
+            "প্র্যাকটিস",
+            "practice exam",
+            "অনুশীলন পরীক্ষা"
+        ])
+    ){
+
+        return answerPracticeExam();
+    }
+
+
+    /* -------------------------
+       NOTES
+    ------------------------- */
+
+    if(
+        containsAny(q,[
+            "note",
+            "notes",
+            "নোট",
+            "নোটস",
+            "পড়ার নোট"
+        ])
+    ){
+
+        return answerNotes(query);
+    }
+
+
+    /* -------------------------
+       SUBJECT
+    ------------------------- */
+
+    const subjectAnswer =
+        answerSubject(query);
+
+    if(subjectAnswer){
+
+        return subjectAnswer;
+    }
+
+
+    /* -------------------------
+       WEBSITE
+    ------------------------- */
+
+    const websiteAnswer =
+        answerWebsite(query);
+
+    if(websiteAnswer){
+
+        return websiteAnswer;
+    }
+
+
+    /* -------------------------
+       GENERAL
+    ------------------------- */
+
+    const generalAnswer =
+        answerGeneral(query);
+
+    if(generalAnswer){
+
+        return generalAnswer;
+    }
+
+
+    /* =====================================================
+       FIREBASE CONTENT SEARCH
+    ===================================================== */
+
+    const searchable = [];
+
+
+    /* Notices */
+
+    knowledgeBase.notices.forEach(
+        item=>{
+
+            searchable.push({
+
+                type:"notice",
+
+                title:item.title || "",
+
+                text:
+                    `${item.title || ""}
+                     ${item.description || ""}`,
+
+                data:item
+
+            });
+
+        }
+    );
+
+
+    /* Notes */
+
+    knowledgeBase.notes.forEach(
+        item=>{
+
+            searchable.push({
+
+                type:"note",
+
+                title:item.title || "",
+
+                text:
+                    `${item.title || ""}
+                     ${item.subject || ""}
+                     ${item.paper || ""}
+                     ${item.chapter || ""}
+                     ${item.textContent || ""}`,
+
+                data:item
+
+            });
+
+        }
+    );
+
+
+    const queryWords =
+        q.split(" ")
+        .filter(word=>word.length>1);
+
+
+    const matches =
+        searchable
+        .map(item=>{
+
+            const text =
+                normalizeText(
+                    item.text
+                );
+
+            let score = 0;
+
+
+            queryWords.forEach(
+                word=>{
+
+                    if(text.includes(word)){
+
+                        score++;
+
+                    }
+
+                }
+            );
+
+
+            return {
+                ...item,
+                score
+            };
+
+        })
+        .filter(item=>item.score>0)
+        .sort(
+            (a,b)=>b.score-a.score
+        );
+
+
+    if(matches.length){
+
+        const top =
+            matches.slice(0,4);
+
+
+        let result =
+            "🔎 GAIVEX-এর তথ্য থেকে যা পাওয়া গেছে:\n\n";
+
+
+        top.forEach(
+            (item,index)=>{
+
+                result +=
+`📌 ${bnNumber(index+1)}. ${item.title || "তথ্য"}
+
+`;
+
+                if(item.type==="notice"){
+
+                    result +=
+                        `${item.data.description || ""}\n\n`;
+
+                }else{
+
+                    result +=
+                        `বিষয়: ${item.data.subject || "তথ্য নেই"}
+অধ্যায়: ${item.data.chapter || "তথ্য নেই"}
+`;
+
+                    if(item.data.textContent){
+
+                        result +=
+                            `${String(item.data.textContent).slice(0,500)}\n`;
+
+                    }
+
+                    if(item.data.contentUrl){
+
+                        result +=
+                            `লিংক: ${item.data.contentUrl}\n`;
+
+                    }
+
+                    result += "\n";
+                }
+
+            }
+        );
+
+
+        return result;
+    }
+
+
+    /* =====================================================
+       GOOGLE FALLBACK
+    ===================================================== */
+
+    return googleFallback(query);
+}
+
+
+/* =========================================================
+   SEND QUESTION
+========================================================= */
+
+async function sendQuestion(){
+
+    const question =
+        input.value.trim();
+
+
+    if(!question){
+
+        return;
+    }
+
+
+    input.value = "";
+
+    sendButton.disabled = true;
+
+    addMessage(
+        question,
+        "user"
+    );
+
+
+    showTyping();
+
+
+    try{
+
+        const answer =
+            await generateAnswer(question);
+
+
+        /*
+          ছোট delay
+          যাতে response natural লাগে
+        */
+
+        await new Promise(
+            resolve =>
+            setTimeout(resolve,350)
+        );
+
+
+        hideTyping();
+
+        addMessage(
+            answer,
+            "bot"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        hideTyping();
+
+        addMessage(
+            "দুঃখিত, তথ্য প্রক্রিয়া করার সময় একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+            "bot"
+        );
+
+    }
+
+
+    sendButton.disabled = false;
+
+    input.focus();
+
+}
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+sendButton.addEventListener(
+    "click",
+    sendQuestion
+);
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+input.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.key==="Enter" &&
+            !event.shiftKey
+        ){
+
+            event.preventDefault();
+
+            sendQuestion();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   VOICE INPUT
+========================================================= */
+
+/*
+   Browser compatibility
+*/
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+
+let isListening = false;
+
+
+/* =========================================================
+   CHECK VOICE SUPPORT
+========================================================= */
+
+if(SpeechRecognition){
+
+    recognition =
+        new SpeechRecognition();
+
+
+    /*
+       Continuous false:
+       একটি প্রশ্ন বলা শেষ হলে
+       recognition নিজে stop করবে।
+    */
+
+    recognition.continuous = false;
+
+
+    /*
+       Interim result true:
+       কথা বলার সময় text দেখা যাবে।
+    */
+
+    recognition.interimResults = true;
+
+
+    /*
+       Bengali first.
+    */
+
+    recognition.lang = "bn-BD";
+
+
+    recognition.maxAlternatives = 1;
+
+
+    /* =========================
+       START
+    ========================= */
+
+    recognition.onstart = ()=>{
+
+        isListening = true;
+
+        voiceButton.classList.add(
+            "listening"
+        );
+
+        voiceButton.textContent =
+            "⏹️";
+
+        input.placeholder =
+            "শুনছি... কথা বলুন";
+
+        inputHint.textContent =
+            "🔴 এখন আপনার কথা শুনছি...";
+
+
+        botStatus.textContent =
+            "আপনার কথা শুনছি...";
+
+    };
+
+
+    /* =========================
+       RESULT
+    ========================= */
+
+    recognition.onresult =
+        event=>{
+
+            let finalText = "";
+
+            let interimText = "";
+
+
+            for(
+                let i=event.resultIndex;
+                i<event.results.length;
+                i++
+            ){
+
+                const transcript =
+                    event.results[i][0].transcript;
+
+
+                if(
+                    event.results[i].isFinal
+                ){
+
+                    finalText +=
+                        transcript;
+
+                }else{
+
+                    interimText +=
+                        transcript;
+
+                }
+
+            }
+
+
+            /*
+               Final text থাকলে input-এ বসানো
+            */
+
+            if(finalText){
+
+                input.value =
+                    finalText.trim();
+
+            }else if(interimText){
+
+                input.value =
+                    interimText.trim();
+
+            }
+
+
+            input.focus();
+
+        };
+
+
+    /* =========================
+       END
+    ========================= */
+
+    recognition.onend = ()=>{
+
+        isListening = false;
+
+        voiceButton.classList.remove(
+            "listening"
+        );
+
+        voiceButton.textContent =
+            "🎤";
+
+        input.placeholder =
+            "আপনার প্রশ্ন লিখুন...";
+
+        inputHint.textContent =
+            "Enter চাপলে প্রশ্ন পাঠানো যাবে • 🎤 মাইক্রোফোনে কথা বলুন";
+
+        botStatus.textContent =
+            "আপনার প্রশ্নের অপেক্ষায়...";
+
+
+        /*
+           Speech recognition শেষ হলে
+           text automatically send করবে না।
+           
+           User চাইলে edit করে পাঠাতে পারবে।
+        */
+
+    };
+
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    recognition.onerror =
+        event=>{
+
+            console.error(
+                "Speech recognition error:",
+                event.error
+            );
+
+
+            isListening = false;
+
+            voiceButton.classList.remove(
+                "listening"
+            );
+
+            voiceButton.textContent =
+                "🎤";
+
+            input.placeholder =
+                "আপনার প্রশ্ন লিখুন...";
+
+
+            let message =
+                "মাইক্রোফোন ব্যবহার করা যায়নি।";
+
+
+            if(
+                event.error ===
+                "not-allowed"
+            ){
+
+                message =
+                    "মাইক্রোফোন Permission দেওয়া হয়নি। Browser Settings থেকে Microphone permission Allow করুন।";
+
+            }else if(
+                event.error ===
+                "no-speech"
+            ){
+
+                message =
+                    "কোনো কথা শোনা যায়নি। আবার মাইক্রোফোন চাপুন।";
+
+            }else if(
+                event.error ===
+                "network"
+            ){
+
+                message =
+                    "Voice Recognition-এর জন্য browser-এর network service ব্যবহার করা প্রয়োজন। Internet connection পরীক্ষা করুন।";
+
+            }
+
+
+            inputHint.textContent =
+                message;
+
+            botStatus.textContent =
+                "Voice Input প্রস্তুত";
+
+        };
+
+}else{
+
+    /*
+       Browser unsupported
+    */
+
+    voiceButton.disabled =
+        true;
+
+    voiceButton.style.opacity =
+        ".45";
+
+    inputHint.textContent =
+        "এই browser-এ Voice Input support নেই। Chrome ব্যবহার করে চেষ্টা করুন।";
+
+}
+
+
+/* =========================================================
+   MICROPHONE BUTTON
+========================================================= */
+
+voiceButton.addEventListener(
+    "click",
+    async()=>{
+
+        /*
+           Browser unsupported
+        */
+
+        if(!recognition){
+
+            alert(
+                "আপনার browser-এ Voice Input support নেই। Android Chrome ব্যবহার করে চেষ্টা করুন।"
+            );
+
+            return;
+
+        }
+
+
+        /*
+           Already listening
+        */
+
+        if(isListening){
+
+            recognition.stop();
+
+            return;
+
+        }
+
+
+        /*
+           Start
+        */
+
+        try{
+
+            /*
+               Bengali recognition
+            */
+
+            recognition.lang =
+                "bn-BD";
+
+
+            recognition.start();
+
+        }catch(error){
+
+            console.error(error);
+
+            /*
+               কিছু browser-এ দ্রুত
+               start করলে InvalidStateError হতে পারে।
+            */
+
+            try{
+
+                recognition.stop();
+
+            }catch(e){}
+
+            setTimeout(()=>{
+
+                try{
+
+                    recognition.start();
+
+                }catch(e){
+
+                    inputHint.textContent =
+                        "মাইক্রোফোন চালু করা যায়নি। আবার চেষ্টা করুন।";
+
+                }
+
+            },300);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SPEECH OUTPUT
+   Optional:
+   AI answer পড়ে শোনানোর function
+========================================================= */
+
+function speakText(text){
+
+    if(
+        !("speechSynthesis" in window)
+    ){
+
+        return;
+    }
+
+
+    /*
+       URL বাদ
+    */
+
+    let clean =
+        String(text)
+        .replace(
+            /https?:\/\/\S+/g,
+            ""
+        );
+
+
+    /*
+       পুরোনো speech বন্ধ
+    */
+
+    window.speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            clean
+        );
+
+
+    utterance.lang =
+        "bn-BD";
+
+    utterance.rate =
+        0.95;
+
+    utterance.pitch =
+        1;
+
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+}
+
+
+/* =========================================================
+   OPTIONAL: LONG PRESS / DOUBLE TAP
+   Bot answer এ click করলে পড়ে শোনাবে
+========================================================= */
+
+messages.addEventListener(
+    "dblclick",
+    event=>{
+
+        const bubble =
+            event.target.closest(
+                ".message.bot"
+            );
+
+        if(!bubble){
+
+            return;
+        }
+
+
+        speakText(
+            bubble.innerText
+        );
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+(async function(){
+
+    try{
+
+        await loadKnowledge();
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+})();
+
+
+</script>
+
 </body>
 </html>
