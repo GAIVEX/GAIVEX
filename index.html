@@ -123,6 +123,7 @@
                 <button class="menu-btn" onclick="toggleMenu()">⋮</button>
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="index.html" class="active">🏠 হোম</a>
+                    <a href="gaivexai.html">🤖 GAIVEX AI</a>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
                     <button onclick="openResultModal()">📊 রেজাল্ট</button>
                     <button onclick="openNotesModal()">📚 নোটস</button>
@@ -152,6 +153,7 @@
 
         <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
+            <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
             <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
@@ -334,7 +336,6 @@
       let currentUser = null;
       let studentExamDataMap = {};
 
-      // অ্যাডমিন প্যানেলের সাথে সামঞ্জস্যपूर्ण অধ্যায়ের ডেটা
       const chaptersData = {
           physics: {
               paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
@@ -387,14 +388,12 @@
           document.getElementById('resultListModal').style.display = 'none';
       }
 
-      // নোটস মোডাল কন্ট্রোল ফাংশন
       window.openNotesModal = () => {
           document.getElementById('notesModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
       }
       window.closeNotesModal = () => document.getElementById('notesModal').style.display = 'none';
 
-      // স্টুডেন্ট নোট ফিল্টার হ্যান্ডলার
       window.updateStudentPaperOptions = function() {
           const paperSelect = document.getElementById('filterPaper');
           paperSelect.innerHTML = '<option value="">পত্র বাছুন</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
@@ -414,7 +413,6 @@
           }
       };
 
-      // ফায়ারবেস থেকে নোট ফেচ করে স্টুডেন্টদের দেখানো
       window.fetchStudentNotes = async function() {
           const subject = document.getElementById('filterSubject').value;
           const paper = document.getElementById('filterPaper').value;
