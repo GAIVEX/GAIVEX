@@ -77,6 +77,7 @@
             <button class="mode-btn active" id="btnLiveMode" onclick="switchMode('live')">🔥 লাইভ ডেইলি এক্সাম</button>
             <button class="mode-btn" id="btnChapterMode" onclick="switchMode('chapter')">📚 বিষয়ভিত্তিক এক্সাম</button>
             <button class="mode-btn" id="btnNoticeMode" onclick="switchMode('notice')">📢 নোটিশ বোর্ড</button>
+            <button class="mode-btn" id="btnNotesMode" onclick="switchMode('notes')">📖 অধ্যায়ভিত্তিক নোটস</button>
         </div>
 
         <!-- নোটিশ বোর্ড সেকশন -->
@@ -98,6 +99,58 @@
             <h3 style="color: #38bdf8; margin-top: 25px; margin-bottom: 10px;">বর্তমান নোটিশসমূহ</h3>
             <div id="adminNoticeList" style="max-height: 250px; overflow-y: auto;">
                 <p style="color: #94a3b8; font-size: 13px;">নোটিশ লোড হচ্ছে...</p>
+            </div>
+        </div>
+
+        <!-- অধ্যায়ভিত্তিক নোটস আপলোড সেকশন -->
+        <div id="notesSection" style="display: none;">
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">নতুন নোট আপলোড করুন</h3>
+            <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+                <label>বিষয় নির্বাচন করুন:</label>
+                <select id="noteSubject" onchange="updateNotePaperOptions()">
+                    <option value="">-- বিষয় বেছে নিন --</option>
+                    <option value="physics">পদার্থবিজ্ঞান (Physics)</option>
+                    <option value="chemistry">রসায়ন (Chemistry)</option>
+                    <option value="biology">জীববিজ্ঞান (Biology)</option>
+                    <option value="math">উচ্চতর গণিত (Math)</option>
+                </select>
+
+                <label>পত্র নির্বাচন করুন:</label>
+                <select id="notePaper" onchange="updateNoteChapterOptions()">
+                    <option value="">-- আগে বিষয় বেছে নিন --</option>
+                </select>
+
+                <label>অধ্যায় নির্বাচন করুন:</label>
+                <select id="noteChapter">
+                    <option value="">-- আগে পত্র বেছে নিন --</option>
+                </select>
+
+                <label>নোটের শিরোনাম:</label>
+                <input type="text" id="noteTitle" placeholder="যেমন: ভেক্টরের বিস্তারিত লেকচার শিট">
+
+                <label>নোটের ধরণ (Content Type):</label>
+                <select id="noteContentType" onchange="toggleNoteInputs()">
+                    <option value="pdf">PDF লিংক (Google Drive / Direct URL)</option>
+                    <option value="image">ছবির লিংক (Image URL)</option>
+                    <option value="text">সরাসরি টেক্সট (Direct Text)</option>
+                </select>
+
+                <div id="noteUrlBox" style="margin-top: 10px;">
+                    <label id="noteUrlLabel">PDF লিংক:</label>
+                    <input type="text" id="noteContentUrl" placeholder="https://...">
+                </div>
+
+                <div id="noteTextBox" style="margin-top: 10px; display: none;">
+                    <label>নোটের টেক্সট লিখুন:</label>
+                    <textarea id="noteTextContent" rows="6" placeholder="এখানে বিস্তারিত নোট বা টেক্সট লিখুন..."></textarea>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="publishNote()" style="margin-top: 15px;">নোট আপলোড ও পাবলিশ করুন 🚀</button>
+            </div>
+
+            <h3 style="color: #38bdf8; margin-top: 25px; margin-bottom: 10px;">আপলোড করা নোটসমূহ</h3>
+            <div id="adminNotesList" style="max-height: 250px; overflow-y: auto;">
+                <p style="color: #94a3b8; font-size: 13px;">নোট লোড হচ্ছে...</p>
             </div>
         </div>
 
@@ -254,27 +307,33 @@
         document.getElementById('btnLiveMode').classList.toggle('active', mode === 'live');
         document.getElementById('btnChapterMode').classList.toggle('active', mode === 'chapter');
         document.getElementById('btnNoticeMode').classList.toggle('active', mode === 'notice');
+        document.getElementById('btnNotesMode').classList.toggle('active', mode === 'notes');
         
         const chapBox = document.getElementById('chapterSelectionBox');
         const examForm = document.getElementById('examFormContent');
         const noticeSec = document.getElementById('noticeSection');
+        const notesSec = document.getElementById('notesSection');
+
+        // Hide all first
+        chapBox.style.display = 'none';
+        examForm.style.display = 'none';
+        noticeSec.style.display = 'none';
+        notesSec.style.display = 'none';
 
         if (mode === 'notice') {
-          chapBox.style.display = 'none';
-          examForm.style.display = 'none';
           noticeSec.style.display = 'block';
           loadAdminNotices();
+        } else if (mode === 'notes') {
+          notesSec.style.display = 'block';
+          loadAdminNotes();
         } else if (mode === 'chapter') {
           chapBox.style.display = 'block';
-          noticeSec.style.display = 'none';
-          examForm.style.display = 'none';
           document.getElementById('titleLabel').style.display = 'none';
           document.getElementById('examTitle').style.display = 'none';
         } else {
-          chapBox.style.display = 'none';
-          noticeSec.style.display = 'none';
           document.getElementById('titleLabel').style.display = 'block';
           document.getElementById('examTitle').style.display = 'block';
+          examForm.style.display = 'block';
           loadExistingData();
         }
       };
@@ -308,7 +367,6 @@
           }
       };
 
-      // অ্যাডমিন প্যানেলে নোটিশ লিস্ট লোড ও ডিলিট করার ব্যবস্থা
       async function loadAdminNotices() {
           const listContainer = document.getElementById('adminNoticeList');
           try {
@@ -342,6 +400,133 @@
                   await remove(ref(db, `notices/${noticeId}`));
                   alert("নোটিশটি মুছে ফেলা হয়েছে।");
                   loadAdminNotices();
+              } catch(e) {
+                  alert("ত্রুটি: " + e.message);
+              }
+          }
+      };
+
+      // নোটস সেকশনের জন্য ডাইনামিক ড্রপডাউন হ্যান্ডলার
+      window.updateNotePaperOptions = function() {
+          const sub = document.getElementById('noteSubject').value;
+          const paperSelect = document.getElementById('notePaper');
+          paperSelect.innerHTML = '<option value="">-- পত্র বেছে নিন --</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
+          document.getElementById('noteChapter').innerHTML = '<option value="">-- আগে পত্র বেছে নিন --</option>';
+      };
+
+      window.updateNoteChapterOptions = function() {
+          const sub = document.getElementById('noteSubject').value;
+          const paper = document.getElementById('notePaper').value;
+          const chapSelect = document.getElementById('noteChapter');
+          chapSelect.innerHTML = '<option value="">-- অধ্যায় বেছে নিন --</option>';
+          if(sub && paper && chaptersData[sub][paper]) {
+              chaptersData[sub][paper].forEach((chap) => {
+                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
+              });
+          }
+      };
+
+      window.toggleNoteInputs = function() {
+          const type = document.getElementById('noteContentType').value;
+          const urlBox = document.getElementById('noteUrlBox');
+          const textBox = document.getElementById('noteTextBox');
+          const urlLabel = document.getElementById('noteUrlLabel');
+
+          if (type === 'pdf') {
+              urlBox.style.display = 'block';
+              textBox.style.display = 'none';
+              urlLabel.innerText = 'PDF লিংক:';
+              document.getElementById('noteContentUrl').placeholder = 'https://... (PDF ডিরেক্ট লিংক)';
+          } else if (type === 'image') {
+              urlBox.style.display = 'block';
+              textBox.style.display = 'none';
+              urlLabel.innerText = 'ছবির লিংক (Image URL):';
+              document.getElementById('noteContentUrl').placeholder = 'https://... (ছবির লিংক)';
+          } else {
+              urlBox.style.display = 'none';
+              textBox.style.display = 'block';
+          }
+      };
+
+      window.publishNote = async function() {
+          const subject = document.getElementById('noteSubject').value;
+          const paper = document.getElementById('notePaper').value;
+          const chapter = document.getElementById('noteChapter').value;
+          const title = document.getElementById('noteTitle').value.trim();
+          const contentType = document.getElementById('noteContentType').value;
+          const contentUrl = document.getElementById('noteContentUrl').value.trim();
+          const textContent = document.getElementById('noteTextContent').value.trim();
+
+          if (!subject || !paper || !chapter || !title) {
+              alert("দয়া করে বিষয়, পত্র, অধ্যায় এবং নোটের শিরোনাম পূরণ করুন!");
+              return;
+          }
+
+          if ((contentType === 'pdf' || contentType === 'image') && !contentUrl) {
+              alert("দয়া করে লিংক দিন!");
+              return;
+          }
+
+          if (contentType === 'text' && !textContent) {
+              alert("দয়া করে নোটের টেক্সট লিখুন!");
+              return;
+          }
+
+          try {
+              const notesRef = ref(db, 'notes');
+              await push(notesRef, {
+                  subject: subject,
+                  paper: paper,
+                  chapter: chapter,
+                  title: title,
+                  contentType: contentType,
+                  contentUrl: contentUrl,
+                  textContent: textContent,
+                  date: Date.now()
+              });
+              alert("✅ নোট সফলভাবে আপলোড করা হয়েছে!");
+              document.getElementById('noteTitle').value = '';
+              document.getElementById('noteContentUrl').value = '';
+              document.getElementById('noteTextContent').value = '';
+              loadAdminNotes();
+          } catch(e) {
+              alert("ত্রুটি: " + e.message);
+          }
+      };
+
+      async function loadAdminNotes() {
+          const listContainer = document.getElementById('adminNotesList');
+          try {
+              const snapshot = await get(ref(db, 'notes'));
+              if (snapshot.exists()) {
+                  listContainer.innerHTML = '';
+                  const data = snapshot.val();
+                  for (let key in data) {
+                      const item = data[key];
+                      listContainer.innerHTML += `
+                          <div class="notice-card-item">
+                              <div>
+                                  <strong style="color: #38bdf8;">[${item.subject.toUpperCase()} - ${item.paper}] ${item.title}</strong>
+                                  <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">অধ্যায়: ${item.chapter} | ধরণ: ${item.contentType.toUpperCase()}</div>
+                              </div>
+                              <button onclick="deleteNote('${key}')" style="background: #f43f5e; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">ডিলিট</button>
+                          </div>
+                      `;
+                  }
+              } else {
+                  listContainer.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">কোনো নোট আপলোড করা হয়নি।</p>';
+              }
+          } catch(e) {
+              listContainer.innerHTML = '<p style="color: #f43f5e; font-size: 13px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
+          }
+      }
+
+      window.deleteNote = async function(noteId) {
+          if (confirm("আপনি কি এই নোটটি ডিলিট করতে চান?")) {
+              try {
+                  await remove(ref(db, `notes/${noteId}`));
+                  alert("নোটটি মুছে ফেলা হয়েছে।");
+                  loadAdminNotes();
               } catch(e) {
                   alert("ত্রুটি: " + e.message);
               }
@@ -541,7 +726,7 @@
               question: qText,
               options: optionsArray,
               correct: correct,
-              correctAnswer: optionsArray[correct], // সরাসরি সঠিক উত্তরের টেক্সট যুক্ত করা হলো
+              correctAnswer: optionsArray[correct],
               explanation: exp
             });
           }
