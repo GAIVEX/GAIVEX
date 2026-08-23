@@ -535,11 +535,13 @@
           const exp = box.querySelector('.q-exp').value;
 
           if(qText) {
+            const optionsArray = [opt0, opt1, opt2, opt3];
             questions.push({
               id: "q_" + Math.random().toString(36).substr(2, 9),
               question: qText,
-              options: [opt0, opt1, opt2, opt3],
+              options: optionsArray,
               correct: correct,
+              correctAnswer: optionsArray[correct], // সরাসরি সঠিক উত্তরের টেক্সট যুক্ত করা হলো
               explanation: exp
             });
           }
