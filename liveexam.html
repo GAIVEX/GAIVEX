@@ -84,7 +84,7 @@
     </header>
 
     <div class="container">
-        <!-- স্টিকি টাইমার ও সাবমিট বাটন হেডার (এক লাইনে ফিক্সড) -->
+        <!-- স্টিকি টাইমার ও সাবমিট বাটন হেডার -->
         <div class="timer-header">
             <div class="timer-info">
                 <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
@@ -187,7 +187,7 @@
         duration: 20,
         questions: [
           { question: "প্রাণীদের দেহের গঠনগত ও কার্যগত মৌলিক একক কোনটি?", options: ["টিস্যু", "অঙ্গ", "কোষ", "অঙ্গতন্ত্র"], correct: 2, explanation: "কোষ হলো জীবদেহের গঠন ও কাজের মৌলিক একক।" },
-          { question: "কোন বৈশিষ্ট্যটি প্রাণীদের উদ্ভিদ থেকে পৃথক করতে সবচেয়ে গুরুত্বপূর্ণ?", options: ["কোষীয় গঠন", "শ্বসন", "পরভোজী পুষ্টি", "বিপাক"], correct: 2, explanation: "প্রাণীদের পুষ্টির ধরন পরভোজী (heterotrophic)।" },
+          { question: "কোন বৈশিষ্ট্যটি প্রাণীদের উদ্ভিদ থেকে পৃথক করতে সবচেয়ে গুরুত্বপূর্ণ?", options: ["কোষীয় গঠন", "শ্বসন", "পরভোজী পুষ্টি", "বিপাক"], correct: 2, explanation: "প্রাণীদের পুষ্টির ধরন পরভোজী (heterotrophic)." },
           { question: "প্রাণীর দেহে টিস্যু গঠিত হয়—", options: ["অঙ্গ থেকে", "একই ধরনের কোষের সমষ্টি থেকে", "অঙ্গতন্ত্র থেকে", "বিভিন্ন অঙ্গের সমন্বয়ে"], correct: 1, explanation: "একই গঠন ও কাজের কোষসমূহের সমষ্টিকে টিস্যু বলে।" },
           { question: "প্রাণীর টিস্যুর প্রধান শ্রেণি কয়টি?", options: ["২টি", "৩টি", "৪টি", "৫টি"], correct: 2, explanation: "আবরণী, যোজক, পেশি ও স্নায়ু টিস্যু।" },
           { question: "দেহের বাইরের আবরণ ও বিভিন্ন অঙ্গের অভ্যন্তরীণ আবরণ গঠন করে কোন টিস্যু?", options: ["যোজক", "আবরণী", "পেশি", "স্নায়ু"], correct: 1, explanation: "আবরণী টিস্যু বহিরাবরণ তৈরি করে।" },
@@ -426,11 +426,14 @@
 
         if (currentUser) {
           try {
+            // 🔥 হোমপেজের রিভিউ পপআপ কাজ করার জন্য এখানে questions এবং userAnswers সেভ করা বাধ্যতামূলক ছিল
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
-              examTitle: examData.title,
+              examTitle: examData.title || "লাইভ পরীক্ষা",
               score: finalScore,
               total: total,
-              submittedAt: new Date().toISOString()
+              submittedAt: new Date().toISOString(),
+              questions: examData.questions, // মূল প্রশ্ন ও ব্যাখ্যা ডেটাবেজে পাঠানো হলো
+              userAnswers: userSelections   // ইউজারের দেওয়া উত্তর ডেটাবেজে পাঠানো হলো
             });
           } catch(err) { console.error("Error saving score:", err); }
         }
@@ -472,7 +475,7 @@
         resDiv.innerHTML = `
           <div class="score-board">
             <h2>পরীক্ষার ফলাফল</h2>
-            <p class="already-submitted-msg">⚠️ আপনি এই বিষয়টির পরীক্ষা ইতোমধ্যে জমা দিয়েছেন!</p>
+            <p class="already-submitted-msg">⚠️Have you tested this before?</p>
             <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total} (প্রতি ভুল উত্তরে ০.২৫ কাটা হয়েছে)</p>
             <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা ফিল্টার করে দেখতে পারেন।</p>
           </div>
@@ -498,7 +501,7 @@
           } else if (type === 'wrong' && selected !== undefined && selected !== correctVal) {
             show = true;
           } else if (type === 'skipped' && selected === undefined) {
-            show, show = true;
+            show = true;
           } else if (type === 'bookmarked' && bookmarkedQuestions[i]) {
             show = true;
           }
