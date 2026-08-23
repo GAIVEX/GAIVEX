@@ -121,7 +121,8 @@
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="index.html" class="active">🏠 হোম</a>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
-                    <button onclick="openResultModalFromMenu()">📊 রেজাল্ট</button>
+                    <!-- থ্রি-ডটস মেনুতে রেজাল্ট অপশনটি রাখা হলো -->
+                    <button onclick="openResultModal()">📊 রেজাল্ট</button>
                     <div id="dropdownAuthAction"></div>
                 </div>
             </div>
@@ -146,9 +147,14 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
+        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট এবং রসায়ন, পদার্থবিজ্ঞান, জীববিজ্ঞান, ম্যাথ বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
+            <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
+            <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
+            <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
+            <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
     </main>
 
@@ -307,10 +313,6 @@
           document.getElementById('resultListModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
           await loadAllExamResultsList();
-      }
-
-      window.openResultModalFromMenu = function() {
-          openResultModal();
       }
 
       window.closeResultModal = function() {
