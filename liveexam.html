@@ -3,296 +3,470 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লাইভ পরীক্ষা - GAIVEX</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Live Exam - GAIVEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #0b0f19; color: #f8fafc; }
-      .card-bg { background-color: #151c2c; border: 1px solid #2a3447; }
-      .option-locked { pointer-events: none; opacity: 0.7; }
-      .selected-option { border-color: #06b6d4!important; background: #1e3a8a!important; }
-      .palette-btn { width: 36px; height: 36px; border-radius: 6px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 1px solid #2a3447; font-size:12px; }
-      .palette-pending { background: #374151; color: #d1d5db; }
-      .palette-answered { background: #06b6d4; color: #0b0f19; }
-      .palette-bookmarked { background: #f59e0b; color: #0b0f19; }
-      .correct { background: #065f46!important; border-color: #10b981!important; }
-      .wrong { background: #9f1239!important; border-color: #ef4444!important; }
-      .timer-warning { color: #ef4444!important; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        /* মোবাইলের জন্য ফিক্স */
-        @media (max-width: 1024px) {
-            #examUI main { padding-bottom: 120px; } /* নিচে স্ক্রল করার জন্য জায়গা */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; }
+        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
+        .logo span { color: #f43f5e; }
+
+        .main-layout { display: flex; max-width: 1200px; margin: 20px auto; padding: 0 15px; width: 100%; gap: 20px; flex: 1; align-items: flex-start; }
+        .container { flex: 1; min-width: 0; }
+        
+        /* Sidebar Palette */
+        .palette-sidebar { width: 300px; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 15px; position: sticky; top: 80px; display: flex; flex-direction: column; gap: 12px; }
+        .palette-title { font-size: 16px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-height: 350px; overflow-y: auto; padding: 4px; }
+        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .palette-btn.answered { background: #1e3a8a; border-color: #38bdf8; color: #fff; }
+        .palette-btn.bookmarked { background: #ca8a04; border-color: #facc15; color: #fff; }
+        .palette-btn.skipped { background: #9f1239; border-color: #f43f5e; color: #fff; }
+
+        .palette-legend { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 10px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 3px; }
+
+        .timer-header { background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .timer-box { font-size: 20px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 12px; border-radius: 6px; border: 1px solid #f43f5e; }
+
+        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
+        .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .question-title { font-size: 16px; font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
+        .bookmark-btn { background: none; border: none; cursor: pointer; font-size: 20px; color: #64748b; transition: 0.2s; padding: 0 5px; }
+        .bookmark-btn.active { color: #facc15; }
+        
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 15px; display: flex; align-items: center; gap: 12px; color: #f8fafc; }
+        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
+        .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
+
+        .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; }
+        .option-item.disabled-option { cursor: not-allowed; opacity: 0.7; }
+        .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
+        .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
+
+        .filter-bar { display: none; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
+        .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+
+        .btn-submit { background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; margin-bottom: 30px; transition: 0.3s; }
+        .btn-submit:hover { background: #059669; }
+
+        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
+        .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
+
+        .site-footer { background: #1e293b; border-top: 1px solid #334155; padding: 25px 20px 20px; margin-top: auto; text-align: center; }
+        .footer-logo { font-size: 20px; font-weight: 700; color: #38bdf8; }
+        .footer-logo span { color: #f43f5e; }
+        .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 10px; }
+        .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
+        .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
+        .social-btn svg { width: 22px; height: 22px; }
+
+        @media(max-width: 900px) {
+            .main-layout { flex-direction: column-reverse; }
+            .palette-sidebar { width: 100%; position: static; margin-bottom: 20px; }
+            .palette-grid { grid-template-columns: repeat(8, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <!-- START SCREEN MODAL -->
-    <div id="startModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
-        <div class="card-bg p-8 rounded-xl max-w-2xl w-full">
-            <h2 class="text-2xl font-bold text-cyan-400 mb-4">GAIVEX লাইভ পরীক্ষার নিয়মাবলী</h2>
-            <ul class="space-y-2 text-gray-300">
-                <li>১. মোট প্রশ্ন: <b id="totalQ">0</b> টি MCQ</li>
-                <li>২. সময়: <b id="totalTime">0</b> মিনিট</li>
-                <li>৩. নেগেটিভ মার্কিং: প্রতিটি ভুল উত্তরের জন্য <b>-0.25</b></li>
-                <li>৪. একবার উত্তর দিলে আর পরিবর্তন করা যাবে না</li>
-                <li>৫. প্রশ্ন বুকমার্ক করে পরে রিভিউ করতে পারবেন</li>
-            </ul>
-            <button onclick="startExam()" class="w-full mt-6 bg-cyan-500 text-black font-bold py-3 rounded-lg hover:bg-cyan-400">পরীক্ষা শুরু করুন</button>
-        </div>
-    </div>
+    <header class="navbar">
+        <a href="index.html" class="logo">GAIVEX<span>.</span></a>
+        <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 14px;">🏠 হোম</a>
+    </header>
 
-    <!-- ALREADY ATTEMPTED SCREEN -->
-    <div id="alreadyAttempted" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
-        <div class="card-bg p-8 rounded-xl max-w-md w-full text-center">
-            <h2 class="text-2xl font-bold text-red-400 mb-4">⚠️ পরীক্ষা আগেই দেওয়া হয়েছে</h2>
-            <p class="text-gray-300">আপনি এই লাইভ পরীক্ষাটি ইতোমধ্যে একবার দিয়েছেন।</p>
-            <button onclick="window.location.href='index.html'" class="w-full mt-6 bg-cyan-500 text-black font-bold py-3 rounded-lg">হোমে ফিরে যান</button>
-        </div>
-    </div>
+    <div class="main-layout">
+        <div class="container">
+            <div class="timer-header">
+                <h3 id="examTitle" style="font-size: 16px; color: #38bdf8;">পরীক্ষা লোড হচ্ছে...</h3>
+                <div class="timer-box" id="timerDisplay">00:00</div>
+            </div>
 
-    <!-- MAIN LAYOUT -->
-    <div id="examUI" class="hidden">
-        <header class="fixed top-0 left-0 right-0 card-bg p-4 flex justify-between items-center z-40 border-b border-[#2a3447]">
-            <h3 id="examTitle" class="font-bold text-cyan-400">লাইভ মডেল টেস্ট</h3>
-            <div id="timer" class="text-xl font-bold">00:00</div>
-        </header>
+            <div id="resultSummary" style="display: none;"></div>
 
-        <div class="flex pt-20">
-            <main class="w-full lg:w-3/4 p-4 pb-32"> <!-- FIX 1: pb-32 add করলাম -->
+            <!-- ফিল্টার বার (ফলাফল দেখার পর সক্রিয় হবে) -->
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
+                <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
+                <button class="filter-btn" onclick="filterQuestions('wrong')">ভুল উত্তর</button>
+                <button class="filter-btn" onclick="filterQuestions('skipped')">স্কিপড</button>
+                <button class="filter-btn" onclick="filterQuestions('bookmarked')">বুকমার্কড</button>
+            </div>
+
+            <form id="examForm">
                 <div id="questionsContainer"></div>
-                <button onclick="openSubmitModal()" class="w-full mt-6 bg-green-600 text-white font-bold py-3 rounded-lg">পরীক্ষা সাবমিট করুন</button>
-            </main>
-
-            <aside class="w-full lg:w-1/4 card-bg p-4 fixed right-0 top-20 h-[calc(100vh-80px)] overflow-y-auto hidden lg:block">
-                <h4 class="font-bold mb-3">প্রশ্ন প্যালেট</h4>
-                <div class="flex gap-4 mb-3 text-xs flex-wrap">
-                    <span><div class="w-3 h-3 inline-block palette-pending rounded"></div> বাকি</span>
-                    <span><div class="w-3 h-3 inline-block palette-answered rounded"></div> উত্তর</span>
-                    <span><div class="w-3 h-3 inline-block palette-bookmarked rounded"></div> বুকমার্ক</span>
-                </div>
-                <div id="paletteGrid" class="grid grid-cols-5 gap-2"></div> <!-- FIX 2: grid-cols-5 fixed -->
-                <div class="mt-4 pt-4 border-t border-[#2a3447]">
-                    <p>উত্তর: <span id="answeredCount">0</span> / <span id="totalCount">0</span></p>
-                </div>
-            </aside>
+                <button type="submit" class="btn-submit" id="submitBtn">পরীক্ষা জমা দিন 🚀</button>
+            </form>
         </div>
-    </div>
 
-    <!-- SUBMIT CONFIRMATION MODAL -->
-    <div id="submitModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
-        <div class="card-bg p-8 rounded-xl max-w-md w-full text-center">
-            <h3 class="text-xl font-bold mb-4">পরীক্ষা সাবমিট করবেন?</h3>
-            <p>আপনি <b id="confirmAnswered">0</b> টি প্রশ্নের উত্তর দিয়েছেন।</p>
-            <div class="flex gap-4 mt-6">
-                <button onclick="submitExam()" class="flex-1 bg-green-600 py-2 rounded">হ্যাঁ, সাবমিট</button>
-                <button onclick="closeSubmitModal()" class="flex-1 bg-red-600 py-2 rounded">না</button>
+        <!-- সাইডবার প্যালেট -->
+        <div class="palette-sidebar">
+            <div class="palette-title">
+                <span>প্রশ্ন প্যালেট</span>
+                <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৩০</span>
+            </div>
+            <div class="palette-grid" id="paletteGrid"></div>
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> উত্তর দেওয়া হয়েছে</div>
+                <div class="legend-item"><div class="legend-box" style="background:#ca8a04;"></div> বুকমার্ক করা</div>
+                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> বাকি/উত্তরহীন</div>
             </div>
         </div>
     </div>
 
-    <!-- RESULT MODAL -->
-    <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="card-bg p-6 rounded-xl max-w-4xl w-full my-8">
-            <h2 class="text-2xl font-bold text-center text-cyan-400 mb-4">ফলাফল</h2>
-            <div id="scoreBoard"></div>
-            <div id="filterBar" class="flex gap-2 my-4 flex-wrap">
-                <button onclick="filterQ('all')" class="px-3 py-1 bg-cyan-500 rounded text-black">সবগুলো</button>
-                <button onclick="filterQ('correct')" class="px-3 py-1 bg-green-600 rounded">সঠিক</button>
-                <button onclick="filterQ('wrong')" class="px-3 py-1 bg-red-600 rounded">ভুল</button>
-                <button onclick="filterQ('skipped')" class="px-3 py-1 bg-gray-600 rounded">স্কিপ</button>
-            </div>
-            <div id="resultContainer"></div>
+    <footer class="site-footer">
+        <div class="footer-logo">GAIVEX<span>.</span></div>
+        <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
+                <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
+                <svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube">
+                <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
         </div>
-    </div>
+        <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
+    </footer>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-const firebaseConfig = { apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ", authDomain: "gaivexexam.firebaseapp.com", databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com", projectId: "gaivexexam", storageBucket: "gaivexexam.firebasestorage.app", messagingSenderId: "956204530190", appId: "1:956204530190:web:4e5550afefa3e314c99a5f" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
+      const firebaseConfig = {
+        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+        authDomain: "gaivexexam.firebaseapp.com",
+        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+        projectId: "gaivexexam",
+        storageBucket: "gaivexexam.firebasestorage.app",
+        messagingSenderId: "956204530190",
+        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+      };
 
-let examData, userAnswers = {}, bookmarked = {}, timeLeft = 0, timerInterval, currentUser;
-let attemptKey = "";
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
 
-const defaultQuestions = [/* তোমার ৩০টা প্রশ্ন */];
+      let currentUser = null;
+      let timerInterval = null;
+      let timeRemaining = 1200;
+      let activeExamKey = "gaivex_exam_default";
+      let examTimerKey = "gaivex_timer_default";
+      let userSelections = {};
+      let bookmarkedQuestions = {};
 
-onAuthStateChanged(auth, (user) => {
-    if (!user) { alert("পরীক্ষা দিতে লগইন করুন"); window.location.href = "index.html"; return; }
-    currentUser = user;
-    attemptKey = `gaivex_attempt_${user.uid}_live_daily_exam`;
-    if(localStorage.getItem(attemptKey)) {
-        document.getElementById('startModal').style.display = 'none';
-        document.getElementById('alreadyAttempted').style.display = 'flex';
-        return;
-    }
-    loadExamData();
-});
+      // ফায়ারবেসে এডমিন প্যানেল থেকে প্রশ্ন না থাকলে এই ডিফল্ট ৩০টি প্রশ্ন লোড হবে
+      const defaultExamData = {
+        id: "biology_mcq_30_v1",
+        title: "🧬 প্রাণীর পরিচিতি — ৩০টি MCQ",
+        duration: 20,
+        questions: [
+          { question: "প্রাণীদের দেহের গঠনগত ও কার্যগত মৌলিক একক কোনটি?", options: ["টিস্যু", "অঙ্গ", "কোষ", "অঙ্গতন্ত্র"], correct: 2, explanation: "কোষ হলো জীবদেহের গঠন ও কাজের মৌলিক একক।" },
+          { question: "কোন বৈশিষ্ট্যটি প্রাণীদের উদ্ভিদ থেকে পৃথক করতে সবচেয়ে গুরুত্বপূর্ণ?", options: ["কোষীয় গঠন", "শ্বসন", "পরভোজী পুষ্টি", "বিপাক"], correct: 2, explanation: "প্রাণীদের পুষ্টির ধরন পরভোজী (heterotrophic)।" },
+          { question: "প্রাণীর দেহে টিস্যু গঠিত হয়—", options: ["অঙ্গ থেকে", "একই ধরনের কোষের সমষ্টি থেকে", "অঙ্গতন্ত্র থেকে", "বিভিন্ন অঙ্গের সমন্বয়ে"], correct: 1, explanation: "একই গঠন ও কাজের কোষসমূহের সমষ্টিকে টিস্যু বলে।" },
+          { question: "প্রাণীর টিস্যুর প্রধান শ্রেণি কয়টি?", options: ["২টি", "৩টি", "৪টি", "৫টি"], correct: 2, explanation: "আবরণী, যোজক, পেশি ও স্নায়ু টিস্যু।" },
+          { question: "দেহের বাইরের আবরণ ও বিভিন্ন অঙ্গের অভ্যন্তরীণ আবরণ গঠন করে কোন টিস্যু?", options: ["যোজক", "আবরণী", "পেশি", "স্নায়ু"], correct: 1, explanation: "আবরণী টিস্যু বহিরাবরণ তৈরি করে।" },
+          { question: "রক্ত কোন ধরনের টিস্যু?", options: ["আবরণী", "পেশি", "যোজক", "স্নায়ু"], correct: 2, explanation: "রক্ত একটি তরল যোজক টিস্যু।" },
+          { question: "কোন টিস্যুর প্রধান কাজ দেহের বিভিন্ন অংশের মধ্যে সংকেত পরিবহন?", options: ["আবরণী", "যোজক", "পেশি", "স্নায়ু"], correct: 3, explanation: "স্নায়ু টিস্যু সংকেত পরিবহনে কাজ করে।" },
+          { question: "প্রাণীর দেহে চলন ও অঙ্গসঞ্চালনের জন্য প্রধানত কোন টিস্যু দায়ী?", options: ["পেশি", "আবরণী", "যোজক", "স্নায়ু"], correct: 0, explanation: "পেশি টিস্যু চলন ও অঙ্গসঞ্চালন ঘটায়।" },
+          { question: "দ্বিপার্শ্বীয় প্রতিসাম্যকে কী বলা হয়?", options: ["Radial symmetry", "Bilateral symmetry", "Spherical symmetry", "Asymmetry"], correct: 1, explanation: "ডান ও বাম দুটি সমান অংশ পাওয়া গেলে তাকে Bilateral symmetry বলে।" },
+          { question: "হাইড্রার দেহে কোন ধরনের প্রতিসাম্য দেখা যায়?", options: ["দ্বিপার্শ্বীয়", "অপ্রতিসাম্য", "অরীয়", "গোলীয়"], correct: 2, explanation: "হাইড্রার অরীয় প্রতিসাম্য (radial symmetry) রয়েছে।" },
+          { question: "কোন প্রাণী অপ্রতিসম?", options: ["Hydra", "Sycon", "Earthworm", "Cockroach"], correct: 1, explanation: "Sycon একটি অপ্রতিসম স্পঞ্জ।" },
+          { question: "ভ্রূণের তিনটি জার্ম স্তর হলো—", options: ["Ectoderm, Mesoderm, Endoderm", "Epidermis, Dermis, Mesoderm", "Ectoderm, Epidermis, Endoderm", "Mesoderm, Dermis, Endoderm"], correct: 0, explanation: "এক্টোডার্ম, মেসোডার্ম ও এন্ডোডার্ম।" },
+          { question: "কোনটি দ্বিস্তরীয় (diploblastic) প্রাণী?", options: ["কেঁচো", "তেলাপোকা", "Hydra", "মানুষ"], correct: 2, explanation: "হাইড্রার ভ্রূণে দুটি জার্ম স্তর থাকে।" },
+          { question: "কোনটি ত্রিস্তরীয় প্রাণী?", options: ["Hydra", "Jellyfish", "Earthworm", "Sponge"], correct: 2, explanation: "কেঁচো একটি triploblastic প্রাণী।" },
+          { question: "Coelom বলতে কী বোঝায়?", options: ["অন্ত্রের গহ্বর", "দেহপ্রাচীর ও পরিপাকনালির মধ্যবর্তী মেসোডার্ম-আবৃত গহ্বর", "রক্তনালির গহ্বর", "শ্বাসনালির গহ্বর"], correct: 1, explanation: "মেসোডার্ম দ্বারা সম্পূর্ণ আবৃত দেহগহ্বর।" },
+          { question: "কোন প্রাণী Acoelomate?", options: ["Earthworm", "Cockroach", "Planaria", "Human"], correct: 2, explanation: "Planaria হলো acoelomate।" },
+          { question: "Pseudocoelom দেখা যায় কোন পর্বে?", options: ["Platyhelminthes", "Nematoda", "Annelida", "Mollusca"], correct: 1, explanation: "Nematoda পর্বে ছদ্মসিলোম থাকে।" },
+          { question: "প্রকৃত সিলোম প্রথম সুস্পষ্টভাবে কোন পর্বে দেখা যায়?", options: ["Porifera", "Cnidaria", "Platyhelminthes", "Annelida"], correct: 3, explanation: "Annelida পর্বে প্রকৃত সিলোম থাকে।" },
+          { question: "প্রাণীদেহের খণ্ডায়নকে কী বলা হয়?", options: ["Cephalization", "Segmentation", "Metamerism", "Regeneration"], correct: 2, explanation: "অনুদৈর্ঘ্য খণ্ডায়নকে metamerism বলে।" },
+          { question: "কেঁচোর দেহের খণ্ডায়ন কোন ধরনের?", options: ["Radial", "Metameric", "Asymmetrical", "Irregular"], correct: 1, explanation: "কেঁচোর দেহে Metameric খণ্ডায়ন থাকে।" },
+          { question: "Cephalization বলতে বোঝায়—", options: ["দেহের খণ্ডায়ন", "মাথায় সংবেদী অঙ্গ ও স্নায়ুকেন্দ্রের ঘনীভবন", "দেহের অরীয় বিভাজন", "দেহের বৃদ্ধি"], correct: 1, explanation: "মাথায় স্নায়ুকেন্দ্রের ঘনীভবন।" },
+          { question: "নিচের কোন পর্বের প্রাণী জলনালিতন্ত্রের জন্য বিশেষভাবে পরিচিত?", options: ["Porifera", "Annelida", "Arthropoda", "Mollusca"], correct: 0, explanation: "Porifera পর্বে canal system থাকে।" },
+          { question: "Cnidaria পর্বের প্রাণীদের বিশেষ বৈশিষ্ট্য কোনটি?", options: ["Nephridia", "Cnidoblast", "Malpighian tubule", "Flame cell"], correct: 1, explanation: "Cnidaria পর্বের বৈশিষ্ট্য Cnidoblast।" },
+          { question: "Platyhelminthes-এর প্রধান বৈশিষ্ট্য কোনটি?", options: ["দেহ খণ্ডিত", "দেহ চ্যাপ্টা", "দেহে jointed appendage আছে", "জলনালিতন্ত্র আছে"], correct: 1, explanation: "এদের দেহ চ্যাপ্টা প্রকৃতির।" },
+          { question: "Arthropoda পর্বের প্রধান বৈশিষ্ট্য কোনটি?", options: ["অখণ্ডিত দেহ", "সন্ধিযুক্ত উপাঙ্গ", "জলনালিতন্ত্র", "নেফ্রিডিয়া"], correct: 1, explanation: "এদের সন্ধিযুক্ত পা/উপাঙ্গ থাকে।" },
+          { question: "প্রাণীজগতের সবচেয়ে বড় পর্ব কোনটি?", options: ["Mollusca", "Annelida", "Arthropoda", "Chordata"], correct: 2, explanation: "Arthropoda হলো বৃহত্তম পর্ব।" },
+          { question: "Mollusca পর্বের সাধারণ বৈশিষ্ট্য কোনটি?", options: ["সাধারণত নরম দেহ", "সন্ধিযুক্ত পা", "দেহে নেমাটোসিস্ট", "দেহ সবসময় খণ্ডিত"], correct: 0, explanation: "মলাস্ক পর্বের প্রাণী নরম দেহযুক্ত।" },
+          { question: "Echinodermata-এর একান্ত বৈশিষ্ট্য কোনটি?", options: ["জলসংবহন তন্ত্র", "জলনালিকা তন্ত্র বা water vascular system", "সন্ধিযুক্ত পা", "নেফ্রিডিয়া"], correct: 1, explanation: "এদের water vascular system থাকে।" },
+          { question: "Chordata পর্বের প্রধান শনাক্তকারী বৈশিষ্ট্য কোনটি?", options: ["Cnidoblast", "Notochord", "Flame cell", "Water vascular system"], correct: 1, explanation: "Chordata-এর মূল বৈশিষ্ট্য Notochord।" },
+          { question: "নিচের কোনটি অমেরুদণ্ডী প্রাণী?", options: ["মাছ", "ব্যাঙ", "কেঁচো", "পাখি"], correct: 2, explanation: "কেঁচো অমেরুদণ্ডী প্রাণী।" }
+        ]
+      };
 
-async function loadExamData() {
-    try {
-        const snap = await get(ref(db, 'live_exams/live_daily_exam'));
-        if (snap.exists() && snap.val().questions?.length > 0) {
-            examData = snap.val();
-        } else {
-            examData = { title: "কোষ রসায়ন: গুরুত্বপূর্ণ ৩০টি MCQ", duration: 60, questions: defaultQuestions };
-        }
-    } catch (error) {
-        examData = { title: "কোষ রসায়ন: গুরুত্বপূর্ণ ৩০টি MCQ", duration: 60, questions: defaultQuestions };
-    }
+      let examData = defaultExamData;
+      let isSubmitted = false;
 
-    const totalQ = examData.questions.length;
-    const totalMin = examData.duration || 60;
-    timeLeft = totalMin * 60;
-    document.getElementById('totalQ').innerText = totalQ;
-    document.getElementById('totalTime').innerText = totalMin;
-    document.getElementById('totalCount').innerText = totalQ;
-    document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
-    updateTimer();
-    renderPalette();
-}
-
-function renderPalette() {
-    const grid = document.getElementById('paletteGrid');
-    // FIX 3: grid-cols-5 fixed করে দিলাম। tailwind dynamic class support করে না
-    grid.innerHTML = examData.questions.map((q, i) =>
-        `<div class="palette-btn palette-pending" id="p-${i}" onclick="scrollToQ(${i})">${i+1}</div>`
-    ).join('');
-}
-
-function updatePaletteStatus(i) {
-    const btn = document.getElementById(`p-${i}`);
-    if(!btn) return;
-    if(bookmarked[i]) {
-        btn.className = "palette-btn palette-bookmarked";
-    } else if(userAnswers[i]!== undefined) {
-        btn.className = "palette-btn palette-answered";
-    } else {
-        btn.className = "palette-btn palette-pending";
-    }
-}
-
-window.startExam = () => {
-    document.getElementById('startModal').style.display = 'none';
-    document.getElementById('examUI').classList.remove('hidden');
-    renderQuestions();
-    startTimer();
-}
-
-function renderQuestions() {
-    const container = document.getElementById('questionsContainer');
-    container.innerHTML = examData.questions.map((q, i) => `
-        <div class="card-bg p-4 rounded-lg mb-4" id="q-${i}">
-            <div class="flex justify-between">
-                <p class="font-bold">${i+1}. ${q.question}</p>
-                <button onclick="toggleBookmark(${i})" id="bookmark-${i}" class="text-2xl">${bookmarked[i]? '★' : '☆'}</button>
-            </div>
-            <div class="mt-3 space-y-2">
-                ${q.options.map((opt, j) => `
-                    <label id="opt-${i}-${j}" class="flex items-center gap-3 p-3 rounded border-[#2a3447] cursor-pointer hover:border-cyan-500" onclick="selectAnswer(${i}, ${j}, this)">
-                        <input type="radio" name="q${i}" value="${j}" class="hidden">
-                        <span>${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</span>
-                    </label>
-                `).join('')}
-            </div>
-        </div>
-    `).join('');
-}
-
-window.selectAnswer = (qIndex, oIndex, el) => {
-    if(userAnswers[qIndex]!== undefined) return;
-    userAnswers[qIndex] = oIndex;
-    el.parentElement.querySelectorAll('label').forEach(l => l.classList.add('option-locked'));
-    el.classList.add('selected-option');
-    document.getElementById('answeredCount').innerText = Object.keys(userAnswers).length;
-    updatePaletteStatus(qIndex);
-}
-
-window.toggleBookmark = (i) => {
-    bookmarked[i] =!bookmarked[i];
-    document.getElementById(`bookmark-${i}`).innerText = bookmarked[i]? '★' : '☆';
-    updatePaletteStatus(i);
-}
-
-window.scrollToQ = (i) => document.getElementById(`q-${i}`).scrollIntoView({behavior: 'smooth'});
-
-function startTimer() {
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        updateTimer();
-        if(timeLeft <= 0) {
-            clearInterval(timerInterval);
-            submitExam();
-        }
-    }, 1000);
-}
-
-function updateTimer() {
-    const m = Math.floor(timeLeft/60), s = timeLeft%60;
-    const timerEl = document.getElementById('timer');
-    timerEl.innerText = `${m}:${s.toString().padStart(2,'0')}`;
-    if(timeLeft <= 300) timerEl.classList.add('timer-warning');
-}
-
-window.openSubmitModal = () => {
-    document.getElementById('confirmAnswered').innerText = Object.keys(userAnswers).length;
-    document.getElementById('submitModal').style.display = 'flex';
-}
-window.closeSubmitModal = () => document.getElementById('submitModal').style.display = 'none';
-
-window.submitExam = async () => {
-    clearInterval(timerInterval);
-    closeSubmitModal();
-    localStorage.setItem(attemptKey, "true");
-    let correct=0, wrong=0;
-    examData.questions.forEach((q,i) => {
-        const ans = userAnswers[i];
-        if(ans === undefined) return;
-        if(ans === q.correct) correct++; else wrong++;
-    });
-    const total = examData.questions.length;
-    const skipped = total - correct - wrong;
-    const score = Math.max(0, correct - (wrong * 0.25)).toFixed(2);
-    document.getElementById('resultModal').style.display = 'flex';
-    document.getElementById('scoreBoard').innerHTML = `
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div><p class="text-2xl font-bold text-green-400">${score}</p><p>মোট নম্বর</p></div>
-            <div><p class="text-2xl font-bold">${correct}</p><p>সঠিক</p></div>
-            <div><p class="text-2xl font-bold text-red-400">${wrong}</p><p>ভুল</p></div>
-            <div><p class="text-2xl font-bold">${skipped}</p><p>স্কিপ</p></div>
-        </div>
-    `;
-    if(currentUser) {
+      async function checkAttemptAndLoad() {
         try {
-            await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {examTitle: examData.title, score, correct, wrong, skipped});
-        } catch (e) {}
-    }
-    filterQ('all');
-}
+          // প্রথমে admin.html বা ফায়ারবেসের ডেটাসেট চেক করা হবে
+          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
+          if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
+            examData = snapshot.val();
+          } else {
+            examData = defaultExamData;
+          }
+        } catch(e) {
+          console.log("Database fetch fallback: Loading default questions.");
+          examData = defaultExamData;
+        }
 
-window.filterQ = (filter) => {
-    const container = document.getElementById('resultContainer');
-    container.innerHTML = examData.questions.map((q,i) => {
-        const ans = userAnswers[i];
-        let show = filter === 'all' ||
-                   (filter === 'correct' && ans === q.correct) ||
-                   (filter === 'wrong' && ans!== q.correct && ans!== undefined) ||
-                   (filter === 'skipped' && ans === undefined);
-        if(!show) return '';
-        return `
-        <div class="card-bg p-4 rounded mb-3">
-            <p class="font-bold mb-2">${i+1}. ${q.question}</p>
-            <div class="space-y-1">
-                ${q.options.map((opt,j) => `<p class="p-2 rounded border border-[#2a3447] ${j === q.correct? 'correct' : (ans === j? 'wrong' : '')}">${['ক)','খ)','গ)','ঘ)'][j]} ${opt}</p>`).join('')}
+        document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
+        
+        const cleanId = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
+        activeExamKey = "gaivex_submitted_" + cleanId;
+        examTimerKey = "gaivex_timer_" + cleanId;
+
+        const totalSeconds = (examData.duration || 20) * 60;
+        const savedTimer = localStorage.getItem(examTimerKey);
+        timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalSeconds;
+
+        renderQuestions();
+        renderPalette();
+
+        const savedResult = localStorage.getItem(activeExamKey);
+        if (savedResult) {
+          const resultData = JSON.parse(savedResult);
+          isSubmitted = true;
+          showSubmittedResult(resultData.userAnswers, resultData.score);
+        } else {
+          startTimer();
+        }
+      }
+
+      function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
+
+        container.innerHTML = examData.questions.map((q, qIndex) => `
+          <div class="question-card" id="q-box-${qIndex}">
+            <div class="question-header-row">
+              <div class="question-title">${qIndex + 1}. ${q.question}</div>
+              <button type="button" class="bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
             </div>
-            <div class="explanation mt-3 p-2 bg-[#0b0f19] rounded text-sm"><b>ব্যাখ্যা:</b> ${q.explanation}</div>
-        </div>`;
-    }).join('');
-}
-</script>
+            <div class="options-list">
+              ${(q.options || []).map((opt, oIndex) => `
+                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
+                  <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="window.selectOption(${qIndex}, ${oIndex})">
+                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
+              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+            </div>
+          </div>
+        `).join('');
+
+        window.selectOption = function(qIndex, oIndex) {
+          if (isSubmitted) return;
+          userSelections[qIndex] = oIndex;
+          
+          const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
+          allLabels.forEach(lbl => lbl.classList.remove('selected-option'));
+          
+          const selectedLbl = document.getElementById(`opt-label-${qIndex}-${oIndex}`);
+          if(selectedLbl) selectedLbl.classList.add('selected-option');
+
+          updatePalette();
+        };
+
+        window.toggleBookmark = function(qIndex) {
+          bookmarkedQuestions[qIndex] = !bookmarkedQuestions[qIndex];
+          const btn = document.getElementById(`bookmark-${qIndex}`);
+          if(bookmarkedQuestions[qIndex]) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+          updatePalette();
+        };
+      }
+
+      function renderPalette() {
+        const grid = document.getElementById('paletteGrid');
+        grid.innerHTML = examData.questions.map((_, i) => `
+          <button type="button" class="palette-btn" id="palette-btn-${i}" onclick="scrollToQuestion(${i})">${i + 1}</button>
+        `).join('');
+        updatePalette();
+      }
+
+      function updatePalette() {
+        let answeredCount = 0;
+        examData.questions.forEach((_, i) => {
+          const btn = document.getElementById(`palette-btn-${i}`);
+          if (!btn) return;
+
+          btn.className = "palette-btn";
+          if (userSelections[i] !== undefined) {
+            answeredCount++;
+            btn.classList.add('answered');
+          }
+          if (bookmarkedQuestions[i]) {
+            btn.classList.add('bookmarked');
+          }
+        });
+
+        const totalQ = examData.questions.length;
+        document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
+      }
+
+      window.scrollToFunction = function(index) {
+        const box = document.getElementById(`q-box-${index}`);
+        if(box) {
+          box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+      window.scrollToQuestion = window.scrollToFunction;
+
+      function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          localStorage.setItem(examTimerKey, timeRemaining);
+          updateTimerDisplay();
+          
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            localStorage.removeItem(examTimerKey);
+            alert("সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
+            submitExam();
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+        const s = (timeRemaining % 60).toString().padStart(2, '0');
+        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+      }
+
+      async function submitExam(e) {
+        if(e) e.preventDefault();
+        if(isSubmitted) return;
+
+        clearInterval(timerInterval);
+        localStorage.removeItem(examTimerKey);
+        isSubmitted = true;
+
+        let score = 0;
+        const total = (examData.questions || []).length;
+
+        (examData.questions || []).forEach((q, i) => {
+          const selected = userSelections[i];
+          const correctVal = parseInt(q.correct, 10);
+          if (selected === correctVal) score++;
+        });
+
+        localStorage.setItem(activeExamKey, JSON.stringify({
+          score: score,
+          userAnswers: userSelections
+        }));
+
+        showSubmittedResult(userSelections, score);
+
+        if (currentUser) {
+          try {
+            await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
+              examTitle: examData.title,
+              score: score,
+              total: total,
+              submittedAt: new Date().toISOString()
+            });
+          } catch(err) { console.error("Error saving score:", err); }
+        }
+      }
+
+      function showSubmittedResult(userAnswers, score) {
+        const total = (examData.questions || []).length;
+        clearInterval(timerInterval);
+        document.getElementById('timerDisplay').innerText = "00:00";
+        document.getElementById('filterBar').style.display = 'flex';
+
+        (examData.questions || []).forEach((q, i) => {
+          const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
+          const correctVal = parseInt(q.correct, 10);
+          const expBox = document.getElementById(`exp-${i}`);
+          if(expBox) expBox.style.display = 'block';
+
+          (q.options || []).forEach((_, oIndex) => {
+            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
+            if(lbl) {
+              lbl.classList.remove('selected-option');
+              const input = lbl.querySelector('input');
+              if(input) {
+                input.disabled = true;
+                if (selected === oIndex) input.checked = true;
+              }
+
+              if (oIndex === correctVal) lbl.classList.add('correct-opt');
+              if (selected === oIndex && selected !== correctVal) lbl.classList.add('wrong-opt');
+              if (selected !== oIndex && oIndex !== correctVal) lbl.classList.add('disabled-option');
+            }
+          });
+        });
+
+        const submitBtn = document.getElementById('submitBtn');
+        if(submitBtn) submitBtn.style.display = 'none';
+
+        const resDiv = document.getElementById('resultSummary');
+        resDiv.style.display = 'block';
+        resDiv.innerHTML = `
+          <div class="score-board">
+            <h2>পরীক্ষার ফলাফল</h2>
+            <p class="already-submitted-msg">⚠️ আপনি এই বিষয়টির পরীক্ষা ইতোমধ্যে জমা দিয়েছেন!</p>
+            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার নম্বর: ${score} / ${total}</p>
+            <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা ফিল্টার করে দেখতে পারেন।</p>
+          </div>
+        `;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // ফিল্টারিং লজিক
+      window.filterQuestions = function(type) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        examData.questions.forEach((q, i) => {
+          const card = document.getElementById(`q-box-${i}`);
+          const selected = userSelections[i];
+          const correctVal = parseInt(q.correct, 10);
+          
+          let show = false;
+          if (type === 'all') {
+            show = true;
+          } else if (type === 'correct' && selected === correctVal) {
+            show = true;
+          } else if (type === 'wrong' && selected !== undefined && selected !== correctVal) {
+            show = true;
+          } else if (type === 'skipped' && selected === undefined) {
+            show = true;
+          } else if (type === 'bookmarked' && bookmarkedQuestions[i]) {
+            show = true;
+          }
+
+          card.style.display = show ? 'block' : 'none';
+        });
+      };
+
+      document.getElementById('examForm').addEventListener('submit', submitExam);
+
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+      });
+
+      checkAttemptAndLoad();
+    </script>
 </body>
 </html>
