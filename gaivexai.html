@@ -58,6 +58,7 @@ body{background:var(--bg);color:var(--text);font-family:"Hind Siliguri","Inter",
 .input-hint{text-align:center;color:#617d92;font-size:11px;margin-top:5px;}
 .toast{position:fixed;left:50%;bottom:85px;transform:translateX(-50%) translateY(20px);background:#102c46;border:1px solid var(--border);color:white;padding:9px 15px;border-radius:10px;opacity:0;transition:.25s;z-index:10000;font-size:13px;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+code{background:rgba(0,191,255,0.15);padding:2px 6px;border-radius:4px;color:#00e5ff;font-family:monospace;}
 </style>
 </head>
 <body>
@@ -197,7 +198,7 @@ function saveChat(){
 function loadChat(){
     const saved = localStorage.getItem(CHAT_KEY);
     if(!saved){
-        addAIMessage(`👋 <b>আসসালামু আলাইকুম!</b><br><br>আমি <b>GAIVEX AI</b>। আপনার পোর্টালে থাকা যেকোনো তথ্য কিংবা পৃথিবীর যেকোনো বিষয়ে যেকোনো প্রশ্ন উত্তর দিতে আমি প্রস্তুত। বলুন কীভাবে সাহায্য করব?`);
+        addAIMessage(`👋 <b>আসসালামু আলাইকুম!</b><br><br>আমি <b>GAIVEX AI</b>। আপনার পোর্টালে থাকা তথ্যসহ যেকোনো শিক্ষামূলক এবং সাধারণ বিজ্ঞানের প্রশ্নের নির্ভুল উত্তর দিতে আমি প্রস্তুত। বলুন কীভাবে সাহায্য করতে পারি?`);
         return;
     }
     try{
@@ -270,20 +271,38 @@ function searchDatabaseNotes(query){
     return html;
 }
 
-// ফরম্যাটিং ঠিক করার ইউটিলিটি
 function formatMarkdown(text) {
+    if(!text) return "";
     return text
         .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
         .replace(/\*(.*?)\*/g, '<i>$1</i>')
         .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/^\s*[\-\*]\s+(.*)$/gim, '• $1')
         .replace(/\n/g, '<br>');
 }
 
-// স্মার্ট রেসপন্স জেনারেটর (Firebase Database + Cloudflare Worker Gemini AI)
+// DuckDuckGo Instant Answer API
+async function fetchDuckDuckGoAnswer(query) {
+    try {
+        const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.AbstractText) {
+            return `<b>🦆 DuckDuckGo থেকে সংগৃহীত:</b><br><br>${escapeHTML(data.AbstractText)}`;
+        }
+    } catch (e) {
+        console.error("DuckDuckGo Error:", e);
+    }
+    return null;
+}
+
+// মূল উত্তর নির্ধারণকারী পাইপলাইন
 async function generateSmartAnswer(query){
     const q = query.toLowerCase().trim();
 
-    // ১. পোর্টালে পারফরম্যান্স ও রেজাল্ট চেক
+    // ==========================================
+    // ১ম ধাপ: Firebase Database (পারফরম্যান্স, নোটিশ ও নোটস)
+    // ==========================================
     if(q.includes("performance") || q.includes("পারফরম্যান্স") || q.includes("রেজাল্ট") || q.includes("স্কোর")){
         if(!currentUser) return "🔐 আপনার পারফরম্যান্স দেখতে প্রথমে পোর্টালে লগইন করুন।";
         const p = getPerformance();
@@ -291,7 +310,6 @@ async function generateSmartAnswer(query){
         return `<b>📊 আপনার পারফরম্যান্স সারাংশ:</b><br><br>📝 মোট পরীক্ষা: <b>${p.exams}</b> টি<br>🎯 প্রাপ্ত মোট নম্বর: <b>${p.score}/${p.total}</b><br>📈 সঠিকতার হার: <b>${p.accuracy.toFixed(1)}%</b>`;
     }
 
-    // ২. নোটিশ চেক
     if(q.includes("notice") || q.includes("নোটিশ")){
         const list = Object.values(notices || {});
         if(!list.length) return "📢 বর্তমানে কোনো নতুন নোটিশ নেই।";
@@ -302,11 +320,12 @@ async function generateSmartAnswer(query){
         return html;
     }
 
-    // ৩. লোকাল ডাটাবেস নোটস চেক
     const noteResult = searchDatabaseNotes(q);
     if(noteResult) return noteResult;
 
-    // ৪. Cloudflare Worker AI থেকে উন্নত উত্তর গ্রহণ (Gemini API)
+    // ==========================================
+    // ২য় ধাপ: Cloudflare Worker (Gemini AI API)
+    // ==========================================
     try {
         const response = await fetch("https://bold-sunset-8965.gaiyumtamim.workers.dev/", {
             method: "POST",
@@ -314,15 +333,19 @@ async function generateSmartAnswer(query){
             body: JSON.stringify({ prompt: query })
         });
         
-        const data = await response.json();
-        if (data.success && data.text) {
-            return formatMarkdown(data.text);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.text) {
+                return formatMarkdown(data.text);
+            }
         }
     } catch (error) {
-        console.error("Worker Call Error:", error);
+        console.error("Gemini Worker Error:", error);
     }
 
-    // ৫. ব্যাকআপ হিসেবে উইকিপিডিয়া সার্চ
+    // ==========================================
+    // ৩য় ধাপ: Wikipedia API Search
+    // ==========================================
     try {
         const wikiUrl = `https://bn.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`;
         const res = await fetch(wikiUrl);
@@ -333,10 +356,20 @@ async function generateSmartAnswer(query){
             return `<b>📖 উইকিপিডিয়া থেকে সংগৃহীত তথ্য (${item.title}):</b><br><br>${cleanSnippet}…`;
         }
     } catch(e) {
-        console.error("Wiki fetch error:", e);
+        console.error("Wiki Fetch Error:", e);
     }
 
-    return `আপনার প্রশ্নটির সঠিক উত্তর পেতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।`;
+    // ==========================================
+    // ৪র্থ ধাপ: DuckDuckGo Search API
+    // ==========================================
+    const ddgAnswer = await fetchDuckDuckGoAnswer(query);
+    if (ddgAnswer) return ddgAnswer;
+
+    // ==========================================
+    // ৫ম ধাপ: Google Search Link (ব্যাকআপ)
+    // ==========================================
+    const googleUrl = "https://www.google.com/search?q=" + encodeURIComponent(query);
+    return `আপনার প্রশ্নটির সরাসরি উত্তর কোথাও পাওয়া যায়নি। বিস্তারিত জানতে নিচের লিঙ্কে ক্লিক করুন:<br><br><a href="${googleUrl}" target="_blank" rel="noopener noreferrer" class="search-link">🔎 গুগলে সার্চ করুন</a>`;
 }
 
 window.sendMessage = async function(){
@@ -348,7 +381,6 @@ window.sendMessage = async function(){
     addUserMessage(text);
     setTyping(true);
 
-    // রিয়েল-টাইম রেসপন্স জেনারেট করা
     let answer = await generateSmartAnswer(text);
 
     setTyping(false);
