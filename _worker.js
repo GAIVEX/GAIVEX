@@ -14,7 +14,7 @@ export default {
         const body = await request.json();
         const userMessage = body.message;
 
-        if (!userMessage) {
+        if (!userMessage || userMessage.trim() === "") {
           return new Response(JSON.stringify({ error: "Message is required" }), {
             status: 400,
             headers: { "Content-Type": "application/json" }
