@@ -2,11 +2,25 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // CORS প্রি-ফ্লাইট রিকোয়েস্ট হ্যান্ডেল করার জন্য
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
+    }
+
     if (url.pathname === "/chat") {
       if (request.method !== "POST") {
         return new Response(JSON.stringify({ error: "Method not allowed" }), {
           status: 405,
-          headers: { "Content-Type": "application/json" }
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
         });
       }
 
@@ -17,7 +31,10 @@ export default {
         if (!userMessage || typeof userMessage !== 'string' || userMessage.trim() === "") {
           return new Response(JSON.stringify({ error: "Message is required" }), {
             status: 400,
-            headers: { "Content-Type": "application/json" }
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
           });
         }
 
@@ -25,7 +42,10 @@ export default {
         if (!apiKey) {
           return new Response(JSON.stringify({ error: "API Key not configured on server" }), {
             status: 500,
-            headers: { "Content-Type": "application/json" }
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
           });
         }
 
@@ -33,7 +53,9 @@ export default {
 
         const response = await fetch(geminiUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             contents: [
               {
@@ -48,20 +70,29 @@ export default {
         if (data.error) {
           return new Response(JSON.stringify({ error: data.error.message }), {
             status: 400,
-            headers: { "Content-Type": "application/json" }
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
           });
         }
 
         const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "দুঃখিত, এই মুহূর্তে উত্তর দিতে পারছি না।";
 
         return new Response(JSON.stringify({ reply: aiReply }), {
-          headers: { "Content-Type": "application/json" }
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
         });
 
       } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), {
           status: 500,
-          headers: { "Content-Type": "application/json" }
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
         });
       }
     }
