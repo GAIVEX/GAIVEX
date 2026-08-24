@@ -2,17 +2,34 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // ১. যখন /chat পাথে রিকোয়েস্ট আসবে (AI চ্যাটের জন্য)
     if (url.pathname === "/chat") {
       if (request.method !== "POST") {
-        return new Response("Method not allowed", { status: 405 });
+        return new Response(JSON.stringify({ error: "Method not allowed" }), {
+          status: 405,
+          headers: { "Content-Type": "application/json" }
+        });
       }
 
       try {
         const body = await request.json();
         const userMessage = body.message;
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+        if (!userMessage) {
+          return new Response(JSON.stringify({ error: "Message is required" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+
+        const apiKey = env.GEMINI_API_KEY;
+        if (!apiKey) {
+          return new Response(JSON.stringify({ error: "API Key not configured on server" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(geminiUrl, {
           method: "POST",
@@ -28,7 +45,6 @@ export default {
 
         const data = await response.json();
 
-        // এপিআই কি বা জেমিনির ত্রুটি থাকলে তা হ্যান্ডেল করা
         if (data.error) {
           return new Response(JSON.stringify({ error: data.error.message }), {
             status: 400,
@@ -50,7 +66,10 @@ export default {
       }
     }
 
-    // ২. ওয়েবসাইট রিলেটেড বাকি সব ফাইলের (HTML, CSS, JS) জন্য static assets রিটার্ন করবে
-    return env.ASSETS.fetch(request);
+    try {
+      return await env.ASSETS.fetch(request);
+    } catch (e) {
+      return new Response("Not Found", { status: 404 });
+    }
   }
 };
