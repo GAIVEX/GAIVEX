@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
 
 <meta charset="UTF-8">
@@ -27,12 +28,10 @@
 }
 
 :root{
-
     --bg:#061426;
     --bg2:#081b30;
     --card:#0d243b;
     --card2:#102b45;
-
     --border:#214561;
 
     --primary:#00bfff;
@@ -46,19 +45,15 @@
     --warning:#f59e0b;
 
     --user:#009fe3;
-
 }
 
 html,
 body{
-
     width:100%;
     min-height:100%;
-
 }
 
 body{
-
     background:
         radial-gradient(
             circle at 10% 10%,
@@ -80,64 +75,45 @@ body{
         sans-serif;
 
     overflow-x:hidden;
-
 }
-
 
 /* =====================================================
    HEADER
 ===================================================== */
 
 .header{
-
     height:68px;
 
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
 
-    padding:
-        0 15px;
+    padding:0 15px;
 
-    background:
-        rgba(5,19,35,.94);
+    background:rgba(5,19,35,.94);
 
-    border-bottom:
-        1px solid var(--border);
+    border-bottom:1px solid var(--border);
 
     position:sticky;
-
     top:0;
-
     z-index:1000;
 
     backdrop-filter:blur(14px);
-
 }
-
 
 .brand{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
 }
 
-
 .brand-logo{
-
     width:40px;
     height:40px;
 
     border-radius:50%;
 
     display:flex;
-
     align-items:center;
     justify-content:center;
 
@@ -153,85 +129,58 @@ body{
     box-shadow:
         0 0 20px
         rgba(0,191,255,.25);
-
 }
-
 
 .brand-title{
-
     font-size:21px;
-
     font-weight:700;
-
     color:var(--primary);
-
 }
-
 
 .brand-title span{
-
     color:#ff3b57;
-
 }
-
 
 .header-actions{
-
     display:flex;
-
     align-items:center;
-
     gap:7px;
-
 }
 
-
 .icon-btn{
-
     width:40px;
     height:40px;
 
     border-radius:11px;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
-    background:
-        rgba(15,43,68,.9);
+    background:rgba(15,43,68,.9);
 
     color:white;
 
     cursor:pointer;
 
     display:flex;
-
     align-items:center;
     justify-content:center;
 
     font-size:18px;
 
     transition:.2s;
-
 }
-
 
 .icon-btn:hover{
-
     border-color:var(--primary);
-
     transform:translateY(-1px);
-
 }
-
 
 /* =====================================================
    APP
 ===================================================== */
 
 .app{
-
     width:100%;
-
     max-width:1000px;
 
     margin:auto;
@@ -240,37 +189,26 @@ body{
         calc(100vh - 68px);
 
     display:flex;
-
     flex-direction:column;
-
 }
-
 
 /* =====================================================
    AI PROFILE
 ===================================================== */
 
 .ai-profile{
-
     display:flex;
-
     align-items:center;
-
     gap:12px;
 
     padding:15px;
 
-    border-bottom:
-        1px solid var(--border);
+    border-bottom:1px solid var(--border);
 
-    background:
-        rgba(8,27,48,.72);
-
+    background:rgba(8,27,48,.72);
 }
 
-
 .ai-avatar{
-
     width:55px;
     height:55px;
 
@@ -284,7 +222,6 @@ body{
         );
 
     display:flex;
-
     align-items:center;
     justify-content:center;
 
@@ -293,38 +230,24 @@ body{
     box-shadow:
         0 0 25px
         rgba(0,191,255,.22);
-
 }
-
 
 .ai-name{
-
     font-size:20px;
-
     color:var(--primary);
-
     font-weight:700;
-
 }
 
-
 .ai-status{
-
     color:var(--muted);
-
     font-size:13px;
 
     display:flex;
-
     align-items:center;
-
     gap:6px;
-
 }
 
-
 .status-dot{
-
     width:7px;
     height:7px;
 
@@ -334,58 +257,43 @@ body{
 
     box-shadow:
         0 0 8px #10b981;
-
 }
-
 
 /* =====================================================
    QUICK ACTIONS
 ===================================================== */
 
 .quick-area{
+    padding:10px 12px;
 
-    padding:
-        10px 12px;
-
-    border-bottom:
-        1px solid var(--border);
+    border-bottom:1px solid var(--border);
 
     overflow-x:auto;
 
     white-space:nowrap;
 
     scrollbar-width:none;
-
 }
-
 
 .quick-area::-webkit-scrollbar{
-
     display:none;
-
 }
 
-
 .quick-btn{
-
     display:inline-flex;
 
     align-items:center;
-
     gap:6px;
 
-    padding:
-        8px 12px;
+    padding:8px 12px;
 
     margin-right:6px;
 
     border-radius:20px;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
-    background:
-        #0c2238;
+    background:#0c2238;
 
     color:#d8edf8;
 
@@ -396,25 +304,18 @@ body{
     font-size:12px;
 
     transition:.2s;
-
 }
-
 
 .quick-btn:hover{
-
     border-color:var(--primary);
-
     color:var(--primary);
-
 }
-
 
 /* =====================================================
    CHAT
 ===================================================== */
 
 .chat{
-
     flex:1;
 
     padding:
@@ -423,66 +324,42 @@ body{
     overflow-y:auto;
 
     scroll-behavior:smooth;
-
 }
 
-
 .message{
-
     display:flex;
 
     margin-bottom:16px;
 
     animation:
         messageIn .25s ease;
-
 }
-
 
 @keyframes messageIn{
 
     from{
-
         opacity:0;
-
-        transform:
-            translateY(8px);
-
+        transform:translateY(8px);
     }
 
     to{
-
         opacity:1;
-
-        transform:
-            translateY(0);
-
+        transform:translateY(0);
     }
-
 }
-
 
 .message.user{
-
     justify-content:flex-end;
-
 }
-
 
 .message.ai{
-
     justify-content:flex-start;
-
 }
 
-
 .bubble{
+    max-width:min(88%,760px);
 
-    max-width:
-        min(88%,760px);
-
-    padding:
-        13px 15px;
+    padding:13px 15px;
 
     border-radius:16px;
 
@@ -493,12 +370,9 @@ body{
     white-space:normal;
 
     word-wrap:break-word;
-
 }
 
-
 .user .bubble{
-
     background:
         linear-gradient(
             135deg,
@@ -509,12 +383,9 @@ body{
     border-bottom-right-radius:4px;
 
     color:white;
-
 }
 
-
 .ai .bubble{
-
     background:
         linear-gradient(
             145deg,
@@ -522,52 +393,35 @@ body{
             #0d243b
         );
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     border-bottom-left-radius:4px;
-
 }
-
 
 .message-time{
-
     font-size:10px;
-
     color:#718ca0;
-
     margin-top:4px;
-
 }
-
 
 /* =====================================================
    TYPING
 ===================================================== */
 
 .typing{
-
     display:none;
 
     align-items:center;
-
     gap:5px;
 
-    margin:
-        0 0 15px 4px;
-
+    margin:0 0 15px 16px;
 }
-
 
 .typing.show{
-
     display:flex;
-
 }
 
-
 .typing span{
-
     width:7px;
     height:7px;
 
@@ -577,66 +431,44 @@ body{
 
     animation:
         typing 1s infinite;
-
 }
-
 
 .typing span:nth-child(2){
-
     animation-delay:.15s;
-
 }
-
 
 .typing span:nth-child(3){
-
     animation-delay:.3s;
-
 }
-
 
 @keyframes typing{
 
     0%,100%{
-
         opacity:.25;
-
-        transform:
-            translateY(0);
-
+        transform:translateY(0);
     }
 
     50%{
-
         opacity:1;
-
-        transform:
-            translateY(-4px);
-
+        transform:translateY(-4px);
     }
-
 }
 
-
 /* =====================================================
-   SEARCH BUTTON
+   SEARCH / SOURCE BUTTON
 ===================================================== */
 
 .search-link{
-
     display:inline-flex;
 
     align-items:center;
-
     gap:6px;
 
     margin-top:10px;
 
-    padding:
-        8px 13px;
+    padding:8px 13px;
 
-    background:
-        #008fd0;
+    background:#008fd0;
 
     color:white;
 
@@ -647,23 +479,17 @@ body{
     font-size:13px;
 
     font-weight:700;
-
 }
-
 
 .search-link:hover{
-
     background:#00a8ee;
-
 }
-
 
 /* =====================================================
    CHAT INPUT
 ===================================================== */
 
 .input-area{
-
     position:fixed;
 
     left:0;
@@ -680,29 +506,22 @@ body{
         );
 
     padding:
-        10px max(12px, calc((100vw - 1000px)/2 + 12px))
-        15px;
+        10px max(
+            12px,
+            calc((100vw - 1000px)/2 + 12px)
+        ) 15px;
 
-    border-top:
-        1px solid var(--border);
-
+    border-top:1px solid var(--border);
 }
-
 
 .input-row{
-
     display:flex;
-
     align-items:flex-end;
-
     gap:8px;
-
 }
-
 
 .voice-btn,
 .send-btn{
-
     width:48px;
     height:48px;
 
@@ -710,58 +529,40 @@ body{
 
     border-radius:14px;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     cursor:pointer;
 
     display:flex;
-
     align-items:center;
     justify-content:center;
 
     font-size:20px;
-
 }
-
 
 .voice-btn{
-
-    background:
-        #102b45;
-
+    background:#102b45;
     color:#c8e9f7;
-
 }
 
-
 .voice-btn.listening{
-
     background:#b91c1c;
 
     border-color:#ef4444;
 
-    animation:
-        pulse 1s infinite;
-
+    animation:pulse 1s infinite;
 }
-
 
 @keyframes pulse{
 
     50%{
-
         box-shadow:
             0 0 0 8px
             rgba(239,68,68,.12);
-
     }
-
 }
 
-
 .send-btn{
-
     background:
         linear-gradient(
             135deg,
@@ -772,55 +573,42 @@ body{
     color:#001827;
 
     font-weight:bold;
-
 }
 
-
 .message-input{
-
     flex:1;
 
     min-height:48px;
-
     max-height:130px;
 
     resize:none;
 
     border-radius:15px;
 
-    border:
-        1px solid #24617d;
+    border:1px solid #24617d;
 
-    background:
-        #020d1c;
+    background:#020d1c;
 
     color:white;
 
-    padding:
-        12px 14px;
+    padding:12px 14px;
 
     outline:none;
 
     font-family:inherit;
 
     font-size:15px;
-
 }
 
-
 .message-input:focus{
-
     border-color:var(--primary);
 
     box-shadow:
         0 0 0 2px
         rgba(0,191,255,.08);
-
 }
 
-
 .input-hint{
-
     text-align:center;
 
     color:#617d92;
@@ -828,16 +616,13 @@ body{
     font-size:11px;
 
     margin-top:5px;
-
 }
-
 
 /* =====================================================
    MODAL
 ===================================================== */
 
 .modal{
-
     display:none;
 
     position:fixed;
@@ -846,79 +631,54 @@ body{
 
     z-index:5000;
 
-    background:
-        rgba(0,0,0,.78);
+    background:rgba(0,0,0,.78);
 
     align-items:center;
-
     justify-content:center;
 
     padding:15px;
-
 }
-
 
 .modal.show{
-
     display:flex;
-
 }
 
-
 .modal-card{
+    width:min(94vw,700px);
 
-    width:
-        min(94vw,700px);
-
-    max-height:
-        88vh;
+    max-height:88vh;
 
     overflow-y:auto;
 
-    background:
-        #0b2137;
+    background:#0b2137;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     border-radius:17px;
 
     box-shadow:
         0 25px 70px
         rgba(0,0,0,.55);
-
 }
 
-
 .modal-head{
-
     display:flex;
 
     justify-content:space-between;
-
     align-items:center;
 
     padding:15px;
 
-    border-bottom:
-        1px solid var(--border);
-
+    border-bottom:1px solid var(--border);
 }
-
 
 .modal-head h3{
-
     color:var(--primary);
-
     font-size:18px;
-
 }
 
-
 .close-btn{
-
     background:none;
-
     border:none;
 
     color:#9ab2c4;
@@ -926,90 +686,67 @@ body{
     font-size:26px;
 
     cursor:pointer;
-
 }
-
 
 .modal-body{
-
     padding:15px;
-
 }
-
 
 /* =====================================================
    STAT CARDS
 ===================================================== */
 
 .stats-grid{
-
     display:grid;
 
     grid-template-columns:
         repeat(3,1fr);
 
     gap:8px;
-
 }
 
-
 .stat{
-
     background:#07192b;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     border-radius:10px;
 
     padding:12px 6px;
 
     text-align:center;
-
 }
 
-
 .stat-value{
-
     font-size:18px;
 
     font-weight:700;
 
     color:var(--primary);
-
 }
 
-
 .stat-label{
-
     color:var(--muted);
 
     font-size:11px;
-
 }
-
 
 /* =====================================================
    LIST
 ===================================================== */
 
 .list-box{
-
     margin-top:12px;
 
     max-height:400px;
 
     overflow-y:auto;
-
 }
 
-
 .list-item{
-
     background:#07192b;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     border-radius:10px;
 
@@ -1020,41 +757,29 @@ body{
     cursor:pointer;
 
     transition:.2s;
-
 }
-
 
 .list-item:hover{
-
     border-color:var(--primary);
-
 }
 
-
 .list-title{
-
     color:var(--primary);
 
     font-weight:700;
 
     font-size:14px;
-
 }
 
-
 .list-meta{
-
     color:var(--muted);
 
     font-size:11px;
 
     margin-top:3px;
-
 }
 
-
 .list-text{
-
     color:#c5d6e2;
 
     font-size:13px;
@@ -1062,16 +787,13 @@ body{
     margin-top:6px;
 
     line-height:1.6;
-
 }
-
 
 /* =====================================================
    PROFILE
 ===================================================== */
 
 .profile{
-
     display:flex;
 
     gap:12px;
@@ -1087,12 +809,9 @@ body{
     border:1px solid var(--border);
 
     margin-bottom:12px;
-
 }
 
-
 .profile-avatar{
-
     width:45px;
     height:45px;
 
@@ -1108,71 +827,49 @@ body{
     justify-content:center;
 
     font-weight:700;
-
 }
-
 
 .profile-name{
-
     font-weight:700;
-
 }
 
-
 .profile-email{
-
     color:var(--muted);
 
     font-size:11px;
-
 }
-
 
 /* =====================================================
    REVIEW
 ===================================================== */
 
 .question-card{
-
     background:#07192b;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     border-radius:10px;
 
     padding:12px;
 
     margin-bottom:10px;
-
 }
 
-
 .question-title{
-
     font-weight:700;
 
     margin-bottom:7px;
-
 }
-
 
 .correct{
-
     color:#10b981;
-
 }
-
 
 .wrong{
-
     color:#ef4444;
-
 }
 
-
 .explanation{
-
     background:#061426;
 
     padding:8px;
@@ -1184,20 +881,16 @@ body{
     font-size:12px;
 
     margin-top:7px;
-
 }
-
 
 /* =====================================================
    TOAST
 ===================================================== */
 
 .toast{
-
     position:fixed;
 
     left:50%;
-
     bottom:85px;
 
     transform:
@@ -1206,13 +899,11 @@ body{
 
     background:#102c46;
 
-    border:
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     color:white;
 
-    padding:
-        9px 15px;
+    padding:9px 15px;
 
     border-radius:10px;
 
@@ -1225,20 +916,15 @@ body{
     z-index:10000;
 
     font-size:13px;
-
 }
 
-
 .toast.show{
-
     opacity:1;
 
     transform:
         translateX(-50%)
         translateY(0);
-
 }
-
 
 /* =====================================================
    MOBILE
@@ -1247,40 +933,28 @@ body{
 @media(max-width:600px){
 
     .brand-title{
-
         font-size:19px;
-
     }
 
     .ai-name{
-
         font-size:18px;
-
     }
 
     .bubble{
-
         max-width:91%;
-
         font-size:14px;
-
     }
 
     .stats-grid{
-
         grid-template-columns:
             repeat(3,1fr);
-
     }
 
     .stat-value{
-
         font-size:15px;
-
     }
 
 }
-
 
 /* =====================================================
    REDUCED MOTION
@@ -1289,11 +963,8 @@ body{
 @media(prefers-reduced-motion:reduce){
 
     *{
-
         animation:none!important;
-
         transition:none!important;
-
     }
 
 }
@@ -1302,9 +973,7 @@ body{
 
 </head>
 
-
 <body>
-
 
 <!-- =====================================================
      HEADER
@@ -1323,7 +992,6 @@ body{
         </div>
 
     </div>
-
 
     <div class="header-actions">
 
@@ -1356,9 +1024,7 @@ body{
 </header>
 
 
-
 <div class="app">
-
 
 <!-- =====================================================
      AI PROFILE
@@ -1391,7 +1057,6 @@ body{
 </section>
 
 
-
 <!-- =====================================================
      QUICK ACTIONS
 ===================================================== -->
@@ -1405,14 +1070,12 @@ body{
         📊 Performance
     </button>
 
-
     <button
         class="quick-btn"
         onclick="quickAsk('আমার Exam History দেখাও')"
     >
         📜 Exam History
     </button>
-
 
     <button
         class="quick-btn"
@@ -1421,7 +1084,6 @@ body{
         📢 Notices
     </button>
 
-
     <button
         class="quick-btn"
         onclick="quickAsk('আমার দুর্বল বিষয়গুলো কী?')"
@@ -1429,14 +1091,12 @@ body{
         🧠 Weakness
     </button>
 
-
     <button
         class="quick-btn"
         onclick="quickAsk('আমার শক্তিশালী বিষয়গুলো কী?')"
     >
         💪 Strength
     </button>
-
 
     <button
         class="quick-btn"
@@ -1448,7 +1108,6 @@ body{
 </div>
 
 
-
 <!-- =====================================================
      CHAT
 ===================================================== -->
@@ -1456,10 +1115,7 @@ body{
 <main
     id="chat"
     class="chat"
->
-
-</main>
-
+></main>
 
 <div
     id="typing"
@@ -1472,9 +1128,7 @@ body{
 
 </div>
 
-
 </div>
-
 
 
 <!-- =====================================================
@@ -1485,7 +1139,6 @@ body{
 
     <div class="input-row">
 
-
         <button
             id="voiceBtn"
             class="voice-btn"
@@ -1495,7 +1148,6 @@ body{
             🎤
         </button>
 
-
         <textarea
             id="messageInput"
             class="message-input"
@@ -1503,7 +1155,6 @@ body{
             placeholder="আপনার প্রশ্ন লিখুন..."
             autocomplete="off"
         ></textarea>
-
 
         <button
             class="send-btn"
@@ -1515,15 +1166,11 @@ body{
 
     </div>
 
-
     <div class="input-hint">
-
         Enter = পাঠান • Shift + Enter = নতুন লাইন • 🎤 = কথা বলুন
-
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1552,19 +1199,15 @@ body{
 
         </div>
 
-
         <div class="modal-body">
 
-            <div
-                id="profileContent"
-            ></div>
+            <div id="profileContent"></div>
 
         </div>
 
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1593,7 +1236,6 @@ body{
 
         </div>
 
-
         <div
             id="performanceContent"
             class="modal-body"
@@ -1602,7 +1244,6 @@ body{
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1631,7 +1272,6 @@ body{
 
         </div>
 
-
         <div
             id="historyContent"
             class="modal-body"
@@ -1640,7 +1280,6 @@ body{
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1669,7 +1308,6 @@ body{
 
         </div>
 
-
         <div
             id="noticeContent"
             class="modal-body"
@@ -1678,7 +1316,6 @@ body{
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1707,7 +1344,6 @@ body{
 
         </div>
 
-
         <div class="modal-body">
 
             <input
@@ -1728,7 +1364,6 @@ body{
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1757,7 +1392,6 @@ body{
 
         </div>
 
-
         <div
             id="reviewContent"
             class="modal-body"
@@ -1768,7 +1402,6 @@ body{
 </div>
 
 
-
 <!-- =====================================================
      TOAST
 ===================================================== -->
@@ -1777,7 +1410,6 @@ body{
     id="toast"
     class="toast"
 ></div>
-
 
 
 <!-- =====================================================
@@ -1810,7 +1442,6 @@ from
 "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 
-
 /* =====================================================
    FIREBASE CONFIG
 ===================================================== */
@@ -1841,7 +1472,6 @@ const firebaseConfig = {
 };
 
 
-
 const app =
     initializeApp(firebaseConfig);
 
@@ -1854,19 +1484,16 @@ const auth =
     getAuth(app);
 
 
-
 /* =====================================================
    AI BACKEND
 =====================================================
 
-   IMPORTANT:
+   এখানে Gemini API key রাখবেন না।
 
-   এখানে Gemini API KEY রাখবেন না।
+   Cloudflare Worker / secure backend থাকলে
+   তার endpoint এখানে বসান।
 
-   আপনার Cloudflare Worker / secure AI backend
-   থাকলে তার endpoint এখানে বসাবেন।
-
-   Example:
+   উদাহরণ:
 
    const AI_API_URL =
        "https://your-worker.example.workers.dev/";
@@ -1874,7 +1501,6 @@ const auth =
 ===================================================== */
 
 const AI_API_URL = "";
-
 
 
 /* =====================================================
@@ -1894,7 +1520,6 @@ let recognition = null;
 let isListening = false;
 
 
-
 /* =====================================================
    SAFE HTML
 ===================================================== */
@@ -1909,7 +1534,6 @@ function escapeHTML(value){
         .replace(/'/g,"&#039;");
 
 }
-
 
 
 /* =====================================================
@@ -1930,12 +1554,12 @@ function getTime(){
 }
 
 
-
 /* =====================================================
    TOAST
 ===================================================== */
 
-window.showToast = function(message){
+window.showToast =
+function(message){
 
     const toast =
         document.getElementById("toast");
@@ -1954,21 +1578,27 @@ window.showToast = function(message){
 };
 
 
-
 /* =====================================================
-   MODALS
+   MODAL
 ===================================================== */
 
-window.closeModal = function(id){
+window.closeModal =
+function(id){
 
-    document
-        .getElementById(id)
-        .classList.remove("show");
+    const modal =
+        document.getElementById(id);
+
+    if(modal){
+
+        modal.classList.remove("show");
+
+    }
 
 };
 
 
-window.openProfile = function(){
+window.openProfile =
+function(){
 
     renderProfile();
 
@@ -1977,7 +1607,6 @@ window.openProfile = function(){
         .classList.add("show");
 
 };
-
 
 
 /* =====================================================
@@ -2017,7 +1646,6 @@ onAuthStateChanged(
 );
 
 
-
 /* =====================================================
    LOAD FIREBASE DATA
 ===================================================== */
@@ -2025,10 +1653,6 @@ onAuthStateChanged(
 async function loadFirebaseData(){
 
     try{
-
-        /*
-         * নিজের Exam Data
-         */
 
         if(currentUser){
 
@@ -2047,11 +1671,6 @@ async function loadFirebaseData(){
 
         }
 
-
-        /*
-         * Public Notices
-         */
-
         await loadPublicData();
 
         showToast(
@@ -2061,7 +1680,10 @@ async function loadFirebaseData(){
     }
     catch(error){
 
-        console.error(error);
+        console.error(
+            "Firebase:",
+            error
+        );
 
         showToast(
             "Firebase Data লোড করা যায়নি"
@@ -2070,7 +1692,6 @@ async function loadFirebaseData(){
     }
 
 }
-
 
 
 async function loadPublicData(){
@@ -2101,21 +1722,22 @@ async function loadPublicData(){
     }
     catch(error){
 
-        console.error(error);
+        console.error(
+            "Public Firebase:",
+            error
+        );
 
     }
 
 }
 
 
-
 window.refreshFirebaseData =
-    async function(){
+async function(){
 
-        await loadFirebaseData();
+    await loadFirebaseData();
 
-    };
-
+};
 
 
 /* =====================================================
@@ -2123,7 +1745,7 @@ window.refreshFirebaseData =
 ===================================================== */
 
 const CHAT_KEY =
-    "GAIVEX_AI_CHAT_V3";
+    "GAIVEX_AI_CHAT_V4";
 
 
 function saveChat(){
@@ -2154,11 +1776,12 @@ function saveChat(){
 
     localStorage.setItem(
         CHAT_KEY,
-        JSON.stringify(messages.slice(-100))
+        JSON.stringify(
+            messages.slice(-100)
+        )
     );
 
 }
-
 
 
 function loadChat(){
@@ -2169,28 +1792,52 @@ function loadChat(){
 
     if(!saved){
 
-        addAIMessage(
-            `
-            👋 <b>আসসালামু আলাইকুম!</b><br><br>
+        addAIMessage(`
 
-            আমি <b>GAIVEX AI</b>।<br>
+            👋 <b>আসসালামু আলাইকুম!</b>
 
-            আমি আপনার প্রশ্ন বুঝে উত্তর দেওয়ার চেষ্টা করতে পারি এবং
-            আপনার অনুমতি/লগইন অনুযায়ী GAIVEX-এর
-            <b>Performance, Exam History, Notices ও Notes</b>
-            থেকে তথ্য খুঁজে দিতে পারি।<br><br>
+            <br><br>
 
-            আপনি বাংলায়, English-এ অথবা মিশ্র ভাষায় প্রশ্ন করতে পারেন।<br><br>
+            আমি <b>GAIVEX AI</b>।
 
-            উদাহরণ:<br>
-            • আমার Performance কেমন?<br>
-            • আমার দুর্বল বিষয় কোনগুলো?<br>
-            • আমার আগের পরীক্ষাগুলো দেখাও<br>
-            • সর্বশেষ Notice কী?<br>
-            • কোষ বিভাজনের Notes আছে?<br>
+            <br><br>
+
+            আমি আপনার প্রশ্ন বুঝে
+            GAIVEX-এর Performance,
+            Exam History, Notices এবং
+            Notes থেকে তথ্য খুঁজে দিতে পারি।
+
+            <br><br>
+
+            সাধারণ কোনো প্রশ্নের উত্তর
+            GAIVEX Database-এ না থাকলে
+            আমি প্রথমে Wikipedia,
+            তারপর DuckDuckGo থেকে
+            তথ্য খুঁজে chat-এ দেখাব।
+
+            <br><br>
+
+            দুটো জায়গাতেই তথ্য না পেলে
+            শেষে Google Search link দেওয়া হবে।
+
+            <br><br>
+
+            উদাহরণ:
+
+            <br>
+            • আমার Performance কেমন?
+            <br>
+            • আমার দুর্বল বিষয় কোনগুলো?
+            <br>
+            • আগের পরীক্ষাগুলো দেখাও
+            <br>
+            • সর্বশেষ Notice কী?
+            <br>
+            • কোষ বিভাজনের Notes আছে?
+            <br>
             • What is vector?
-            `
-        );
+
+        `);
 
         return;
 
@@ -2214,14 +1861,17 @@ function loadChat(){
         });
 
     }
-    catch{
+    catch(error){
 
-        localStorage.removeItem(CHAT_KEY);
+        console.error(error);
+
+        localStorage.removeItem(
+            CHAT_KEY
+        );
 
     }
 
 }
-
 
 
 /* =====================================================
@@ -2292,17 +1942,15 @@ function addMessageRaw(
 }
 
 
-
 window.addAIMessage =
-    function(html){
+function(html){
 
-        addMessageRaw(
-            "ai",
-            html
-        );
+    addMessageRaw(
+        "ai",
+        html
+    );
 
-    };
-
+};
 
 
 function addUserMessage(text){
@@ -2315,35 +1963,36 @@ function addUserMessage(text){
 }
 
 
-
 /* =====================================================
    CLEAR CHAT
 ===================================================== */
 
 window.clearChat =
-    function(){
+function(){
 
-        if(
-            !confirm(
-                "এই ডিভাইসের Chat History মুছে ফেলবেন?"
-            )
+    if(
+        !confirm(
+            "এই ডিভাইসের Chat History মুছে ফেলবেন?"
         )
-            return;
+    )
+        return;
 
 
-        localStorage.removeItem(CHAT_KEY);
-
-        document
-            .getElementById("chat")
-            .innerHTML="";
+    localStorage.removeItem(
+        CHAT_KEY
+    );
 
 
-        addAIMessage(
-            "🧹 Chat History পরিষ্কার করা হয়েছে।"
-        );
+    document
+        .getElementById("chat")
+        .innerHTML = "";
 
-    };
 
+    addAIMessage(
+        "🧹 Chat History পরিষ্কার করা হয়েছে।"
+    );
+
+};
 
 
 /* =====================================================
@@ -2362,7 +2011,6 @@ function setTyping(show){
 }
 
 
-
 /* =====================================================
    PERFORMANCE
 ===================================================== */
@@ -2370,31 +2018,33 @@ function setTyping(show){
 function getPerformance(){
 
     const exams =
-        Object.values(examData || {});
+        Object.values(
+            examData || {}
+        );
 
 
-    let score=0;
+    let score = 0;
 
-    let total=0;
+    let total = 0;
 
-    let best=-Infinity;
+    let best = -Infinity;
 
-    let worst=Infinity;
+    let worst = Infinity;
 
-    let bestExam="";
+    let bestExam = "";
 
-    let worstExam="";
+    let worstExam = "";
 
-    const subjects={};
+    const subjects = {};
 
 
-    exams.forEach(exam=>{
+    exams.forEach(exam => {
 
         const s =
-            Number(exam.score)||0;
+            Number(exam.score) || 0;
 
         const t =
-            Number(exam.total)||0;
+            Number(exam.total) || 0;
 
 
         score += s;
@@ -2402,9 +2052,9 @@ function getPerformance(){
         total += t;
 
 
-        if(s>best){
+        if(s > best){
 
-            best=s;
+            best = s;
 
             bestExam =
                 exam.examTitle ||
@@ -2413,9 +2063,9 @@ function getPerformance(){
         }
 
 
-        if(s<worst){
+        if(s < worst){
 
-            worst=s;
+            worst = s;
 
             worstExam =
                 exam.examTitle ||
@@ -2432,10 +2082,12 @@ function getPerformance(){
 
         if(!subjects[subject]){
 
-            subjects[subject]={
+            subjects[subject] = {
+
                 score:0,
                 total:0,
                 exams:0
+
             };
 
         }
@@ -2452,7 +2104,7 @@ function getPerformance(){
 
     const accuracy =
         total
-        ? (score/total*100)
+        ? (score / total * 100)
         : 0;
 
 
@@ -2481,7 +2133,6 @@ function getPerformance(){
 }
 
 
-
 /* =====================================================
    PERFORMANCE TEXT
 ===================================================== */
@@ -2491,11 +2142,15 @@ function performanceText(){
     if(!currentUser){
 
         return `
-        🔐 <b>Performance দেখতে লগইন করুন।</b><br><br>
 
-        আপনার ব্যক্তিগত Exam Data
-        Firebase থেকে শুধু আপনার UID-এর অধীনে
-        পড়া হবে।
+            🔐 <b>Performance দেখতে লগইন করুন।</b>
+
+            <br><br>
+
+            আপনার ব্যক্তিগত Exam Data
+            Firebase থেকে শুধু আপনার UID-এর
+            অধীনে পড়া হবে।
+
         `;
 
     }
@@ -2508,51 +2163,71 @@ function performanceText(){
     if(!p.exams){
 
         return `
-        📊 এখনো কোনো Exam Data পাওয়া যায়নি।
+            📊 এখনো কোনো Exam Data পাওয়া যায়নি।
         `;
 
     }
 
 
-    let html=`
+    let html = `
 
-        <b>📊 আপনার Performance</b><br><br>
+        <b>📊 আপনার Performance</b>
+
+        <br><br>
 
         📝 মোট পরীক্ষা:
-        <b>${p.exams}</b><br>
+        <b>${p.exams}</b>
+
+        <br>
 
         🎯 মোট নম্বর:
-        <b>${p.score}/${p.total}</b><br>
+        <b>${p.score}/${p.total}</b>
+
+        <br>
 
         📈 Accuracy:
-        <b>${p.accuracy.toFixed(1)}%</b><br>
+        <b>${p.accuracy.toFixed(1)}%</b>
+
+        <br>
 
         🏆 সেরা:
         <b>${escapeHTML(p.bestExam)}</b>
-        — ${p.best}<br>
+        — ${p.best}
+
+        <br>
 
         📉 সর্বনিম্ন:
         <b>${escapeHTML(p.worstExam)}</b>
-        — ${p.worst}<br><br>
+        — ${p.worst}
 
-        <b>📚 বিষয়ভিত্তিক:</b><br>
+        <br><br>
+
+        <b>📚 বিষয়ভিত্তিক:</b>
+
+        <br>
+
     `;
 
 
     Object.entries(p.subjects)
         .forEach(
-            ([subject,data])=>{
+            ([subject,data]) => {
 
                 const percent =
                     data.total
-                    ? data.score/data.total*100
+                    ? data.score / data.total * 100
                     : 0;
 
 
-                html +=
-                    `• ${escapeHTML(subject)}:
+                html += `
+
+                    • ${escapeHTML(subject)}:
                     ${percent.toFixed(1)}%
-                    (${data.exams} পরীক্ষা)<br>`;
+                    (${data.exams} পরীক্ষা)
+
+                    <br>
+
+                `;
 
             }
         );
@@ -2563,7 +2238,6 @@ function performanceText(){
 }
 
 
-
 /* =====================================================
    WEAKNESS
 ===================================================== */
@@ -2572,7 +2246,9 @@ function weaknessText(){
 
     if(!currentUser){
 
-        return "🔐 Weakness Analysis দেখতে আগে লগইন করুন।";
+        return `
+            🔐 Weakness Analysis দেখতে আগে লগইন করুন।
+        `;
 
     }
 
@@ -2582,30 +2258,34 @@ function weaknessText(){
 
 
     const list =
-        Object.entries(p.subjects);
+        Object.entries(
+            p.subjects
+        );
 
 
     if(!list.length){
 
-        return "📊 পর্যাপ্ত পরীক্ষার ডেটা নেই।";
+        return `
+            📊 পর্যাপ্ত পরীক্ষার ডেটা নেই।
+        `;
 
     }
 
 
     list.sort(
-        (a,b)=>{
+        (a,b) => {
 
             const pa =
                 a[1].total
-                ? a[1].score/a[1].total
+                ? a[1].score / a[1].total
                 : 0;
 
             const pb =
                 b[1].total
-                ? b[1].score/b[1].total
+                ? b[1].score / b[1].total
                 : 0;
 
-            return pa-pb;
+            return pa - pb;
 
         }
     );
@@ -2621,30 +2301,41 @@ function weaknessText(){
 
     list.slice(0,5)
         .forEach(
-            ([subject,data],i)=>{
+            ([subject,data],i) => {
 
                 const percent =
                     data.total
-                    ? data.score/data.total*100
+                    ? data.score / data.total * 100
                     : 0;
 
 
-                html +=
-                    `${i+1}. <b>${escapeHTML(subject)}</b>
-                    — ${percent.toFixed(1)}%<br>`;
+                html += `
+
+                    ${i+1}.
+                    <b>${escapeHTML(subject)}</b>
+                    — ${percent.toFixed(1)}%
+
+                    <br>
+
+                `;
 
             }
         );
 
 
-    html +=
-        "<br>💡 এই বিষয়গুলোতে আরও Practice করার পরামর্শ দেওয়া হচ্ছে।";
+    html += `
+
+        <br>
+
+        💡 এই বিষয়গুলোতে আরও
+        Practice করার পরামর্শ দেওয়া হচ্ছে।
+
+    `;
 
 
     return html;
 
 }
-
 
 
 /* =====================================================
@@ -2655,7 +2346,9 @@ function strengthText(){
 
     if(!currentUser){
 
-        return "🔐 Strength Analysis দেখতে আগে লগইন করুন।";
+        return `
+            🔐 Strength Analysis দেখতে আগে লগইন করুন।
+        `;
 
     }
 
@@ -2665,30 +2358,34 @@ function strengthText(){
 
 
     const list =
-        Object.entries(p.subjects);
+        Object.entries(
+            p.subjects
+        );
 
 
     if(!list.length){
 
-        return "📊 পর্যাপ্ত ডেটা নেই।";
+        return `
+            📊 পর্যাপ্ত ডেটা নেই।
+        `;
 
     }
 
 
     list.sort(
-        (a,b)=>{
+        (a,b) => {
 
             const pa =
                 a[1].total
-                ? a[1].score/a[1].total
+                ? a[1].score / a[1].total
                 : 0;
 
             const pb =
                 b[1].total
-                ? b[1].score/b[1].total
+                ? b[1].score / b[1].total
                 : 0;
 
-            return pb-pa;
+            return pb - pa;
 
         }
     );
@@ -2700,17 +2397,23 @@ function strengthText(){
 
     list.slice(0,5)
         .forEach(
-            ([subject,data],i)=>{
+            ([subject,data],i) => {
 
                 const percent =
                     data.total
-                    ? data.score/data.total*100
+                    ? data.score / data.total * 100
                     : 0;
 
 
-                html +=
-                    `${i+1}. <b>${escapeHTML(subject)}</b>
-                    — ${percent.toFixed(1)}%<br>`;
+                html += `
+
+                    ${i+1}.
+                    <b>${escapeHTML(subject)}</b>
+                    — ${percent.toFixed(1)}%
+
+                    <br>
+
+                `;
 
             }
         );
@@ -2721,7 +2424,6 @@ function strengthText(){
 }
 
 
-
 /* =====================================================
    HISTORY
 ===================================================== */
@@ -2730,7 +2432,9 @@ function historyText(){
 
     if(!currentUser){
 
-        return "🔐 Exam History দেখতে আগে লগইন করুন।";
+        return `
+            🔐 Exam History দেখতে আগে লগইন করুন।
+        `;
 
     }
 
@@ -2743,13 +2447,15 @@ function historyText(){
 
     if(!entries.length){
 
-        return "📜 কোনো Exam History পাওয়া যায়নি।";
+        return `
+            📜 কোনো Exam History পাওয়া যায়নি।
+        `;
 
     }
 
 
     entries.sort(
-        (a,b)=>
+        (a,b) =>
             new Date(
                 b[1].submittedAt || 0
             ) -
@@ -2765,29 +2471,33 @@ function historyText(){
 
     entries.slice(0,20)
         .forEach(
-            ([id,exam],index)=>{
+            ([id,exam],index) => {
 
                 const score =
-                    Number(exam.score)||0;
+                    Number(exam.score) || 0;
 
                 const total =
-                    Number(exam.total)||0;
+                    Number(exam.total) || 0;
 
 
                 const date =
                     exam.submittedAt
-                    ? new Date(
+                    ?
+                    new Date(
                         exam.submittedAt
                     ).toLocaleDateString(
                         "bn-BD"
                     )
-                    : "তারিখ নেই";
+                    :
+                    "তারিখ নেই";
 
 
                 html += `
 
-                    <div class="list-item"
-                        onclick="openReview('${escapeHTML(id)}')">
+                    <div
+                        class="list-item"
+                        onclick="openReview('${escapeHTML(id)}')"
+                    >
 
                         <div class="list-title">
 
@@ -2819,7 +2529,6 @@ function historyText(){
 }
 
 
-
 /* =====================================================
    NOTICES
 ===================================================== */
@@ -2834,15 +2543,17 @@ function noticesText(){
 
     if(!list.length){
 
-        return "📢 বর্তমানে কোনো Notice পাওয়া যায়নি।";
+        return `
+            📢 বর্তমানে কোনো Notice পাওয়া যায়নি।
+        `;
 
     }
 
 
     list.sort(
-        (a,b)=>
-            Number(b.date||0) -
-            Number(a.date||0)
+        (a,b) =>
+            Number(b.date || 0) -
+            Number(a.date || 0)
     );
 
 
@@ -2852,16 +2563,18 @@ function noticesText(){
 
     list.slice(0,10)
         .forEach(
-            notice=>{
+            notice => {
 
                 const date =
                     notice.date
-                    ? new Date(
+                    ?
+                    new Date(
                         notice.date
                     ).toLocaleDateString(
                         "bn-BD"
                     )
-                    : "";
+                    :
+                    "";
 
 
                 html += `
@@ -2890,9 +2603,11 @@ function noticesText(){
                         ${
                             date
                             ?
-                            `<div class="list-meta">
-                                📅 ${date}
-                            </div>`
+                            `
+                                <div class="list-meta">
+                                    📅 ${date}
+                                </div>
+                            `
                             :
                             ""
                         }
@@ -2910,7 +2625,6 @@ function noticesText(){
 }
 
 
-
 /* =====================================================
    NOTES SEARCH
 ===================================================== */
@@ -2918,9 +2632,9 @@ function noticesText(){
 function searchNotes(keyword=""){
 
     keyword =
-        keyword
-        .toLowerCase()
-        .trim();
+        String(keyword)
+            .toLowerCase()
+            .trim();
 
 
     const list =
@@ -2931,7 +2645,7 @@ function searchNotes(keyword=""){
 
     const results =
         list.filter(
-            ([id,note])=>{
+            ([id,note]) => {
 
                 const searchable = [
 
@@ -2951,8 +2665,10 @@ function searchNotes(keyword=""){
                 .toLowerCase();
 
 
-                return !keyword ||
-                    searchable.includes(keyword);
+                return (
+                    !keyword ||
+                    searchable.includes(keyword)
+                );
 
             }
         );
@@ -2967,12 +2683,12 @@ function searchNotes(keyword=""){
     }
 
 
-    let html="";
+    let html = "";
 
 
     results.slice(0,30)
         .forEach(
-            ([id,note])=>{
+            ([id,note]) => {
 
                 html += `
 
@@ -2987,7 +2703,6 @@ function searchNotes(keyword=""){
                             )}
 
                         </div>
-
 
                         <div class="list-meta">
 
@@ -3004,7 +2719,7 @@ function searchNotes(keyword=""){
                             ${
                                 note.chapter
                                 ?
-                                " • "+
+                                " • " +
                                 escapeHTML(
                                     note.chapter
                                 )
@@ -3014,34 +2729,38 @@ function searchNotes(keyword=""){
 
                         </div>
 
-
                         ${
                             note.textContent
                             ?
-                            `<div class="list-text">
-                                ${escapeHTML(
-                                    note.textContent
-                                ).slice(0,350)}
-                            </div>`
+                            `
+                                <div class="list-text">
+
+                                    ${escapeHTML(
+                                        note.textContent
+                                    ).slice(0,350)}
+
+                                </div>
+                            `
                             :
                             ""
                         }
 
-
                         ${
                             note.contentUrl
                             ?
-                            `<a
-                                class="search-link"
-                                href="${escapeHTML(
-                                    note.contentUrl
-                                )}"
-                                target="_blank"
-                                rel="noopener"
-                                onclick="event.stopPropagation()"
-                            >
-                                📄 Note Open
-                            </a>`
+                            `
+                                <a
+                                    class="search-link"
+                                    href="${escapeHTML(
+                                        note.contentUrl
+                                    )}"
+                                    target="_blank"
+                                    rel="noopener"
+                                    onclick="event.stopPropagation()"
+                                >
+                                    📄 Note Open
+                                </a>
+                            `
                             :
                             ""
                         }
@@ -3059,31 +2778,29 @@ function searchNotes(keyword=""){
 }
 
 
-
 /* =====================================================
    LIVE NOTES
 ===================================================== */
 
 window.searchNotesLive =
-    function(){
+function(){
 
-        const value =
-            document
-                .getElementById(
-                    "noteSearchInput"
-                )
-                .value;
-
-
+    const value =
         document
             .getElementById(
-                "notesContent"
+                "noteSearchInput"
             )
-            .innerHTML =
-            searchNotes(value);
+            .value;
 
-    };
 
+    document
+        .getElementById(
+            "notesContent"
+        )
+        .innerHTML =
+        searchNotes(value);
+
+};
 
 
 /* =====================================================
@@ -3126,42 +2843,42 @@ function renderProfile(){
         getPerformance();
 
 
+    const displayName =
+        currentUser.displayName ||
+        "GAIVEX Student";
+
+
+    const email =
+        currentUser.email || "";
+
+
+    const firstChar =
+        displayName
+            .charAt(0)
+            .toUpperCase();
+
+
     box.innerHTML = `
 
         <div class="profile">
 
             <div class="profile-avatar">
 
-                ${
-                    escapeHTML(
-                        (
-                            currentUser.displayName ||
-                            currentUser.email ||
-                            "U"
-                        )[0]
-                    ).toUpperCase()
-                }
+                ${escapeHTML(firstChar)}
 
             </div>
-
 
             <div>
 
                 <div class="profile-name">
 
-                    ${escapeHTML(
-                        currentUser.displayName ||
-                        "GAIVEX Student"
-                    )}
+                    ${escapeHTML(displayName)}
 
                 </div>
 
                 <div class="profile-email">
 
-                    ${escapeHTML(
-                        currentUser.email ||
-                        ""
-                    )}
+                    ${escapeHTML(email)}
 
                 </div>
 
@@ -3242,30 +2959,28 @@ function renderProfile(){
 }
 
 
-
 /* =====================================================
    PERFORMANCE MODAL
 ===================================================== */
 
 window.openPerformance =
-    function(){
+function(){
 
-        document
-            .getElementById(
-                "performanceContent"
-            )
-            .innerHTML =
-            performanceText();
+    document
+        .getElementById(
+            "performanceContent"
+        )
+        .innerHTML =
+        performanceText();
 
 
-        document
-            .getElementById(
-                "performanceModal"
-            )
-            .classList.add("show");
+    document
+        .getElementById(
+            "performanceModal"
+        )
+        .classList.add("show");
 
-    };
-
+};
 
 
 /* =====================================================
@@ -3273,24 +2988,23 @@ window.openPerformance =
 ===================================================== */
 
 window.openHistory =
-    function(){
+function(){
 
-        document
-            .getElementById(
-                "historyContent"
-            )
-            .innerHTML =
-            historyText();
+    document
+        .getElementById(
+            "historyContent"
+        )
+        .innerHTML =
+        historyText();
 
 
-        document
-            .getElementById(
-                "historyModal"
-            )
-            .classList.add("show");
+    document
+        .getElementById(
+            "historyModal"
+        )
+        .classList.add("show");
 
-    };
-
+};
 
 
 /* =====================================================
@@ -3316,7 +3030,6 @@ function openNotice(){
 }
 
 
-
 /* =====================================================
    NOTES MODAL
 ===================================================== */
@@ -3327,7 +3040,7 @@ function openNotes(){
         .getElementById(
             "noteSearchInput"
         )
-        .value="";
+        .value = "";
 
 
     document
@@ -3347,196 +3060,190 @@ function openNotes(){
 }
 
 
-
 /* =====================================================
    EXAM REVIEW
 ===================================================== */
 
 window.openReview =
-    function(id){
+function(id){
 
-        const exam =
-            examData[id];
-
-
-        if(!exam){
-
-            showToast(
-                "Exam Data পাওয়া যায়নি"
-            );
-
-            return;
-
-        }
+    const exam =
+        examData[id];
 
 
-        document
-            .getElementById(
-                "reviewTitle"
-            )
-            .textContent =
-            exam.examTitle ||
-            "পরীক্ষার বিস্তারিত";
+    if(!exam){
+
+        showToast(
+            "Exam Data পাওয়া যায়নি"
+        );
+
+        return;
+
+    }
 
 
-        let html="";
+    document
+        .getElementById(
+            "reviewTitle"
+        )
+        .textContent =
+        exam.examTitle ||
+        "পরীক্ষার বিস্তারিত";
 
 
-        if(
-            Array.isArray(
-                exam.questions
-            )
-        ){
+    let html = "";
 
+
+    if(
+        Array.isArray(
             exam.questions
-                .forEach(
-                    (q,index)=>{
+        )
+    ){
 
-                        const raw =
-                            exam.userAnswers
-                            ?
-                            exam.userAnswers[index]
-                            :
-                            null;
+        exam.questions
+            .forEach(
+                (q,index) => {
+
+                    const raw =
+                        exam.userAnswers
+                        ?
+                        exam.userAnswers[index]
+                        :
+                        null;
 
 
-                        let userAnswer =
-                            "উত্তর দেননি";
+                    let userAnswer =
+                        "উত্তর দেননি";
 
+
+                    if(
+                        raw !== null &&
+                        raw !== undefined
+                    ){
 
                         if(
-                            raw !== null &&
-                            raw !== undefined
+                            typeof raw === "number" &&
+                            q.options &&
+                            q.options[raw] !== undefined
                         ){
 
-                            if(
-                                typeof raw === "number" &&
-                                q.options &&
-                                q.options[raw] !== undefined
-                            ){
+                            userAnswer =
+                                q.options[raw];
 
-                                userAnswer =
-                                    q.options[raw];
+                        }
+                        else{
 
-                            }
-                            else{
-
-                                userAnswer =
-                                    raw;
-
-                            }
+                            userAnswer =
+                                raw;
 
                         }
 
-
-                        const correct =
-                            userAnswer ===
-                            q.correctAnswer;
+                    }
 
 
-                        html += `
-
-                            <div
-                                class="question-card"
-                            >
-
-                                <div class="question-title">
-
-                                    প্রশ্ন ${index+1}:
-                                    ${escapeHTML(
-                                        q.question ||
-                                        q.title ||
-                                        ""
-                                    )}
-
-                                </div>
+                    const correct =
+                        String(userAnswer) ===
+                        String(q.correctAnswer);
 
 
-                                <div class="${
-                                    correct
-                                    ?
-                                    "correct"
-                                    :
-                                    "wrong"
-                                }">
+                    html += `
 
-                                    আপনার উত্তর:
-                                    <b>
-                                        ${escapeHTML(
-                                            userAnswer
-                                        )}
-                                    </b>
+                        <div class="question-card">
 
-                                </div>
+                            <div class="question-title">
 
-
-                                <div class="correct">
-
-                                    সঠিক উত্তর:
-                                    <b>
-                                        ${escapeHTML(
-                                            q.correctAnswer ||
-                                            ""
-                                        )}
-                                    </b>
-
-                                </div>
-
-
-                                <div class="explanation">
-
-                                    <b>ব্যাখ্যা:</b>
-
-                                    ${
-                                        escapeHTML(
-                                            q.explanation ||
-                                            "ব্যাখ্যা দেওয়া হয়নি।"
-                                        )
-                                    }
-
-                                </div>
+                                প্রশ্ন ${index+1}:
+                                ${escapeHTML(
+                                    q.question ||
+                                    q.title ||
+                                    ""
+                                )}
 
                             </div>
 
-                        `;
 
-                    }
-                );
+                            <div class="${
+                                correct
+                                ? "correct"
+                                : "wrong"
+                            }">
 
-        }
-        else{
+                                আপনার উত্তর:
+                                <b>
+                                    ${escapeHTML(
+                                        userAnswer
+                                    )}
+                                </b>
 
-            html = `
-
-                <div class="list-item">
-
-                    এই পরীক্ষার বিস্তারিত
-                    প্রশ্ন/ব্যাখ্যা Firebase-এ
-                    সংরক্ষিত নেই।
-
-                </div>
-
-            `;
-
-        }
+                            </div>
 
 
-        document
-            .getElementById(
-                "reviewContent"
-            )
-            .innerHTML =
-            html;
+                            <div class="correct">
+
+                                সঠিক উত্তর:
+                                <b>
+                                    ${escapeHTML(
+                                        q.correctAnswer ||
+                                        ""
+                                    )}
+                                </b>
+
+                            </div>
 
 
-        document
-            .getElementById(
-                "reviewModal"
-            )
-            .classList.add("show");
+                            <div class="explanation">
 
-    };
+                                <b>ব্যাখ্যা:</b>
 
+                                ${
+                                    escapeHTML(
+                                        q.explanation ||
+                                        "ব্যাখ্যা দেওয়া হয়নি।"
+                                    )
+                                }
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+    }
+    else{
+
+        html = `
+
+            <div class="list-item">
+
+                এই পরীক্ষার বিস্তারিত
+                প্রশ্ন/ব্যাখ্যা Firebase-এ
+                সংরক্ষিত নেই।
+
+            </div>
+
+        `;
+
+    }
+
+
+    document
+        .getElementById(
+            "reviewContent"
+        )
+        .innerHTML =
+        html;
+
+
+    document
+        .getElementById(
+            "reviewModal"
+        )
+        .classList.add("show");
+
+};
 
 
 /* =====================================================
@@ -3546,27 +3253,26 @@ window.openReview =
 function googleSearch(query){
 
     const url =
-        "https://www.google.com/search?q="+
+        "https://www.google.com/search?q=" +
         encodeURIComponent(query);
 
 
     return `
 
         <a
-            href="${url}"
+            href="${escapeHTML(url)}"
             target="_blank"
             rel="noopener noreferrer"
             class="search-link"
         >
 
-            🔎 Search
+            🔎 Google-এ Search করুন
 
         </a>
 
     `;
 
 }
-
 
 
 /* =====================================================
@@ -3604,7 +3310,6 @@ function detectLanguage(text){
 }
 
 
-
 /* =====================================================
    INTENT DETECTION
 ===================================================== */
@@ -3613,8 +3318,8 @@ function detectIntent(text){
 
     const q =
         text
-        .toLowerCase()
-        .trim();
+            .toLowerCase()
+            .trim();
 
 
     if(
@@ -3671,7 +3376,6 @@ function detectIntent(text){
 }
 
 
-
 /* =====================================================
    NOTES KEYWORD EXTRACTION
 ===================================================== */
@@ -3686,7 +3390,6 @@ function extractNoteKeyword(text){
         .trim();
 
 }
-
 
 
 /* =====================================================
@@ -3748,10 +3451,8 @@ function localAI(text){
 
 
             return {
-
                 html:
                     searchNotes(keyword)
-
             };
 
         }
@@ -3763,9 +3464,13 @@ function localAI(text){
 
                 html:`
 
-                    👋 <b>হ্যালো!</b><br><br>
+                    👋 <b>হ্যালো!</b>
+
+                    <br><br>
 
                     আমি GAIVEX AI।
+
+                    <br><br>
 
                     আপনি বাংলায়,
                     English-এ অথবা
@@ -3774,13 +3479,9 @@ function localAI(text){
 
                     <br><br>
 
-                    যেমন:<br>
-
-                    • আমার Performance কেমন?<br>
-                    • আমার দুর্বল বিষয় কী?<br>
-                    • What is vector?<br>
-                    • কোষ বিভাজনের Notes আছে?<br>
-                    • সর্বশেষ Notice কী?
+                    সাধারণ প্রশ্নের উত্তর না পেলে
+                    আমি Wikipedia → DuckDuckGo →
+                    Google fallback ব্যবহার করব।
 
                 `
 
@@ -3794,7 +3495,6 @@ function localAI(text){
     }
 
 }
-
 
 
 /* =====================================================
@@ -3884,7 +3584,6 @@ async function askAIBackend(question){
 }
 
 
-
 /* =====================================================
    AI CONTEXT
 ===================================================== */
@@ -3894,7 +3593,6 @@ function buildAIContext(){
     return {
 
         user:
-
             currentUser
             ?
             {
@@ -3912,18 +3610,14 @@ function buildAIContext(){
             :
             null,
 
-
         performance:
             getPerformance(),
-
 
         exams:
             examData,
 
-
         notices:
             notices,
-
 
         notes:
             notes
@@ -3933,115 +3627,736 @@ function buildAIContext(){
 }
 
 
+/* =====================================================
+   WIKIPEDIA
+===================================================== */
+
+/*
+ * Wikipedia থেকে সরাসরি article-এর
+ * introductory answer নেওয়া হবে।
+ */
+
+async function askWikipedia(question){
+
+    try{
+
+        const language =
+            detectLanguage(question);
+
+
+        const wikiLanguage =
+            language === "bn"
+            ? "bn"
+            : "en";
+
+
+        const result =
+            await fetchWikipedia(
+                question,
+                wikiLanguage
+            );
+
+
+        if(result){
+
+            return result;
+
+        }
+
+
+        /*
+         * বাংলা Wikipedia-তে result না পেলে
+         * English Wikipedia-তে চেষ্টা করবে।
+         */
+
+        if(wikiLanguage === "bn"){
+
+            return await fetchWikipedia(
+                question,
+                "en"
+            );
+
+        }
+
+
+        return null;
+
+    }
+    catch(error){
+
+        console.warn(
+            "Wikipedia error:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+/* =====================================================
+   WIKIPEDIA FETCH
+===================================================== */
+
+async function fetchWikipedia(
+    question,
+    language
+){
+
+    try{
+
+        const api =
+            `https://${language}.wikipedia.org/w/api.php`;
+
+
+        /*
+         * Search
+         */
+
+        const searchURL =
+            api +
+            "?action=query" +
+            "&list=search" +
+            "&srsearch=" +
+            encodeURIComponent(question) +
+            "&srlimit=3" +
+            "&utf8=1" +
+            "&format=json" +
+            "&origin=*";
+
+
+        const searchResponse =
+            await fetch(
+                searchURL,
+                {
+                    method:"GET"
+                }
+            );
+
+
+        if(!searchResponse.ok){
+
+            return null;
+
+        }
+
+
+        const searchData =
+            await searchResponse.json();
+
+
+        const results =
+            searchData?.query?.search || [];
+
+
+        if(!results.length){
+
+            return null;
+
+        }
+
+
+        const title =
+            results[0].title;
+
+
+        /*
+         * Article extract
+         */
+
+        const extractURL =
+            api +
+            "?action=query" +
+            "&prop=extracts" +
+            "&exintro=1" +
+            "&explaintext=1" +
+            "&exchars=1800" +
+            "&redirects=1" +
+            "&titles=" +
+            encodeURIComponent(title) +
+            "&format=json" +
+            "&origin=*";
+
+
+        const extractResponse =
+            await fetch(
+                extractURL
+            );
+
+
+        if(!extractResponse.ok){
+
+            return null;
+
+        }
+
+
+        const extractData =
+            await extractResponse.json();
+
+
+        const pages =
+            extractData?.query?.pages || {};
+
+
+        const page =
+            Object.values(pages)[0];
+
+
+        const extract =
+            page?.extract?.trim();
+
+
+        if(
+            !extract ||
+            extract.length < 30
+        ){
+
+            return null;
+
+        }
+
+
+        const wikiURL =
+            `https://${language}.wikipedia.org/wiki/` +
+            encodeURIComponent(
+                title.replace(/ /g,"_")
+            );
+
+
+        return {
+
+            source:"Wikipedia",
+
+            title:title,
+
+            answer:extract,
+
+            url:wikiURL
+
+        };
+
+    }
+    catch(error){
+
+        console.warn(
+            `Wikipedia ${language}:`,
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+/* =====================================================
+   DUCKDUCKGO
+===================================================== */
+
+async function askDuckDuckGo(question){
+
+    try{
+
+        const url =
+            "https://api.duckduckgo.com/" +
+            "?q=" +
+            encodeURIComponent(question) +
+            "&format=json" +
+            "&no_html=1" +
+            "&skip_disambig=1";
+
+
+        const response =
+            await fetch(
+                url
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "DuckDuckGo request failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        let answer =
+            data?.AbstractText || "";
+
+
+        let title =
+            data?.Heading || "";
+
+
+        let sourceURL =
+            data?.AbstractURL || "";
+
+
+        /*
+         * Direct answer
+         */
+
+        if(!answer){
+
+            answer =
+                data?.Answer || "";
+
+        }
+
+
+        /*
+         * Definition
+         */
+
+        if(!answer){
+
+            answer =
+                data?.Definition || "";
+
+        }
+
+
+        /*
+         * Related Topics
+         */
+
+        if(!answer){
+
+            const topics =
+                data?.RelatedTopics || [];
+
+
+            for(
+                const topic of topics
+            ){
+
+                if(
+                    topic &&
+                    topic.Text
+                ){
+
+                    answer =
+                        topic.Text;
+
+                    sourceURL =
+                        topic.FirstURL ||
+                        "";
+
+                    title =
+                        topic.Text
+                            .split(" - ")[0]
+                            .slice(0,120);
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+
+        if(
+            !answer ||
+            answer.trim().length < 30
+        ){
+
+            return null;
+
+        }
+
+
+        return {
+
+            source:"DuckDuckGo",
+
+            title:
+                title ||
+                "DuckDuckGo Result",
+
+            answer:
+                answer.trim(),
+
+            url:
+                sourceURL || ""
+
+        };
+
+    }
+    catch(error){
+
+        console.warn(
+            "DuckDuckGo:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+/* =====================================================
+   PUBLIC WEB FALLBACK
+===================================================== */
+
+async function askPublicWeb(question){
+
+    /*
+     * STEP 1:
+     * Wikipedia
+     */
+
+    const wikipedia =
+        await askWikipedia(
+            question
+        );
+
+
+    if(wikipedia){
+
+        return wikipedia;
+
+    }
+
+
+    /*
+     * STEP 2:
+     * DuckDuckGo
+     */
+
+    const duckduckgo =
+        await askDuckDuckGo(
+            question
+        );
+
+
+    if(duckduckgo){
+
+        return duckduckgo;
+
+    }
+
+
+    /*
+     * STEP 3:
+     * Nothing found
+     */
+
+    return null;
+
+}
+
+
+/* =====================================================
+   PUBLIC WEB RESPONSE FORMAT
+===================================================== */
+
+function formatPublicWebAnswer(result){
+
+    if(!result){
+
+        return null;
+
+    }
+
+
+    const safeAnswer =
+        escapeHTML(
+            result.answer
+        );
+
+
+    const safeTitle =
+        escapeHTML(
+            result.title
+        );
+
+
+    const safeSource =
+        escapeHTML(
+            result.source
+        );
+
+
+    let sourceButton = "";
+
+
+    if(result.url){
+
+        sourceButton = `
+
+            <a
+                href="${escapeHTML(result.url)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="search-link"
+            >
+
+                🔗 ${safeSource}
+                Source
+
+            </a>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div>
+
+            <b>🌐 ${safeTitle}</b>
+
+            <br><br>
+
+            ${safeAnswer}
+
+            <br><br>
+
+            <span
+                style="
+                    color:#718ca0;
+                    font-size:11px;
+                "
+            >
+
+                তথ্যের উৎস:
+                ${safeSource}
+
+            </span>
+
+            ${sourceButton}
+
+        </div>
+
+    `;
+
+}
+
 
 /* =====================================================
    SEND MESSAGE
 ===================================================== */
 
 window.sendMessage =
-    async function(){
+async function(){
 
-        const input =
-            document.getElementById(
-                "messageInput"
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if(!text)
+        return;
+
+
+    input.value = "";
+
+    input.style.height =
+        "48px";
+
+
+    addUserMessage(text);
+
+    setTyping(true);
+
+
+    try{
+
+        /*
+         * =================================================
+         * STEP 1
+         * GAIVEX Local / Firebase Data
+         * =================================================
+         */
+
+        const local =
+            localAI(text);
+
+
+        if(
+            local &&
+            detectIntent(text) !== "general"
+        ){
+
+            await delay(250);
+
+            addAIMessage(
+                local.html
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * =================================================
+         * STEP 2
+         * Secure AI Backend
+         * =================================================
+         */
+
+        const ai =
+            await askAIBackend(
+                text
             );
 
 
-        const text =
-            input.value.trim();
+        if(ai){
 
+            addAIMessage(
+                formatAIResponse(ai)
+            );
 
-        if(!text)
             return;
 
-
-        input.value="";
-
-        input.style.height="48px";
-
-
-        addUserMessage(text);
-
-
-        setTyping(true);
-
-
-        try{
-
-            /*
-             * প্রথমে Firebase/local smart intent
-             */
-
-            const local =
-                localAI(text);
-
-
-            /*
-             * General প্রশ্ন হলে
-             * AI backend ব্যবহার
-             */
-
-            if(
-                local &&
-                detectIntent(text)!=="general"
-            ){
-
-                await delay(250);
-
-                addAIMessage(
-                    local.html
-                );
-
-                return;
-
-            }
-
-
-            const ai =
-                await askAIBackend(text);
-
-
-            if(ai){
-
-                addAIMessage(
-                    formatAIResponse(ai)
-                );
-
-                return;
-
-            }
-
-
-            /*
-             * Backend নেই → Google Search
-             */
-
-            addAIMessage(`
-
-                এই প্রশ্নের নির্দিষ্ট উত্তর
-                আমার বর্তমান Knowledge Base-এ
-                পাওয়া যায়নি।
-
-                <br><br>
-
-                আপনি Google-এ এই বিষয়টি
-                খুঁজে দেখতে পারেন:
-
-                <br>
-
-                ${googleSearch(text)}
-
-            `);
-
         }
-        finally{
 
-            setTyping(false);
+
+        /*
+         * =================================================
+         * STEP 3
+         * Wikipedia
+         *
+         * Wikipedia সরাসরি answer দিলে
+         * chat bubble-এ দেখাবে।
+         * কোনো search link নয়।
+         * =================================================
+         */
+
+        const wikipedia =
+            await askWikipedia(
+                text
+            );
+
+
+        if(wikipedia){
+
+            addAIMessage(
+                formatPublicWebAnswer(
+                    wikipedia
+                )
+            );
+
+            return;
 
         }
 
-    };
 
+        /*
+         * =================================================
+         * STEP 4
+         * DuckDuckGo
+         *
+         * Wikipedia ব্যর্থ হলে এখানে আসবে।
+         * =================================================
+         */
+
+        const duckduckgo =
+            await askDuckDuckGo(
+                text
+            );
+
+
+        if(duckduckgo){
+
+            addAIMessage(
+                formatPublicWebAnswer(
+                    duckduckgo
+                )
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * =================================================
+         * STEP 5
+         * Google Search
+         *
+         * সব জায়গায় উত্তর না পাওয়া গেলে
+         * শুধুমাত্র তখন Google link।
+         * =================================================
+         */
+
+        addAIMessage(`
+
+            <b>🔎 সরাসরি উত্তর পাওয়া যায়নি।</b>
+
+            <br><br>
+
+            Wikipedia এবং DuckDuckGo
+            দুটোতেই এই প্রশ্নের নির্ভরযোগ্য
+            সরাসরি উত্তর পাওয়া যায়নি।
+
+            <br><br>
+
+            আপনি Google-এ আরও বিস্তারিত
+            Search করতে পারেন:
+
+            <br>
+
+            ${googleSearch(text)}
+
+        `);
+
+    }
+    catch(error){
+
+        console.error(
+            "Send Message Error:",
+            error
+        );
+
+
+        /*
+         * কোনো unexpected error হলেও
+         * Google fallback থাকবে।
+         */
+
+        addAIMessage(`
+
+            ⚠️ উত্তর সংগ্রহ করার সময়
+            একটি সমস্যা হয়েছে।
+
+            <br><br>
+
+            আপনি Google-এ Search করতে পারেন:
+
+            <br>
+
+            ${googleSearch(text)}
+
+        `);
+
+    }
+    finally{
+
+        setTyping(false);
+
+    }
+
+};
 
 
 /* =====================================================
@@ -4073,26 +4388,24 @@ function formatAIResponse(text){
 }
 
 
-
 /* =====================================================
    QUICK ASK
 ===================================================== */
 
 window.quickAsk =
-    function(text){
+function(text){
 
-        document
-            .getElementById(
-                "messageInput"
-            )
-            .value =
-            text;
+    document
+        .getElementById(
+            "messageInput"
+        )
+        .value =
+        text;
 
 
-        sendMessage();
+    sendMessage();
 
-    };
-
+};
 
 
 /* =====================================================
@@ -4100,129 +4413,149 @@ window.quickAsk =
 ===================================================== */
 
 window.toggleVoice =
-    function(){
+function(){
 
-        const SpeechRecognition =
-            window.SpeechRecognition ||
-            window.webkitSpeechRecognition;
-
-
-        if(!SpeechRecognition){
-
-            showToast(
-                "এই Browser-এ Voice Input নেই"
-            );
-
-            return;
-
-        }
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
 
-        if(isListening){
+    if(!SpeechRecognition){
+
+        showToast(
+            "এই Browser-এ Voice Input নেই"
+        );
+
+        return;
+
+    }
+
+
+    if(isListening){
+
+        if(recognition){
 
             recognition.stop();
 
-            return;
+        }
+
+        return;
+
+    }
+
+
+    recognition =
+        new SpeechRecognition();
+
+
+    recognition.lang =
+        "bn-BD";
+
+
+    recognition.continuous =
+        false;
+
+
+    recognition.interimResults =
+        true;
+
+
+    recognition.onstart =
+    function(){
+
+        isListening = true;
+
+
+        document
+            .getElementById(
+                "voiceBtn"
+            )
+            .classList.add(
+                "listening"
+            );
+
+
+        showToast(
+            "🎤 কথা বলুন..."
+        );
+
+    };
+
+
+    recognition.onresult =
+    function(event){
+
+        let transcript = "";
+
+
+        for(
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ){
+
+            transcript +=
+                event.results[i][0]
+                    .transcript;
 
         }
 
 
-        recognition =
-            new SpeechRecognition();
-
-
-        recognition.lang =
-            "bn-BD";
-
-
-        recognition.continuous =
-            false;
-
-
-        recognition.interimResults =
-            true;
-
-
-        recognition.onstart =
-            function(){
-
-                isListening=true;
-
-                document
-                    .getElementById(
-                        "voiceBtn"
-                    )
-                    .classList.add(
-                        "listening"
-                    );
-
-
-                showToast(
-                    "🎤 কথা বলুন..."
-                );
-
-            };
-
-
-        recognition.onresult =
-            function(event){
-
-                let transcript="";
-
-
-                for(
-                    let i=event.resultIndex;
-                    i<event.results.length;
-                    i++
-                ){
-
-                    transcript +=
-                        event.results[i][0]
-                            .transcript;
-
-                }
-
-
-                document
-                    .getElementById(
-                        "messageInput"
-                    )
-                    .value =
-                    transcript;
-
-            };
-
-
-        recognition.onerror =
-            function(){
-
-                showToast(
-                    "Voice Input-এ সমস্যা হয়েছে"
-                );
-
-            };
-
-
-        recognition.onend =
-            function(){
-
-                isListening=false;
-
-                document
-                    .getElementById(
-                        "voiceBtn"
-                    )
-                    .classList.remove(
-                        "listening"
-                    );
-
-            };
-
-
-        recognition.start();
+        document
+            .getElementById(
+                "messageInput"
+            )
+            .value =
+            transcript;
 
     };
 
+
+    recognition.onerror =
+    function(error){
+
+        console.warn(
+            "Voice:",
+            error
+        );
+
+
+        showToast(
+            "Voice Input-এ সমস্যা হয়েছে"
+        );
+
+    };
+
+
+    recognition.onend =
+    function(){
+
+        isListening = false;
+
+
+        document
+            .getElementById(
+                "voiceBtn"
+            )
+            .classList.remove(
+                "listening"
+            );
+
+    };
+
+
+    try{
+
+        recognition.start();
+
+    }
+    catch(error){
+
+        console.warn(error);
+
+    }
+
+};
 
 
 /* =====================================================
@@ -4230,64 +4563,81 @@ window.toggleVoice =
 ===================================================== */
 
 window.speakAI =
-    function(text){
+function(text){
 
-        if(
-            !("speechSynthesis" in window)
-        ){
+    if(
+        !("speechSynthesis" in window)
+    ){
 
-            showToast(
-                "এই Browser-এ Voice Output নেই"
-            );
-
-            return;
-
-        }
-
-
-        speechSynthesis.cancel();
-
-
-        const clean =
-            String(text)
-                .replace(/<[^>]*>/g,"")
-                .slice(0,4000);
-
-
-        const utter =
-            new SpeechSynthesisUtterance(
-                clean
-            );
-
-
-        const lang =
-            detectLanguage(clean);
-
-
-        if(lang==="bn")
-            utter.lang="bn-BD";
-
-        else if(lang==="hi")
-            utter.lang="hi-IN";
-
-        else if(lang==="ar-ur")
-            utter.lang="ur-PK";
-
-        else
-            utter.lang="en-US";
-
-
-        utter.rate=.95;
-
-        utter.pitch=1;
-
-
-        speechSynthesis.speak(
-            utter
+        showToast(
+            "এই Browser-এ Voice Output নেই"
         );
 
-    };
+        return;
 
+    }
+
+
+    speechSynthesis.cancel();
+
+
+    const clean =
+        String(text)
+            .replace(
+                /<[^>]*>/g,
+                ""
+            )
+            .slice(0,4000);
+
+
+    const utter =
+        new SpeechSynthesisUtterance(
+            clean
+        );
+
+
+    const lang =
+        detectLanguage(
+            clean
+        );
+
+
+    if(lang === "bn"){
+
+        utter.lang =
+            "bn-BD";
+
+    }
+    else if(lang === "hi"){
+
+        utter.lang =
+            "hi-IN";
+
+    }
+    else if(lang === "ar-ur"){
+
+        utter.lang =
+            "ur-PK";
+
+    }
+    else{
+
+        utter.lang =
+            "en-US";
+
+    }
+
+
+    utter.rate = .95;
+
+    utter.pitch = 1;
+
+
+    speechSynthesis.speak(
+        utter
+    );
+
+};
 
 
 /* =====================================================
@@ -4303,7 +4653,7 @@ document
         function(event){
 
             if(
-                event.key==="Enter" &&
+                event.key === "Enter" &&
                 !event.shiftKey
             ){
 
@@ -4315,7 +4665,6 @@ document
 
         }
     );
-
 
 
 /* =====================================================
@@ -4344,32 +4693,34 @@ document
     );
 
 
-
 /* =====================================================
    CLOSE MODAL ON BACKDROP
 ===================================================== */
 
 document
     .querySelectorAll(".modal")
-    .forEach(modal=>{
+    .forEach(
+        modal => {
 
-        modal.addEventListener(
-            "click",
-            function(e){
+            modal.addEventListener(
+                "click",
+                function(e){
 
-                if(e.target===modal){
+                    if(
+                        e.target === modal
+                    ){
 
-                    modal.classList.remove(
-                        "show"
-                    );
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
 
                 }
+            );
 
-            }
-        );
-
-    });
-
+        }
+    );
 
 
 /* =====================================================
@@ -4389,7 +4740,6 @@ function delay(ms){
 }
 
 
-
 /* =====================================================
    INIT
 ===================================================== */
@@ -4398,6 +4748,6 @@ loadChat();
 
 </script>
 
-
 </body>
+
 </html>
