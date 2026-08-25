@@ -68,9 +68,9 @@
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
-        /* FIX: Chat Message Avatar (Strict Size Fix) */
-        .msg-avatar { width: 32px; height: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
-        .msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        /* Strict Size Fix for Chat Avatar */
+        .msg-avatar { width: 32px !important; height: 32px !important; min-width: 32px !important; max-width: 32px !important; min-height: 32px !important; max-height: 32px !important; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
+        .msg-avatar img { width: 100% !important; height: 100% !important; border-radius: 50%; object-fit: cover; display: block; }
 
         .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
         .message.ai .msg-avatar { background: #0284c7; color: #fff; }
@@ -115,7 +115,6 @@
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
-        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -165,7 +164,7 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। আপনার এডমিশন টেস্ট বা যেকোনো বিষয়ে প্রশ্নের উত্তর দিতে প্রস্তুত। চ্যাট করতে দয়া করে লগইন করুন!</div>
+                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। আপনার সাধারণ জ্ঞান ও এডমিশন টেস্টের প্রশ্নের মাঝারি সাইজের সঠিক উত্তর দিতে প্রস্তুত। চ্যাট করতে দয়া করে লগইন করুন!</div>
                     </div>
                 </div>
 
@@ -286,7 +285,12 @@
             }
         });
 
-        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali.`;
+        // সিস্টেম ইন্সট্রাকশন: বাংলা বাধ্যবাধকতা + মাঝারি সাইজ
+        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", an expert assistant for Admission Tests and General Knowledge. 
+RULES:
+1. You MUST ALWAYS respond ONLY in BENGALI language, even if user types in English or Banglish.
+2. Never call yourself Gemini or Google.
+3. Keep responses strictly concise, medium-length, to-the-point, accurate, and easy to read.`;
 
         window.sendChatMessage = async function(e) {
             e.preventDefault();
@@ -328,8 +332,19 @@
                 const data = await res.json();
                 typingIndicator.style.display = 'none';
 
-                let replyText = data.reply || data.response || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
-                replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
+                // বিভিন্ন টাইপের API Response ফ্যালব্যাক চেকিং
+                let replyText = "";
+                if (typeof data === 'string') {
+                    replyText = data;
+                } else {
+                    replyText = data.reply || data.response || data.text || (data.candidates && data.candidates[0]?.content?.parts[0]?.text) || "";
+                }
+
+                if (!replyText || replyText.trim() === "") {
+                    replyText = "দুঃখিত, এই বিষয়টি নিয়ে তথ্য পাওয়া যায়নি। দয়া করে প্রশ্নটি আবার একটু স্পষ্ট করে লিখুন।";
+                } else {
+                    replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
+                }
 
                 appendMessage('ai', '🤖', replyText, true);
 
@@ -338,7 +353,7 @@
 
             } catch (error) {
                 typingIndicator.style.display = 'none';
-                appendMessage('ai', '🤖', '⚠️ সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে।');
+                appendMessage('ai', '🤖', '⚠️ সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। আবার চেষ্টা করুন।');
             }
 
             chatBox.scrollTop = chatBox.scrollHeight;
