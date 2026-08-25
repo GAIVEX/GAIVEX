@@ -2,10 +2,10 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GAIVEX AI - Smart Admission Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Marked.js for Rendering Markdown nicely -->
+    <!-- Marked.js for Rendering Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
@@ -15,7 +15,7 @@
         /* App Structure Layout */
         .app-container { display: flex; height: 100vh; width: 100vw; position: relative; overflow: hidden; }
 
-        /* Overlay for Mobile Sidebar Background Blur/Click Close */
+        /* Overlay for Mobile Sidebar Background Blur */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 999; backdrop-filter: blur(2px); }
         .sidebar-overlay.active { display: block; }
 
@@ -23,11 +23,10 @@
         .sidebar { width: 280px; background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
         .sidebar-header { padding: 12px 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         
-        .new-chat-btn { flex: 1; padding: 10px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .new-chat-btn { flex: 1; padding: 10px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 14px; }
         .new-chat-btn:hover { background: #0369a1; }
         
-        /* Sidebar Close Button */
-        .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
 
         .history-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -35,65 +34,68 @@
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
 
         /* Main Content View */
-        .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; }
 
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; height: 60px; z-index: 100; }
-        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; height: 60px; z-index: 100; gap: 10px; }
+        .nav-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .toggle-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-        .logo { font-size: 20px; font-weight: 700; color: #38bdf8; text-decoration: none; }
+        .logo { font-size: 18px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
         .logo span { color: #f43f5e; }
 
-        .nav-right-group { display: flex; align-items: center; gap: 10px; }
+        .nav-right-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         #authNavContainer { display: flex; gap: 8px; align-items: center; }
-        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 13px; }
         .btn-auth:hover { background: #7dd3fc; }
 
-        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 4px 10px; border-radius: 20px; border: 1px solid #475569; }
-        .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; }
+        /* Fixed User Profile Image Fix */
+        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 3px 10px 3px 4px; border-radius: 20px; border: 1px solid #475569; height: 36px; max-width: 140px; overflow: hidden; }
+        .user-avatar { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; overflow: hidden; flex-shrink: 0; }
+        .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        .user-name-text { font-size: 12px; font-weight: bold; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .menu-container { position: relative; }
         .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; font-size: 18px; cursor: pointer; }
-        .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; }
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 170px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; }
         .dropdown-menu button, .dropdown-menu a { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; background: none; border: none; cursor: pointer; }
         .dropdown-menu.show { display: block; }
 
         /* Fixed Chat Area */
         .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); background: #0f172a; position: relative; }
-        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
 
-        .message { display: flex; gap: 12px; max-width: 85%; }
+        .message { display: flex; gap: 10px; max-width: 88%; }
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
-        .msg-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; font-weight: bold; }
+        .msg-avatar { width: 32px; height: 32px; min-width: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; }
         .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
         .message.ai .msg-avatar { background: #0284c7; color: #fff; }
 
-        .msg-content { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
+        .msg-content { padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; word-break: break-word; }
         .message.user .msg-content { background: #0284c7; color: #fff; border-bottom-right-radius: 2px; }
         .message.ai .msg-content { background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 2px; }
 
-        .msg-content p { margin-bottom: 8px; }
+        .msg-content p { margin-bottom: 6px; }
         .msg-content p:last-child { margin-bottom: 0; }
         .msg-content strong { color: #38bdf8; }
 
         /* Fixed Bottom Chat Input Bar */
-        .chat-input-area { padding: 12px 20px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 10px; align-items: center; position: sticky; bottom: 0; }
-        .chat-input-area input { flex: 1; padding: 12px 18px; background: #0f172a; border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; }
+        .chat-input-area { padding: 10px 12px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; }
+        .chat-input-area input { flex: 1; padding: 10px 15px; background: #0f172a; border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; min-width: 0; }
         .chat-input-area input:disabled { background: #1e293b; cursor: not-allowed; opacity: 0.6; }
         .chat-input-area input:focus { border-color: #38bdf8; }
-        .send-btn { background: #38bdf8; color: #0f172a; border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .send-btn { background: #38bdf8; color: #0f172a; border: none; width: 40px; height: 40px; min-width: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .send-btn:disabled { background: #475569; cursor: not-allowed; }
 
-        .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 20px; background: #0f172a; }
+        .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; }
 
         /* Auth Locked Overlay */
-        .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 10px 15px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 10px; display: none; }
+        .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
 
         /* Modals */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:450px; border:1px solid #334155; }
+        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:400px; border:1px solid #334155; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
         .modal-header h3 { color: #38bdf8; font-size: 18px; }
         .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; }
@@ -110,10 +112,11 @@
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
-        /* Responsive Layout Behavior */
+        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
+            .user-name-text { display: none; } /* মোবাইলে নাম লুকিয়ে ছোট রাখা হয়েছে */
         }
     </style>
 </head>
@@ -237,7 +240,7 @@
         const WORKER_URL = "https://small-hall-d192.gaiyumplayz.workers.dev/";
 
         let activeChatId = Date.now().toString();
-        let chatSessions = JSON.parse(localStorage.getItem('gaivex_chats') || '{}');
+        let chatSessions = {};
         let currentMessages = [];
 
         onAuthStateChanged(auth, (user) => {
@@ -249,8 +252,19 @@
             const authNotice = document.getElementById('authLockedNotice');
 
             if (user) {
-                const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U');
-                c.innerHTML = `<div class="user-profile-btn"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
+                // ছবি ও নামের প্রোপার লেআউট রেন্ডারিং
+                const photoHtml = user.photoURL 
+                    ? `<img src="${user.photoURL}" alt="Profile">` 
+                    : (user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U');
+
+                const nameDisplay = (user.displayName || user.email).split(' ')[0];
+
+                c.innerHTML = `
+                    <div class="user-profile-btn">
+                        <div class="user-avatar">${photoHtml}</div>
+                        <span class="user-name-text">${nameDisplay}</span>
+                    </div>`;
+                
                 dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
                 
                 userInput.disabled = false;
@@ -286,7 +300,10 @@
             const chatBox = document.getElementById('chatBox');
             const typingIndicator = document.getElementById('typingIndicator');
 
-            const userAvatar = currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U';
+            const userAvatar = currentUser.photoURL 
+                ? `<img src="${currentUser.photoURL}" alt="User">` 
+                : (currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U');
+
             appendMessage('user', userAvatar, prompt);
             
             currentMessages.push({ role: 'user', content: prompt });
@@ -357,7 +374,7 @@
                 item.innerText = chatSessions[id].title;
                 item.onclick = () => {
                     switchChat(id);
-                    closeSidebar(); // চ্যাটে ক্লিক করার পর সাইডবার অটো বন্ধ হবে
+                    closeSidebar();
                 };
                 listEl.appendChild(item);
             });
@@ -369,7 +386,9 @@
             const chatBox = document.getElementById('chatBox');
             chatBox.innerHTML = '';
             currentMessages.forEach(msg => {
-                const avatar = msg.role === 'user' ? (currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U') : '🤖';
+                const avatar = msg.role === 'user' 
+                    ? (currentUser.photoURL ? `<img src="${currentUser.photoURL}">` : (currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'))
+                    : '🤖';
                 appendMessage(msg.role === 'user' ? 'user' : 'ai', avatar, msg.content, msg.role !== 'user');
             });
             loadHistoryList();
@@ -388,7 +407,7 @@
             closeSidebar();
         };
 
-        // সাইডবার কন্ট্রোল ফাংশন
+        // সাইডবার কন্ট্রোল
         window.toggleSidebar = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
