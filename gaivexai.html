@@ -308,6 +308,9 @@
 
             appendMessage('user', userAvatar, prompt);
             
+            // Send request to Cloudflare Worker BEFORE adding to local currentMessages
+            const requestHistory = [...currentMessages];
+            
             currentMessages.push({ role: 'user', content: prompt });
             inputEl.value = '';
 
@@ -320,7 +323,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         system_instruction: SYSTEM_INSTRUCTION,
-                        history: currentMessages,
+                        history: requestHistory,
                         prompt: prompt 
                     })
                 });
@@ -328,12 +331,13 @@
                 const data = await res.json();
                 typingIndicator.style.display = 'none';
 
-                let replyText = data.reply || data.response || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
+                let replyText = data.reply || data.response || data.text || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
                 replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
                 appendMessage('ai', '🤖', replyText, true);
 
-                currentMessages.push({ role: 'assistant', content: replyText });
+                // Use 'model' role for Gemini API compatibility
+                currentMessages.push({ role: 'model', content: replyText });
                 saveCurrentChat();
 
             } catch (error) {
