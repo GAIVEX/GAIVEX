@@ -330,13 +330,15 @@
             typingIndicator.style.display = 'flex';
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            let replyText = "";
+
             try {
-                // নিরাপত্তা টোকেন সহ ফেচ রিকোয়েস্ট
+                // ১. প্রথমে জেমিনি/ওয়ার্কার থেকে উত্তর আনার চেষ্টা করবে
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'X-Worker-Auth': 'GAIVEX_SECRET_2026' // ওয়ার্কারের সাথে মিল রাখা সিক্রেট টোকেন
+                        'X-Worker-Auth': 'GAIVEX_SECRET_2026'
                     },
                     body: JSON.stringify({ 
                         system_instruction: SYSTEM_INSTRUCTION,
@@ -346,20 +348,53 @@
                 });
 
                 const data = await res.json();
-                typingIndicator.style.display = 'none';
 
-                let replyText = data.reply || data.response || data.text || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
+                if (!res.ok || data.error || (data.reply && (data.reply.includes("quota") || data.reply.includes("exceeded")))) {
+                    throw new Error("Quota Exceeded");
+                }
+
+                replyText = data.reply || data.response || data.text || "";
+                if(!replyText) throw new Error("Empty Response");
+
                 replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
-                appendMessage('ai', '🤖', replyText, true);
-
-                currentMessages.push({ role: 'model', content: replyText });
-                saveCurrentChat();
-
             } catch (error) {
-                typingIndicator.style.display = 'none';
-                appendMessage('ai', '🤖', '⚠️ সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে।');
+                // ২. জেমিনি লিমিট শেষ হলে প্রথমে DuckDuckGo থেকে তথ্য খোঁজার চেষ্টা করবে
+                try {
+                    const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(prompt)}&format=json&no_html=1`;
+                    const ddgRes = await fetch(ddgUrl);
+                    const ddgData = await ddgRes.json();
+
+                    if (ddgData && ddgData.AbstractText) {
+                        replyText = `*(এআই কোটা শেষ, তাই DuckDuckGo থেকে সংগৃহীত তথ্য):*\n\n` + ddgData.AbstractText;
+                    } else if (ddgData && ddgData.RelatedTopics && ddgData.RelatedTopics.length > 0 && ddgData.RelatedTopics[0].Text) {
+                        replyText = `*(DuckDuckGo বিকল্প উৎস):*\n\n` + ddgData.RelatedTopics[0].Text;
+                    } else {
+                        // ৩. DuckDuckGo না পেলে Wikipedia API থেকে উত্তর খোঁজার চেষ্টা করবে
+                        const wikiUrl = `https://bn.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(prompt)}&format=json&origin=*`;
+                        const wikiRes = await fetch(wikiUrl);
+                        const wikiData = await wikiRes.json();
+
+                        if (wikiData && wikiData.query && wikiData.query.search.length > 0) {
+                            const pageTitle = wikiData.query.search[0].title;
+                            const snippet = wikiData.query.search[0].snippet.replace(/(<([^>]+)>)/gi, ""); // HTML ট্যাগ রিমুভ
+                            replyText = `*(এআই কোটা শেষ, তাই Wikipedia থেকে সংগৃহীত তথ্য - ${pageTitle}):*\n\n${snippet}...`;
+                        } else {
+                            replyText = "⚠️ দুঃখিত, বর্তমানে এআই-এর দৈনিক ফ্রি লিমিট শেষ হয়ে গেছে এবং কোনো বিকল্প মাধ্যম থেকেও এই বিষয়ে পর্যাপ্ত তথ্য পাওয়া যায়নি।";
+                        }
+                    }
+                } catch (backupErr) {
+                    replyText = "⚠️ এআই লিমিট শেষ এবং বিকল্প মাধ্যমগুলো থেকে ডেটা আনতে সমস্যা হয়েছে। দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                }
             }
+
+            typingIndicator.style.display = 'none';
+            
+            const isBackup = replyText.includes("বিকল্প উৎস") || replyText.includes("সংগৃহীত তথ্য");
+            appendMessage('ai', '🤖', replyText, !isBackup);
+
+            currentMessages.push({ role: 'model', content: replyText });
+            saveCurrentChat();
 
             chatBox.scrollTop = chatBox.scrollHeight;
         };
