@@ -43,9 +43,9 @@
         .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
 
-        /* ইতিহাস তালিকা ফিক্স (ঘিচিমিচি দূর করার জন্য মার্জিন ও প্যাডিং বাড়ানো হয়েছে) */
+        /* ইতিহাস তালিকা ফিক্স (বক্স বড় ও লেখা যেন কেটে না যায়) */
         .history-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .history-item { padding: 12px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; user-select: none; -webkit-user-select: none; }
+        .history-item { padding: 10px 12px; min-height: 44px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; transition: 0.2s; user-select: none; -webkit-user-select: none; }
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
 
         /* Main Content View */
@@ -179,7 +179,7 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">Hi!  I am <strong>GAIVEX AI</strong>। Your Educational Assistant!</div>
+                        <div class="msg-content">Hi! I am <strong>GAIVEX AI</strong>। Your Educational Assistant!</div>
                     </div>
                 </div>
 
@@ -322,7 +322,9 @@
 
             appendMessage('user', userAvatar, prompt);
             
-            const requestHistory = [...currentMessages];
+            // ফিক্স: ফ্রি টায়ার বাঁচাতে শুধুমাত্র শেষের ৪টি মেসেজ হিস্টোরি হিসেবে পাঠানো হচ্ছে
+            const requestHistory = currentMessages.slice(-4);
+            
             currentMessages.push({ role: 'user', content: prompt });
             inputEl.value = '';
 
@@ -378,7 +380,7 @@
 
         function saveCurrentChat() {
             if (currentMessages.length === 0 || !currentUser) return;
-            const title = currentMessages[0].content.substring(0, 22) + '...';
+            const title = currentMessages[0].content.substring(0, 28) + '...';
             chatSessions[activeChatId] = { title, messages: currentMessages };
             localStorage.setItem('gaivex_chats_' + currentUser.uid, JSON.stringify(chatSessions));
             loadHistoryList();
@@ -447,7 +449,6 @@
             currentMessages = chatSessions[id].messages || [];
             const chatBox = document.getElementById('chatBox');
             chatBox.innerHTML = '';
-            currentMessages.push(...[]); // Safe placeholder
             currentMessages.forEach(msg => {
                 const avatar = msg.role === 'user' 
                     ? (currentUser.photoURL ? `<img src="${currentUser.photoURL}">` : (currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'))
