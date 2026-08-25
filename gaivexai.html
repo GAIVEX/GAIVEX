@@ -107,9 +107,6 @@
         .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
         .modal-close-x:hover { color: #f43f5e; }
 
-        .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
-        .history-item:hover { border-color:#38bdf8; background:#253346; }
-
         select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
         select:focus { border-color: #38bdf8; }
     </style>
@@ -215,21 +212,21 @@
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <select id="filterSubject" onchange="updateStudentPaperOptions()">
+                <select id="filterSubject">
                     <option value="">বিষয় বাছুন</option>
                     <option value="physics">পদার্থবিজ্ঞান</option>
                     <option value="chemistry">রসায়ন</option>
                     <option value="biology">জীববিজ্ঞান</option>
                     <option value="math">উচ্চতর গণিত</option>
                 </select>
-                <select id="filterPaper" onchange="updateStudentChapterOptions()">
+                <select id="filterPaper">
                     <option value="">পত্র বাছুন</option>
                     <option value="paper1">১ম পত্র</option>
                     <option value="paper2">২য় পত্র</option>
                 </select>
             </div>
 
-            <select id="filterChapter" onchange="fetchStudentNotes()">
+            <select id="filterChapter">
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
@@ -273,10 +270,7 @@
         <form id="loginForm" onsubmit="handleEmailLogin(event)">
             <label>ইমেইল:</label><input type="email" id="loginEmail" required placeholder="example@mail.com">
             <label>পাসওয়ার্ড:</label><input type="password" id="loginPassword" required placeholder="******">
-            <div style="text-align: right; margin-bottom: 5px;">
-                <a href="#" onclick="handleForgotPassword(event)" style="color: #38bdf8; font-size: 12px; text-decoration: none;">পাসওয়ার্ড ভুলে গেছেন?</a>
-            </div>
-            <button type="submit" class="btn btn-save" style="width:100%; margin-top:5px;">লগইন করুন</button>
+            <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">লগইন করুন</button>
         </form>
         <form id="registerForm" onsubmit="handleEmailRegister(event)" style="display:none;">
             <label>পূর্ণ নাম:</label><input type="text" id="regName" required placeholder="আপনার নাম">
@@ -293,13 +287,10 @@
     <div id="profileModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-            <h3>📊 স্টুডент পোর্টাল ও পারফরম্যান্স</h3>
+            <h3>📊 স্টুডেন্ট পোর্টাল</h3>
             <button class="modal-close-x" onclick="toggleProfileModal(false)">&times;</button>
         </div>
         <div id="profileDetails" style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; margin-bottom:12px; font-size:13px;"></div>
-        <div id="performanceBox" style="margin-bottom: 15px;"></div>
-        <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি (বিস্তারিত দেখতে ক্লিক করুন):</h4>
-        <div id="examHistoryContainer" style="max-height:220px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;"></div>
         <div class="btn-group">
             <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
             <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
@@ -310,8 +301,7 @@
     <!-- স্ক্রিপ্ট সেকশন -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-      import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -324,16 +314,13 @@
       };
 
       const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
       const auth = getAuth(app);
       const googleProvider = new GoogleAuthProvider();
 
       let currentUser = null;
-
-      // Cloudflare Worker URL
       const WORKER_URL = "https://small-hall-d192.gaiyumplayz.workers.dev/";
 
-      // চ্যাট মেসেজ পাঠানোর ফাংশন
+      // চ্যাট মেসেজ পাঠানোর আপডেট করা পারফেক্ট লজিক
       window.sendChatMessage = async function(e) {
           e.preventDefault();
           const inputEl = document.getElementById('userInput');
@@ -344,7 +331,7 @@
           const typingIndicator = document.getElementById('typingIndicator');
 
           // ইউজার মেসেজ রেন্ডার করা
-          const userAvatarSymbol = currentUser && currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : '👤';
+          const userAvatarSymbol = currentUser && currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'G';
           const userMsgHTML = `
               <div class="message user">
                   <div class="msg-avatar">${userAvatarSymbol}</div>
@@ -355,11 +342,11 @@
           inputEl.value = '';
           chatBox.scrollTop = chatBox.scrollHeight;
 
-          // টাইপিং ইন্ডিকেটর অন করা
+          // টাইপিং ইন্ডিকেটর প্রদর্শন
           typingIndicator.style.display = 'flex';
 
           try {
-              // Cloudflare Worker API POST রিকোয়েস্ট
+              // Cloudflare Worker API Fetch Request
               const res = await fetch(WORKER_URL, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
@@ -369,16 +356,20 @@
               const data = await res.json();
               typingIndicator.style.display = 'none';
 
-              let replyText = "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
-              if (data && data.reply) {
+              let replyText = "";
+
+              // Worker JSON Response Parsing
+              if (data && data.success && data.reply) {
                   replyText = data.reply;
-              } else if (data && data.response) {
-                  replyText = data.response;
-              } else if (typeof data === 'string') {
-                  replyText = data;
+              } else if (data && data.error) {
+                  replyText = "⚠️ Worker Error: " + data.error;
+              } else if (data && data.reply) {
+                  replyText = data.reply;
+              } else {
+                  replyText = "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
               }
 
-              // AI মেসেজ রেন্ডার করা
+              // AI মেসেজ স্ক্রিনে দেখানো
               const aiMsgHTML = `
                   <div class="message ai">
                       <div class="msg-avatar">🤖</div>
@@ -388,10 +379,11 @@
               chatBox.innerHTML += aiMsgHTML;
           } catch (error) {
               typingIndicator.style.display = 'none';
+              console.error("Fetch Error:", error);
               const errorMsgHTML = `
                   <div class="message ai">
                       <div class="msg-avatar">🤖</div>
-                      <div class="msg-content" style="color: #f43f5e;">সার্ভারে কোনো সমস্যা হয়েছে। দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।</div>
+                      <div class="msg-content" style="color: #f43f5e;">সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। Worker URL ও নেটওয়ার্ক চেক করুন।</div>
                   </div>
               `;
               chatBox.innerHTML += errorMsgHTML;
@@ -406,7 +398,7 @@
           );
       }
 
-      // সাধারণ নেভিগেশন ও মোডাল ফাংশনালিটি
+      // নেভিগেশন ও মোডাল ফাংশনালিটি
       window.toggleMenu = () => document.getElementById('dropdownMenu').classList.toggle('show');
       window.onclick = (e) => {
           if (!e.target.matches('.menu-btn') && !e.target.closest('.menu-btn')) {
@@ -451,6 +443,7 @@
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
+          document.getElementById('profileDetails').innerHTML = `<p><strong>নাম:</strong> ${user.displayName || 'N/A'}</p><p><strong>ইমেইল:</strong> ${user.email}</p>`;
         } else {
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
           dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
