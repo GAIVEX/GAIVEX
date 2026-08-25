@@ -147,7 +147,7 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। যেকোনো বিষয় বা সাধারণ জ্ঞান এবং গণিতের প্রশ্নের সঠিক উত্তর দিতে আমি প্রস্তুত।</div>
+                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। এডমিশন ও যেকোনো সাধারণ জ্ঞানের প্রশ্নের উত্তর দিতে আমি প্রস্তুত।</div>
                     </div>
                 </div>
 
@@ -265,10 +265,7 @@
             }
         });
 
-        const SYSTEM_INSTRUCTION = `You are GAIVEX AI, an intelligent Admission and GK Assistant.
-- Respond accurately to general knowledge, mathematics, science, and admission queries.
-- ALWAYS reply in Bengali.
-- Do not state that you don't know basic general knowledge facts (like Bangladesh's area: 147,570 sq km or 147,610 sq km). Solve math problems clearly.`;
+        const SYSTEM_INSTRUCTION = `You are GAIVEX AI, an intelligent Admission and GK Assistant. Always respond in Bengali accurately and clearly.`;
 
         window.sendChatMessage = async function(e) {
             e.preventDefault();
@@ -296,16 +293,13 @@
             typingIndicator.style.display = 'flex';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // টোকেন বা হিস্টোরি ওভারলোডিং রোধ করার জন্য শুধু শেষ ৪টি চ্যাট মেসেজ পাঠাবে
-            const recentHistory = currentMessages.slice(-4);
-
             try {
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         system_instruction: SYSTEM_INSTRUCTION,
-                        history: recentHistory,
+                        history: currentMessages.slice(-4),
                         prompt: prompt 
                     })
                 });
@@ -313,26 +307,9 @@
                 const data = await res.json();
                 typingIndicator.style.display = 'none';
 
-                let replyText = "";
+                let replyText = data.reply || "দুঃখিত, কোনো উত্তর দেওয়া সম্ভব হয়নি।";
 
-                if (typeof data === 'string') {
-                    replyText = data;
-                } else if (data.reply) {
-                    replyText = data.reply;
-                } else if (data.response) {
-                    replyText = data.response;
-                } else if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                    replyText = data.candidates[0].content.parts[0].text;
-                } else if (data.text) {
-                    replyText = data.text;
-                }
-
-                // যদি Worker কোনো এরর দেয়
-                if (!replyText || replyText.includes("Error:") || replyText.trim() === "") {
-                    replyText = "ক্ষমা করবেন, সাময়িক ত্রুটির কারণে উত্তরটি তৈরি করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।";
-                } else {
-                    replyText = replyText.replace(/Gemini/gi, "GAIVEX AI").replace(/Google/gi, "GAIVEX");
-                }
+                replyText = replyText.replace(/Gemini/gi, "GAIVEX AI").replace(/Google/gi, "GAIVEX");
 
                 appendMessage('ai', '🤖', replyText, true);
 
@@ -341,7 +318,7 @@
 
             } catch (error) {
                 typingIndicator.style.display = 'none';
-                appendMessage('ai', '🤖', '⚠️ নেটওয়ার্ক ত্রুটি! অনুগ্রহ করে ইন্টারনেট কানেকশন চেক করুন।');
+                appendMessage('ai', '🤖', '⚠️ নেটওয়ার্ক ত্রুটি! অনুগ্রহ করে আবার চেষ্টা করুন।');
             }
 
             chatBox.scrollTop = chatBox.scrollHeight;
