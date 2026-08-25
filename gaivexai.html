@@ -68,9 +68,9 @@
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
-        /* Strict Size Fix for Chat Avatar */
-        .msg-avatar { width: 32px !important; height: 32px !important; min-width: 32px !important; max-width: 32px !important; min-height: 32px !important; max-height: 32px !important; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
-        .msg-avatar img { width: 100% !important; height: 100% !important; border-radius: 50%; object-fit: cover; display: block; }
+        /* FIX: Chat Message Avatar (Strict Size Fix) */
+        .msg-avatar { width: 32px; height: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
+        .msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
 
         .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
         .message.ai .msg-avatar { background: #0284c7; color: #fff; }
@@ -115,6 +115,7 @@
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
+        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -164,7 +165,7 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। আপনার প্রশ্নের সংক্ষিপ্ত ও সঠিক উত্তর দিতে প্রস্তুত। চ্যাট করতে লগইন করুন!</div>
+                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। আপনার এডমিশন টেস্ট বা যেকোনো বিষয়ে প্রশ্নের উত্তর দিতে প্রস্তুত। চ্যাট করতে দয়া করে লগইন করুন!</div>
                     </div>
                 </div>
 
@@ -285,11 +286,7 @@
             }
         });
 
-        // মাঝারি আকারের সংক্ষিপ্ত উত্তর দেওয়ার জন্য আপডেটকৃত প্রম্পট
-        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali.
-
-IMPORTANT RESPONSE LENGTH RULE:
-Keep your responses concise, medium-length, to the point, and easy to read. Avoid unnecessarily long or repetitive explanations to optimize token usage.`;
+        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali.`;
 
         window.sendChatMessage = async function(e) {
             e.preventDefault();
