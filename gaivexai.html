@@ -12,11 +12,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         html, body { height: 100%; width: 100%; overflow: hidden; background-color: #0f172a; color: #f8fafc; }
         
+        /* App Structure Layout */
         .app-container { display: flex; height: 100vh; width: 100vw; position: relative; overflow: hidden; }
 
+        /* Overlay for Mobile Sidebar Background Blur */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 999; backdrop-filter: blur(2px); }
         .sidebar-overlay.active { display: block; }
 
+        /* Sidebar for Chat History */
         .sidebar { width: 280px; background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
         .sidebar-header { padding: 12px 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         
@@ -24,13 +27,16 @@
         .new-chat-btn:hover { background: #0369a1; }
         
         .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
 
         .history-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
         .history-item { padding: 10px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; cursor: pointer; font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; }
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
 
+        /* Main Content View */
         .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; }
 
+        /* Navbar */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; height: 60px; z-index: 100; gap: 10px; }
         .nav-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .toggle-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
@@ -40,7 +46,9 @@
         .nav-right-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         #authNavContainer { display: flex; gap: 8px; align-items: center; }
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 13px; }
+        .btn-auth:hover { background: #7dd3fc; }
 
+        /* User Profile Button in Navbar */
         .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 3px 10px 3px 4px; border-radius: 20px; border: 1px solid #475569; height: 36px; max-width: 140px; overflow: hidden; }
         .user-avatar { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; overflow: hidden; flex-shrink: 0; }
         .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
@@ -52,6 +60,7 @@
         .dropdown-menu button, .dropdown-menu a { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; background: none; border: none; cursor: pointer; }
         .dropdown-menu.show { display: block; }
 
+        /* Fixed Chat Area */
         .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); background: #0f172a; position: relative; }
         .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
 
@@ -59,6 +68,7 @@
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
+        /* Strict Size Fix for Chat Avatar */
         .msg-avatar { width: 32px !important; height: 32px !important; min-width: 32px !important; max-width: 32px !important; min-height: 32px !important; max-height: 32px !important; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
         .msg-avatar img { width: 100% !important; height: 100% !important; border-radius: 50%; object-fit: cover; display: block; }
 
@@ -73,6 +83,7 @@
         .msg-content p:last-child { margin-bottom: 0; }
         .msg-content strong { color: #38bdf8; }
 
+        /* Fixed Bottom Chat Input Bar */
         .chat-input-area { padding: 10px 12px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; }
         .chat-input-area input { flex: 1; padding: 10px 15px; background: #0f172a; border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; min-width: 0; }
         .chat-input-area input:disabled { background: #1e293b; cursor: not-allowed; opacity: 0.6; }
@@ -81,8 +92,11 @@
         .send-btn:disabled { background: #475569; cursor: not-allowed; }
 
         .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; }
+
+        /* Auth Locked Notice */
         .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
 
+        /* Modals */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
         .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:400px; border:1px solid #334155; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
@@ -111,20 +125,23 @@
 <body>
 
     <div class="app-container">
+        <!-- সাইডবার ওভারলে -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
+        <!-- চ্যাট হিস্টোরি সাইডবার -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <button class="new-chat-btn" onclick="createNewChat()">➕ নতুন চ্যাট</button>
-                <button class="close-sidebar-btn" onclick="closeSidebar()">✕</button>
+                <button class="close-sidebar-btn" onclick="closeSidebar()" title="হিস্টোরি বন্ধ করুন">✕</button>
             </div>
             <div class="history-list" id="historyList"></div>
         </aside>
 
+        <!-- মেইন কনটেন্ট এরিয়া -->
         <div class="main-content">
             <header class="navbar">
                 <div class="nav-left">
-                    <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+                    <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="হিস্টোরি খুলুন">☰</button>
                     <a href="index.html" class="logo">GAIVEX<span>.</span> AI</a>
                 </div>
                 
@@ -147,7 +164,7 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। এডমিশন ও যেকোনো সাধারণ জ্ঞানের প্রশ্নের উত্তর দিতে আমি প্রস্তুত।</div>
+                        <div class="msg-content">হ্যালো! আমি <strong>GAIVEX AI</strong>। আপনার প্রশ্নের সংক্ষিপ্ত ও সঠিক উত্তর দিতে প্রস্তুত। চ্যাট করতে লগইন করুন!</div>
                     </div>
                 </div>
 
@@ -156,18 +173,19 @@
                 </div>
 
                 <div class="auth-locked-notice" id="authLockedNotice">
-                    🔒 AI এর সাথে চ্যাট করতে প্রথমে লগইন করুন!
+                    🔒 AI এর সাথে কথা বলতে এবং চ্যাট করতে প্রথমে লগইন করুন!
                 </div>
 
+                <!-- চ্যাট ইনপুট বার -->
                 <form class="chat-input-area" onsubmit="sendChatMessage(event)">
-                    <input type="text" id="userInput" placeholder="এখানে আপনার প্রশ্ন লিখুন..." autocomplete="off" required disabled>
+                    <input type="text" id="userInput" placeholder="লগইন করার পর এখানে প্রশ্ন লিখুন..." autocomplete="off" required disabled>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>➤</button>
                 </form>
             </main>
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- অথেন্টিকেশন মোডাল -->
     <div id="authModal" class="modal">
       <div class="modal-content">
         <div class="tab-menu">
@@ -190,6 +208,7 @@
       </div>
     </div>
 
+    <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -200,6 +219,7 @@
         </div>
     </div>
 
+    <!-- Firebase ও AI লজিক Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -265,7 +285,11 @@
             }
         });
 
-        const SYSTEM_INSTRUCTION = `You are GAIVEX AI, an intelligent Admission and GK Assistant. Always respond in Bengali accurately and clearly.`;
+        // মাঝারি আকারের সংক্ষিপ্ত উত্তর দেওয়ার জন্য আপডেটকৃত প্রম্পট
+        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali.
+
+IMPORTANT RESPONSE LENGTH RULE:
+Keep your responses concise, medium-length, to the point, and easy to read. Avoid unnecessarily long or repetitive explanations to optimize token usage.`;
 
         window.sendChatMessage = async function(e) {
             e.preventDefault();
@@ -299,7 +323,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         system_instruction: SYSTEM_INSTRUCTION,
-                        history: currentMessages.slice(-4),
+                        history: currentMessages,
                         prompt: prompt 
                     })
                 });
@@ -307,9 +331,8 @@
                 const data = await res.json();
                 typingIndicator.style.display = 'none';
 
-                let replyText = data.reply || "দুঃখিত, কোনো উত্তর দেওয়া সম্ভব হয়নি।";
-
-                replyText = replyText.replace(/Gemini/gi, "GAIVEX AI").replace(/Google/gi, "GAIVEX");
+                let replyText = data.reply || data.response || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
+                replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
                 appendMessage('ai', '🤖', replyText, true);
 
@@ -318,7 +341,7 @@
 
             } catch (error) {
                 typingIndicator.style.display = 'none';
-                appendMessage('ai', '🤖', '⚠️ নেটওয়ার্ক ত্রুটি! অনুগ্রহ করে আবার চেষ্টা করুন।');
+                appendMessage('ai', '🤖', '⚠️ সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে।');
             }
 
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -389,6 +412,7 @@
             closeSidebar();
         };
 
+        // সাইডবার কন্ট্রোল
         window.toggleSidebar = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -401,6 +425,7 @@
             document.getElementById('sidebarOverlay').classList.remove('active');
         };
 
+        // Auth Logic
         window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
         window.switchAuthTab = (tab) => {
             document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
@@ -419,6 +444,7 @@
         window.handleEmailLogin = async (e) => { e.preventDefault(); await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); toggleAuthModal(false); };
         window.handleLogout = async () => { await signOut(auth); };
 
+        // UI toggles
         window.toggleMenu = () => document.getElementById('dropdownMenu').classList.toggle('show');
         window.openModal = (id) => document.getElementById(id).style.display = 'flex';
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
