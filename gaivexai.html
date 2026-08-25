@@ -43,8 +43,9 @@
         .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
 
-        .history-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .history-item { padding: 10px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; cursor: pointer; font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; }
+        /* ইতিহাস তালিকা ফিক্স (ঘিচিমিচি দূর করার জন্য মার্জিন ও প্যাডিং বাড়ানো হয়েছে) */
+        .history-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { padding: 12px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; user-select: none; -webkit-user-select: none; }
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
 
         /* Main Content View */
@@ -82,7 +83,6 @@
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
-        /* FIX: Chat Message Avatar (Strict Size Fix) */
         .msg-avatar { width: 32px; height: 32px; min-width: 32px; max-width: 32px; min-height: 32px; max-height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
         .msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
 
@@ -371,7 +371,6 @@
             `;
             chatBox.innerHTML += msgHTML;
 
-            // MathJax typesetting call to render math formulas properly after adding to DOM
             if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
                 window.MathJax.typesetPromise().catch((err) => console.log('MathJax error:', err));
             }
@@ -390,16 +389,57 @@
             chatSessions = JSON.parse(localStorage.getItem('gaivex_chats_' + currentUser.uid) || '{}');
             const listEl = document.getElementById('historyList');
             listEl.innerHTML = '';
-            Object.keys(chatSessions).reverse().forEach(id => {
+            
+            // নতুন চ্যাটগুলো উপরে দেখানোর জন্য রিভার্স লজিক
+            Object.keys(chatSessions).sort((a, b) => b - a).forEach(id => {
                 const item = document.createElement('div');
                 item.className = `history-item ${id === activeChatId ? 'active' : ''}`;
                 item.innerText = chatSessions[id].title;
+                
+                // ক্লিক করলে চ্যাট ওপেন হবে
                 item.onclick = () => {
                     switchChat(id);
                     closeSidebar();
                 };
+
+                // লং প্রেস (Long Press) বা মোবাইলে ট্যাপ অ্যান্ড হোল্ড করার জন্য লজিক
+                let pressTimer;
+                const triggerDelete = (e) => {
+                    e.preventDefault();
+                    if(confirm(`"${chatSessions[id].title}" এই চ্যাট হিস্টোরিটি ডিলিট করতে চান?`)) {
+                        deleteChat(id);
+                    }
+                };
+
+                item.addEventListener('mousedown', () => {
+                    pressTimer = setTimeout(() => triggerDelete(event), 600);
+                });
+                item.addEventListener('mouseup', () => clearTimeout(pressTimer));
+                item.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+
+                // মোবাইল টাচ ডিভাইসের জন্য লং প্রেস সাপোর্ট
+                item.addEventListener('touchstart', (e) => {
+                    pressTimer = setTimeout(() => triggerDelete(e), 600);
+                });
+                item.addEventListener('touchend', () => clearTimeout(pressTimer));
+                item.addEventListener('touchmove', () => clearTimeout(pressTimer));
+
                 listEl.appendChild(item);
             });
+        }
+
+        // চ্যাট ডিলিট করার ফাংশন
+        window.deleteChat = function(id) {
+            if(!currentUser) return;
+            delete chatSessions[id];
+            localStorage.setItem('gaivex_chats_' + currentUser.uid, JSON.stringify(chatSessions));
+            
+            // যদি বর্তমান ওপেন থাকা চ্যাটটিই ডিলিট করা হয়, তবে নতুন চ্যাট তৈরি করে দিবে
+            if(id === activeChatId) {
+                createNewChat();
+            } else {
+                loadHistoryList();
+            }
         }
 
         window.switchChat = function(id) {
@@ -407,6 +447,7 @@
             currentMessages = chatSessions[id].messages || [];
             const chatBox = document.getElementById('chatBox');
             chatBox.innerHTML = '';
+            currentMessages.push(...[]); // Safe placeholder
             currentMessages.forEach(msg => {
                 const avatar = msg.role === 'user' 
                     ? (currentUser.photoURL ? `<img src="${currentUser.photoURL}">` : (currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'))
