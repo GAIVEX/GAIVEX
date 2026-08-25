@@ -79,13 +79,28 @@
         .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
         .message.ai .msg-avatar { background: #0284c7; color: #fff; }
 
-        .msg-content { padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
+        .msg-content { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.7; word-break: break-word; }
         .message.user .msg-content { background: #0284c7; color: #fff; border-bottom-right-radius: 2px; }
-        .message.ai .msg-content { background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 2px; }
+        
+        /* কালারফুল এবং আকর্ষণীয় এআই ও ব্যাকআপ মেসেজ স্টাইল */
+        .message.ai .msg-content { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+            color: #f1f5f9; 
+            border: 1px solid #334155; 
+            border-left: 4px solid #38bdf8; 
+            border-bottom-left-radius: 2px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
 
-        .msg-content p { margin-bottom: 6px; }
+        .msg-content p { margin-bottom: 8px; }
         .msg-content p:last-child { margin-bottom: 0; }
-        .msg-content strong { color: #38bdf8; }
+        
+        /* বিভিন্ন কালারের আকর্ষণীয় হাইলাইট ও মেইন পয়েন্ট স্টাইল */
+        .msg-content strong { color: #38bdf8; font-weight: 700; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .msg-content em { color: #f43f5e; font-style: normal; font-weight: 600; }
+        .msg-content h1, .msg-content h2, .msg-content h3 { color: #fbbf24; margin-top: 10px; margin-bottom: 6px; font-size: 16px; }
+        .msg-content ul, .msg-content ol { padding-left: 20px; margin-bottom: 8px; }
+        .msg-content li { margin-bottom: 4px; }
 
         .chat-input-area { padding: 10px 12px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; }
         .chat-input-area input { flex: 1; padding: 10px 15px; background: #0f172a; border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; min-width: 0; }
@@ -94,7 +109,7 @@
         .send-btn { background: #38bdf8; color: #0f172a; border: none; width: 40px; height: 40px; min-width: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .send-btn:disabled { background: #475569; cursor: not-allowed; }
 
-        .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; }
+        .typing-indicator { font-size: 13px; color: #38bdf8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; font-weight: bold; }
         .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
 
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
@@ -161,12 +176,12 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">Hi! I am <strong>GAIVEX AI</strong>। Your Educational Assistant!</div>
+                        <div class="msg-content">স্বাগতম! আমি **GAIVEX AI**। আজ আপনাকে কীভাবে সাহায্য করতে পারি?</div>
                     </div>
                 </div>
 
                 <div class="typing-indicator" id="typingIndicator">
-                    <span>🤖 GAIVEX AI Thinking...</span>
+                    <span>🤖 GAIVEX AI তথ্য প্রস্তুত করছে...</span>
                 </div>
 
                 <div class="auth-locked-notice" id="authLockedNotice">
@@ -278,7 +293,7 @@
             }
         });
 
-        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali.`;
+        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali and format key points using bold text.`;
 
         window.sendChatMessage = async function(e) {
             e.preventDefault();
@@ -311,7 +326,7 @@
             let replyText = "";
 
             try {
-                // ১. প্রথমে জেমিনি/ওয়ার্কার থেকে উত্তর আনার চেষ্টা করবে
+                // ১. মূল এআই (ওয়ার্কার) থেকে উত্তর আনার চেষ্টা
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 
@@ -337,25 +352,24 @@
                 replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
             } catch (error) {
-                // ২. ব্যাকআপ সোর্স: প্রথমে DuckDuckGo থেকে পুরো সমাপনী উত্তর খোঁজার চেষ্টা করবে
+                // ২. ব্যাকআপ সোর্স: DuckDuckGo এবং Wikipedia থেকে তথ্য এনে Markdown ফরম্যাটে রূপান্তর
                 try {
                     const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(prompt)}&format=json&no_html=1`;
                     const ddgRes = await fetch(ddgUrl);
                     const ddgData = await ddgRes.json();
 
                     if (ddgData && ddgData.AbstractText && ddgData.AbstractText.length > 30) {
-                        replyText = ddgData.AbstractText;
+                        replyText = `### **সারাংশ (DuckDuckGo)**\n\n${ddgData.AbstractText}`;
                     } else if (ddgData && ddgData.RelatedTopics && ddgData.RelatedTopics.length > 0 && ddgData.RelatedTopics[0].Text) {
-                        replyText = ddgData.RelatedTopics[0].Text;
+                        replyText = `### **তথ্য ও বিবরণ**\n\n${ddgData.RelatedTopics[0].Text}`;
                     } else {
-                        // ৩. DuckDuckGo না পেলে Wikipedia API থেকে সম্পূর্ণ পূর্ণাঙ্গ আর্টিকেল বা সারাংশ ফেচ করবে
+                        // উইকিপিডিয়া থেকে ডেটা আনা
                         const wikiSearchUrl = `https://bn.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(prompt)}&format=json&origin=*`;
                         const wikiSearchRes = await fetch(wikiSearchUrl);
                         const wikiSearchData = await wikiSearchRes.json();
 
                         if (wikiSearchData && wikiSearchData.query && wikiSearchData.query.search.length > 0) {
                             const pageTitle = wikiSearchData.query.search[0].title;
-                            // উইকিপিডিয়া থেকে সরাসরি ফুল পেজ এক্সট্রাক্ট করার জন্য এক্সট্রাপেজ টপিক কল করা
                             const wikiPageUrl = `https://bn.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(pageTitle)}&format=json&origin=*`;
                             const wikiPageRes = await fetch(wikiPageUrl);
                             const wikiPageData = await wikiPageRes.json();
@@ -363,16 +377,16 @@
                             const pageId = Object.keys(pages)[0];
 
                             if (pages[pageId] && pages[pageId].extract) {
-                                replyText = pages[pageId].extract;
+                                replyText = `### **উইকিপিডিয়া তথ্য: **${pageTitle}****\n\n${pages[pageId].extract}`;
                             } else {
                                 replyText = wikiSearchData.query.search[0].snippet.replace(/(<([^>]+)>)/gi, "");
                             }
                         } else {
-                            replyText = "⚠️ দুঃখিত, বর্তমানে এই বিষয়ের উপর পর্যাপ্ত তথ্য পাওয়া যায়নি। দয়া করে অন্যভাবে প্রশ্নটি করুন।";
+                            replyText = "⚠️ **দুঃখিত:** বর্তমানে এই বিষয়ের উপর পর্যাপ্ত তথ্য পাওয়া যায়নি। অনুগ্রহ করে অন্যভাবে প্রশ্ন করুন।";
                         }
                     }
                 } catch (backupErr) {
-                    replyText = "⚠️ তথ্য আনতে সামান্য সমস্যা হয়েছে। দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                    replyText = "⚠️ **সতর্কতা:** তথ্য আনতে সামান্য সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।";
                 }
             }
 
@@ -483,7 +497,7 @@
             document.getElementById('chatBox').innerHTML = `
                 <div class="message ai">
                     <div class="msg-avatar">🤖</div>
-                    <div class="msg-content">Hi! I am GAIVEX AI, কীভাবে সাহায্য করতে পারি?</div>
+                    <div class="msg-content">স্বাগতম! আমি **GAIVEX AI**, কীভাবে সাহায্য করতে পারি?</div>
                 </div>
             `;
             loadHistoryList();
