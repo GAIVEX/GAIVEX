@@ -15,11 +15,21 @@
         /* App Structure Layout */
         .app-container { display: flex; height: 100vh; width: 100vw; position: relative; overflow: hidden; }
 
+        /* Overlay for Mobile Sidebar Background Blur/Click Close */
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
+
         /* Sidebar for Chat History */
         .sidebar { width: 280px; background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
-        .sidebar-header { padding: 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-        .new-chat-btn { width: 100%; padding: 10px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .sidebar-header { padding: 12px 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        
+        .new-chat-btn { flex: 1; padding: 10px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .new-chat-btn:hover { background: #0369a1; }
+        
+        /* Sidebar Close Button */
+        .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
+
         .history-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
         .history-item { padding: 10px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; cursor: pointer; font-size: 13px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; }
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
@@ -30,7 +40,7 @@
         /* Navbar */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; height: 60px; z-index: 100; }
         .nav-left { display: flex; align-items: center; gap: 12px; }
-        .toggle-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; }
+        .toggle-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
         .logo { font-size: 20px; font-weight: 700; color: #38bdf8; text-decoration: none; }
         .logo span { color: #f43f5e; }
 
@@ -41,7 +51,6 @@
 
         .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 4px 10px; border-radius: 20px; border: 1px solid #475569; }
         .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; }
-        .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
         .menu-container { position: relative; }
         .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; font-size: 18px; cursor: pointer; }
@@ -101,8 +110,9 @@
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
+        /* Responsive Layout Behavior */
         @media (max-width: 768px) {
-            .sidebar { position: absolute; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
+            .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
         }
     </style>
@@ -110,10 +120,14 @@
 <body>
 
     <div class="app-container">
+        <!-- সাইডবার বন্ধ করার ব্যাকড্রপ ওভারলে -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
         <!-- চ্যাট হিস্টোরি সাইডবার -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <button class="new-chat-btn" onclick="createNewChat()">➕ নতুন চ্যাট</button>
+                <button class="close-sidebar-btn" onclick="closeSidebar()" title="হিস্টোরি বন্ধ করুন">✕</button>
             </div>
             <div class="history-list" id="historyList"></div>
         </aside>
@@ -122,7 +136,7 @@
         <div class="main-content">
             <header class="navbar">
                 <div class="nav-left">
-                    <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+                    <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="হিস্টোরি খুলুন">☰</button>
                     <a href="index.html" class="logo">GAIVEX<span>.</span> AI</a>
                 </div>
                 
@@ -157,7 +171,7 @@
                     🔒 AI এর সাথে কথা বলতে এবং চ্যাট করতে প্রথমে লগইন করুন!
                 </div>
 
-                <!-- চ্যাট ইনপুট বার (ফিক্সড নিচে থাকবে) -->
+                <!-- চ্যাট ইনপুট বার -->
                 <form class="chat-input-area" onsubmit="sendChatMessage(event)">
                     <input type="text" id="userInput" placeholder="লগইন করার পর এখানে প্রশ্ন লিখুন..." autocomplete="off" required disabled>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>➤</button>
@@ -226,7 +240,6 @@
         let chatSessions = JSON.parse(localStorage.getItem('gaivex_chats') || '{}');
         let currentMessages = [];
 
-        // লগইন চেক এবং UI লক/আনলক
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const c = document.getElementById('authNavContainer');
@@ -236,12 +249,10 @@
             const authNotice = document.getElementById('authLockedNotice');
 
             if (user) {
-                // স্টুডেন্ট লগইন থাকলে
                 const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U');
                 c.innerHTML = `<div class="user-profile-btn"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
                 dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
                 
-                // ইনপুট এনাবল করুন
                 userInput.disabled = false;
                 sendBtn.disabled = false;
                 userInput.placeholder = "এখানে আপনার প্রশ্ন লিখুন...";
@@ -249,7 +260,6 @@
 
                 loadHistoryList();
             } else {
-                // স্টুডেন্ট লগইন না থাকলে চ্যাট ইনপুট ডিসেবল থাকবে
                 c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
                 dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
                 
@@ -345,7 +355,10 @@
                 const item = document.createElement('div');
                 item.className = `history-item ${id === activeChatId ? 'active' : ''}`;
                 item.innerText = chatSessions[id].title;
-                item.onclick = () => switchChat(id);
+                item.onclick = () => {
+                    switchChat(id);
+                    closeSidebar(); // চ্যাটে ক্লিক করার পর সাইডবার অটো বন্ধ হবে
+                };
                 listEl.appendChild(item);
             });
         }
@@ -372,6 +385,20 @@
                 </div>
             `;
             loadHistoryList();
+            closeSidebar();
+        };
+
+        // সাইডবার কন্ট্রোল ফাংশন
+        window.toggleSidebar = () => {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        };
+
+        window.closeSidebar = () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         };
 
         // Auth Logic
@@ -394,7 +421,6 @@
         window.handleLogout = async () => { await signOut(auth); };
 
         // UI toggles
-        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('open');
         window.toggleMenu = () => document.getElementById('dropdownMenu').classList.toggle('show');
         window.openModal = (id) => document.getElementById(id).style.display = 'flex';
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
