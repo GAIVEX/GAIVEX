@@ -337,7 +337,7 @@
                 replyText = matchedData.reply;
             } else {
                 try {
-                    // ২. প্রথমে মূল এআই (Cloudflare Worker / Gemini API) কল করা
+                    // ২. প্রথমে মূল এআই (Cloudflare Worker / API) কল করা
                     const res = await fetch(WORKER_URL, {
                         method: 'POST',
                         headers: { 
@@ -363,21 +363,32 @@
                     replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
                 } catch (error) {
-                    // ৩. ম্যাথ সলভিং ফলব্যাক: Math.js ফ্রি API ব্যবহার করা যদি ইউজার ম্যাথ বা ক্যালকুলেশন দেয়
+                    // ৩. গাণিতিক এক্সপ্রেশন ফিল্টার ও Math.js API ফলব্যাক
                     try {
-                        const mathApiUrl = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(prompt)}`;
-                        const mathRes = await fetch(mathApiUrl);
-                        const mathResult = await mathRes.text();
-
-                        if (mathRes.ok && mathResult && !mathResult.toLowerCase().includes("error")) {
-                            replyText = `**গাণিতিক সমাধান (Math Engine):**\n\nপ্রশ্ন: $${prompt}$\nউত্তর: $$${mathResult}$$`;
-                        } else {
-                            throw new Error("Math.js failed");
+                        let cleanMathExpr = prompt.replace(/[=?]/g, '').replace(/[^\d+\-*/().]/g, '').trim();
+                        
+                        if (!cleanMathExpr && (prompt.includes('+') || prompt.includes('-') || prompt.includes('*') || prompt.includes('/'))) {
+                            cleanMathExpr = prompt.replace(/[?]/g, '').trim();
                         }
-                    } catch (mathErr) {
-                        // ৪. উইকিপিডিয়া ফলব্যাক
+
+                        if (cleanMathExpr) {
+                            const mathApiUrl = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(cleanMathExpr)}`;
+                            const mathRes = await fetch(mathApiUrl);
+                            const mathResult = await mathRes.text();
+
+                            if (mathRes.ok && mathResult && !mathResult.toLowerCase().includes("error")) {
+                                replyText = `**গাণিতিক সমাধান (Math Engine):**\n\nপ্রশ্ন: $${prompt}$\nউত্তর: $$${mathResult}$$`;
+                            } else {
+                                throw new Error("Math.js failed");
+                            }
+                        } else {
+                            throw new Error("Not a math expression");
+                        }
+                    } catch (innerMathErr) {
+                        // ৪. উইকিপিডিয়া ফলব্যাক (ফিল্টারযুক্ত সঠিক কোয়েরি)
                         try {
-                            const wikiSearchUrl = `https://bn.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(prompt)}&format=json&origin=*`;
+                            const cleanQuery = prompt.replace(/কি|কী|সম্পর্কে|বলুন|দাও|[?]/g, '').trim();
+                            const wikiSearchUrl = `https://bn.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*`;
                             const wikiSearchRes = await fetch(wikiSearchUrl);
                             const wikiSearchData = await wikiSearchRes.json();
 
@@ -410,7 +421,7 @@
                                     throw new Error("DDG empty");
                                 }
                             } catch (ddgErr) {
-                                replyText = "⚠️ **দুঃখিত:** এই মুহূর্তে সার্ভার ব্যস্ত রয়েছে এবং কোনো ম্যাথ বা সাধারণ জ্ঞান সোর্স থেকে উত্তর পাওয়া যায়নি। সঠিক ফরম্যাটে আবার চেষ্টা করুন।";
+                                replyText = "⚠️ **দুঃখিত:** এই মুহূর্তে সার্ভার ব্যস্ত রয়েছে এবং আপনার প্রশ্নটির কোনো সঠিক সমাধান খুঁজে পাওয়া যায়নি। সঠিক ফরম্যাটে আবার চেষ্টা করুন।";
                             }
                         }
                     }
