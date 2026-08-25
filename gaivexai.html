@@ -43,7 +43,7 @@
         .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
 
-        /* ইতিহাস তালিকা ফিক্স (বক্স বড় ও লেখা যেন কেটে না যায়) */
+        /* ইতিহাস তালিকা ফিক্স */
         .history-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
         .history-item { padding: 10px 12px; min-height: 44px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; transition: 0.2s; user-select: none; -webkit-user-select: none; }
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
@@ -322,7 +322,6 @@
 
             appendMessage('user', userAvatar, prompt);
             
-            // ফিক্স: ফ্রি টায়ার বাঁচাতে শুধুমাত্র শেষের ৪টি মেসেজ হিস্টোরি হিসেবে পাঠানো হচ্ছে
             const requestHistory = currentMessages.slice(-4);
             
             currentMessages.push({ role: 'user', content: prompt });
@@ -332,9 +331,13 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
+                // নিরাপত্তা টোকেন সহ ফেচ রিকোয়েস্ট
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Worker-Auth': 'GAIVEX_SECRET_2026' // ওয়ার্কারের সাথে মিল রাখা সিক্রেট টোকেন
+                    },
                     body: JSON.stringify({ 
                         system_instruction: SYSTEM_INSTRUCTION,
                         history: requestHistory,
@@ -392,19 +395,16 @@
             const listEl = document.getElementById('historyList');
             listEl.innerHTML = '';
             
-            // নতুন চ্যাটগুলো উপরে দেখানোর জন্য রিভার্স লজিক
             Object.keys(chatSessions).sort((a, b) => b - a).forEach(id => {
                 const item = document.createElement('div');
                 item.className = `history-item ${id === activeChatId ? 'active' : ''}`;
                 item.innerText = chatSessions[id].title;
                 
-                // ক্লিক করলে চ্যাট ওপেন হবে
                 item.onclick = () => {
                     switchChat(id);
                     closeSidebar();
                 };
 
-                // লং প্রেস (Long Press) বা মোবাইলে ট্যাপ অ্যান্ড হোল্ড করার জন্য লজিক
                 let pressTimer;
                 const triggerDelete = (e) => {
                     e.preventDefault();
@@ -419,7 +419,6 @@
                 item.addEventListener('mouseup', () => clearTimeout(pressTimer));
                 item.addEventListener('mouseleave', () => clearTimeout(pressTimer));
 
-                // মোবাইল টাচ ডিভাইসের জন্য লং প্রেস সাপোর্ট
                 item.addEventListener('touchstart', (e) => {
                     pressTimer = setTimeout(() => triggerDelete(e), 600);
                 });
@@ -430,13 +429,11 @@
             });
         }
 
-        // চ্যাট ডিলিট করার ফাংশন
         window.deleteChat = function(id) {
             if(!currentUser) return;
             delete chatSessions[id];
             localStorage.setItem('gaivex_chats_' + currentUser.uid, JSON.stringify(chatSessions));
             
-            // যদি বর্তমান ওপেন থাকা চ্যাটটিই ডিলিট করা হয়, তবে নতুন চ্যাট তৈরি করে দিবে
             if(id === activeChatId) {
                 createNewChat();
             } else {
