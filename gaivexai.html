@@ -26,10 +26,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         html, body { height: 100%; width: 100%; overflow: hidden; background-color: #0f172a; color: #f8fafc; }
         
+        /* App Structure Layout */
         .app-container { display: flex; height: 100vh; width: 100vw; position: relative; overflow: hidden; }
+
+        /* Overlay for Mobile Sidebar Background Blur */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 999; backdrop-filter: blur(2px); }
         .sidebar-overlay.active { display: block; }
 
+        /* Sidebar for Chat History */
         .sidebar { width: 280px; background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
         .sidebar-header { padding: 12px 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         
@@ -39,11 +43,15 @@
         .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
 
+        /* ইতিহাস তালিকা ফিক্স */
         .history-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .history-item { padding: 10px 12px; min-height: 44px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; transition: 0.2s; user-select: none; }
+        .history-item { padding: 10px 12px; min-height: 44px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; transition: 0.2s; user-select: none; -webkit-user-select: none; }
         .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
 
+        /* Main Content View */
         .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; }
+
+        /* Navbar */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; height: 60px; z-index: 100; gap: 10px; }
         .nav-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .toggle-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
@@ -55,6 +63,7 @@
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 13px; }
         .btn-auth:hover { background: #7dd3fc; }
 
+        /* User Profile Button in Navbar */
         .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 3px 10px 3px 4px; border-radius: 20px; border: 1px solid #475569; height: 36px; max-width: 140px; overflow: hidden; }
         .user-avatar { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; overflow: hidden; flex-shrink: 0; }
         .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
@@ -66,6 +75,7 @@
         .dropdown-menu button, .dropdown-menu a { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; background: none; border: none; cursor: pointer; }
         .dropdown-menu.show { display: block; }
 
+        /* Fixed Chat Area */
         .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); background: #0f172a; position: relative; }
         .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
 
@@ -79,26 +89,15 @@
         .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
         .message.ai .msg-avatar { background: #0284c7; color: #fff; }
 
-        .msg-content { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.7; word-break: break-word; }
+        .msg-content { padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
         .message.user .msg-content { background: #0284c7; color: #fff; border-bottom-right-radius: 2px; }
-        
-        .message.ai .msg-content { 
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-            color: #f1f5f9; 
-            border: 1px solid #334155; 
-            border-left: 4px solid #38bdf8; 
-            border-bottom-left-radius: 2px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
+        .message.ai .msg-content { background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 2px; }
 
-        .msg-content p { margin-bottom: 8px; }
+        .msg-content p { margin-bottom: 6px; }
         .msg-content p:last-child { margin-bottom: 0; }
-        
-        .msg-content strong { color: #38bdf8; font-weight: 700; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .msg-content h1, .msg-content h2, .msg-content h3 { color: #f43f5e; margin-top: 10px; margin-bottom: 6px; }
-        .msg-content ul, .msg-content ol { padding-left: 20px; margin-bottom: 8px; }
-        .msg-content li { margin-bottom: 4px; }
+        .msg-content strong { color: #38bdf8; }
 
+        /* Fixed Bottom Chat Input Bar */
         .chat-input-area { padding: 10px 12px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; }
         .chat-input-area input { flex: 1; padding: 10px 15px; background: #0f172a; border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; min-width: 0; }
         .chat-input-area input:disabled { background: #1e293b; cursor: not-allowed; opacity: 0.6; }
@@ -106,9 +105,12 @@
         .send-btn { background: #38bdf8; color: #0f172a; border: none; width: 40px; height: 40px; min-width: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .send-btn:disabled { background: #475569; cursor: not-allowed; }
 
-        .typing-indicator { font-size: 13px; color: #38bdf8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; font-weight: bold; }
+        .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; }
+
+        /* Auth Locked Notice */
         .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
 
+        /* Modals */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
         .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:400px; border:1px solid #334155; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
@@ -127,6 +129,7 @@
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
+        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -137,8 +140,10 @@
 <body>
 
     <div class="app-container">
+        <!-- সাইডবার ওভারলে -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
+        <!-- চ্যাট হিস্টোরি সাইডবার -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <button class="new-chat-btn" onclick="createNewChat()">➕ নতুন চ্যাট</button>
@@ -147,6 +152,7 @@
             <div class="history-list" id="historyList"></div>
         </aside>
 
+        <!-- মেইন কনটেন্ট এরিয়া -->
         <div class="main-content">
             <header class="navbar">
                 <div class="nav-left">
@@ -173,26 +179,28 @@
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">স্বাগতম! আমি **GAIVEX AI**। যেকোনো ভর্তি সংক্রান্ত তথ্য, সাধারণ জ্ঞান বা গাণিতিক সমস্যার সমাধানে আমি প্রস্তুত।</div>
+                        <div class="msg-content">Hi! I am <strong>GAIVEX AI</strong>। Your Educational Assistant!</div>
                     </div>
                 </div>
 
                 <div class="typing-indicator" id="typingIndicator">
-                    <span>🤖 GAIVEX AI তথ্য ও সমাধান প্রস্তুত করছে...</span>
+                    <span>🤖 GAIVEX AI Thinking...</span>
                 </div>
 
                 <div class="auth-locked-notice" id="authLockedNotice">
                     🔒 AI এর সাথে কথা বলতে এবং চ্যাট করতে প্রথমে লগইন করুন!
                 </div>
 
+                <!-- চ্যাট ইনপুট বার -->
                 <form class="chat-input-area" onsubmit="sendChatMessage(event)">
-                    <input type="text" id="userInput" placeholder="লগইন করার পর এখানে প্রশ্ন বা ম্যাথ লিখুন..." autocomplete="off" required disabled>
+                    <input type="text" id="userInput" placeholder="লগইন করার পর এখানে প্রশ্ন লিখুন..." autocomplete="off" required disabled>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>➤</button>
                 </form>
             </main>
         </div>
     </div>
 
+    <!-- অথেন্টিকেশন মোডাল -->
     <div id="authModal" class="modal">
       <div class="modal-content">
         <div class="tab-menu">
@@ -215,6 +223,7 @@
       </div>
     </div>
 
+    <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -225,6 +234,7 @@
         </div>
     </div>
 
+    <!-- Firebase ও AI লজিক Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -249,14 +259,6 @@
         let activeChatId = Date.now().toString();
         let chatSessions = {};
         let currentMessages = [];
-
-        // ওয়েবসাইট ও কোচিং সম্পর্কিত লোকাল ডাটাবেজ
-        const SITE_DATABASE = [
-            { keywords: ['কোচিং', 'gaivex', 'admission', 'প্রতিষ্ঠান', 'details', 'about'], reply: "**GAIVEX Admission Coaching** হলো একটি প্রিমিয়াম এডুকেশনাল প্ল্যাটফর্ম, যা শিক্ষার্থীদের বিশ্ববিদ্যালয় ও বিভিন্ন ভর্তি পরীক্ষার জন্য প্রস্তুত করে। এখানে দক্ষ মেন্টর এবং আধুনিক প্রযুক্তির মাধ্যমে গাইডলাইন দেওয়া হয়।" },
-            { keywords: ['কোর্স', 'course', 'subject', 'program'], reply: "আমাদের এখানে বিজ্ঞান, মানবিক ও ব্যবসায় শিক্ষা শাখার জন্য আলাদা এডমিশন ব্যাচ এবং স্পেশাল মডেল টেস্ট প্রোগ্রাম রয়েছে।" },
-            { keywords: ['যোগাযোগ', 'contact', 'phone', 'helpline', 'support'], reply: "যেকোনো প্রয়োজনে আমাদের ওয়েবসাইট বা অফিসিয়াল ফেসবুক পেজের মাধ্যমে যোগাযোগ করতে পারেন।" },
-            { keywords: ['রুটিন', 'routine', 'class schedule', 'exam time'], reply: "ক্লাস ও পরীক্ষার রুটিন সরাসরি আপনার স্টুডেন্ট ড্যাশবোর্ড বা নোটিশ বোর্ডে দেখতে পাবেন।" }
-        ];
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -283,7 +285,7 @@
                 
                 userInput.disabled = false;
                 sendBtn.disabled = false;
-                userInput.placeholder = "এখানে আপনার প্রশ্ন বা ম্যাথ লিখুন...";
+                userInput.placeholder = "এখানে আপনার প্রশ্ন লিখুন...";
                 authNotice.style.display = 'none';
 
                 loadHistoryList();
@@ -298,7 +300,7 @@
             }
         });
 
-        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant, educational guide, and math solver for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali, format key points and mathematical formulas clearly using bold text and LaTeX ($...$), and solve math equations accurately.`;
+        const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Admission Coaching. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali.`;
 
         window.sendChatMessage = async function(e) {
             e.preventDefault();
@@ -321,119 +323,43 @@
             appendMessage('user', userAvatar, prompt);
             
             const requestHistory = currentMessages.slice(-4);
+            
             currentMessages.push({ role: 'user', content: prompt });
             inputEl.value = '';
 
             typingIndicator.style.display = 'flex';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            let replyText = "";
+            try {
+                // নিরাপত্তা টোকেন সহ ফেচ রিকোয়েস্ট
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Worker-Auth': 'GAIVEX_SECRET_2026' // ওয়ার্কারের সাথে মিল রাখা সিক্রেট টোকেন
+                    },
+                    body: JSON.stringify({ 
+                        system_instruction: SYSTEM_INSTRUCTION,
+                        history: requestHistory,
+                        prompt: prompt 
+                    })
+                });
 
-            // ১. প্রথমে চেক করা প্রশ্নটি ওয়েবসাইট বা কোচিং সম্পর্কিত কি না
-            const lowerPrompt = prompt.toLowerCase();
-            const matchedData = SITE_DATABASE.find(item => item.keywords.some(kw => lowerPrompt.includes(kw)));
-            
-            if (matchedData) {
-                replyText = matchedData.reply;
-            } else {
-                try {
-                    // ২. প্রথমে মূল এআই (Cloudflare Worker / API) কল করা
-                    const res = await fetch(WORKER_URL, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'X-Worker-Auth': 'GAIVEX_SECRET_2026'
-                        },
-                        body: JSON.stringify({ 
-                            system_instruction: SYSTEM_INSTRUCTION,
-                            history: requestHistory,
-                            prompt: prompt 
-                        })
-                    });
+                const data = await res.json();
+                typingIndicator.style.display = 'none';
 
-                    const data = await res.json();
+                let replyText = data.reply || data.response || data.text || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
+                replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
-                    if (!res.ok || data.error || (data.reply && (data.reply.includes("quota") || data.reply.includes("exceeded")))) {
-                        throw new Error("API Quota Exceeded");
-                    }
+                appendMessage('ai', '🤖', replyText, true);
 
-                    replyText = data.reply || data.response || data.text || "";
-                    if(!replyText) throw new Error("Empty Response");
+                currentMessages.push({ role: 'model', content: replyText });
+                saveCurrentChat();
 
-                    replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
-
-                } catch (error) {
-                    // ৩. গাণিতিক এক্সপ্রেশন ফিল্টার ও Math.js API ফলব্যাক
-                    try {
-                        let cleanMathExpr = prompt.replace(/[=?]/g, '').replace(/[^\d+\-*/().]/g, '').trim();
-                        
-                        if (!cleanMathExpr && (prompt.includes('+') || prompt.includes('-') || prompt.includes('*') || prompt.includes('/'))) {
-                            cleanMathExpr = prompt.replace(/[?]/g, '').trim();
-                        }
-
-                        if (cleanMathExpr) {
-                            const mathApiUrl = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(cleanMathExpr)}`;
-                            const mathRes = await fetch(mathApiUrl);
-                            const mathResult = await mathRes.text();
-
-                            if (mathRes.ok && mathResult && !mathResult.toLowerCase().includes("error")) {
-                                replyText = `**গাণিতিক সমাধান (Math Engine):**\n\nপ্রশ্ন: $${prompt}$\nউত্তর: $$${mathResult}$$`;
-                            } else {
-                                throw new Error("Math.js failed");
-                            }
-                        } else {
-                            throw new Error("Not a math expression");
-                        }
-                    } catch (innerMathErr) {
-                        // ৪. উইকিপিডিয়া ফলব্যাক (ফিল্টারযুক্ত সঠিক কোয়েরি)
-                        try {
-                            const cleanQuery = prompt.replace(/কি|কী|সম্পর্কে|বলুন|দাও|[?]/g, '').trim();
-                            const wikiSearchUrl = `https://bn.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*`;
-                            const wikiSearchRes = await fetch(wikiSearchUrl);
-                            const wikiSearchData = await wikiSearchRes.json();
-
-                            if (wikiSearchData && wikiSearchData.query && wikiSearchData.query.search.length > 0) {
-                                const pageTitle = wikiSearchData.query.search[0].title;
-                                const wikiPageUrl = `https://bn.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(pageTitle)}&format=json&origin=*`;
-                                const wikiPageRes = await fetch(wikiPageUrl);
-                                const wikiPageData = await wikiPageRes.json();
-                                const pages = wikiPageData.query.pages;
-                                const pageId = Object.keys(pages)[0];
-
-                                if (pages[pageId] && pages[pageId].extract) {
-                                    replyText = `**উইকিপিডিয়া তথ্য (${pageTitle}):**\n\n${pages[pageId].extract}`;
-                                } else {
-                                    throw new Error("Wiki detail not found");
-                                }
-                            } else {
-                                throw new Error("Wiki search empty");
-                            }
-                        } catch (wikiErr) {
-                            // ৫. ডাকডাকগো ফলব্যাক
-                            try {
-                                const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(prompt)}&format=json&no_html=1`;
-                                const ddgRes = await fetch(ddgUrl);
-                                const ddgData = await ddgRes.json();
-
-                                if (ddgData && ddgData.AbstractText && ddgData.AbstractText.length > 20) {
-                                    replyText = `**সারাংশ (DuckDuckGo):**\n\n${ddgData.AbstractText}`;
-                                } else {
-                                    throw new Error("DDG empty");
-                                }
-                            } catch (ddgErr) {
-                                replyText = "⚠️ **দুঃখিত:** এই মুহূর্তে সার্ভার ব্যস্ত রয়েছে এবং আপনার প্রশ্নটির কোনো সঠিক সমাধান খুঁজে পাওয়া যায়নি। সঠিক ফরম্যাটে আবার চেষ্টা করুন।";
-                            }
-                        }
-                    }
-                }
+            } catch (error) {
+                typingIndicator.style.display = 'none';
+                appendMessage('ai', '🤖', '⚠️ সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে।');
             }
-
-            typingIndicator.style.display = 'none';
-            
-            appendMessage('ai', '🤖', replyText, true);
-
-            currentMessages.push({ role: 'model', content: replyText });
-            saveCurrentChat();
 
             chatBox.scrollTop = chatBox.scrollHeight;
         };
@@ -535,7 +461,7 @@
             document.getElementById('chatBox').innerHTML = `
                 <div class="message ai">
                     <div class="msg-avatar">🤖</div>
-                    <div class="msg-content">স্বাগতম! আমি **GAIVEX AI**, কীভাবে সাহায্য করতে পারি?</div>
+                    <div class="msg-content">Hi! I am GAIVEX AI, কীভাবে সাহায্য করতে পারি?</div>
                 </div>
             `;
             loadHistoryList();
