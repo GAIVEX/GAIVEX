@@ -48,7 +48,7 @@
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 13px; }
         .btn-auth:hover { background: #7dd3fc; }
 
-        /* Fixed User Profile Image Fix */
+        /* User Profile Button in Navbar */
         .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 3px 10px 3px 4px; border-radius: 20px; border: 1px solid #475569; height: 36px; max-width: 140px; overflow: hidden; }
         .user-avatar { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; overflow: hidden; flex-shrink: 0; }
         .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
@@ -68,7 +68,10 @@
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
-        .msg-avatar { width: 32px; height: 32px; min-width: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; }
+        /* FIX: Chat Message Avatar (Strict Size Fix) */
+        .msg-avatar { width: 32px; height: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
+        .msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+
         .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
         .message.ai .msg-avatar { background: #0284c7; color: #fff; }
 
@@ -90,7 +93,7 @@
 
         .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; }
 
-        /* Auth Locked Overlay */
+        /* Auth Locked Notice */
         .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
 
         /* Modals */
@@ -116,14 +119,14 @@
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
-            .user-name-text { display: none; } /* মোবাইলে নাম লুকিয়ে ছোট রাখা হয়েছে */
+            .user-name-text { display: none; }
         }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- সাইডবার বন্ধ করার ব্যাকড্রপ ওভারলে -->
+        <!-- সাইডবার ওভারলে -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
         <!-- চ্যাট হিস্টোরি সাইডবার -->
@@ -252,7 +255,6 @@
             const authNotice = document.getElementById('authLockedNotice');
 
             if (user) {
-                // ছবি ও নামের প্রোপার লেআউট রেন্ডারিং
                 const photoHtml = user.photoURL 
                     ? `<img src="${user.photoURL}" alt="Profile">` 
                     : (user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U');
