@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - Q&A Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>GAIVEX - Q&A কর্নার</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
@@ -12,228 +12,258 @@
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
         .logo span { color: #f43f5e; }
         .container { max-width: 800px; margin: 20px auto; padding: 15px; width: 100%; flex: 1; }
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        select, textarea, input { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; margin-bottom: 12px; outline: none; }
+        .card { background: rgba(30, 41, 59, 0.9); border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        h2, h3 { color: #38bdf8; margin-bottom: 12px; }
+        label { font-weight: 600; display: block; margin-top: 10px; margin-bottom: 4px; font-size: 13px; }
+        select, textarea, input[type="text"], input[type="file"] { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; margin-bottom: 10px; outline: none; }
         select:focus, textarea:focus { border-color: #38bdf8; }
-        .btn { padding: 10px 16px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; }
-        .btn-primary { background: #38bdf8; color: #0f172a; }
-        .btn-primary:hover { background: #7dd3fc; }
-        .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .filter-tab { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .filter-tab.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
-        .question-box { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
-        .teacher-reply { background: #0f172a; border-left: 3px solid #10b981; padding: 10px; border-radius: 6px; margin-top: 10px; }
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; background: #38bdf8; color: #0f172a; transition: 0.3s; }
+        .btn:hover { background: #7dd3fc; }
+        .filter-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-btn { background: #1e293b; border: 1px solid #475569; color: #94a3b8; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .question-box { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .q-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
+        .answer-box { background: #0f172a; border-left: 4px solid #10b981; padding: 12px; margin-top: 10px; border-radius: 4px; }
+        .badge { background: #334155; color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
     </style>
 </head>
 <body>
     <header class="navbar">
-        <a href="index.html" class="logo">GAIVEX<span>.</span> Q&A</a>
-        <a href="index.html" style="color: #38bdf8; text-decoration: none; font-size: 14px;">🏠 হোম পেজ</a>
+        <a href="index.html" class="logo">GAIVEX<span>.</span></a>
+        <div id="navRight"></div>
     </header>
 
     <div class="container">
-        <!-- প্রশ্ন করার ফর্ম -->
         <div class="card">
-            <h3 style="color: #38bdf8; margin-bottom: 12px;">✍️ নতুন প্রশ্ন করুন</h3>
-            <form id="questionForm" onsubmit="submitQuestion(event)">
+            <h2>❓ প্রশ্ন করুন (Q&A)</h2>
+            <form id="questionForm" onsubmit="handlePostQuestion(event)">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <select id="qSubject" required onchange="updatePapers()">
-                        <option value="">বিষয় বাছুন</option>
-                        <option value="physics">পদার্থবিজ্ঞান</option>
-                        <option value="chemistry">রসায়ন</option>
-                        <option value="biology">জীববিজ্ঞান</option>
-                        <option value="math">উচ্চতর গণিত</option>
-                    </select>
-                    <select id="qPaper" required onchange="updateChapters()">
-                        <option value="">আগে বিষয় বাছুন</option>
-                    </select>
+                    <div>
+                        <label>বিষয়:</label>
+                        <select id="qSubject" onchange="updatePaperOptions()" required>
+                            <option value="">বিষয় বাছুন</option>
+                            <option value="physics">পদার্থবিজ্ঞান</option>
+                            <option value="chemistry">রসায়ন</option>
+                            <option value="biology">জীববিজ্ঞান</option>
+                            <option value="math">উচ্চতর গণিত</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>পত্র:</label>
+                        <select id="qPaper" onchange="updateChapterOptions()" required>
+                            <option value="">আগে বিষয় বাছুন</option>
+                        </select>
+                    </div>
                 </div>
+                <label>অধ্যায়:</label>
                 <select id="qChapter" required>
                     <option value="">আগে পত্র বাছুন</option>
                 </select>
-                <textarea id="qText" rows="3" placeholder="আপনার সমস্যাটি বিস্তারিত লিখুন..." required></textarea>
-                
-                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
-                    <label style="cursor: pointer; background: #334155; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
-                        📁 ছবি/ফাইল যুক্ত করুন <input type="file" id="qFile" accept="image/*,application/pdf" style="display: none;">
-                    </label>
-                    <label style="cursor: pointer; background: #0284c7; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: white;">
-                        📷 ক্যামেরা দিয়ে ছবি তুলুন <input type="file" id="qCamera" accept="image/*" capture="environment" style="display: none;">
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">প্রশ্ন জমা দিন</button>
+
+                <label>আপনার প্রশ্ন:</label>
+                <textarea id="qText" rows="4" placeholder="আপনার সমস্যাটি বিস্তারিত লিখুন..." required></textarea>
+
+                <label>ছবি / পিডিএফ সংযুক্ত করুন (অথবা ক্যামেরা দিয়ে ছবি তুলুন):</label>
+                <input type="file" id="qFile" accept="image/*,application/pdf" capture="environment">
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">প্রশ্ন সাবমিট করুন</button>
             </form>
         </div>
 
-        <!-- ফিল্টার ট্যাব -->
-        <div class="filter-tabs">
-            <button class="filter-tab active" onclick="setFilter('all', this)">সব প্রশ্ন</button>
-            <button class="filter-tab" onclick="setFilter('my', this)">আমার প্রশ্ন</button>
-            <button class="filter-tab" onclick="setFilter('bookmark', this)">বুকমার্কড</button>
-        </div>
-
-        <!-- প্রশ্ন লিস্ট -->
-        <div id="questionsContainer">
-            <p style="text-align: center; color: #94a3b8;">প্রশ্ন লোড হচ্ছে...</p>
+        <div class="card">
+            <h3>📜 সকল প্রশ্ন ও উত্তর</h3>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="setFilter('all', this)">সকল প্রশ্ন</button>
+                <button class="filter-btn" onclick="setFilter('my', this)">আমার প্রশ্ন</button>
+                <button class="filter-btn" onclick="setFilter('bookmark', this)">বুকমার্কড</button>
+            </div>
+            <div id="questionsContainer">
+                <p style="text-align: center; color: #94a3b8;">প্রশ্ন লোড হচ্ছে...</p>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, get, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, get, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
             authDomain: "gaivexexam.firebaseapp.com",
             databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-            projectId: "gaivexexam"
+            projectId: "gaivexexam",
+            storageBucket: "gaivexexam.firebasestorage.app",
+            messagingSenderId: "956204530190",
+            appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
+
         let currentUser = null;
         let currentFilter = 'all';
         let allQuestionsData = {};
-        let bookmarks = JSON.parse(localStorage.getItem('gaivex_bookmarks') || '[]');
+        let bookmarks = JSON.parse(localStorage.getItem('gvx_bookmarks') || '[]');
 
         const chaptersData = {
-            physics: { paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা"], paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ"] },
-            chemistry: { paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন"], paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন"] },
-            biology: { paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন"], paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস"] },
-            math: { paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর"], paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা"] }
+            physics: { paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"], paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"] },
+            chemistry: { paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"], paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"] },
+            biology: { paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"], paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"] },
+            math: { paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"], paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"] }
         };
 
-        window.updatePapers = () => {
+        window.updatePaperOptions = function() {
             const sub = document.getElementById('qSubject').value;
             const paperSelect = document.getElementById('qPaper');
             paperSelect.innerHTML = '<option value="">পত্র বাছুন</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
+            document.getElementById('qChapter').innerHTML = '<option value="">আগে পত্র বাছুন</option>';
         }
-        window.updateChapters = () => {
+
+        window.updateChapterOptions = function() {
             const sub = document.getElementById('qSubject').value;
             const paper = document.getElementById('qPaper').value;
             const chapSelect = document.getElementById('qChapter');
             chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
             if(sub && paper && chaptersData[sub][paper]) {
-                chaptersData[sub][paper].forEach(c => chapSelect.innerHTML += `<option value="${c}">${c}</option>`);
+                chaptersData[sub][paper].forEach(chap => {
+                    chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
+                });
             }
         }
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
+            if(!user) {
+                alert("প্রশ্ন করতে বা দেখতে হলে আগে লগইন করুন!");
+                location.href = "index.html";
+            }
             loadQuestions();
         });
 
-        window.submitQuestion = async (e) => {
+        window.handlePostQuestion = async function(e) {
             e.preventDefault();
-            if(!currentUser) { alert("প্রশ্ন করতে হলে আগে লগইন করুন!"); return; }
+            if(!currentUser) return alert("লগইন করুন!");
 
+            const subject = document.getElementById('qSubject').value;
+            const paper = document.getElementById('qPaper').value;
+            const chapter = document.getElementById('qChapter').value;
+            const text = document.getElementById('qText').value;
             const fileInput = document.getElementById('qFile');
-            const cameraInput = document.getElementById('qCamera');
-            let fileUrl = "";
 
-            // ছবি বা ফাইলের হ্যান্ডলিং (লোকাল স্টোরেজ বা বেসড অন রিড)
-            const handleFileRead = (file) => {
-                return new Promise((resolve) => {
+            let fileUrl = "";
+            if(fileInput.files.length > 0) {
+                // সিম্পল ফাইল রিডার বেস৬৪ কনভার্শন (বা ক্লাউড স্টোরেজ লিংক)
+                fileUrl = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onload = (uploadEvent) => resolve(uploadEvent.target.result);
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(fileInput.files[0]);
                 });
-            };
-
-            if (fileInput.files[0]) {
-                fileUrl = await handleFileRead(fileInput.files[0]);
-            } else if (cameraInput.files[0]) {
-                fileUrl = await handleFileRead(cameraInput.files[0]);
             }
 
-            const newQRef = push(ref(db, 'questions'));
-            await set(newQRef, {
-                id: newQRef.key,
+            const newQ = {
                 uid: currentUser.uid,
-                userName: currentUser.displayName || currentUser.email,
-                subject: document.getElementById('qSubject').value,
-                paper: document.getElementById('qPaper').value,
-                chapter: document.getElementById('qChapter').value,
-                questionText: document.getElementById('qText').value,
-                fileUrl: fileUrl,
-                timestamp: Date.now(),
-                status: 'pending'
-            });
+                authorName: currentUser.displayName || currentUser.email,
+                subject, paper, chapter,
+                text,
+                fileUrl,
+                createdAt: Date.now(),
+                answer: null,
+                answerFile: null,
+                voiceNote: null
+            };
 
-            alert("আপনার প্রশ্নটি সফলভাবে জমা হয়েছে!");
+            await push(ref(db, 'qa_questions'), newQ);
+            alert("আপনার প্রশ্নটি সফলভাবে সাবমিট করা হয়েছে!");
             document.getElementById('questionForm').reset();
             loadQuestions();
         }
 
-        window.setFilter = (type, btn) => {
-            currentFilter = type;
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            renderQuestions();
+        async function loadQuestions() {
+            const container = document.getElementById('questionsContainer');
+            try {
+                const snapshot = await get(ref(db, 'qa_questions'));
+                if(snapshot.exists()) {
+                    allQuestionsData = snapshot.val();
+                    renderQuestionsList();
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: #94a3b8;">কোনো প্রশ্ন পাওয়া যায়নি।</p>';
+                }
+            } catch(err) {
+                container.innerHTML = '<p style="text-align: center; color: #ef4444;">লোড করতে সমস্যা হয়েছে।</p>';
+            }
         }
 
-        window.toggleBookmark = (qId) => {
+        window.setFilter = function(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderQuestionsList();
+        }
+
+        window.toggleBookmark = function(qId) {
             if(bookmarks.includes(qId)) {
                 bookmarks = bookmarks.filter(id => id !== qId);
             } else {
                 bookmarks.push(qId);
             }
-            localStorage.setItem('gaivex_bookmarks', JSON.stringify(bookmarks));
-            renderQuestions();
+            localStorage.setItem('gvx_bookmarks', JSON.stringify(bookmarks));
+            renderQuestionsList();
         }
 
-        async function loadQuestions() {
-            const snapshot = await get(ref(db, 'questions'));
-            if(snapshot.exists()) {
-                allQuestionsData = snapshot.val();
-                renderQuestions();
-            } else {
-                document.getElementById('questionsContainer').innerHTML = '<p style="text-align: center; color: #94a3b8;">কোনো প্রশ্ন পাওয়া যায়নি।</p>';
-            }
-        }
-
-        function renderQuestions() {
+        function renderQuestionsList() {
             const container = document.getElementById('questionsContainer');
             let html = '';
-            const sorted = Object.values(allQuestionsData).sort((a, b) => b.timestamp - a.timestamp);
+            const sortedIds = Object.keys(allQuestionsData).sort((a,b) => allQuestionsData[b].createdAt - allQuestionsData[a].createdAt);
 
-            sorted.forEach(q => {
-                if(currentFilter === 'my' && (!currentUser || q.uid !== currentUser.uid)) return;
-                if(currentFilter === 'bookmark' && !bookmarks.includes(q.id)) return;
+            let count = 0;
+            sortedIds.forEach(id => {
+                const q = allQuestionsData[id];
+                if(currentFilter === 'my' && q.uid !== currentUser?.uid) return;
+                if(currentFilter === 'bookmark' && !bookmarks.includes(id)) return;
 
-                const isBookmarked = bookmarks.includes(q.id);
-                let mediaHTML = q.fileUrl ? `<img src="${q.fileUrl}" style="max-width:100%; border-radius:6px; margin-top:8px; border:1px solid #334155;">` : '';
-                
-                let replyHTML = '';
-                if(q.reply) {
-                    let audioReply = q.reply.audioUrl ? `<audio controls src="${q.reply.audioUrl}" style="width:100%; margin-top:8px;"></audio>` : '';
-                    let teacherFile = q.reply.fileUrl ? `<img src="${q.reply.fileUrl}" style="max-width:100%; border-radius:6px; margin-top:8px;">` : '';
-                    replyHTML = `
-                        <div class="teacher-reply">
-                            <div style="font-size: 12px; color: #10b981; font-weight: bold; margin-bottom: 4px;">👨‍🏫 শিক্ষকের উত্তর:</div>
-                            <p style="font-size: 13px; color: #f8fafc;">${q.reply.text}</p>
-                            ${teacherFile}
-                            ${audioReply}
+                count++;
+                const isBookmarked = bookmarks.includes(id);
+                let mediaHtml = '';
+                if(q.fileUrl) {
+                    if(q.fileUrl.startsWith('data:image')) {
+                        mediaHtml = `<img src="${q.fileUrl}" style="max-width:100%; border-radius:6px; margin-top:8px;">`;
+                    } else {
+                        mediaHtml = `<a href="${q.fileUrl}" target="_blank" style="display:block; color:#38bdf8; font-size:13px; margin-top:8px;">📄 সংযুক্তি ফাইল দেখুন</a>`;
+                    }
+                }
+
+                let answerSection = '';
+                if(q.answer) {
+                    let ansMedia = q.answerFile ? `<img src="${q.answerFile}" style="max-width:100%; border-radius:6px; margin-top:6px;">` : '';
+                    let voiceMedia = q.voiceNote ? `<audio controls src="${q.voiceNote}" style="width:100%; margin-top:6px;"></audio>` : '';
+                    answerSection = `
+                        <div class="answer-box">
+                            <div style="font-size:12px; color:#10b981; font-weight:bold; margin-bottom:4px;">👨‍🏫 শিক্ষকের উত্তর:</div>
+                            <p style="font-size:13px; color:#f8fafc; white-space:pre-wrap;">${q.answer}</p>
+                            ${ansMedia}
+                            ${voiceMedia}
                         </div>
                     `;
+                } else {
+                    answerSection = `<div style="font-size:12px; color:#f43f5e; margin-top:8px;">⏳ উত্তরের অপেক্ষায়...</div>`;
                 }
 
                 html += `
                     <div class="question-box">
-                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px;">
-                            <span>👤 ${q.userName} (${q.subject} > ${q.chapter})</span>
-                            <span style="cursor: pointer; color: ${isBookmarked ? '#f43f5e' : '#94a3b8'}" onclick="toggleBookmark('${q.id}')">🔖 ${isBookmarked ? 'বুকমার্কড' : 'বুকমার্ক'}</span>
+                        <div class="q-header">
+                            <span><b>${q.authorName}</b> | <span class="badge">${q.subject} (${q.paper})</span> - ${q.chapter}</span>
+                            <button onclick="toggleBookmark('${id}')" style="background:none; border:none; cursor:pointer; font-size:16px;" title="বুকমার্ক">${isBookmarked ? '⭐' : '☆'}</button>
                         </div>
-                        <p style="font-size: 14px; margin-bottom: 8px;">${q.questionText}</p>
-                        ${mediaHTML}
-                        ${replyHTML}
+                        <p style="font-size:14px; margin-top:6px; white-space:pre-wrap;">${q.text}</p>
+                        ${mediaHtml}
+                        ${answerSection}
                     </div>
                 `;
             });
 
-            container.innerHTML = html || '<p style="text-align: center; color: #94a3b8;">এই ক্যাটাগরিতে কোনো প্রশ্ন নেই।</p>';
+            container.innerHTML = count > 0 ? html : '<p style="text-align: center; color: #94a3b8;">কোনো প্রশ্ন পাওয়া যায়নি।</p>';
         }
     </script>
 </body>
