@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লাইভ পরীক্ষা - GAIVEX</title>
+    <title>Live Exam - GAIVEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -15,7 +15,6 @@
 
         .container { max-width: 850px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
         
-        /* Sticky Timer Header - Fixed Layout to Keep Button Side by Side */
         .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; flex-wrap: nowrap; }
         .timer-info { display: flex; align-items: center; gap: 10px; overflow: hidden; }
         #examTitle { font-size: 13px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
@@ -39,7 +38,6 @@
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
 
-        /* Bottom Palette Section */
         .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 30px; margin-bottom: 30px; }
         .palette-title { font-size: 16px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; padding: 4px; }
@@ -59,7 +57,6 @@
         .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
 
-        /* Custom Modal for Confirmation */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
         .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
@@ -84,7 +81,6 @@
     </header>
 
     <div class="container">
-        <!-- স্টিকি টাইমার ও সাবমিট বাটন হেডার -->
         <div class="timer-header">
             <div class="timer-info">
                 <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
@@ -95,7 +91,6 @@
 
         <div id="resultSummary" style="display: none;"></div>
 
-        <!-- ফিল্টার বার -->
         <div class="filter-bar" id="filterBar">
             <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
             <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
@@ -108,10 +103,9 @@
             <div id="questionsContainer"></div>
         </form>
 
-        <!-- নিচের প্রশ্ন প্যালেট -->
         <div class="palette-section" id="paletteSection">
             <div class="palette-title">
-                <span>প্রশ্ন প্যালেট (নেভিগেশন)</span>
+                <span>প্রশ্ন প্যালেট</span>
                 <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
@@ -123,7 +117,6 @@
         </div>
     </div>
 
-    <!-- সাবমিট কনফার্মেশন মডাল -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-box">
             <h3 style="color: #38bdf8; margin-bottom: 10px;">Are you sure you want to submit?</h3>
@@ -152,7 +145,6 @@
         <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
     </footer>
 
-    <!-- Firebase SDK -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -174,7 +166,7 @@
 
       let currentUser = null;
       let timerInterval = null;
-      let timeRemaining = 1800; // ৩০ মিনিটের জন্য ১৮০০ সেকেন্ড
+      let timeRemaining = 1800; 
       let activeExamKey = "gaivex_exam_default";
       let examTimerKey = "gaivex_timer_default";
       let userSelections = {};
@@ -469,6 +461,9 @@
           const correctVal = parseInt(q.correct, 10);
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
+
+          // যদি আপনি কোথাও ইউজার বা সঠিক উত্তর টেক্সট আকারে আলাদা দেখাতে চান, 
+          // তাহলে q.options[correctVal] ব্যবহার করবেন (এটিতে undefined দেখানোর সমস্যা সমাধান করা হয়েছে)।
 
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
