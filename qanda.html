@@ -574,7 +574,7 @@ input[type=file]{
 
     <div class="header-right">
 
-        <button class="icon-btn" onclick="toggleNotifications()" title="Notifications">
+        <button class="icon-btn" onclick="window.toggleNotifications()" title="Notifications">
             🔔
             <span id="notificationCount" class="notification-count">0</span>
         </button>
@@ -587,7 +587,7 @@ input[type=file]{
 
     <div class="notification-header">
         <strong>🔔 নোটিফিকেশন</strong>
-        <button onclick="markAllNotificationsRead()" style="background:none;border:none;color:#38bdf8;cursor:pointer;font-size:11px;">
+        <button onclick="window.markAllNotificationsRead()" style="background:none;border:none;color:#38bdf8;cursor:pointer;font-size:11px;">
             সব পড়া হয়েছে
         </button>
     </div>
@@ -613,7 +613,7 @@ input[type=file]{
 
         <div class="filters">
 
-            <select id="questionSubject" onchange="updateQuestionPapers()">
+            <select id="questionSubject" onchange="window.updateQuestionPapers()">
                 <option value="">বিষয় নির্বাচন করুন</option>
                 <option value="physics">পদার্থবিজ্ঞান</option>
                 <option value="chemistry">রসায়ন</option>
@@ -621,7 +621,7 @@ input[type=file]{
                 <option value="math">উচ্চতর গণিত</option>
             </select>
 
-            <select id="questionPaper" onchange="updateQuestionChapters()">
+            <select id="questionPaper" onchange="window.updateQuestionChapters()">
                 <option value="">পত্র নির্বাচন করুন</option>
                 <option value="paper1">১ম পত্র</option>
                 <option value="paper2">২য় পত্র</option>
@@ -648,7 +648,7 @@ input[type=file]{
                     id="cameraInput"
                     accept="image/*"
                     capture="environment"
-                    onchange="handleImage(event)"
+                    onchange="window.handleImage(event)"
                 >
             </label>
 
@@ -658,7 +658,7 @@ input[type=file]{
                     type="file"
                     id="imageInput"
                     accept="image/*"
-                    onchange="handleImage(event)"
+                    onchange="window.handleImage(event)"
                 >
             </label>
 
@@ -668,7 +668,7 @@ input[type=file]{
                     type="file"
                     id="pdfInput"
                     accept="application/pdf"
-                    onchange="handlePDF(event)"
+                    onchange="window.handlePDF(event)"
                 >
             </label>
 
@@ -676,7 +676,7 @@ input[type=file]{
 
         <div id="attachmentPreview" class="preview"></div>
 
-        <button id="submitQuestionBtn" class="submit-btn" onclick="submitQuestion()">
+        <button id="submitQuestionBtn" class="submit-btn" onclick="window.submitQuestion()">
             🚀 প্রশ্ন প্রকাশ করুন
         </button>
 
@@ -690,15 +690,15 @@ input[type=file]{
 
         <div class="question-toolbar">
 
-            <button class="filter-btn active" id="allFilter" onclick="setQuestionFilter('all')">
+            <button class="filter-btn active" id="allFilter" onclick="window.setQuestionFilter('all')">
                 🌐 All Questions
             </button>
 
-            <button class="filter-btn" id="myFilter" onclick="setQuestionFilter('my')">
+            <button class="filter-btn" id="myFilter" onclick="window.setQuestionFilter('my')">
                 👤 My Questions
             </button>
 
-            <button class="filter-btn" id="bookmarkFilter" onclick="setQuestionFilter('bookmark')">
+            <button class="filter-btn" id="bookmarkFilter" onclick="window.setQuestionFilter('bookmark')">
                 ⭐ Bookmarks
             </button>
 
@@ -706,7 +706,7 @@ input[type=file]{
 
         <div class="filters" style="margin-bottom:10px;">
 
-            <select id="viewSubject" onchange="updateViewPapers()">
+            <select id="viewSubject" onchange="window.updateViewPapers()">
                 <option value="">সব বিষয়</option>
                 <option value="physics">পদার্থবিজ্ঞান</option>
                 <option value="chemistry">রসায়ন</option>
@@ -714,13 +714,13 @@ input[type=file]{
                 <option value="math">উচ্চতর গণিত</option>
             </select>
 
-            <select id="viewPaper" onchange="updateViewChapters()">
+            <select id="viewPaper" onchange="window.updateViewChapters()">
                 <option value="">সব পত্র</option>
                 <option value="paper1">১ম পত্র</option>
                 <option value="paper2">২য় পত্র</option>
             </select>
 
-            <select id="viewChapter" onchange="renderQuestions()">
+            <select id="viewChapter" onchange="window.renderQuestions()">
                 <option value="">সব অধ্যায়</option>
             </select>
 
@@ -742,7 +742,7 @@ input[type=file]{
 
         <div class="modal-title">
             <h3>📖 প্রশ্ন ও উত্তর</h3>
-            <button class="close" onclick="closeQuestionModal()">×</button>
+            <button class="close" onclick="window.closeQuestionModal()">×</button>
         </div>
 
         <div id="questionModalBody"></div>
@@ -997,7 +997,7 @@ window.handleImage = function(event){
         preview.innerHTML = `
             <div class="file-name">🖼️ ${escapeHTML(file.name)}</div>
             <img src="${e.target.result}">
-            <button onclick="removeAttachment()" style="margin-top:8px;background:#ef4444;color:white;border:0;padding:6px 10px;border-radius:5px;cursor:pointer;">Remove</button>
+            <button onclick="window.removeAttachment()" style="margin-top:8px;background:#ef4444;color:white;border:0;padding:6px 10px;border-radius:5px;cursor:pointer;">Remove</button>
         `;
     };
     reader.readAsDataURL(file);
@@ -1022,7 +1022,7 @@ window.handlePDF = function(event){
         preview.style.display = "block";
         preview.innerHTML = `
             <div class="file-name">📄 ${escapeHTML(file.name)}</div>
-            <button onclick="removeAttachment()" style="margin-top:8px;background:#ef4444;color:white;border:0;padding:6px 10px;border-radius:5px;cursor:pointer;">Remove</button>
+            <button onclick="window.removeAttachment()" style="margin-top:8px;background:#ef4444;color:white;border:0;padding:6px 10px;border-radius:5px;cursor:pointer;">Remove</button>
         `;
     };
     reader.readAsDataURL(file);
@@ -1102,7 +1102,7 @@ window.submitQuestion = async function(){
         });
 
         document.getElementById("questionText").value = "";
-        removeAttachment();
+        window.removeAttachment();
         document.getElementById("questionSubject").value = "";
         document.getElementById("questionPaper").value = "";
         document.getElementById("questionChapter").innerHTML = `<option value="">অধ্যায় নির্বাচন করুন</option>`;
@@ -1129,7 +1129,6 @@ function loadQuestions(){
         const val = snapshot.val() || {};
         allQuestions = {};
         
-        // Structure data consistently with Key handling
         Object.keys(val).forEach(key => {
             allQuestions[key] = {
                 ...val[key],
@@ -1137,7 +1136,7 @@ function loadQuestions(){
             };
         });
 
-        renderQuestions();
+        window.renderQuestions();
     }, (error) => {
         console.error(error);
         document.getElementById("questionList").innerHTML = `<div class="empty">প্রশ্ন লোড করতে সমস্যা হয়েছে।</div>`;
@@ -1157,7 +1156,7 @@ window.setQuestionFilter = function(filter){
     if(filter==="my") document.getElementById("myFilter").classList.add("active");
     if(filter==="bookmark") document.getElementById("bookmarkFilter").classList.add("active");
 
-    renderQuestions();
+    window.renderQuestions();
 };
 
 
@@ -1168,7 +1167,7 @@ window.setQuestionFilter = function(filter){
 window.updateViewPapers = function(){
     document.getElementById("viewPaper").value = "";
     document.getElementById("viewChapter").innerHTML = `<option value="">সব অধ্যায়</option>`;
-    renderQuestions();
+    window.renderQuestions();
 };
 
 window.updateViewChapters = function(){
@@ -1178,7 +1177,7 @@ window.updateViewChapters = function(){
 
     chapter.innerHTML = `<option value="">সব অধ্যায়</option>`;
     if(!subject || !paper){
-        renderQuestions();
+        window.renderQuestions();
         return;
     }
 
@@ -1190,10 +1189,8 @@ window.updateViewChapters = function(){
         chapter.appendChild(option);
     });
 
-    renderQuestions();
+    window.renderQuestions();
 };
-
-window.renderQuestions = renderQuestions;
 
 
 /* ===============================
@@ -1211,7 +1208,7 @@ async function isBookmarked(questionId){
    RENDER QUESTIONS
 ================================ */
 
-async function renderQuestions(){
+window.renderQuestions = async function(){
     const container = document.getElementById("questionList");
     let questions = Object.values(allQuestions || {});
 
@@ -1253,11 +1250,11 @@ async function renderQuestions(){
         card.innerHTML = createQuestionHTML(q, bookmarked);
         container.appendChild(card);
     }
-}
+};
 
 
 /* ===============================
-   QUESTION HTML (DISPLAY ALL & TEACHER ANSWERS)
+   QUESTION HTML
 ================================ */
 
 function createQuestionHTML(q, bookmarked){
@@ -1280,7 +1277,6 @@ function createQuestionHTML(q, bookmarked){
         ? `<span class="status answered">✓ উত্তর দেওয়া হয়েছে</span>`
         : `<span class="status">⏳ উত্তর অপেক্ষমাণ</span>`;
 
-    // Teacher Panel Answer Display Logic
     let answerHtml = "";
     if(q.status === "answered" || q.answerText || q.answerVoice){
         answerHtml = `
@@ -1314,10 +1310,10 @@ function createQuestionHTML(q, bookmarked){
         ${answerHtml}
 
         <div class="action-row">
-            <button class="action-btn ${bookmarked ? "bookmarked" : ""}" onclick="toggleBookmark('${qId}')">
+            <button class="action-btn ${bookmarked ? "bookmarked" : ""}" onclick="window.toggleBookmark('${qId}')">
                 ${bookmarked ? "⭐ Bookmarked" : "☆ Bookmark"}
             </button>
-            <button class="action-btn" onclick="openQuestion('${qId}')">
+            <button class="action-btn" onclick="window.openQuestion('${qId}')">
                 👁️ বিস্তারিত
             </button>
         </div>
@@ -1387,7 +1383,7 @@ async function loadReplies(questionId){
             html += `
                 <div class="followup-box" style="display:block;margin-top:12px;">
                     <textarea id="followupText" placeholder="উত্তর বুঝতে সমস্যা হলে আবার প্রশ্ন করুন..."></textarea>
-                    <button class="followup-submit" onclick="submitFollowup('${questionId}')">
+                    <button class="followup-submit" onclick="window.submitFollowup('${questionId}')">
                         🔄 আবার প্রশ্ন করুন
                     </button>
                 </div>
@@ -1489,7 +1485,7 @@ window.toggleBookmark = async function(questionId){
         });
     }
 
-    renderQuestions();
+    window.renderQuestions();
 };
 
 
@@ -1520,8 +1516,8 @@ async function loadNotifications(){
         notifications.forEach(n => {
             if(!n.read) unread++;
             html += `
-                <div class="notification-item ${n.read ? "" : "unread"}" onclick="openNotification('${n.id}')">
-                    <button class="notification-delete" onclick="deleteNotification(event,'${n.id}')">×</button>
+                <div class="notification-item ${n.read ? "" : "unread"}" onclick="window.openNotification('${n.id}')">
+                    <button class="notification-delete" onclick="window.deleteNotification(event,'${n.id}')">×</button>
                     <div class="notification-item-title">${escapeHTML(n.title || "Notification")}</div>
                     <div class="notification-item-text">${escapeHTML(n.message || "")}</div>
                 </div>
@@ -1561,7 +1557,7 @@ window.openNotification = async function(id){
 
     if(n.questionId){
         if(allQuestions[n.questionId]){
-            openQuestion(n.questionId);
+            window.openQuestion(n.questionId);
         }
     }else{
         alert(n.message || "নোটিফিকেশন");
