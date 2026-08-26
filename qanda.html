@@ -364,6 +364,16 @@ input[type=file]{
     border-color:#38bdf8;
 }
 
+.action-btn.delete-btn{
+    color:#f43f5e;
+    border-color:#f43f5e;
+}
+
+.action-btn.delete-btn:hover{
+    background:#881337;
+    color:white;
+}
+
 .bookmarked{
     color:#facc15!important;
     border-color:#eab308!important;
@@ -1074,6 +1084,54 @@ window.submitQuestion = async function(){
 };
 
 /* ===============================
+   DELETE QUESTION (NEWLY ADDED)
+================================ */
+window.deleteQuestion = async function(questionId){
+    if(!currentUser){
+        alert("আগে লগইন করুন।");
+        return;
+    }
+
+    const question = allQuestions[questionId];
+    if(!question){
+        alert("প্রশ্নটি পাওয়া যায়নি।");
+        return;
+    }
+
+    const studentUid = question.studentUid || question.uid;
+    if(studentUid !== currentUser.uid){
+        alert("আপনি শুধুমাত্র নিজের তৈরি করা প্রশ্ন মুছে ফেলতে পারবেন।");
+        return;
+    }
+
+    if(!confirm("আপনি কি নিশ্চিত যে এই প্রশ্নটি মুছে ফেলতে চান? এটি পুনরুদ্ধার করা যাবে না।")){
+        return;
+    }
+
+    try{
+        // 1. Remove Question
+        await remove(ref(db, `qanda/questions/${questionId}`));
+
+        // 2. Remove Replies (if any)
+        await remove(ref(db, `qanda_replies/${questionId}`));
+
+        // 3. Remove Bookmarks for this question
+        await remove(ref(db, `qanda_bookmarks/${currentUser.uid}/${questionId}`));
+
+        // Close modal if open
+        const modal = document.getElementById("questionModal");
+        if(modal && modal.style.display === "flex"){
+            window.closeQuestionModal();
+        }
+
+        alert("🗑️ আপনার প্রশ্নটি সফলভাবে মুছে ফেলা হয়েছে।");
+    }catch(error){
+        console.error("Delete Error:", error);
+        alert("প্রশ্নটি মুছে ফেলতে সমস্যা হয়েছে: " + error.message);
+    }
+};
+
+/* ===============================
    LOAD QUESTIONS
 ================================ */
 function loadQuestions(){
@@ -1219,6 +1277,9 @@ function createQuestionHTML(q, bookmarked){
         `;
     }
 
+    // Check if the logged in user is the author of this question
+    const isOwner = currentUser && (q.studentUid === currentUser.uid || q.uid === currentUser.uid);
+
     return `
         <div class="question-head">
             <div>
@@ -1247,6 +1308,11 @@ function createQuestionHTML(q, bookmarked){
             <button class="action-btn" onclick="window.openQuestion('${qId}')">
                 👁️ বিস্তারিত
             </button>
+            ${isOwner ? `
+            <button class="action-btn delete-btn" onclick="window.deleteQuestion('${qId}')" title="প্রশ্নটি মুছে ফেলুন">
+                🗑️ Delete
+            </button>
+            ` : ''}
         </div>
     `;
 }
