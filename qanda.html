@@ -1349,13 +1349,13 @@ async function loadReplies(questionId){
 
         if(snap.exists()){
             const replies = Object.values(snap.val());
-            replies.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
+            replies.sort((a,b) => (a.createdAt || 0) - (a.createdAt || 0));
 
             replies.forEach(r => {
                 html += `
                     <div class="reply">
                         <div class="reply-author">${r.role === "teacher" ? "👨‍🏫 Teacher" : "👤 Student"}</div>
-                        ${r.text ? `<div class="reply-text">${escapeHTML(r.text)}</div>` : ""}
+                        ${(r.text || r.questionText) ? `<div class="reply-text">${escapeHTML(r.text || r.questionText)}</div>` : ""}
                         ${r.attachment?.type === "image" ? `<img src="${r.attachment.data}" class="question-image">` : ""}
                         ${r.attachment?.type === "pdf" ? `<a href="${r.attachment.data}" target="_blank" class="pdf-link">📄 PDF</a>` : ""}
                         ${r.attachment?.type === "audio" ? `<audio controls class="voice-player" src="${r.attachment.data}"></audio>` : ""}
@@ -1409,8 +1409,11 @@ window.submitFollowup = async function(questionId){
     const replyRef = push(ref(db, `qanda_replies/${questionId}`));
     await set(replyRef, {
         uid: currentUser.uid,
+        studentUid: currentUser.uid,
+        studentName: currentUser.displayName || currentUser.email?.split("@")[0] || "Student",
         role: "student",
         text: text,
+        questionText: text,
         createdAt: Date.now()
     });
 
