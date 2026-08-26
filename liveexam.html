@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Exam - GAIVEX</title>
+    <title>লাইভ পরীক্ষা - GAIVEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -105,7 +105,7 @@
 
         <div class="palette-section" id="paletteSection">
             <div class="palette-title">
-                <span>প্রশ্ন প্যালেট</span>
+                <span>প্রশ্ন প্যালেট (নেভিগেশন)</span>
                 <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
@@ -174,60 +174,60 @@
       let isSubmitted = false;
 
       const defaultExamData = {
-        id: "chemistry_mcq_50_v1",
-        title: "🧪 রাসায়নিক পরিবর্তন — ৫০টি MCQ",
+        id: "human_reproduction_mcq_50_v1",
+        title: "🧬 মানব জীবনের ধারাবাহিকতা — ৫০টি MCQ",
         duration: 30,
         questions: [
-          { question: "কোনটি রাসায়নিক পরিবর্তনের প্রধান বৈশিষ্ট্য?", options: ["শুধু আকারের পরিবর্তন", "নতুন পদার্থ সৃষ্টি", "শুধু অবস্থার পরিবর্তন", "শুধু আয়তনের পরিবর্তন"], correct: 1, explanation: "রাসায়নিক পরিবর্তনে মূল পদার্থের রাসায়নিক গঠন পরিবর্তিত হয়ে নতুন ধর্মবিশিষ্ট পদার্থ সৃষ্টি হয়।" },
-          { question: "নিচের কোনটি রাসায়নিক পরিবর্তন?", options: ["বরফ গলা", "পানি বাষ্পীভূত হওয়া", "লোহার মরিচা পড়া", "কাচ ভাঙা"], correct: 2, explanation: "লোহা অক্সিজেন ও পানির উপস্থিতিতে বিক্রিয়া করে নতুন পদার্থ hydrated iron(III) oxide বা মরিচা তৈরি করে।" },
-          { question: "CaCO₃ → CaO + CO₂ বিক্রিয়াটি কোন ধরনের?", options: ["সংযোজন", "বিয়োজন", "প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 1, explanation: "একটি যৌগ ভেঙে একাধিক পদার্থ উৎপন্ন হয়েছে। তাই এটি বিয়োজন বিক্রিয়া।" },
-          { question: "CaO + H₂O → Ca(OH)₂ কোন ধরনের বিক্রিয়া?", options: ["সংযোজন", "বিয়োজন", "প্রতিস্থাপন", "জারণ"], correct: 0, explanation: "দুটি পদার্থ যুক্ত হয়ে একটি উৎপাদ তৈরি করেছে। তাই এটি সংযোজন বিক্রিয়া।" },
-          { question: "Zn + CuSO₄ → ZnSO₄ + Cu বিক্রিয়ায় কোনটি জারিত হয়?", options: ["Cu", "Cu²⁺", "Zn", "SO₄²⁻"], correct: 2, explanation: "Zn-এর জারণ সংখ্যা 0 থেকে +2 হয়েছে। তাই Zn জারিত হয়েছে।" },
-          { question: "একই বিক্রিয়ায় বিজারিত পদার্থ কোনটি?", options: ["Zn", "Cu²⁺", "SO₄²⁻", "Zn²⁺"], correct: 1, explanation: "Cu²⁺ দুটি ইলেকট্রন গ্রহণ করে Cu-তে পরিণত হয়েছে। ইলেকট্রন গ্রহণ = বিজারণ।" },
-          { question: "জারণ বলতে বোঝায়—", options: ["ইলেকট্রন গ্রহণ", "ইলেকট্রন বর্জন", "প্রোটন গ্রহণ", "নিউট্রন বর্জন"], correct: 1, explanation: "আধুনিক ধারণায় জারণ = ইলেকট্রন ত্যাগ।" },
-          { question: "বিজারণের ক্ষেত্রে—", options: ["ইলেকট্রন ত্যাগ হয়", "ইলেকট্রন গ্রহণ হয়", "অক্সিজেন সবসময় যুক্ত হয়", "হাইড্রোজেন সবসময় অপসারিত হয়"], correct: 1, explanation: "বিজারণে কোনো প্রজাতি ইলেকট্রন গ্রহণ করে।" },
-          { question: "যে পদার্থ অন্য পদার্থকে জারিত করে নিজে বিজারিত হয় তাকে বলে—", options: ["বিজারক", "জারক", "অনুঘটক", "দ্রাবক"], correct: 1, explanation: "জারক অন্য পদার্থ থেকে ইলেকট্রন গ্রহণ করে; ফলে নিজে বিজারিত হয়।" },
-          { question: "যে পদার্থ অন্য পদার্থকে বিজারিত করে নিজে জারিত হয় তাকে বলে—", options: ["জারক", "বিজারক", "অনুঘটক", "উৎপাদক"], correct: 1, explanation: "বিজারক ইলেকট্রন দান করে অন্য পদার্থকে বিজারিত করে এবং নিজে জারিত হয়।" },
-          { question: "H₂ + Cl₂ → 2HCl বিক্রিয়াটি—", options: ["বিয়োজন", "সংযোজন", "প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 1, explanation: "দুটি বিক্রিয়ক মিলে একটি যৌগ HCl তৈরি করেছে।" },
-          { question: "2KClO₃ → 2KCl + 3O₂ বিক্রিয়াটি কী?", options: ["সংযোজন", "বিয়োজন", "প্রতিস্থাপন", "নিরপেক্ষকরণ"], correct: 1, explanation: "KClO₃ একটি যৌগ ভেঙে KCl ও O₂ উৎপন্ন করেছে।" },
-          { question: "Fe + CuSO₄ → FeSO₄ + Cu বিক্রিয়াটি—", options: ["সংযোজন", "বিয়োজন", "একক প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 2, explanation: "Fe, Cu-কে তার লবণ থেকে প্রতিস্থাপিত করেছে। এটি একক প্রতিস্থাপন বিক্রিয়া।" },
-          { question: "AgNO₃ + NaCl → AgCl + NaNO₃ কোন ধরনের বিক্রিয়া?", options: ["সংযোজন", "বিয়োজন", "একক প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 3, explanation: "দুটি যৌগের আয়ন পরস্পর বিনিময় করেছে। তাই এটি দ্বি-প্রতিস্থাপন বিক্রিয়া।" },
-          { question: "AgNO₃ ও NaCl-এর বিক্রিয়ায় উৎপন্ন AgCl-এর বৈশিষ্ট্য—", options: ["কালো গ্যাস", "সাদা অধঃক্ষেপ", "নীল দ্রবণ", "হলুদ গ্যাস"], correct: 1, explanation: "Ag⁺ ও Cl⁻ যুক্ত হয়ে অদ্রবণীয় সাদা AgCl অধঃক্ষেপ তৈরি করে।" },
-          { question: "রাসায়নিক সমীকরণ সমতাকরণের মূল ভিত্তি কোন সূত্র?", options: ["গ্যাসের সূত্র", "শক্তির সূত্র", "ভরের নিত্যতা সূত্র", "বয়েলের সূত্র"], correct: 2, explanation: "রাসায়নিক বিক্রিয়ায় মোট ভর অপরিবর্তিত থাকে। তাই বিক্রিয়ক ও উৎপাদে প্রতিটি মৌলের পরমাণুর সংখ্যা সমান রাখতে হয়।" },
-          { question: "নিচের কোন সমীকরণটি সঠিকভাবে সমতাকৃত?", options: ["H₂ + O₂ → H₂O", "H₂ + O₂ → 2H₂O", "2H₂ + O₂ → 2H₂O", "2H₂ + 2O₂ → 2H₂O"], correct: 2, explanation: "উভয় পাশে H = 4 এবং O = 2।" },
-          { question: "2Mg + O₂ → 2MgO বিক্রিয়ায় Mg-এর কী ঘটে?", options: ["বিজারণ", "জারণ", "নিরপেক্ষকরণ", "কোনো পরিবর্তন হয় না"], correct: 1, explanation: "Mg ইলেকট্রন ত্যাগ করে Mg²⁺ হয়। তাই Mg জারিত হয়।" },
-          { question: "MgO-তে Mg-এর জারণ সংখ্যা কত?", options: ["0", "+1", "+2", "−2"], correct: 2, explanation: "O-এর জারণ সংখ্যা −2। যৌগ নিরপেক্ষ হওয়ায় Mg = +2।" },
-          { question: "H₂O-তে অক্সিজেনের জারণ সংখ্যা—", options: ["+2", "−2", "+1", "−1"], correct: 1, explanation: "সাধারণত অক্সিজেনের জারণ সংখ্যা −2।" },
-          { question: "H₂O₂-তে অক্সিজেনের জারণ সংখ্যা কত?", options: ["−2", "−1", "+1", "0"], correct: 1, explanation: "Peroxide-এ অক্সিজেনের জারণ সংখ্যা বিশেষভাবে −1।" },
-          { question: "কোনো মৌলের মুক্ত অবস্থায় জারণ সংখ্যা—", options: ["+1", "−1", "0", "+2"], correct: 2, explanation: "মৌলিক বা free state-এ কোনো মৌলের oxidation number = 0।" },
-          { question: "KMnO₄-এ Mn-এর জারণ সংখ্যা কত?", options: ["+2", "+4", "+6", "+7"], correct: 3, explanation: "K = +1 এবং চারটি O = −8। তাই Mn = +7।" },
-          { question: "K₂Cr₂O₇-এ Cr-এর জারণ সংখ্যা—", options: ["+3", "+4", "+6", "+7"], correct: 2, explanation: "2(+1)+2x+7(−2)=0 ⇒ 2x=12 ⇒ x=+6।" },
-          { question: "নিচের কোনটি শক্তিশালী জারক?", options: ["Na", "KMnO₄", "H₂", "CO"], correct: 1, explanation: "KMnO₄, বিশেষ করে acidic medium-এ, শক্তিশালী জারক হিসেবে কাজ করে।" },
-          { question: "অনুঘটক কী করে?", options: ["বিক্রিয়ার সাম্য ধ্রুবক পরিবর্তন করে", "বিক্রিয়ার সক্রিয়ণ শক্তি কমায়", "উৎপাদের পরিমাণ সবসময় বাড়ায়", "বিক্রিয়ায় সম্পূর্ণভাবে শেষ হয়ে যায়"], correct: 1, explanation: "অনুঘটক বিকল্প কম সক্রিয়ণ-শক্তির পথ প্রদান করে বিক্রিয়ার হার পরিবর্তন করে।" },
-          { question: "অনুঘটক সাধারণত—", options: ["বিক্রিয়ার শেষে সম্পূর্ণ বিলীন হয়", "অপরিবর্তিত থাকে", "উৎপাদে পরিণত হয়", "বিক্রিয়ার সাম্য পরিবর্তন করে"], correct: 1, explanation: "অনুঘটক বিক্রিয়ার হার পরিবর্তন করলেও সামগ্রিকভাবে নিজে স্থায়ীভাবে ক্ষয়প্রাপ্ত হয় না।" },
-          { question: "Haber process-এ অনুঘটক হিসেবে ব্যবহৃত হয়—", options: ["Ni", "Fe", "Pt", "MnO₂"], correct: 1, explanation: "Haber process-এ N₂ ও H₂ থেকে NH₃ উৎপাদনে লোহা (Fe) catalyst হিসেবে ব্যবহৃত হয়।" },
-          { question: "Contact process-এ SO₂ থেকে SO₃ তৈরিতে অনুঘটক—", options: ["Fe", "Ni", "V₂O₅", "MnO₂"], correct: 2, explanation: "Contact process-এ V₂O₅ ব্যবহৃত হয়।" },
-          { question: "H₂O₂-এর বিয়োজন দ্রুত করতে কোন অনুঘটক ব্যবহৃত হতে পারে?", options: ["MnO₂", "NaCl", "CuSO₄", "CaCO₃"], correct: 0, explanation: "MnO₂, H₂O₂-এর দ্রুত বিয়োজনে কার্যকর অনুঘটক।" },
-          { question: "উষ্মাক্ষেপী বিক্রিয়ায়—", options: ["তাপ শোষিত হয়", "তাপ নির্গত হয়", "আলো সবসময় শোষিত হয়", "কোনো শক্তি পরিবর্তন হয় না"], correct: 1, explanation: "Exothermic reaction-এ বিক্রিয়া পরিবেশে তাপ শক্তি ছাড়ে।" },
-          { question: "উষ্মাশোষী বিক্রিয়ায়—", options: ["তাপ নির্গত হয়", "তাপ শোষিত হয়", "আলো উৎপন্ন হওয়া বাধ্যতামূলক", "চাপ সবসময় কমে"], correct: 1, explanation: "Endothermic reaction সংঘটিত হওয়ার জন্য পরিবেশ থেকে তাপ শোষণ করে।" },
-          { question: "নিচের কোনটি উষ্মাক্ষেপী?", options: ["সালোকসংশ্লেষণ", "CaCO₃-এর তাপীয় বিয়োজন", "জ্বালানি দহন", "বরফ গলা"], correct: 2, explanation: "দহনে প্রচুর তাপ নির্গত হয়, তাই এটি উষ্মাক্ষেপী।" },
-          { question: "সালোকসংশ্লেষণ কোন ধরনের শক্তিগত পরিবর্তন?", options: ["উষ্মাক্ষেপী", "উষ্মাশোষী", "জারণ নয়", "নিরপেক্ষ"], correct: 1, explanation: "সালোকসংশ্লেষণে সূর্যের শক্তি শোষিত হয়ে রাসায়নিক শক্তিতে সঞ্চিত হয়।" },
-          { question: "দহন বিক্রিয়ার জন্য অপরিহার্য—", options: ["N₂", "O₂", "CO₂", "H₂"], correct: 1, explanation: "সাধারণ দহন বিক্রিয়ায় অক্সিজেন প্রয়োজন হয়।" },
-          { question: "মিথেনের সম্পূর্ণ দহনের সমীকরণ কোনটি?", options: ["CH₄ + O₂ → CO + H₂", "CH₄ + 2O₂ → CO₂ + 2H₂O", "CH₄ + O₂ → C + H₂O", "CH₄ + CO₂ → H₂O"], correct: 1, explanation: "সম্পূর্ণ দহনে CH₄ থেকে CO₂ ও H₂O তৈরি হয়।" },
-          { question: "অসম্পূর্ণ দহনে সাধারণত কোন বিষাক্ত গ্যাস তৈরি হতে পারে?", options: ["CO", "O₂", "N₂", "H₂"], correct: 0, explanation: "অক্সিজেনের ঘাটতিতে কার্বনযুক্ত জ্বালানির অসম্পূর্ণ দহনে CO তৈরি হতে পারে।" },
-          { question: "লোহার মরিচা পড়ার জন্য প্রধানত প্রয়োজন—", options: ["শুধু N₂", "O₂ ও H₂O", "শুধু CO₂", "H₂ ও Cl₂"], correct: 1, explanation: "লোহার corrosion-এর জন্য অক্সিজেন ও আর্দ্রতা গুরুত্বপূর্ণ।" },
-          { question: "মরিচা প্রতিরোধে লোহার উপর Zn-এর প্রলেপ দেওয়াকে বলে—", options: ["Alloying", "Galvanization", "Distillation", "Electrolysis"], correct: 1, explanation: "লোহার উপর জিঙ্কের protective coating দেওয়াকে galvanization বলে।" },
-          { question: "Galvanization-এ Zn ব্যবহারের একটি কারণ—", options: ["Zn লোহার চেয়ে সহজে জারিত হয়", "Zn কোনো বিক্রিয়ায় অংশ নেয় না", "Zn সবসময় গ্যাস", "Zn-এর গলনাঙ্ক শূন্য"], correct: 0, explanation: "Zn লোহার আগে জারিত হয়ে sacrificial protection প্রদান করতে পারে।" },
-          { question: "নিচের কোনটি reversible reaction-এর উদাহরণ?", options: ["H₂ + Cl₂ → 2HCl", "N₂ + 3H₂ ⇌ 2NH₃", "CH₄ + 2O₂ → CO₂ + 2H₂O", "2Mg + O₂ → 2MgO"], correct: 1, explanation: "Haber process-এর বিক্রিয়া উভয় দিকেই চলতে পারে, তাই ⇌ দ্বারা প্রকাশ করা হয়।" },
-          { question: "রাসায়নিক সাম্যাবস্থায়—", options: ["বিক্রিয়া সম্পূর্ণ বন্ধ হয়ে যায়", "শুধু সম্মুখ বিক্রিয়া চলে", "সম্মুখ ও পশ্চাৎ বিক্রিয়ার হার সমান হয়", "সব বিক্রিয়ক শেষ হয়ে যায়"], correct: 2, explanation: "Dynamic equilibrium-এ forward ও backward reaction-এর হার সমান থাকে।" },
-          { question: "সাম্যাবস্থায় কোনটি সত্য?", options: ["ঘনমাত্রা অবশ্যই শূন্য", "macroscopic properties স্থির থাকে", "সব পদার্থের পরিমাণ সমান", "বিক্রিয়া বন্ধ থাকে"], correct: 1, explanation: "সাম্যাবস্থায় বিক্রিয়া চলমান থাকলেও দৃশ্যমান/পরিমাপযোগ্য ধর্মগুলো স্থির থাকে।" },
-          { question: "Le Chatelier-এর নীতি অনুযায়ী সাম্যাবস্থায় চাপ বাড়ালে—", options: ["সবসময় চাপের কোনো প্রভাব নেই", "সাম্য অধিক গ্যাসীয় অণুর দিকে যায়", "সাম্য কম গ্যাসীয় অণুর দিকে সরে", "বিক্রিয়া বন্ধ হয়ে যায়"], correct: 2, explanation: "চাপ বৃদ্ধির প্রভাব কমাতে সাম্য সাধারণত কম সংখ্যক গ্যাসীয় মোলের দিকে সরে যায়।" },
-          { question: "N₂ + 3H₂ ⇌ 2NH₃ বিক্রিয়ায় চাপ বাড়ালে সাম্য—", options: ["বামদিকে", "ডানদিকে", "কোনো দিকে নয়", "প্রথমে বামে পরে ডানে"], correct: 1, explanation: "বাম পাশে গ্যাসীয় মোল = 4, ডান পাশে = 2। চাপ বাড়ালে কম মোলের দিকে অর্থাৎ NH₃-এর দিকে সাম্য সরে।" },
-          { question: "রাসায়নিক বিক্রিয়ার হার সবচেয়ে সরাসরি কোন বিষয়ের দ্বারা প্রভাবিত হয়?", options: ["তাপমাত্রা", "পদার্থের নাম", "রং", "পাত্রের আকৃতি সবসময়"], correct: 0, explanation: "তাপমাত্রা বাড়লে সাধারণত কণার গতিশক্তি ও কার্যকর সংঘর্ষের সংখ্যা বাড়ে, ফলে reaction rate বৃদ্ধি পায়।" },
-          { question: "তাপমাত্রা বাড়ালে অধিকাংশ রাসায়নিক বিক্রিয়ার হার—", options: ["কমে", "বাড়ে", "অপরিবর্তিত থাকে", "শূন্য হয়"], correct: 1, explanation: "তাপমাত্রা বৃদ্ধিতে বেশি সংখ্যক অণু activation energy অতিক্রম করতে পারে।" },
-          { question: "গুঁড়ো CaCO₃ এবং বড় CaCO₃-এর মধ্যে কোনটি HCl-এর সঙ্গে দ্রুত বিক্রিয়া করবে?", options: ["বড় টুকরা", "গুঁড়ো CaCO₃", "দুটিই একই", "কোনোটিই নয়"], correct: 1, explanation: "গুঁড়ো পদার্থের surface area বেশি, তাই HCl-এর সঙ্গে কার্যকর সংঘর্ষ বেশি হয় এবং বিক্রিয়া দ্রুত হয়।" },
-          { question: "2H₂O₂ → 2H₂O + O₂ বিক্রিয়ায় H₂O₂ কী হিসেবে কাজ করছে?", options: ["শুধু জারক", "শুধু বিজারক", "জারক ও বিজারক উভয়", "অনুঘটক"], correct: 2, explanation: "H₂O₂-এর একটি অংশ জারিত এবং অন্য অংশ বিজারিত হতে পারে। তাই এটি disproportionation reaction দেখায়।" },
-          { question: "নিচের কোন বিক্রিয়াটি একই সঙ্গে জারণ-বিজারণ বিক্রিয়া?", options: ["NaCl → Na⁺ + Cl⁻", "HCl + NaOH → NaCl + H₂O", "Zn + CuSO₄ → ZnSO₄ + Cu", "AgNO₃ + NaCl → AgCl + NaNO₃"], correct: 2, explanation: "Zn ইলেকট্রন ত্যাগ করে জারিত হয় এবং Cu²⁺ ইলেকট্রন গ্রহণ করে বিজারিত হয়। তাই এটি redox reaction।" }
+          { question: "মানবদেহে গ্যামেট উৎপাদনের জন্য কোন কোষ বিভাজন অপরিহার্য?", options: ["মাইটোসিস", "মিয়োসিস", "অ্যামাইটোসিস", "বাইনারি ফিশন"], correct: 1, explanation: "মিয়োসিসের মাধ্যমে ক্রোমোজোম সংখ্যা অর্ধেকে নেমে আসে এবং হ্যাপ্লয়েড গ্যামেট তৈরি হয়। নিষেকের সময় দুটি হ্যাপ্লয়েড গ্যামেট মিলিত হয়ে ডিপ্লয়েড জাইগোট তৈরি করে।" },
+          { question: "মানুষের একটি প্রাথমিক শুক্রাণু মাতৃকোষে ক্রোমোজোম সংখ্যা কত?", options: ["23", "44", "46", "92"], correct: 2, explanation: "প্রাথমিক শুক্রাণু মাতৃকোষ (primary spermatocyte) ডিপ্লয়েড, তাই এতে 46টি ক্রোমোজোম থাকে।" },
+          { question: "একটি প্রাথমিক শুক্রাণু মাতৃকোষ থেকে মিয়োসিস সম্পন্ন হলে কয়টি শুক্রাণু তৈরি হতে পারে?", options: ["1", "2", "3", "4"], correct: 3, explanation: "একটি primary spermatocyte → 2টি secondary spermatocyte → 4টি spermatid → 4টি spermatozoa।" },
+          { question: "মানুষের শুক্রাণুর হ্যাপ্লয়েড ক্রোমোজোম সংখ্যা—", options: ["46", "44", "23", "22"], correct: 2, explanation: "শুক্রাণু একটি হ্যাপ্লয়েড গ্যামেট। এতে 22টি অটোসোম + 1টি যৌন ক্রোমোজোম থাকে।" },
+          { question: "শুক্রাণু উৎপাদন কোথায় ঘটে?", options: ["সেমিনাল ভেসিকল", "সেমিনিফেরাস টিউবিউল", "এপিডিডাইমিস", "প্রোস্টেট গ্রন্থি"], correct: 1, explanation: "অণ্ডকোষের seminiferous tubule-এ spermatogenesis সম্পন্ন হয়।" },
+          { question: "শুক্রাণুর পরিপক্বতা প্রধানত কোথায় সম্পন্ন হয়?", options: ["অণ্ডকোষ", "এপিডিডাইমিস", "প্রোস্টেট", "সেমিনাল ভেসিকল"], correct: 1, explanation: "অণ্ডকোষে উৎপন্ন শুক্রাণু epididymis-এ গিয়ে পরিপক্বতা লাভ করে এবং সঞ্চিত থাকে।" },
+          { question: "Sertoli কোষের প্রধান কাজ কোনটি?", options: ["টেস্টোস্টেরন উৎপাদন", "শুক্রাণু কোষকে পুষ্টি প্রদান", "প্রোজেস্টেরন উৎপাদন", "ডিম্বাণু উৎপাদন"], correct: 1, explanation: "Sertoli cell developing sperm cell-কে পুষ্টি ও সহায়তা দেয় এবং spermatogenesis নিয়ন্ত্রণে গুরুত্বপূর্ণ ভূমিকা রাখে।" },
+          { question: "টেস্টোস্টেরন কোন কোষ থেকে প্রধানত নিঃসৃত হয়?", options: ["Sertoli cell", "Leydig cell", "Spermatid", "Spermatogonium"], correct: 1, explanation: "অণ্ডকোষের interstitial বা Leydig cell থেকে testosterone উৎপন্ন হয়।" },
+          { question: "পুরুষের Leydig কোষকে উদ্দীপিত করে কোন হরমোন?", options: ["FSH", "LH", "TSH", "ADH"], correct: 1, explanation: "পুরুষের ক্ষেত্রে LH-কে ICSH-ও বলা হয়। এটি Leydig cell-কে testosterone উৎপাদনে উদ্দীপিত করে।" },
+          { question: "Spermatogenesis শুরু হওয়ার প্রধান হরমোনীয় উদ্দীপনা আসে—", options: ["FSH ও LH", "TSH ও ADH", "GH ও TSH", "ACTH ও ADH"], correct: 0, explanation: "FSH Sertoli cell ও spermatogenesis-এ এবং LH Leydig cell-এর testosterone উৎপাদনে গুরুত্বপূর্ণ ভূমিকা রাখে।" },
+          { question: "মানুষের একটি প্রাথমিক ডিম্বাণু মাতৃকোষে ক্রোমোজোম সংখ্যা—", options: ["23", "44", "46", "92"], correct: 2, explanation: "Primary oocyte ডিপ্লয়েড হওয়ায় এতে 46টি ক্রোমোজোম থাকে।" },
+          { question: "একটি primary oocyte থেকে কার্যকর ডিম্বাণু কয়টি তৈরি হয়?", options: ["1", "2", "3", "4"], correct: 0, explanation: "Oogenesis-এ অসম সাইটোপ্লাজমিক বিভাজনের কারণে একটি বড় functional ovum এবং polar body তৈরি হয়।" },
+          { question: "Oogenesis-এর ক্ষেত্রে অসম সাইটোপ্লাজমিক বিভাজনের প্রধান কারণ—", options: ["চারটি সমান ডিম্বাণু তৈরি করা", "ডিম্বাণুকে বেশি সাইটোপ্লাজম প্রদান করা", "ক্রোমোজোম সংখ্যা বৃদ্ধি করা", "নিষেক বন্ধ করা"], correct: 1, explanation: "ভ্রূণের প্রাথমিক বিকাশে প্রয়োজনীয় অঙ্গাণু ও পুষ্টি সরবরাহের জন্য ovum অধিকাংশ cytoplasm ধারণ করে।" },
+          { question: "মানুষের ডিম্বাণু কোন ধরনের?", options: ["Y-বহনকারী", "X-বহনকারী", "X অথবা Y উভয় ধরনের", "কোনো যৌন ক্রোমোজোম নেই"], correct: 1, explanation: "মানুষের স্ত্রী গ্যামেট সবসময় X ক্রোমোজোম বহন করে।" },
+          { question: "সন্তানের লিঙ্গ নির্ধারণে কোন গ্যামেট ভূমিকা রাখে?", options: ["শুধু ডিম্বাণু", "শুধু শুক্রাণু", "উভয়ই সমানভাবে", "জরায়ু"], correct: 1, explanation: "ডিম্বাণু সবসময় X বহন করে। শুক্রাণু X অথবা Y বহন করতে পারে। X শুক্রাণু + X ডিম্বাণু = XX; Y শুক্রাণু + X ডিম্বাণু = XY।" },
+          { question: "নিষেক সাধারণত কোথায় ঘটে?", options: ["জরায়ু", "যোনি", "ফ্যালোপিয়ান টিউব", "ডিম্বাশয়"], correct: 2, explanation: "সাধারণত fallopian tube-এর ampulla অঞ্চলে শুক্রাণু ও ডিম্বাণুর মিলন ঘটে।" },
+          { question: "নিষেকের ফলে প্রথম যে কোষটি সৃষ্টি হয় তাকে কী বলে?", options: ["Morula", "Blastocyst", "Zygote", "Gastrula"], correct: 2, explanation: "শুক্রাণু ও ডিম্বাণুর নিউক্লিয়াসের মিলনে diploid zygote সৃষ্টি হয়।" },
+          { question: "মানব জাইগোটে ক্রোমোজোম সংখ্যা—", options: ["23", "44", "46", "92"], correct: 2, explanation: "23 ক্রোমোজোমবিশিষ্ট শুক্রাণু ও 23 ক্রোমোজোমবিশিষ্ট ডিম্বাণুর মিলনে 46 ক্রোমোজোমের diploid zygote তৈরি হয়।" },
+          { question: "নিষেকের সময় শুক্রাণুর কোন অংশ প্রথমে ডিম্বাণুর আবরণ ভেদে গুরুত্বপূর্ণ ভূমিকা রাখে?", options: ["মধ্যখণ্ড", "লেজ", "Acrosome", "নিউক্লিয়াস"], correct: 2, explanation: "Acrosome-এ থাকা বিভিন্ন এনজাইম ডিম্বাণুর আবরণ ভেদ করতে সাহায্য করে।" },
+          { question: "Acrosome কোন অঙ্গাণু থেকে উৎপন্ন?", options: ["মাইটোকন্ড্রিয়া", "গলজি বডি", "রাইবোসোম", "লাইসোসোম"], correct: 1, explanation: "শুক্রাণুর acrosome মূলত Golgi apparatus থেকে গঠিত হয়।" },
+          { question: "শুক্রাণুর লেজের প্রধান কাজ—", options: ["ATP তৈরি", "DNA তৈরি", "চলনে সাহায্য করা", "এনজাইম তৈরি"], correct: 2, explanation: "Flagellum বা লেজের সঞ্চালনের মাধ্যমে শুক্রাণু ডিম্বাণুর দিকে অগ্রসর হয়।" },
+          { question: "শুক্রাণুর মধ্যখণ্ডে কোন অঙ্গাণু প্রচুর থাকে?", options: ["রাইবোসোম", "মাইটোকন্ড্রিয়া", "গলজি বডি", "লাইসোসোম"], correct: 1, explanation: "শুক্রাণুর চলাচলের জন্য প্রয়োজনীয় ATP উৎপাদনে mitochondria গুরুত্বপূর্ণ।" },
+          { question: "নিষেকের পর polyspermy প্রতিরোধে কোন পরিবর্তনটি গুরুত্বপূর্ণ?", options: ["Cortical reaction", "DNA replication", "Crossing over", "Cytokinesis"], correct: 0, explanation: "একটি শুক্রাণু ডিম্বাণুতে প্রবেশ করার পর cortical granule-এর প্রতিক্রিয়ায় ডিম্বাণুর আবরণে পরিবর্তন ঘটে, ফলে অন্য শুক্রাণুর প্রবেশ বাধাগ্রস্ত হয়।" },
+          { question: "মানুষের ঋতুচক্রের গড় দৈর্ঘ্য কত?", options: ["14 দিন", "21 দিন", "28 দিন", "40 দিন"], correct: 2, explanation: "আদর্শভাবে মানব নারীর menstrual cycle প্রায় 28 দিনের। তবে বাস্তবে ব্যক্তিভেদে কিছুটা কম-বেশি হতে পারে।" },
+          { question: "28 দিনের ঋতুচক্রে সাধারণত ডিম্বস্ফোটন ঘটে—", options: ["1ম দিনে", "7ম দিনে", "14তম দিনে", "28তম দিনে"], correct: 2, explanation: "28 দিনের আদর্শ menstrual cycle-এ LH surge-এর পর প্রায় 14তম দিনে ovulation ঘটে।" },
+          { question: "ডিম্বস্ফোটনের জন্য সবচেয়ে গুরুত্বপূর্ণ হরমোনীয় ঘটনা—", options: ["FSH হঠাৎ বন্ধ হওয়া", "LH surge", "Insulin surge", "TSH surge"], correct: 1, explanation: "LH-এর আকস্মিক বৃদ্ধি বা LH surge পরিণত Graafian follicle থেকে ovum নির্গমনে প্রধান ভূমিকা রাখে।" },
+          { question: "Ovulation-এর পর Graafian follicle রূপান্তরিত হয়ে কী তৈরি করে?", options: ["Placenta", "Corpus luteum", "Corpus albicans", "Morula"], correct: 1, explanation: "Ovulation-এর পর follicle-এর অবশিষ্ট অংশ corpus luteum তৈরি করে, যা প্রধানত progesterone নিঃসরণ করে।" },
+          { question: "Corpus luteum-এর প্রধান হরমোন—", options: ["Testosterone", "Progesterone", "Thyroxine", "ADH"], correct: 1, explanation: "Progesterone জরায়ুর endometrium-কে ভ্রূণ স্থাপনের উপযোগী ও রক্ষণাবেক্ষণ করতে সাহায্য করে।" },
+          { question: "জরায়ুর কোন স্তরে ভ্রূণের implantation ঘটে?", options: ["Myometrium", "Perimetrium", "Endometrium", "Mesometrium"], correct: 2, explanation: "জরায়ুর অভ্যন্তরীণ আবরণ endometrium-এ blastocyst implantation করে।" },
+          { question: "Implantation সাধারণত নিষেকের কতদিন পর শুরু হয়?", options: ["1 দিন", "2 দিন", "6–7 দিন", "20 দিন"], correct: 2, explanation: "নিষেকের কয়েকদিন পর blastocyst জরায়ুতে পৌঁছে এবং সাধারণত প্রায় 6–7 দিনের দিকে endometrium-এ implantation শুরু করে।" },
+          { question: "Blastocyst-এর যে অংশ ভবিষ্যতে ভ্রূণ তৈরি করে—", options: ["Trophoblast", "Inner cell mass", "Zona pellucida", "Corona radiata"], correct: 1, explanation: "Blastocyst-এর inner cell mass বা embryoblast থেকে মূল ভ্রূণীয় দেহ গঠিত হয়।" },
+          { question: "Blastocyst-এর trophoblast প্রধানত কী গঠনে ভূমিকা রাখে?", options: ["মস্তিষ্ক", "প্লাসেন্টার অংশ", "হৃদপিণ্ড", "কিডনি"], correct: 1, explanation: "Trophoblast implantation এবং placenta গঠনে গুরুত্বপূর্ণ ভূমিকা পালন করে।" },
+          { question: "গর্ভাবস্থা শনাক্ত করতে কোন হরমোন সবচেয়ে গুরুত্বপূর্ণ?", options: ["FSH", "hCG", "TSH", "GH"], correct: 1, explanation: "Implantation-এর পর trophoblast থেকে human chorionic gonadotropin বা hCG নিঃসৃত হয়। Pregnancy test-এ এই হরমোন শনাক্ত করা হয়।" },
+          { question: "hCG-এর প্রধান প্রাথমিক কাজ—", options: ["Corpus luteum বজায় রাখা", "Ovulation ঘটানো", "শুক্রাণু উৎপাদন করা", "ঋতুস্রাব শুরু করা"], correct: 0, explanation: "hCG corpus luteum-কে বজায় রাখতে সাহায্য করে, ফলে progesterone উৎপাদন অব্যাহত থাকে এবং endometrium বজায় থাকে।" },
+          { question: "প্লাসেন্টার একটি গুরুত্বপূর্ণ কাজ হলো—", options: ["শুধু রক্ত তৈরি করা", "মা ও ভ্রূণের মধ্যে পদার্থের বিনিময়", "শুধু হজম করা", "শুধু স্নায়ু তৈরি করা"], correct: 1, explanation: "Placenta অক্সিজেন, পুষ্টি, বর্জ্য পদার্থ ইত্যাদির বিনিময়ে গুরুত্বপূর্ণ ভূমিকা রাখে।" },
+          { question: "সাধারণত মায়ের ও ভ্রূণের রক্ত—", options: ["সরাসরি সম্পূর্ণভাবে মিশে যায়", "সাধারণত সরাসরি মিশে না", "সবসময় একই রক্তনালিতে থাকে", "একই হিমোগ্লোবিন ব্যবহার করে"], correct: 1, explanation: "Placental barrier-এর মাধ্যমে পদার্থের আদান-প্রদান ঘটে; সাধারণ অবস্থায় maternal ও fetal blood সরাসরি মিশে যায় না।" },
+          { question: "ভ্রূণের সঙ্গে প্লাসেন্টার সংযোগকারী গঠন—", options: ["Fallopian tube", "Umbilical cord", "Vas deferens", "Ureter"], correct: 1, explanation: "Umbilical cord-এর মাধ্যমে ভ্রূণ placenta-এর সঙ্গে সংযুক্ত থাকে।" },
+          { question: "Umbilical cord-এ সাধারণত কয়টি রক্তনালি থাকে?", options: ["1টি", "2টি", "3টি", "4টি"], correct: 2, explanation: "সাধারণত 2টি umbilical artery এবং 1টি umbilical vein থাকে।" },
+          { question: "Umbilical vein কী বহন করে?", options: ["ভ্রূণ থেকে অক্সিজেনবিহীন রক্ত", "প্লাসেন্টা থেকে ভ্রূণের দিকে অক্সিজেন ও পুষ্টিসমৃদ্ধ রক্ত", "শুধু CO₂", "শুধু ইউরিয়া"], correct: 1, explanation: "Umbilical vein placenta থেকে fetus-এর দিকে অপেক্ষাকৃত বেশি অক্সিজেন ও পুষ্টিসমৃদ্ধ রক্ত বহন করে।" },
+          { question: "Umbilical arteries কী বহন করে?", options: ["ভ্রূণ থেকে প্লাসেন্টার দিকে অপেক্ষাকৃত অক্সিজেন-স্বল্প রক্ত", "প্লাসেন্টা থেকে ভ্রূণের দিকে অক্সিজেনসমৃদ্ধ রক্ত", "শুধু পুষ্টি", "শুধু হরমোন"], correct: 0, explanation: "Umbilical arteries ভ্রূণ থেকে placenta-এর দিকে বর্জ্য ও অপেক্ষাকৃত কম অক্সিজেনযুক্ত রক্ত বহন করে।" },
+          { question: "ভ্রূণের তিনটি germ layer-এর মধ্যে কোনটি সবচেয়ে বাইরের?", options: ["Endoderm", "Mesoderm", "Ectoderm", "Trophoderm"], correct: 2, explanation: "Gastrulation-এর পর তিনটি germ layer তৈরি হয়—বাইরে ectoderm, মাঝখানে mesoderm এবং ভেতরে endoderm।" },
+          { question: "স্নায়ুতন্ত্র প্রধানত কোন germ layer থেকে উৎপন্ন?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Trophoblast"], correct: 0, explanation: "Ectoderm থেকে nervous system এবং epidermis-এর মতো বিভিন্ন গঠন তৈরি হয়।" },
+          { question: "পেশি ও অস্থি প্রধানত কোন germ layer থেকে উৎপন্ন?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Trophoblast"], correct: 1, explanation: "Mesoderm থেকে muscle, bone, connective tissue, blood ইত্যাদি বিভিন্ন গঠন তৈরি হয়।" },
+          { question: "পরিপাকনালির আবরণ প্রধানত কোন germ layer থেকে উৎপন্ন?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Amnion"], correct: 2, explanation: "Endoderm থেকে digestive tract-এর epithelial lining এবং কিছু associated organs-এর epithelial অংশ তৈরি হয়।" },
+          { question: "ভ্রূণকে ঘিরে থাকা তরলপূর্ণ থলির তরলকে কী বলে?", options: ["Synovial fluid", "Amniotic fluid", "Lymph", "Plasma"], correct: 1, explanation: "Amniotic fluid ভ্রূণকে যান্ত্রিক আঘাত থেকে সুরক্ষা দেয় এবং ভ্রূণের স্বাভাবিক বিকাশে সহায়তা করে।" },
+          { question: "Amniotic fluid-এর একটি গুরুত্বপূর্ণ কাজ—", options: ["ভ্রূণকে যান্ত্রিক আঘাত থেকে রক্ষা করা", "ভ্রূণের রক্ত সরাসরি তৈরি করা", "ডিম্বাণু তৈরি করা", "শুক্রাণু তৈরি করা"], correct: 0, explanation: "Amniotic fluid একটি cushioning medium হিসেবে কাজ করে এবং ভ্রূণকে বাহ্যিক আঘাত থেকে সুরক্ষা দেয়।" },
+          { question: "মানুষের গর্ভকাল সাধারণত প্রায়—", options: ["90 দিন", "180 দিন", "280 দিন", "365 দিন"], correct: 2, explanation: "শেষ মাসিকের প্রথম দিন থেকে হিসাব করলে মানব গর্ভকাল প্রায় 280 দিন বা 40 সপ্তাহ।" },
+          { question: "প্রসবের সময় জরায়ুর সংকোচন বাড়াতে প্রধান ভূমিকা পালন করে—", options: ["Oxytocin", "Insulin", "Thyroxine", "Glucagon"], correct: 0, explanation: "Oxytocin জরায়ুর smooth muscle-এর contraction বৃদ্ধি করে এবং প্রসব প্রক্রিয়ায় গুরুত্বপূর্ণ ভূমিকা রাখে।" },
+          { question: "দুধ উৎপাদনের জন্য প্রধান হরমোন—", options: ["Oxytocin", "Prolactin", "hCG", "LH"], correct: 1, explanation: "Prolactin mammary gland-এ দুধ উৎপাদনকে উদ্দীপিত করে। Oxytocin মূলত দুধ নিঃসরণ বা milk ejection-এ সাহায্য করে।" },
+          { question: "নিচের কোন ক্রমটি মানব ভ্রূণের প্রাথমিক বিকাশের সঠিক ক্রম?", options: ["Zygote → Blastocyst → Morula → Implantation", "Zygote → Morula → Blastocyst → Implantation", "Morula → Zygote → Blastocyst → Implantation", "Blastocyst → Zygote → Morula → Implantation"], correct: 1, explanation: "নিষেকের পর zygote বারবার cleavage-এর মাধ্যমে morula তৈরি করে। এরপর blastocyst তৈরি হয় এবং পরে তা জরায়ুর endometrium-এ implantation করে।" }
         ]
       };
 
@@ -462,9 +462,6 @@
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
 
-          // যদি আপনি কোথাও ইউজার বা সঠিক উত্তর টেক্সট আকারে আলাদা দেখাতে চান, 
-          // তাহলে q.options[correctVal] ব্যবহার করবেন (এটিতে undefined দেখানোর সমস্যা সমাধান করা হয়েছে)।
-
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
             if(lbl) {
@@ -489,7 +486,7 @@
         resDiv.innerHTML = `
           <div class="score-board">
             <h2>পরীক্ষার ফলাফল</h2>
-            <p class="already-submitted-msg">⚠️Have you tested this before?</p>
+            <p class="already-submitted-msg">⚠️You have provided this test?</p>
             <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total} (প্রতি ভুল উত্তরে ০.২৫ কাটা হয়েছে)</p>
             <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা ফিল্টার করে দেখতে পারেন।</p>
           </div>
