@@ -8,6 +8,12 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- KaTeX CSS & JS for LaTeX Rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
 <style>
 *{
     box-sizing:border-box;
@@ -268,6 +274,11 @@ button,input,select,textarea{
     border-left:4px solid #10b981;
 }
 
+.question-card.cancelled{
+    border-left:4px solid #ef4444;
+    opacity:0.75;
+}
+
 .question-top{
     display:flex;
     justify-content:space-between;
@@ -296,6 +307,11 @@ button,input,select,textarea{
 .status.answered{
     background:rgba(16,185,129,.15);
     color:#34d399;
+}
+
+.status.cancelled{
+    background:rgba(239,68,68,.15);
+    color:#fca5a5;
 }
 
 .meta{
@@ -354,6 +370,11 @@ button,input,select,textarea{
     gap:10px;
 }
 
+.action-btns{
+    display:flex;
+    gap:8px;
+}
+
 .answer-btn{
     border:none;
     background:#10b981;
@@ -371,6 +392,16 @@ button,input,select,textarea{
     padding:8px 14px;
     border-radius:7px;
     cursor:pointer;
+}
+
+.cancel-btn{
+    border:none;
+    background:#ef4444;
+    color:#fff;
+    padding:8px 12px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:600;
 }
 
 /* ================= ANSWER MODAL ================= */
@@ -565,8 +596,14 @@ button,input,select,textarea{
         align-items:stretch;
     }
 
+    .action-btns{
+        width:100%;
+        flex-direction:column;
+    }
+
     .answer-btn,
-    .view-btn{
+    .view-btn,
+    .cancel-btn{
         width:100%;
     }
 }
@@ -720,6 +757,7 @@ button,input,select,textarea{
                     <option value="">সব প্রশ্ন</option>
                     <option value="pending">উত্তর দেওয়া হয়নি</option>
                     <option value="answered">উত্তর দেওয়া হয়েছে</option>
+                    <option value="cancelled">বাতিলকৃত প্রশ্ন</option>
                 </select>
 
             </div>
@@ -771,7 +809,7 @@ button,input,select,textarea{
         <div class="form-group">
 
             <label>
-                লিখিত উত্তর
+                লিখিত উত্তর (LaTeX কোড সমর্থন করে)
             </label>
 
             <textarea
@@ -867,7 +905,8 @@ import {
     onValue,
     set,
     push,
-    update
+    update,
+    remove
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
@@ -1141,7 +1180,7 @@ function renderQuestions(){
         if(paper && q.paper !== paper) return false;
         if(chapter && q.chapter !== chapter) return false;
 
-        const qStatus = q.status === "answered" ? "answered" : "pending";
+        const qStatus = q.status === "answered" ? "answered" : (q.status === "cancelled" ? "cancelled" : "pending");
         if(status && qStatus !== status) return false;
 
         if(search){
@@ -1164,9 +1203,20 @@ function renderQuestions(){
     let html = "";
 
     questions.forEach(([id, q]) => {
-        const answered = q.status === "answered";
-        const statusClass = answered ? "answered" : "pending";
-        const statusText = answered ? "উত্তর দেওয়া হয়েছে" : "উত্তর অপেক্ষমাণ";
+        const isAnswered = q.status === "answered";
+        const isCancelled = q.status === "cancelled";
+        
+        let statusClass = "pending";
+        let statusText = "উত্তর অপেক্ষমাণ";
+
+        if(isAnswered){
+            statusClass = "answered";
+            statusText = "উত্তর দেওয়া হয়েছে";
+        } else if(isCancelled){
+            statusClass = "cancelled";
+            statusText = "প্রশ্নটি বাতিল করা হয়েছে";
+        }
+
         const date = q.createdAt ? new Date(q.createdAt).toLocaleString("bn-BD") : "";
 
         let questionFile = "";
@@ -1196,22 +1246,58 @@ function renderQuestions(){
                 <span>🕐 ${date}</span>
             </div>
 
-            <div class="question-text">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
+            <div class="question-text render-latex">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
 
             ${questionFile}
 
             <div class="question-footer">
                 <div style="color:#64748b;font-size:11px;">Question ID: ${id.substring(0,8)}</div>
-                <button class="${answered ? "view-btn" : "answer-btn"}" onclick="openAnswerModal('${id}')">
-                    ${answered ? "👁️ উত্তর দেখুন / পরিবর্তন" : "✍️ উত্তর দিন"}
-                </button>
+                <div class="action-btns">
+                    <button class="${isAnswered ? "view-btn" : "answer-btn"}" onclick="openAnswerModal('${id}')">
+                        ${isAnswered ? "👁️ উত্তর দেখুন / পরিবর্তন" : "✍️ উত্তর দিন"}
+                    </button>
+                    <button class="cancel-btn" onclick="cancelQuestion('${id}')">
+                        ❌ Cancel
+                    </button>
+                </div>
             </div>
         </div>
         `;
     });
 
     container.innerHTML = html;
+    
+    // LaTeX Rendering Call
+    renderMathInElement(container, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError : false
+    });
 }
+
+
+/* =====================================================
+   CANCEL QUESTION BY TEACHER
+===================================================== */
+
+window.cancelQuestion = async function(id){
+    if(confirm("আপনি কি নিশ্চিত যে এই প্রশ্নটি বাতিল (Cancel) করতে চান?")){
+        try{
+            await update(ref(db, `qanda/questions/${id}`), {
+                status: "cancelled",
+                cancelledAt: Date.now(),
+                cancelledBy: TEACHER_NO
+            });
+            alert("প্রশ্নটি বাতিল করা হয়েছে।");
+        }catch(e){
+            alert("সমস্যা হয়েছে: " + e.message);
+        }
+    }
+};
 
 
 /* =====================================================
@@ -1226,7 +1312,7 @@ function updateStats(){
 
     questions.forEach(q => {
         if(q.status === "answered") answered++;
-        else pending++;
+        else if(q.status !== "cancelled") pending++;
 
         if(q.studentUid) students.add(q.studentUid);
     });
@@ -1257,16 +1343,43 @@ window.openAnswerModal = function(id){
         }
     }
 
-    document.getElementById("answerQuestionInfo").innerHTML = `
+    // Previous Answer Details (if exists)
+    let previousAnswerHtml = "";
+    if(q.answerText || q.answerImageData || q.answerPdfData || q.answerVoiceData){
+        previousAnswerHtml = `
+            <div style="background:#1e293b;border:1px solid #10b981;border-radius:8px;padding:12px;margin-top:12px;">
+                <div style="color:#10b981;font-weight:700;margin-bottom:5px;">পূর্বে দেওয়া উত্তর:</div>
+                <div class="render-latex" style="color:#cbd5e1;white-space:pre-wrap;">${escapeHtml(q.answerText || "")}</div>
+                ${q.answerImageData ? `<div class="file-preview"><img src="${q.answerImageData}"></div>` : ""}
+                ${q.answerPdfData ? `<div style="margin-top:8px;"><a class="pdf-link" href="${q.answerPdfData}" target="_blank">📄 উত্তরের PDF</a></div>` : ""}
+                ${q.answerVoiceData ? `<audio controls src="${q.answerVoiceData}" style="width:100%;margin-top:8px;"></audio>` : ""}
+            </div>
+        `;
+    }
+
+    const modalInfo = document.getElementById("answerQuestionInfo");
+    modalInfo.innerHTML = `
         <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:15px;">
             <div style="color:#38bdf8;font-weight:700;margin-bottom:7px;">${escapeHtml(q.studentName || "শিক্ষার্থী")}</div>
             <div style="color:#94a3b8;font-size:12px;margin-bottom:8px;">
                 ${subjectName(q.subject)} • ${q.paper === "paper1" ? "১ম পত্র" : "২য় পত্র"} • ${escapeHtml(q.chapter || "")}
             </div>
-            <div style="color:#e2e8f0;white-space:pre-wrap;line-height:1.6;">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
+            <div class="render-latex" style="color:#e2e8f0;white-space:pre-wrap;line-height:1.6;">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
             ${fileHtml}
+            ${previousAnswerHtml}
         </div>
     `;
+
+    // LaTeX Render in Modal
+    renderMathInElement(modalInfo, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError : false
+    });
 
     document.getElementById("teacherAnswerText").value = q.answerText || "";
     document.getElementById("teacherImage").value = "";
@@ -1310,8 +1423,8 @@ window.submitTeacherAnswer = async function(){
     }
 
     try{
-        let imageData = "";
-        let pdfData = "";
+        let imageData = q.answerImageData || "";
+        let pdfData = q.answerPdfData || "";
 
         if(imageFile){
             if(imageFile.size > 5 * 1024 * 1024){
@@ -1337,24 +1450,23 @@ window.submitTeacherAnswer = async function(){
             answerText: answerText,
             imageData: imageData,
             pdfData: pdfData,
-            voiceData: recordedAudioBase64,
+            voiceData: recordedAudioBase64 || q.answerVoiceData || "",
             createdAt: Date.now()
         };
 
         // উত্তর সেভ করা
         await set(ref(db, `qanda/questions/${selectedQuestionId}/answers/${answerId}`), answer);
 
-        // মেইন প্রশ্ন আপডেটিং
+        // মেইন প্রশ্ন আপডেট (সব শিক্ষার্থীদের পাবলিকভাবে দেখার জন্য)
         await update(ref(db, `qanda/questions/${selectedQuestionId}`), {
             status: "answered",
             answerText: answerText,
             answeredAt: Date.now(),
             answeredBy: TEACHER_NO,
             latestAnswerId: answerId,
-            // স্টুডেন্টের সিস্টেমে যদি সরাসরি দেখার ফিল্ড থাকে তার জন্য
             answerImageData: imageData,
             answerPdfData: pdfData,
-            answerVoiceData: recordedAudioBase64
+            answerVoiceData: recordedAudioBase64 || q.answerVoiceData || ""
         });
 
         /*
