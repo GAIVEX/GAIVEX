@@ -9,7 +9,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
         
-        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন (ডিএনএ ও অন্যান্য সায়েন্টিফিক আইকন) */
+        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন */
         .global-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .floating-element { position: absolute; font-size: 45px; opacity: 0.18; animation: floatRotateAnim 15s infinite linear; }
         
@@ -21,7 +21,6 @@
             100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
         }
 
-        /* হেডার ও অন্যান্য উপাদান যেন ব্যাকগ্রাউন্ডের উপরে স্পষ্টভাবে থাকে */
         .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn { position: relative; z-index: 10; }
 
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid #334155; gap: 10px; position: sticky; top: 0; z-index: 100; }
@@ -61,7 +60,6 @@
         .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
         .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
 
-        /* ফ্লোটিং এআই বাটন স্টাইল */
         .floating-ai-btn {
             position: fixed;
             bottom: 25px;
@@ -133,7 +131,6 @@
 </head>
 <body>
 
-    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
     <div class="global-bg-container">
         <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
         <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
@@ -143,7 +140,6 @@
         <div class="floating-element" style="top: 40%; left: 5%; animation-duration: 17s; animation-delay: 5s;">⚛️</div>
     </div>
 
-    <!-- ফ্লোটিং এআই বাটন -->
     <a href="gaivexai.html" class="floating-ai-btn">
         <span style="font-size: 18px;">🤖</span>
     </a>
@@ -158,6 +154,7 @@
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
                     <button onclick="openResultModal()">📊 রেজাল্ট</button>
                     <button onclick="openNotesModal()">📚 নোটস</button>
+                    <button onclick="openQaModal()">❓ Q&A (প্রশ্ন-উত্তর)</button>
                     <div id="dropdownAuthAction"></div>
                 </div>
             </div>
@@ -182,18 +179,38 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
-        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
             <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
+            <div class="subject-box" onclick="openQaModal()"><div class="icon">❓</div><h3>Q&A</h3></div>
             <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
             <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
     </main>
+
+    <!-- Q&A মোডাল -->
+    <div id="qaModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h3>❓ প্রশ্ন ও উত্তর (Q&A)</h3>
+            <button class="modal-close-x" onclick="closeQaModal()">&times;</button>
+        </div>
+        <p style="color:#94a3b8; font-size:13px; margin-bottom:10px;">আপনার কোনো প্রশ্ন থাকলে এখানে করতে পারেন বা অন্যান্যের প্রশ্নের উত্তর দেখতে পারেন:</p>
+        <textarea id="userQuestionInput" placeholder="আপনার প্রশ্নটি এখানে লিখুন..." style="width:100%; height:90px; padding:10px; background:#0f172a; border:1px solid #475569; color:#fff; border-radius:6px; font-size:14px; resize:none; margin-bottom:10px; outline:none;"></textarea>
+        <button type="button" class="btn btn-save" onclick="submitUserQuestion()" style="width:100%; margin-bottom:12px;">প্রশ্ন জমা দিন</button>
+        
+        <div id="qaListContainer" style="max-height:220px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
+            <p style="color:#94a3b8; text-align:center; font-size:13px;">প্রশ্ন লোড হচ্ছে...</p>
+        </div>
+        <div class="btn-group" style="margin-top: 15px;">
+            <button type="button" class="btn btn-close" onclick="closeQaModal()" style="flex: 1;">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
 
     <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
@@ -236,7 +253,6 @@
                 <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
             
-            <!-- ফিল্টার ড্রপডাউন -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
@@ -256,7 +272,6 @@
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
-            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
             <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
                 <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
             </div>
@@ -346,7 +361,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -403,10 +418,7 @@
           document.getElementById('noticeModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
       }
-
-      window.closeNoticeModal = function() {
-          document.getElementById('noticeModal').style.display = 'none';
-      }
+      window.closeNoticeModal = function() { document.getElementById('noticeModal').style.display = 'none'; }
 
       window.openResultModal = async function() {
           if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
@@ -414,16 +426,62 @@
           document.getElementById('dropdownMenu').classList.remove('show');
           await loadAllExamResultsList();
       }
-
-      window.closeResultModal = function() {
-          document.getElementById('resultListModal').style.display = 'none';
-      }
+      window.closeResultModal = function() { document.getElementById('resultListModal').style.display = 'none'; }
 
       window.openNotesModal = () => {
           document.getElementById('notesModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
       }
       window.closeNotesModal = () => document.getElementById('notesModal').style.display = 'none';
+
+      window.openQaModal = () => {
+          document.getElementById('qaModal').style.display = 'flex';
+          document.getElementById('dropdownMenu').classList.remove('show');
+          loadUserQuestions();
+      }
+      window.closeQaModal = () => document.getElementById('qaModal').style.display = 'none';
+
+      window.submitUserQuestion = async function() {
+          if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
+          const qText = document.getElementById('userQuestionInput').value.trim();
+          if(!qText) { alert("দয়া করে কিছু লিখুন!"); return; }
+          try {
+              const qRef = ref(db, 'student_questions');
+              await push(qRef, {
+                  userName: currentUser.displayName || currentUser.email,
+                  question: qText,
+                  date: Date.now(),
+                  answer: "শিক্ষক এখনও উত্তর দেননি।"
+              });
+              document.getElementById('userQuestionInput').value = "";
+              alert("আপনার প্রশ্নটি সফলভাবে জমা হয়েছে!");
+              loadUserQuestions();
+          } catch(e) { alert("ত্রুটি ঘটেছে: " + e.message); }
+      }
+
+      async function loadUserQuestions() {
+          const container = document.getElementById('qaListContainer');
+          try {
+              const snapshot = await get(ref(db, 'student_questions'));
+              if(snapshot.exists()) {
+                  const data = snapshot.val();
+                  let html = '';
+                  for(let id in data) {
+                      let item = data[id];
+                      html += `
+                        <div style="background:#1e293b; padding:10px; border-radius:6px; margin-bottom:8px; border:1px solid #334155; font-size:13px;">
+                            <div style="color:#38bdf8; font-weight:bold;">👤 ${item.userName}</div>
+                            <div style="color:#f8fafc; margin:4px 0;"><b>প্রশ্ন:</b> ${item.question}</div>
+                            <div style="color:#10b981; background:#0f172a; padding:6px; border-radius:4px; margin-top:4px;"><b>উত্তর:</b> ${item.answer}</div>
+                        </div>
+                      `;
+                  }
+                  container.innerHTML = html;
+              } else {
+                  container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px;">কোনো প্রশ্ন পাওয়া যায়নি।</p>';
+              }
+          } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:13px;">লোড করতে সমস্যা হয়েছে।</p>'; }
+      }
 
       window.updateStudentPaperOptions = function() {
           const paperSelect = document.getElementById('filterPaper');
@@ -661,9 +719,7 @@
           document.getElementById('examReviewModal').style.display = 'flex';
       }
 
-      window.closeExamReviewModal = function() {
-          document.getElementById('examReviewModal').style.display = 'none';
-      }
+      window.closeExamReviewModal = function() { document.getElementById('examReviewModal').style.display = 'none'; }
 
       async function loadNotices() {
           const popupList = document.getElementById('popupNoticeList');
@@ -697,18 +753,14 @@
       async function loadLiveExamTitle() {
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam/title'));
-          if(snapshot.exists()) {
-            document.getElementById('liveExamTitle').innerText = snapshot.val();
-          }
+          if(snapshot.exists()) { document.getElementById('liveExamTitle').innerText = snapshot.val(); }
         } catch(e) {}
       }
 
       async function loadPracticeExamTitle() {
         try {
           const snapshot = await get(ref(db, 'practice_exams/title'));
-          if(snapshot.exists()) {
-            document.getElementById('practiceExamTitle').innerText = snapshot.val();
-          }
+          if(snapshot.exists()) { document.getElementById('practiceExamTitle').innerText = snapshot.val(); }
         } catch(e) {}
       }
 
