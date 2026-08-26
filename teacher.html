@@ -893,6 +893,53 @@ button,input,select,textarea{
 </div>
 
 
+<!-- ================= CANCEL REASON MODAL ================= -->
+
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="color:#ef4444;">❌ প্রশ্ন বাতিলের কারণ</h3>
+            <button class="close-btn" onclick="closeCancelModal()">&times;</button>
+        </div>
+        <div class="form-group">
+            <label>কেন প্রশ্নটি বাতিল করছেন তা লিখুন (শিক্ষার্থী এটি দেখতে পাবে):</label>
+            <textarea id="cancelReasonText" class="answer-textarea" placeholder="উদাহরণ: আপনার প্রশ্নটি অস্পষ্ট বা অসম্পূর্ণ..."></textarea>
+        </div>
+        <button class="cancel-btn" style="width:100%;padding:12px;margin-top:10px;" onclick="confirmCancelQuestion()">
+            ❌ প্রশ্ন বাতিল নিশ্চিত করুন
+        </button>
+    </div>
+</div>
+
+
+<!-- ================= FOLLOW UP CHAT MODAL ================= -->
+
+<div id="followupModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>💬 ফলো-আপ চ্যাট (Follow-up Chat)</h3>
+            <button class="close-btn" onclick="closeFollowupModal()">&times;</button>
+        </div>
+        
+        <div id="followupQuestionSummary" style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:15px;font-size:13px;color:#94a3b8;"></div>
+
+        <!-- Chat History List -->
+        <div id="followupChatContainer" style="max-height:300px;overflow-y:auto;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:15px;display:flex;flex-direction:column;gap:10px;">
+            <!-- Messages render dynamically -->
+        </div>
+
+        <div class="form-group">
+            <label>ফলো-আপ উত্তর লিখুন (Teacher Reply):</label>
+            <textarea id="followupAnswerText" class="answer-textarea" style="min-height:90px;" placeholder="ফলো-আপ প্রশ্নের সমাধান বা ব্যাখ্যা লিখুন..."></textarea>
+        </div>
+
+        <button class="save-answer" onclick="submitFollowupAnswer()">
+            💬 ফলো-আপ উত্তর পাঠান
+        </button>
+    </div>
+</div>
+
+
 <script type="module">
 
 import {
@@ -944,6 +991,7 @@ const ADMIN_EMAIL = "gaiyumtamim@gmail.com";
 
 let allQuestions = {};
 let selectedQuestionId = null;
+let pendingCancelId = null;
 let mediaRecorder = null;
 let audioChunks = [];
 let recordedAudioBase64 = "";
@@ -1154,6 +1202,11 @@ function listenToQuestions(){
     onValue(qRef, (snapshot) => {
         allQuestions = snapshot.exists() ? snapshot.val() : {};
         renderQuestions();
+        
+        // Active follow-up chat UI live update
+        if(selectedQuestionId && document.getElementById("followupModal").classList.contains("show")){
+            renderFollowupChatList(selectedQuestionId);
+        }
     }, (error) => {
         console.error("Firebase Listener Error:", error);
         container.innerHTML = `<div class="empty">❌ প্রশ্ন লোড করা যায়নি।</div>`;
@@ -1229,6 +1282,16 @@ function renderQuestions(){
             }
         }
 
+        // Cancelled Reason Display
+        let cancelReasonHtml = "";
+        if(isCancelled && q.cancelReason){
+            cancelReasonHtml = `<div style="margin-top:10px;padding:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:6px;color:#fca5a5;font-size:13px;">❌ <b>বাতিলের কারণ:</b> ${escapeHtml(q.cancelReason)}</div>`;
+        }
+
+        // Check for follow-up questions count
+        const followups = q.followups ? Object.values(q.followups) : [];
+        const followupBadge = followups.length > 0 ? `<span style="background:#f59e0b;color:#000;border-radius:10px;padding:2px 6px;font-size:10px;margin-left:5px;">${followups.length} Follow-up</span>` : "";
+
         html += `
         <div class="question-card ${statusClass}">
             <div class="question-top">
@@ -1249,12 +1312,16 @@ function renderQuestions(){
             <div class="question-text render-latex">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
 
             ${questionFile}
+            ${cancelReasonHtml}
 
             <div class="question-footer">
                 <div style="color:#64748b;font-size:11px;">Question ID: ${id.substring(0,8)}</div>
                 <div class="action-btns">
                     <button class="${isAnswered ? "view-btn" : "answer-btn"}" onclick="openAnswerModal('${id}')">
                         ${isAnswered ? "👁️ উত্তর দেখুন / পরিবর্তন" : "✍️ উত্তর দিন"}
+                    </button>
+                    <button class="view-btn" style="background:#8b5cf6;" onclick="openFollowupModal('${id}')">
+                        💬 চ্যাট / ফলো-আপ ${followupBadge}
                     </button>
                     <button class="cancel-btn" onclick="cancelQuestion('${id}')">
                         ❌ Cancel
@@ -1281,21 +1348,55 @@ function renderQuestions(){
 
 
 /* =====================================================
-   CANCEL QUESTION BY TEACHER
+   CANCEL QUESTION WITH REASON
 ===================================================== */
 
-window.cancelQuestion = async function(id){
-    if(confirm("আপনি কি নিশ্চিত যে এই প্রশ্নটি বাতিল (Cancel) করতে চান?")){
-        try{
-            await update(ref(db, `qanda/questions/${id}`), {
-                status: "cancelled",
-                cancelledAt: Date.now(),
-                cancelledBy: TEACHER_NO
+window.cancelQuestion = function(id){
+    pendingCancelId = id;
+    document.getElementById("cancelReasonText").value = "";
+    document.getElementById("cancelModal").classList.add("show");
+};
+
+window.closeCancelModal = function(){
+    document.getElementById("cancelModal").classList.remove("show");
+    pendingCancelId = null;
+};
+
+window.confirmCancelQuestion = async function(){
+    if(!pendingCancelId) return;
+
+    const reason = document.getElementById("cancelReasonText").value.trim();
+    if(!reason){
+        alert("অনুগ্রহ করে প্রশ্নটি বাতিল করার কারণ উল্লেখ করুন।");
+        return;
+    }
+
+    try{
+        const q = allQuestions[pendingCancelId];
+        await update(ref(db, `qanda/questions/${pendingCancelId}`), {
+            status: "cancelled",
+            cancelledAt: Date.now(),
+            cancelledBy: TEACHER_NO,
+            cancelReason: reason
+        });
+
+        // Notify Student
+        if(q && q.studentUid){
+            const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
+            await set(notificationRef, {
+                type: "qanda_cancelled",
+                title: "আপনার প্রশ্নটি বাতিল করা হয়েছে",
+                message: `কারণ: ${reason}`,
+                questionId: pendingCancelId,
+                createdAt: Date.now(),
+                read: false
             });
-            alert("প্রশ্নটি বাতিল করা হয়েছে।");
-        }catch(e){
-            alert("সমস্যা হয়েছে: " + e.message);
         }
+
+        alert("প্রশ্নটি বাতিল করা হয়েছে এবং কারণ সংরক্ষণ করা হয়েছে।");
+        closeCancelModal();
+    }catch(e){
+        alert("সমস্যা হয়েছে: " + e.message);
     }
 };
 
@@ -1494,6 +1595,117 @@ window.submitTeacherAnswer = async function(){
     }catch(error){
         console.error(error);
         alert("❌ উত্তর প্রকাশ করতে সমস্যা হয়েছে:\n" + error.message);
+    }
+};
+
+
+/* =====================================================
+   FOLLOW-UP CHAT LOGIC
+===================================================== */
+
+window.openFollowupModal = function(id){
+    selectedQuestionId = id;
+    const q = allQuestions[id];
+    if(!q) return;
+
+    document.getElementById("followupQuestionSummary").innerHTML = `
+        📌 <b>মূল প্রশ্ন:</b> ${escapeHtml(q.questionText || "কোনো লিখিত কথা নেই।")}<br>
+        👤 <b>শিক্ষার্থী:</b> ${escapeHtml(q.studentName || "অজ্ঞাত")}
+    `;
+    
+    document.getElementById("followupAnswerText").value = "";
+    renderFollowupChatList(id);
+    document.getElementById("followupModal").classList.add("show");
+};
+
+window.closeFollowupModal = function(){
+    document.getElementById("followupModal").classList.remove("show");
+    selectedQuestionId = null;
+};
+
+function renderFollowupChatList(id){
+    const container = document.getElementById("followupChatContainer");
+    const q = allQuestions[id];
+    if(!q) return;
+
+    const followups = q.followups ? Object.entries(q.followups) : [];
+
+    if(followups.length === 0){
+        container.innerHTML = `<div style="text-align:center;color:#64748b;font-size:13px;padding:10px;">এখনো কোনো নতুন ফলো-আপ বার্তা নেই।</div>`;
+        return;
+    }
+
+    // Sort chronologically
+    followups.sort(([aId, a], [bId, b]) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+
+    let chatHtml = "";
+    followups.forEach(([fId, f]) => {
+        const isStudent = f.sender === "student";
+        const alignStyle = isStudent ? "align-self:flex-start;background:#334155;color:#f8fafc;" : "align-self:flex-end;background:#0284c7;color:#fff;";
+        const senderLabel = isStudent ? `👨‍🎓 ${escapeHtml(q.studentName || "শিক্ষার্থী")}` : `👨‍🏫 Teacher (${TEACHER_NO})`;
+        const time = f.createdAt ? new Date(f.createdAt).toLocaleTimeString("bn-BD", {hour:'2-digit', minute:'2-digit'}) : "";
+
+        chatHtml += `
+            <div style="max-width:85%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;${alignStyle}">
+                <div style="font-weight:700;font-size:11px;margin-bottom:3px;opacity:0.8;">${senderLabel} • ${time}</div>
+                <div class="render-latex" style="white-space:pre-wrap;">${escapeHtml(f.text || "")}</div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = chatHtml;
+
+    // Render Math in Chat
+    renderMathInElement(container, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError : false
+    });
+
+    // Auto scroll bottom
+    container.scrollTop = container.scrollHeight;
+}
+
+window.submitFollowupAnswer = async function(){
+    if(!selectedQuestionId) return;
+
+    const text = document.getElementById("followupAnswerText").value.trim();
+    if(!text){
+        alert("উত্তর প্রদান করতে বার্তা টাইপ করুন।");
+        return;
+    }
+
+    try{
+        const q = allQuestions[selectedQuestionId];
+        const followupRef = push(ref(db, `qanda/questions/${selectedQuestionId}/followups`));
+        
+        await set(followupRef, {
+            sender: "teacher",
+            teacherNo: TEACHER_NO,
+            text: text,
+            createdAt: Date.now()
+        });
+
+        // Notify student
+        if(q.studentUid){
+            const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
+            await set(notificationRef, {
+                type: "qanda_followup_reply",
+                title: "ফলো-আপ প্রশ্নের উত্তর দেওয়া হয়েছে",
+                message: `শিক্ষক আপনার ফলো-আপ বার্তার জবাব দিয়েছেন।`,
+                questionId: selectedQuestionId,
+                createdAt: Date.now(),
+                read: false
+            });
+        }
+
+        document.getElementById("followupAnswerText").value = "";
+    }catch(err){
+        alert("ফলো-আপ উত্তর পাঠাতে সমস্যা হয়েছে: " + err.message);
     }
 };
 
