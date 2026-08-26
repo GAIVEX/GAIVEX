@@ -864,7 +864,7 @@ import {
 import {
     getDatabase,
     ref,
-    get,
+    onValue,
     set,
     push,
     update
@@ -876,30 +876,17 @@ import {
 ===================================================== */
 
 const firebaseConfig = {
-
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
-
     authDomain: "gaivexexam.firebaseapp.com",
-
-    databaseURL:
-    "https://gaivexexam-default-rtdb.firebaseio.com",
-
-    projectId:
-    "gaivexexam",
-
-    storageBucket:
-    "gaivexexam.firebasestorage.app",
-
-    messagingSenderId:
-    "956204530190",
-
-    appId:
-    "1:956204530190:web:4e5550afefa3e314c99a5f"
+    databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+    projectId: "gaivexexam",
+    storageBucket: "gaivexexam.firebasestorage.app",
+    messagingSenderId: "956204530190",
+    appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
 };
 
 
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
 
 
@@ -908,9 +895,7 @@ const db = getDatabase(app);
 ===================================================== */
 
 const TEACHER_NO = "GVX-001098";
-
 const TEACHER_PASSWORD = "GAIVEX#@014265";
-
 const ADMIN_EMAIL = "gaiyumtamim@gmail.com";
 
 
@@ -919,13 +904,9 @@ const ADMIN_EMAIL = "gaiyumtamim@gmail.com";
 ===================================================== */
 
 let allQuestions = {};
-
 let selectedQuestionId = null;
-
 let mediaRecorder = null;
-
 let audioChunks = [];
-
 let recordedAudioBase64 = "";
 
 
@@ -934,122 +915,105 @@ let recordedAudioBase64 = "";
 ===================================================== */
 
 const chaptersData = {
-
-physics: {
-
-paper1: [
-"অধ্যায় ১: ভৌতজগৎ ও পরিমাপ",
-"অধ্যায় ২: ভেক্টর",
-"অধ্যায় ৩: গতিবিদ্যা",
-"অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান",
-"অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা",
-"অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ",
-"অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম",
-"অধ্যায় ৮: পর্যায়বৃত্ত গতি",
-"অধ্যায় ৯: তরঙ্গ",
-"অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"
-],
-
-paper2: [
-"অধ্যায় ১: তাপগতিবিদ্যা",
-"অধ্যায় ২: স্থির তড়িৎ",
-"অধ্যায় ৩: চল তড়িৎ",
-"অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব",
-"অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",
-"অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান",
-"অধ্যায় ৭: ভৌত আলোকবিজ্ঞান",
-"অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা",
-"অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
-"অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
-"অধ্যায় ১১: জ্যোতির্বিজ্ঞান"
-]
-
-},
-
-chemistry: {
-
-paper1: [
-"অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার",
-"অধ্যায় ২: গুণগত রসায়ন",
-"অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন",
-"অধ্যায় ৪: রাসায়নিক পরিবর্তন",
-"অধ্যায় ৫: কর্মমুখী রসায়ন"
-],
-
-paper2: [
-"অধ্যায় ১: পরিবেশ রসায়ন",
-"অধ্যায় ২: জৈব রসায়ন",
-"অধ্যায় ৩: পরিমাণগত রসায়ন",
-"অধ্যায় ৪: তড়িৎ রসায়ন",
-"অধ্যায় ৫: অর্থনৈতিক রসায়ন"
-]
-
-},
-
-biology: {
-
-paper1: [
-"অধ্যায় ১: কোষ ও এর গঠন",
-"অধ্যায় ২: কোষ বিভাজন",
-"অধ্যায় ৩: কোষ রসায়ন",
-"অধ্যায় ৪: অণুজীব",
-"অধ্যায় ৫: শৈবাল ও ছত্রাক",
-"অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা",
-"অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",
-"অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র",
-"অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব",
-"অধ্যায় ১০: উদ্ভিদ প্রজনন",
-"অধ্যায় ১১: জীবপ্রযুক্তি",
-"অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"
-],
-
-paper2: [
-"অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
-"অধ্যায় ২: প্রাণীর পরিচিতি",
-"অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ",
-"অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন",
-"অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া",
-"অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন",
-"অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা",
-"অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ",
-"অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা",
-"অধ্যায় ১০: মানবদেহের প্রতিরক্ষা",
-"অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন",
-"অধ্যায় ১২: প্রাণীর আচরণ"
-]
-
-},
-
-math: {
-
-paper1: [
-"অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক",
-"অধ্যায় ২: ভেক্টর",
-"অধ্যায় ৩: সরলরেখা",
-"অধ্যায় ৪: বৃত্ত",
-"অধ্যায় ৫: বিন্যাস ও সমাবেশ",
-"অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত",
-"অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",
-"অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র",
-"অধ্যায় ৯: অন্তরীকরণ (Differentiation)",
-"অধ্যায় ১০: যোগজীকরণ (Integration)"
-],
-
-paper2: [
-"অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা",
-"অধ্যায় ২: রৈখিক প্রোগ্রামন",
-"অধ্যায় ৩: জটিল সংখ্যা",
-"অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ",
-"অধ্যায় ৫: দ্বিপদী বিস্তৃতি",
-"অধ্যায় ৬: কনিক",
-"অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",
-"অধ্যায় ৮: স্থিতিবিদ্যা",
-"অধ্যায় ৯: সমতলে বস্তুকণার গতি",
-"অধ্যায় ১০: সম্ভাবনা (Probability)"
-]
-
-}
-
+    physics: {
+        paper1: [
+            "অধ্যায় ১: ভৌতজগৎ ও পরিমাপ",
+            "অধ্যায় ২: ভেক্টর",
+            "অধ্যায় ৩: গতিবিদ্যা",
+            "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান",
+            "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা",
+            "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ",
+            "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম",
+            "অধ্যায় ৮: পর্যায়বৃত্ত গতি",
+            "অধ্যায় ৯: তরঙ্গ",
+            "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"
+        ],
+        paper2: [
+            "অধ্যায় ১: তাপগতিবিদ্যা",
+            "অধ্যায় ২: স্থির তড়িৎ",
+            "অধ্যায় ৩: চল তড়িৎ",
+            "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব",
+            "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",
+            "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান",
+            "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান",
+            "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা",
+            "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
+            "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
+            "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"
+        ]
+    },
+    chemistry: {
+        paper1: [
+            "অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার",
+            "অধ্যায় ২: গুণগত রসায়ন",
+            "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন",
+            "অধ্যায় ৪: রাসায়নিক পরিবর্তন",
+            "অধ্যায় ৫: কর্মমুখী রসায়ন"
+        ],
+        paper2: [
+            "অধ্যায় ১: পরিবেশ রসায়ন",
+            "অধ্যায় ২: জৈব রসায়ন",
+            "অধ্যায় ৩: পরিমাণগত রসায়ন",
+            "অধ্যায় ৪: তড়িৎ রসায়ন",
+            "অধ্যায় ৫: অর্থনৈতিক রসায়ন"
+        ]
+    },
+    biology: {
+        paper1: [
+            "অধ্যায় ১: কোষ ও এর গঠন",
+            "অধ্যায় ২: কোষ বিভাজন",
+            "অধ্যায় ৩: কোষ রসায়ন",
+            "অধ্যায় ৪: অণুজীব",
+            "অধ্যায় ৫: শৈবাল ও ছত্রাক",
+            "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা",
+            "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",
+            "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র",
+            "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব",
+            "অধ্যায় ১০: উদ্ভিদ প্রজনন",
+            "অধ্যায় ১১: জীবপ্রযুক্তি",
+            "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"
+        ],
+        paper2: [
+            "অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
+            "অধ্যায় ২: প্রাণীর পরিচিতি",
+            "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ",
+            "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন",
+            "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া",
+            "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন",
+            "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা",
+            "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ",
+            "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা",
+            "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা",
+            "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন",
+            "অধ্যায় ১২: প্রাণীর আচরণ"
+        ]
+    },
+    math: {
+        paper1: [
+            "অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক",
+            "অধ্যায় ২: ভেক্টর",
+            "অধ্যায় ৩: সরলরেখা",
+            "অধ্যায় ৪: বৃত্ত",
+            "অধ্যায় ৫: বিন্যাস ও সমাবেশ",
+            "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত",
+            "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",
+            "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র",
+            "অধ্যায় ৯: অন্তরীকরণ (Differentiation)",
+            "অধ্যায় ১০: যোগজীকরণ (Integration)"
+        ],
+        paper2: [
+            "অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা",
+            "অধ্যায় ২: রৈখিক প্রোগ্রামন",
+            "অধ্যায় ৩: জটিল সংখ্যা",
+            "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ",
+            "অধ্যায় ৫: দ্বিপদী বিস্তৃতি",
+            "অধ্যায় ৬: কনিক",
+            "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",
+            "অধ্যায় ৮: স্থিতিবিদ্যা",
+            "অধ্যায় ৯: সমতলে বস্তুকণার গতি",
+            "অধ্যায় ১০: সম্ভাবনা (Probability)"
+        ]
+    }
 };
 
 
@@ -1057,51 +1021,21 @@ paper2: [
    LOGIN
 ===================================================== */
 
-document
-.getElementById("teacherLoginForm")
-.addEventListener("submit", function(e){
-
+document.getElementById("teacherLoginForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-    const no =
-    document.getElementById("teacherNo")
-    .value.trim();
+    const no = document.getElementById("teacherNo").value.trim();
+    const password = document.getElementById("teacherPassword").value;
+    const email = document.getElementById("adminEmail").value.trim().toLowerCase();
 
-    const password =
-    document.getElementById("teacherPassword")
-    .value;
-
-    const email =
-    document.getElementById("adminEmail")
-    .value.trim()
-    .toLowerCase();
-
-
-    if(
-        no === TEACHER_NO &&
-        password === TEACHER_PASSWORD &&
-        email === ADMIN_EMAIL
-    ){
-
-        sessionStorage.setItem(
-            "gaivexTeacherLoggedIn",
-            "true"
-        );
-
+    if(no === TEACHER_NO && password === TEACHER_PASSWORD && email === ADMIN_EMAIL){
+        sessionStorage.setItem("gaivexTeacherLoggedIn", "true");
         showTeacherPanel();
-
     }else{
-
-        const error =
-        document.getElementById("loginError");
-
+        const error = document.getElementById("loginError");
         error.style.display = "block";
-
-        error.innerText =
-        "Teacher No., Password অথবা Admin Email সঠিক নয়।";
-
+        error.innerText = "Teacher No., Password অথবা Admin Email সঠিক নয়।";
     }
-
 });
 
 
@@ -1109,13 +1043,8 @@ document
    CHECK LOGIN
 ===================================================== */
 
-if(
-    sessionStorage.getItem("gaivexTeacherLoggedIn")
-    === "true"
-){
-
+if(sessionStorage.getItem("gaivexTeacherLoggedIn") === "true"){
     showTeacherPanel();
-
 }
 
 
@@ -1124,17 +1053,9 @@ if(
 ===================================================== */
 
 function showTeacherPanel(){
-
-    document
-    .getElementById("loginScreen")
-    .classList.add("hidden");
-
-    document
-    .getElementById("teacherPanel")
-    .classList.remove("hidden");
-
-    loadQuestions();
-
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("teacherPanel").classList.remove("hidden");
+    listenToQuestions();
 }
 
 
@@ -1143,13 +1064,8 @@ function showTeacherPanel(){
 ===================================================== */
 
 window.teacherLogout = function(){
-
-    sessionStorage.removeItem(
-        "gaivexTeacherLoggedIn"
-    );
-
+    sessionStorage.removeItem("gaivexTeacherLoggedIn");
     location.reload();
-
 };
 
 
@@ -1157,128 +1073,52 @@ window.teacherLogout = function(){
    FILTER CHAPTER
 ===================================================== */
 
-const subjectSelect =
-document.getElementById("filterSubject");
+const subjectSelect = document.getElementById("filterSubject");
+const paperSelect = document.getElementById("filterPaper");
+const chapterSelect = document.getElementById("filterChapter");
 
-const paperSelect =
-document.getElementById("filterPaper");
-
-const chapterSelect =
-document.getElementById("filterChapter");
-
-
-subjectSelect.addEventListener(
-"change",
-updateChapters
-);
-
-paperSelect.addEventListener(
-"change",
-updateChapters
-);
-
+subjectSelect.addEventListener("change", updateChapters);
+paperSelect.addEventListener("change", updateChapters);
 
 function updateChapters(){
+    const subject = subjectSelect.value;
+    const paper = paperSelect.value;
 
-    const subject =
-    subjectSelect.value;
+    chapterSelect.innerHTML = `<option value="">সব অধ্যায়</option>`;
 
-    const paper =
-    paperSelect.value;
-
-    chapterSelect.innerHTML =
-    `<option value="">সব অধ্যায়</option>`;
-
-    if(
-        subject &&
-        paper &&
-        chaptersData[subject] &&
-        chaptersData[subject][paper]
-    ){
-
-        chaptersData[subject][paper]
-        .forEach(chapter => {
-
-            const option =
-            document.createElement("option");
-
+    if(subject && paper && chaptersData[subject] && chaptersData[subject][paper]){
+        chaptersData[subject][paper].forEach(chapter => {
+            const option = document.createElement("option");
             option.value = chapter;
-
             option.textContent = chapter;
-
             chapterSelect.appendChild(option);
-
         });
-
     }
 
     renderQuestions();
-
 }
 
-
-document
-.getElementById("filterStatus")
-.addEventListener(
-"change",
-renderQuestions
-);
-
-
-document
-.getElementById("searchQuestion")
-.addEventListener(
-"input",
-renderQuestions
-);
-
-chapterSelect.addEventListener(
-"change",
-renderQuestions
-);
+document.getElementById("filterStatus").addEventListener("change", renderQuestions);
+document.getElementById("searchQuestion").addEventListener("input", renderQuestions);
+chapterSelect.addEventListener("change", renderQuestions);
 
 
 /* =====================================================
-   LOAD QUESTIONS
+   LISTEN TO QUESTIONS (REALTIME UPDATES)
 ===================================================== */
 
-async function loadQuestions(){
+function listenToQuestions(){
+    const container = document.getElementById("questionsContainer");
+    const qRef = ref(db, "qanda/questions");
 
-    const container =
-    document.getElementById(
-        "questionsContainer"
-    );
-
-    container.innerHTML =
-    `<div class="loading">
-        প্রশ্ন লোড হচ্ছে...
-    </div>`;
-
-    try{
-
-        const snapshot =
-        await get(
-            ref(db,"qanda/questions")
-        );
-
-        allQuestions =
-        snapshot.exists()
-        ? snapshot.val()
-        : {};
-
+    // Realtime Listener
+    onValue(qRef, (snapshot) => {
+        allQuestions = snapshot.exists() ? snapshot.val() : {};
         renderQuestions();
-
-    }catch(error){
-
-        console.error(error);
-
-        container.innerHTML =
-        `<div class="empty">
-            ❌ প্রশ্ন লোড করা যায়নি।
-        </div>`;
-
-    }
-
+    }, (error) => {
+        console.error("Firebase Listener Error:", error);
+        container.innerHTML = `<div class="empty">❌ প্রশ্ন লোড করা যায়নি।</div>`;
+    });
 }
 
 
@@ -1287,300 +1127,90 @@ async function loadQuestions(){
 ===================================================== */
 
 function renderQuestions(){
+    const container = document.getElementById("questionsContainer");
+    const subject = subjectSelect.value;
+    const paper = paperSelect.value;
+    const chapter = chapterSelect.value;
+    const status = document.getElementById("filterStatus").value;
+    const search = document.getElementById("searchQuestion").value.toLowerCase().trim();
 
-    const container =
-    document.getElementById(
-        "questionsContainer"
-    );
+    let questions = Object.entries(allQuestions);
 
-    const subject =
-    subjectSelect.value;
+    questions = questions.filter(([id, q]) => {
+        if(subject && q.subject !== subject) return false;
+        if(paper && q.paper !== paper) return false;
+        if(chapter && q.chapter !== chapter) return false;
 
-    const paper =
-    paperSelect.value;
-
-    const chapter =
-    chapterSelect.value;
-
-    const status =
-    document.getElementById(
-        "filterStatus"
-    ).value;
-
-    const search =
-    document.getElementById(
-        "searchQuestion"
-    ).value
-    .toLowerCase()
-    .trim();
-
-
-    let questions =
-    Object.entries(allQuestions);
-
-
-    questions =
-    questions.filter(
-    ([id,q]) => {
-
-        if(
-            subject &&
-            q.subject !== subject
-        )
-        return false;
-
-        if(
-            paper &&
-            q.paper !== paper
-        )
-        return false;
-
-        if(
-            chapter &&
-            q.chapter !== chapter
-        )
-        return false;
-
-        const qStatus =
-        q.status === "answered"
-        ? "answered"
-        : "pending";
-
-        if(
-            status &&
-            qStatus !== status
-        )
-        return false;
-
+        const qStatus = q.status === "answered" ? "answered" : "pending";
+        if(status && qStatus !== status) return false;
 
         if(search){
-
-            const searchable =
-            `${q.questionText || ""}
-             ${q.studentName || ""}
-             ${q.studentEmail || ""}
-             ${q.chapter || ""}`
-            .toLowerCase();
-
-            if(
-                !searchable.includes(search)
-            )
-            return false;
-
+            const searchable = `${q.questionText || ""} ${q.studentName || ""} ${q.studentEmail || ""} ${q.chapter || ""}`.toLowerCase();
+            if(!searchable.includes(search)) return false;
         }
 
         return true;
-
     });
 
-
-    questions.sort(
-        ([aId,a],[bId,b]) =>
-        Number(b.createdAt || 0) -
-        Number(a.createdAt || 0)
-    );
-
+    questions.sort(([aId, a], [bId, b]) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
 
     updateStats();
 
-
     if(questions.length === 0){
-
-        container.innerHTML =
-        `<div class="empty">
-            📭 কোনো প্রশ্ন পাওয়া যায়নি।
-        </div>`;
-
+        container.innerHTML = `<div class="empty">📭 কোনো প্রশ্ন পাওয়া যায়নি।</div>`;
         return;
-
     }
-
 
     let html = "";
 
-    questions.forEach(
-    ([id,q]) => {
-
-        const answered =
-        q.status === "answered";
-
-        const statusClass =
-        answered
-        ? "answered"
-        : "pending";
-
-        const statusText =
-        answered
-        ? "উত্তর দেওয়া হয়েছে"
-        : "উত্তর অপেক্ষমাণ";
-
-
-        const date =
-        q.createdAt
-        ? new Date(
-            q.createdAt
-        ).toLocaleString(
-            "bn-BD"
-        )
-        : "";
-
+    questions.forEach(([id, q]) => {
+        const answered = q.status === "answered";
+        const statusClass = answered ? "answered" : "pending";
+        const statusText = answered ? "উত্তর দেওয়া হয়েছে" : "উত্তর অপেক্ষমাণ";
+        const date = q.createdAt ? new Date(q.createdAt).toLocaleString("bn-BD") : "";
 
         let questionFile = "";
 
-
         if(q.fileData){
-
-            if(
-                q.fileType &&
-                q.fileType.startsWith("image/")
-            ){
-
-                questionFile =
-                `<div class="file-preview">
-                    <img src="${q.fileData}">
-                </div>`;
-
-            }else if(
-                q.fileType ===
-                "application/pdf"
-            ){
-
-                questionFile =
-                `<div class="file-preview">
-                    <a
-                      class="pdf-link"
-                      href="${q.fileData}"
-                      target="_blank"
-                    >
-                    📄 প্রশ্নের PDF দেখুন
-                    </a>
-                </div>`;
-
+            if(q.fileType && q.fileType.startsWith("image/")){
+                questionFile = `<div class="file-preview"><img src="${q.fileData}"></div>`;
+            } else if(q.fileType === "application/pdf"){
+                questionFile = `<div class="file-preview"><a class="pdf-link" href="${q.fileData}" target="_blank">📄 প্রশ্নের PDF দেখুন</a></div>`;
             }
-
         }
 
-
         html += `
-
-        <div
-            class="question-card ${statusClass}"
-        >
-
+        <div class="question-card ${statusClass}">
             <div class="question-top">
-
                 <div>
-
-                    <div class="question-title">
-                        ${escapeHtml(
-                            q.studentName ||
-                            "শিক্ষার্থী"
-                        )}
-                    </div>
-
-                    <div
-                        style="
-                        color:#64748b;
-                        font-size:11px;
-                        margin-top:3px;
-                        "
-                    >
-                        ${escapeHtml(
-                            q.studentEmail || ""
-                        )}
-                    </div>
-
+                    <div class="question-title">${escapeHtml(q.studentName || "শিক্ষার্থী")}</div>
+                    <div style="color:#64748b;font-size:11px;margin-top:3px;">${escapeHtml(q.studentEmail || "")}</div>
                 </div>
-
-                <span
-                    class="status ${statusClass}"
-                >
-                    ${statusText}
-                </span>
-
+                <span class="status ${statusClass}">${statusText}</span>
             </div>
-
 
             <div class="meta">
-
-                <span>
-                    📚 ${
-                        subjectName(q.subject)
-                    }
-                </span>
-
-                <span>
-                    📖 ${
-                        q.paper === "paper1"
-                        ? "১ম পত্র"
-                        : "২য় পত্র"
-                    }
-                </span>
-
-                <span>
-                    📌 ${
-                        escapeHtml(
-                            q.chapter || ""
-                        )
-                    }
-                </span>
-
-                <span>
-                    🕐 ${date}
-                </span>
-
+                <span>📚 ${subjectName(q.subject)}</span>
+                <span>📖 ${q.paper === "paper1" ? "১ম পত্র" : "২য় পত্র"}</span>
+                <span>📌 ${escapeHtml(q.chapter || "")}</span>
+                <span>🕐 ${date}</span>
             </div>
 
-
-            <div class="question-text">
-                ${escapeHtml(
-                    q.questionText ||
-                    "কোনো লিখিত প্রশ্ন নেই।"
-                )}
-            </div>
-
+            <div class="question-text">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
 
             ${questionFile}
 
-
             <div class="question-footer">
-
-                <div
-                    style="
-                    color:#64748b;
-                    font-size:11px;
-                    "
-                >
-                    Question ID:
-                    ${id.substring(0,8)}
-                </div>
-
-                <button
-                    class="${
-                        answered
-                        ? "view-btn"
-                        : "answer-btn"
-                    }"
-                    onclick="openAnswerModal('${id}')"
-                >
-                    ${
-                        answered
-                        ? "👁️ উত্তর দেখুন / পরিবর্তন"
-                        : "✍️ উত্তর দিন"
-                    }
+                <div style="color:#64748b;font-size:11px;">Question ID: ${id.substring(0,8)}</div>
+                <button class="${answered ? "view-btn" : "answer-btn"}" onclick="openAnswerModal('${id}')">
+                    ${answered ? "👁️ উত্তর দেখুন / পরিবর্তন" : "✍️ উত্তর দিন"}
                 </button>
-
             </div>
-
         </div>
-
         `;
-
     });
 
-
     container.innerHTML = html;
-
 }
 
 
@@ -1589,53 +1219,22 @@ function renderQuestions(){
 ===================================================== */
 
 function updateStats(){
-
-    const questions =
-    Object.values(allQuestions);
-
+    const questions = Object.values(allQuestions);
     let pending = 0;
-
     let answered = 0;
-
     const students = new Set();
 
-
     questions.forEach(q => {
+        if(q.status === "answered") answered++;
+        else pending++;
 
-        if(q.status === "answered")
-            answered++;
-        else
-            pending++;
-
-        if(q.studentUid)
-            students.add(q.studentUid);
-
+        if(q.studentUid) students.add(q.studentUid);
     });
 
-
-    document
-    .getElementById("totalQuestions")
-    .innerText =
-    questions.length;
-
-
-    document
-    .getElementById("pendingQuestions")
-    .innerText =
-    pending;
-
-
-    document
-    .getElementById("answeredQuestions")
-    .innerText =
-    answered;
-
-
-    document
-    .getElementById("studentCount")
-    .innerText =
-    students.size;
-
+    document.getElementById("totalQuestions").innerText = questions.length;
+    document.getElementById("pendingQuestions").innerText = pending;
+    document.getElementById("answeredQuestions").innerText = answered;
+    document.getElementById("studentCount").innerText = students.size;
 }
 
 
@@ -1644,153 +1243,39 @@ function updateStats(){
 ===================================================== */
 
 window.openAnswerModal = function(id){
-
     selectedQuestionId = id;
-
-    const q =
-    allQuestions[id];
-
+    const q = allQuestions[id];
     if(!q) return;
-
 
     let fileHtml = "";
 
     if(q.fileData){
-
-        if(
-            q.fileType &&
-            q.fileType.startsWith("image/")
-        ){
-
-            fileHtml =
-            `<div class="file-preview">
-                <img src="${q.fileData}">
-            </div>`;
-
-        }else if(
-            q.fileType ===
-            "application/pdf"
-        ){
-
-            fileHtml =
-            `<div style="margin-top:10px;">
-                <a
-                    class="pdf-link"
-                    href="${q.fileData}"
-                    target="_blank"
-                >
-                    📄 শিক্ষার্থীর PDF খুলুন
-                </a>
-            </div>`;
-
+        if(q.fileType && q.fileType.startsWith("image/")){
+            fileHtml = `<div class="file-preview"><img src="${q.fileData}"></div>`;
+        } else if(q.fileType === "application/pdf"){
+            fileHtml = `<div style="margin-top:10px;"><a class="pdf-link" href="${q.fileData}" target="_blank">📄 শিক্ষার্থীর PDF খুলুন</a></div>`;
         }
-
     }
 
-
-    document
-    .getElementById(
-        "answerQuestionInfo"
-    )
-    .innerHTML = `
-
-        <div
-            style="
-            background:#0f172a;
-            border:1px solid #334155;
-            border-radius:8px;
-            padding:12px;
-            margin-bottom:15px;
-            "
-        >
-
-            <div
-                style="
-                color:#38bdf8;
-                font-weight:700;
-                margin-bottom:7px;
-                "
-            >
-                ${escapeHtml(
-                    q.studentName ||
-                    "শিক্ষার্থী"
-                )}
+    document.getElementById("answerQuestionInfo").innerHTML = `
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:15px;">
+            <div style="color:#38bdf8;font-weight:700;margin-bottom:7px;">${escapeHtml(q.studentName || "শিক্ষার্থী")}</div>
+            <div style="color:#94a3b8;font-size:12px;margin-bottom:8px;">
+                ${subjectName(q.subject)} • ${q.paper === "paper1" ? "১ম পত্র" : "২য় পত্র"} • ${escapeHtml(q.chapter || "")}
             </div>
-
-            <div
-                style="
-                color:#94a3b8;
-                font-size:12px;
-                margin-bottom:8px;
-                "
-            >
-                ${subjectName(q.subject)}
-                •
-                ${
-                    q.paper === "paper1"
-                    ? "১ম পত্র"
-                    : "২য় পত্র"
-                }
-                •
-                ${escapeHtml(q.chapter || "")}
-            </div>
-
-            <div
-                style="
-                color:#e2e8f0;
-                white-space:pre-wrap;
-                line-height:1.6;
-                "
-            >
-                ${escapeHtml(
-                    q.questionText ||
-                    "কোনো লিখিত প্রশ্ন নেই।"
-                )}
-            </div>
-
+            <div style="color:#e2e8f0;white-space:pre-wrap;line-height:1.6;">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
             ${fileHtml}
-
         </div>
-
     `;
 
-
-    document
-    .getElementById(
-        "teacherAnswerText"
-    )
-    .value =
-    q.answerText || "";
-
-
-    document
-    .getElementById(
-        "teacherImage"
-    )
-    .value = "";
-
-
-    document
-    .getElementById(
-        "teacherPdf"
-    )
-    .value = "";
-
+    document.getElementById("teacherAnswerText").value = q.answerText || "";
+    document.getElementById("teacherImage").value = "";
+    document.getElementById("teacherPdf").value = "";
 
     recordedAudioBase64 = "";
+    document.getElementById("audioPreview").style.display = "none";
 
-    document
-    .getElementById(
-        "audioPreview"
-    ).style.display = "none";
-
-
-    document
-    .getElementById(
-        "answerModal"
-    )
-    .classList.add("show");
-
+    document.getElementById("answerModal").classList.add("show");
 };
 
 
@@ -1799,15 +1284,8 @@ window.openAnswerModal = function(id){
 ===================================================== */
 
 window.closeAnswerModal = function(){
-
-    document
-    .getElementById(
-        "answerModal"
-    )
-    .classList.remove("show");
-
+    document.getElementById("answerModal").classList.remove("show");
     selectedQuestionId = null;
-
 };
 
 
@@ -1815,261 +1293,96 @@ window.closeAnswerModal = function(){
    SUBMIT ANSWER
 ===================================================== */
 
-window.submitTeacherAnswer =
-async function(){
-
+window.submitTeacherAnswer = async function(){
     if(!selectedQuestionId){
-
         alert("প্রশ্ন নির্বাচন করা হয়নি।");
-
         return;
-
     }
 
+    const q = allQuestions[selectedQuestionId];
+    const answerText = document.getElementById("teacherAnswerText").value.trim();
+    const imageFile = document.getElementById("teacherImage").files[0];
+    const pdfFile = document.getElementById("teacherPdf").files[0];
 
-    const q =
-    allQuestions[
-        selectedQuestionId
-    ];
-
-
-    const answerText =
-    document
-    .getElementById(
-        "teacherAnswerText"
-    )
-    .value
-    .trim();
-
-
-    const imageFile =
-    document
-    .getElementById(
-        "teacherImage"
-    ).files[0];
-
-
-    const pdfFile =
-    document
-    .getElementById(
-        "teacherPdf"
-    ).files[0];
-
-
-    if(
-        !answerText &&
-        !imageFile &&
-        !pdfFile &&
-        !recordedAudioBase64
-    ){
-
-        alert(
-            "কমপক্ষে একটি উত্তর দিন—লিখিত, ছবি, PDF অথবা ভয়েস।"
-        );
-
+    if(!answerText && !imageFile && !pdfFile && !recordedAudioBase64){
+        alert("কমপক্ষে একটি উত্তর দিন—লিখিত, ছবি, PDF অথবা ভয়েস।");
         return;
-
     }
-
 
     try{
-
         let imageData = "";
-
         let pdfData = "";
 
-
         if(imageFile){
-
-            if(
-                imageFile.size >
-                5 * 1024 * 1024
-            ){
-
-                alert(
-                    "ছবির আকার ৫MB-এর মধ্যে রাখুন।"
-                );
-
+            if(imageFile.size > 5 * 1024 * 1024){
+                alert("ছবির আকার ৫MB-এর মধ্যে রাখুন।");
                 return;
-
             }
-
-            imageData =
-            await fileToBase64(
-                imageFile
-            );
-
+            imageData = await fileToBase64(imageFile);
         }
-
 
         if(pdfFile){
-
-            if(
-                pdfFile.size >
-                8 * 1024 * 1024
-            ){
-
-                alert(
-                    "PDF-এর আকার ৮MB-এর মধ্যে রাখুন।"
-                );
-
+            if(pdfFile.size > 8 * 1024 * 1024){
+                alert("PDF-এর আকার ৮MB-এর মধ্যে রাখুন।");
                 return;
-
             }
-
-            pdfData =
-            await fileToBase64(
-                pdfFile
-            );
-
+            pdfData = await fileToBase64(pdfFile);
         }
 
-
-        const answerId =
-        push(
-            ref(
-                db,
-                `qanda/questions/${selectedQuestionId}/answers`
-            )
-        ).key;
-
+        const answerId = push(ref(db, `qanda/questions/${selectedQuestionId}/answers`)).key;
 
         const answer = {
-
-            teacherNo:
-            TEACHER_NO,
-
-            teacherEmail:
-            ADMIN_EMAIL,
-
-            answerText:
-            answerText,
-
-            imageData:
-            imageData,
-
-            pdfData:
-            pdfData,
-
-            voiceData:
-            recordedAudioBase64,
-
-            createdAt:
-            Date.now()
-
+            teacherNo: TEACHER_NO,
+            teacherEmail: ADMIN_EMAIL,
+            answerText: answerText,
+            imageData: imageData,
+            pdfData: pdfData,
+            voiceData: recordedAudioBase64,
+            createdAt: Date.now()
         };
 
+        // উত্তর সেভ করা
+        await set(ref(db, `qanda/questions/${selectedQuestionId}/answers/${answerId}`), answer);
 
-        await set(
-
-            ref(
-                db,
-                `qanda/questions/${selectedQuestionId}/answers/${answerId}`
-            ),
-
-            answer
-
-        );
-
-
-        await update(
-
-            ref(
-                db,
-                `qanda/questions/${selectedQuestionId}`
-            ),
-
-            {
-
-                status:
-                "answered",
-
-                answerText:
-                answerText,
-
-                answeredAt:
-                Date.now(),
-
-                answeredBy:
-                TEACHER_NO,
-
-                latestAnswerId:
-                answerId
-
-            }
-
-        );
-
+        // মেইন প্রশ্ন আপডেটিং
+        await update(ref(db, `qanda/questions/${selectedQuestionId}`), {
+            status: "answered",
+            answerText: answerText,
+            answeredAt: Date.now(),
+            answeredBy: TEACHER_NO,
+            latestAnswerId: answerId,
+            // স্টুডেন্টের সিস্টেমে যদি সরাসরি দেখার ফিল্ড থাকে তার জন্য
+            answerImageData: imageData,
+            answerPdfData: pdfData,
+            answerVoiceData: recordedAudioBase64
+        });
 
         /*
         ===============================================
         STUDENT NOTIFICATION
         ===============================================
         */
-
         if(q.studentUid){
+            const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
 
-            const notificationRef =
-            push(
-                ref(
-                    db,
-                    `notifications/${q.studentUid}`
-                )
-            );
-
-
-            await set(
-                notificationRef,
-                {
-
-                    type:
-                    "qanda_answer",
-
-                    title:
-                    "আপনার প্রশ্নের উত্তর এসেছে",
-
-                    message:
-                    `${q.chapter || "আপনার প্রশ্ন"} বিষয়ে শিক্ষক উত্তর দিয়েছেন।`,
-
-                    questionId:
-                    selectedQuestionId,
-
-                    answerId:
-                    answerId,
-
-                    createdAt:
-                    Date.now(),
-
-                    read:
-                    false
-
-                }
-            );
-
+            await set(notificationRef, {
+                type: "qanda_answer",
+                title: "আপনার প্রশ্নের উত্তর এসেছে",
+                message: `${q.chapter || "আপনার প্রশ্ন"} বিষয়ে শিক্ষক উত্তর দিয়েছেন।`,
+                questionId: selectedQuestionId,
+                answerId: answerId,
+                createdAt: Date.now(),
+                read: false
+            });
         }
 
-
-        alert(
-            "✅ শিক্ষার্থীর প্রশ্নের উত্তর সফলভাবে প্রকাশ হয়েছে।"
-        );
-
-
+        alert("✅ শিক্ষার্থীর প্রশ্নের উত্তর সফলভাবে প্রকাশ হয়েছে।");
         closeAnswerModal();
 
-        await loadQuestions();
-
-
     }catch(error){
-
         console.error(error);
-
-        alert(
-            "❌ উত্তর প্রকাশ করতে সমস্যা হয়েছে:\n" +
-            error.message
-        );
-
+        alert("❌ উত্তর প্রকাশ করতে সমস্যা হয়েছে:\n" + error.message);
     }
-
 };
 
 
@@ -2077,128 +1390,47 @@ async function(){
    VOICE RECORDING
 ===================================================== */
 
-window.toggleRecording =
-async function(){
+window.toggleRecording = async function(){
+    const btn = document.getElementById("recordBtn");
 
-    const btn =
-    document.getElementById(
-        "recordBtn"
-    );
-
-
-    if(
-        mediaRecorder &&
-        mediaRecorder.state === "recording"
-    ){
-
+    if(mediaRecorder && mediaRecorder.state === "recording"){
         mediaRecorder.stop();
-
-        btn.innerText =
-        "🎙️ রেকর্ড শুরু করুন";
-
-        btn.classList.remove(
-            "recording"
-        );
-
+        btn.innerText = "🎙️ রেকর্ড শুরু করুন";
+        btn.classList.remove("recording");
         return;
-
     }
 
-
     try{
-
-        const stream =
-        await navigator.mediaDevices
-        .getUserMedia({
-            audio:true
-        });
-
-
+        const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
         audioChunks = [];
 
+        mediaRecorder = new MediaRecorder(stream);
 
-        mediaRecorder =
-        new MediaRecorder(
-            stream
-        );
-
-
-        mediaRecorder.ondataavailable =
-        function(event){
-
+        mediaRecorder.ondataavailable = function(event){
             if(event.data.size > 0){
-
-                audioChunks.push(
-                    event.data
-                );
-
+                audioChunks.push(event.data);
             }
-
         };
 
+        mediaRecorder.onstop = async function(){
+            const blob = new Blob(audioChunks, { type: "audio/webm" });
+            recordedAudioBase64 = await blobToBase64(blob);
 
-        mediaRecorder.onstop =
-        async function(){
+            const audio = document.getElementById("audioPreview");
+            audio.src = recordedAudioBase64;
+            audio.style.display = "block";
 
-            const blob =
-            new Blob(
-                audioChunks,
-                {
-                    type:
-                    "audio/webm"
-                }
-            );
-
-
-            recordedAudioBase64 =
-            await blobToBase64(
-                blob
-            );
-
-
-            const audio =
-            document
-            .getElementById(
-                "audioPreview"
-            );
-
-
-            audio.src =
-            recordedAudioBase64;
-
-            audio.style.display =
-            "block";
-
-
-            stream
-            .getTracks()
-            .forEach(
-                track =>
-                track.stop()
-            );
-
+            stream.getTracks().forEach(track => track.stop());
         };
-
 
         mediaRecorder.start();
 
-
-        btn.innerText =
-        "⏹️ রেকর্ড বন্ধ করুন";
-
-        btn.classList.add(
-            "recording"
-        );
-
+        btn.innerText = "⏹️ রেকর্ড বন্ধ করুন";
+        btn.classList.add("recording");
 
     }catch(error){
-
-        alert(
-            "Microphone permission পাওয়া যায়নি।"
-        );
-
+        alert("Microphone permission পাওয়া যায়নি।");
     }
-
 };
 
 
@@ -2207,27 +1439,12 @@ async function(){
 ===================================================== */
 
 function fileToBase64(file){
-
-    return new Promise(
-    (resolve,reject)=>{
-
-        const reader =
-        new FileReader();
-
-        reader.onload =
-        () => resolve(
-            reader.result
-        );
-
-        reader.onerror =
-        reject;
-
-        reader.readAsDataURL(
-            file
-        );
-
+    return new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
     });
-
 }
 
 
@@ -2236,27 +1453,12 @@ function fileToBase64(file){
 ===================================================== */
 
 function blobToBase64(blob){
-
-    return new Promise(
-    (resolve,reject)=>{
-
-        const reader =
-        new FileReader();
-
-        reader.onload =
-        () => resolve(
-            reader.result
-        );
-
-        reader.onerror =
-        reject;
-
-        reader.readAsDataURL(
-            blob
-        );
-
+    return new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
     });
-
 }
 
 
@@ -2265,25 +1467,13 @@ function blobToBase64(blob){
 ===================================================== */
 
 function subjectName(subject){
-
     const names = {
-
-        physics:
-        "পদার্থবিজ্ঞান",
-
-        chemistry:
-        "রসায়ন",
-
-        biology:
-        "জীববিজ্ঞান",
-
-        math:
-        "উচ্চতর গণিত"
-
+        physics: "পদার্থবিজ্ঞান",
+        chemistry: "রসায়ন",
+        biology: "জীববিজ্ঞান",
+        math: "উচ্চতর গণিত"
     };
-
     return names[subject] || subject || "";
-
 }
 
 
@@ -2292,49 +1482,16 @@ function subjectName(subject){
 ===================================================== */
 
 function escapeHtml(value){
-
-    if(value === null ||
-       value === undefined){
-
+    if(value === null || value === undefined){
         return "";
-
     }
-
     return String(value)
-
     .replaceAll("&","&amp;")
-
     .replaceAll("<","&lt;")
-
     .replaceAll(">","&gt;")
-
     .replaceAll('"',"&quot;")
-
     .replaceAll("'","&#039;");
-
 }
-
-
-/* =====================================================
-   AUTO REFRESH
-===================================================== */
-
-setInterval(
-async function(){
-
-    if(
-        sessionStorage.getItem(
-            "gaivexTeacherLoggedIn"
-        ) === "true"
-    ){
-
-        await loadQuestions();
-
-    }
-
-},
-30000
-);
 
 </script>
 
