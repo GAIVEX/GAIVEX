@@ -30,11 +30,16 @@
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
         .logo span { color: #f43f5e; }
         
-        .nav-right-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+        .nav-right-group { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+
+        /* নোটিফিকেশন বেল স্টাইল */
+        .notification-btn { background: #0f172a; border: 1px solid #475569; color: #f8fafc; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; transition: 0.2s; }
+        .notification-btn:hover { border-color: #38bdf8; }
+        .notification-badge { position: absolute; top: -5px; right: -5px; background: #f43f5e; color: #fff; font-size: 10px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #0f172a; display: none; }
 
         .menu-container { position: relative; }
         .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
+        .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 185px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
         .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
         .dropdown-menu a:last-child, .dropdown-menu button:last-child { border-bottom: none; }
         .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: #334155; color: #38bdf8; }
@@ -127,13 +132,13 @@
         .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
         .history-item:hover { border-color:#38bdf8; background:#253346; }
 
-        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
-        select:focus { border-color: #38bdf8; }
+        select, textarea { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
+        select:focus, textarea:focus { border-color: #38bdf8; }
     </style>
 </head>
 <body>
 
-    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
+    <!-- ব্যাকগ্রাউন্ড অ্যানিমেশন -->
     <div class="global-bg-container">
         <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
         <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
@@ -155,6 +160,7 @@
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="index.html" class="active">🏠 হোম</a>
                     <a href="gaivexai.html">🤖 GAIVEX AI</a>
+                    <button onclick="openQaModal()">💬 প্রশ্নোত্তর (Q&A)</button>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
                     <button onclick="openResultModal()">📊 রেজাল্ট</button>
                     <button onclick="openNotesModal()">📚 নোটস</button>
@@ -165,6 +171,11 @@
         </div>
         
         <div class="nav-right-group">
+            <!-- নোটিফিকেশন বার (ঘণ্টা আইকন) -->
+            <button class="notification-btn" onclick="openQaModal()" title="নোটিফিকেশন ও প্রশ্নোত্তর">
+                🔔
+                <span id="notificationBadge" class="notification-badge">0</span>
+            </button>
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
             </div>
@@ -182,9 +193,10 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
-        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
+        <!-- হোম স্ক্রিনের গ্রিড (GAIVEX AI এর পাশে Q&A বক্স যুক্ত করা হয়েছে) -->
         <div class="subject-grid">
             <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
+            <div class="subject-box" onclick="openQaModal()"><div class="icon">💬</div><h3>প্রশ্নোত্তর (Q&A)</h3></div>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
             <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
@@ -194,6 +206,62 @@
             <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
     </main>
+
+    <!-- স্টুডেন্ট প্রশ্নোত্তর মোডাল (শুধুমাত্র লগইন করা স্টুডেন্টদের জন্য) -->
+    <div id="qaModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>💬 শিক্ষককে প্রশ্ন করুন ও সমাধান দেখুন</h3>
+                <button class="modal-close-x" onclick="closeQaModal()">&times;</button>
+            </div>
+            
+            <div id="qaLoginWarning" style="background: #1e293b; border: 1px solid #f43f5e; padding: 15px; border-radius: 8px; text-align: center; display: none;">
+                <p style="color: #f43f5e; font-weight: bold; margin-bottom: 10px;">⚠️ শিক্ষককে প্রশ্ন করতে এবং উত্তর দেখতে অবশ্যই আপনাকে লগইন করতে হবে!</p>
+                <button class="btn btn-save" onclick="closeQaModal(); toggleAuthModal(true);">এখনই লগইন করুন</button>
+            </div>
+
+            <div id="qaMainContent">
+                <!-- প্রশ্ন করার ফর্ম -->
+                <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 15px;">
+                    <h4 style="color: #38bdf8; margin-bottom: 10px; font-size: 14px;">📝 নতুন প্রশ্ন জমা দিন</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <select id="qaSubject" onchange="updateQaPaperOptions()">
+                            <option value="">বিষয় বাছুন</option>
+                            <option value="physics">পদার্থবিজ্ঞান</option>
+                            <option value="chemistry">রসায়ন</option>
+                            <option value="biology">জীববিজ্ঞান</option>
+                            <option value="math">উচ্চতর গণিত</option>
+                        </select>
+                        <select id="qaPaper" onchange="updateQaChapterOptions()">
+                            <option value="">পত্র বাছুন</option>
+                            <option value="paper1">১ম পত্র</option>
+                            <option value="paper2">২য় পত্র</option>
+                        </select>
+                    </div>
+                    <select id="qaChapter">
+                        <option value="">আগে বিষয় ও পত্র বাছুন</option>
+                    </select>
+
+                    <textarea id="qaQuestionText" rows="3" placeholder="আপনার প্রশ্নটি এখানে বিস্তারিত লিখুন..."></textarea>
+                    
+                    <label style="font-size: 12px; color: #94a3b8;">ছবি বা উত্তরপত্র সংযুক্ত করুন (ঐচ্ছিক):</label>
+                    <input type="file" id="qaFile" accept="image/*,.pdf" style="padding: 5px;">
+
+                    <button class="btn btn-save" onclick="submitStudentQuestion()" style="width: 100%; margin-top: 5px;">প্রশ্ন সাবমিট করুন</button>
+                </div>
+
+                <!-- আমার প্রশ্নসমূহের তালিকা ও উত্তর -->
+                <h4 style="color: #38bdf8; margin-bottom: 8px; font-size: 14px;">📥 আপনার প্রশ্ন ও শিক্ষকের উত্তরসমূহ:</h4>
+                <div id="studentQuestionsList" style="max-height: 250px; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+                    <p style="color: #94a3b8; text-align: center; font-size: 13px;">লোড হচ্ছে...</p>
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-top: 15px;">
+                <button type="button" class="btn btn-close" onclick="closeQaModal()" style="flex: 1;">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
 
     <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
@@ -236,7 +304,6 @@
                 <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
             
-            <!-- ফিল্টার ড্রপডাউন -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
@@ -256,7 +323,6 @@
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
-            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
             <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
                 <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
             </div>
@@ -346,8 +412,9 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -362,6 +429,7 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
       const auth = getAuth(app);
+      const storage = getStorage(app);
       const googleProvider = new GoogleAuthProvider();
 
       let currentUser = null;
@@ -399,14 +467,149 @@
           }
       }
 
+      // Q&A মোডাল ফাংশন
+      window.openQaModal = function() {
+          document.getElementById('qaModal').style.display = 'flex';
+          document.getElementById('dropdownMenu').classList.remove('show');
+          
+          if (!currentUser) {
+              document.getElementById('qaLoginWarning').style.display = 'block';
+              document.getElementById('qaMainContent').style.display = 'none';
+          } else {
+              document.getElementById('qaLoginWarning').style.display = 'none';
+              document.getElementById('qaMainContent').style.display = 'block';
+              fetchStudentQuestions();
+          }
+      }
+      window.closeQaModal = function() {
+          document.getElementById('qaModal').style.display = 'none';
+      }
+
+      window.updateQaPaperOptions = function() {
+          const paperSel = document.getElementById('qaPaper');
+          paperSel.innerHTML = '<option value="">পত্র বাছুন</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
+          document.getElementById('qaChapter').innerHTML = '<option value="">আগে পত্র বাছুন</option>';
+      }
+
+      window.updateQaChapterOptions = function() {
+          const sub = document.getElementById('qaSubject').value;
+          const paper = document.getElementById('qaPaper').value;
+          const chapSel = document.getElementById('qaChapter');
+          chapSel.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
+          if(sub && paper && chaptersData[sub][paper]) {
+              chaptersData[sub][paper].forEach(c => {
+                  chapSel.innerHTML += `<option value="${c}">${c}</option>`;
+              });
+          }
+      }
+
+      window.submitStudentQuestion = async function() {
+          const subject = document.getElementById('qaSubject').value;
+          const paper = document.getElementById('qaPaper').value;
+          const chapter = document.getElementById('qaChapter').value;
+          const text = document.getElementById('qaQuestionText').value.trim();
+          const fileInput = document.getElementById('qaFile').files[0];
+
+          if(!subject || !paper || !chapter || (!text && !fileInput)) {
+              alert("দয়া করে বিষয়, পত্র, অধ্যায় এবং প্রশ্ন বা ছবি দিন!");
+              return;
+          }
+
+          try {
+              let fileUrl = "", fileType = "";
+              if(fileInput) {
+                  const fRef = storageRef(storage, `qa_student_files/${Date.now()}_${fileInput.name}`);
+                  const snapshot = await uploadBytes(fRef, fileInput);
+                  fileUrl = await getDownloadURL(snapshot.ref);
+                  fileType = fileInput.type.includes('pdf') ? 'pdf' : 'image';
+              }
+
+              const newRef = push(ref(db, 'qa_questions'));
+              const qId = newRef.key;
+
+              await set(newRef, {
+                  id: qId,
+                  studentId: currentUser.uid,
+                  studentName: currentUser.displayName || currentUser.email,
+                  subject,
+                  paper,
+                  chapter,
+                  text,
+                  fileUrl,
+                  fileType,
+                  status: 'pending',
+                  createdAt: Date.now()
+              });
+
+              alert("আপনার প্রশ্নটি সফলভাবে সাবমিট করা হয়েছে!");
+              document.getElementById('qaQuestionText').value = '';
+              document.getElementById('qaFile').value = '';
+          } catch(e) {
+              alert("ত্রুটি: " + e.message);
+          }
+      }
+
+      function fetchStudentQuestions() {
+          onValue(ref(db, 'qa_questions'), (snapshot) => {
+              const container = document.getElementById('studentQuestionsList');
+              const badge = document.getElementById('notificationBadge');
+              if(!snapshot.exists()) {
+                  container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px;">কোনো প্রশ্ন পাওয়া যায়নি।</p>';
+                  badge.style.display = 'none';
+                  return;
+              }
+
+              const data = snapshot.val();
+              let html = '';
+              let solvedCount = 0;
+
+              for(let id in data) {
+                  const q = data[id];
+                  if(q.studentId === currentUser.uid) {
+                      if(q.status === 'solved') solvedCount++;
+
+                      let fileDisplay = q.fileUrl ? (q.fileType === 'pdf' ? `<a href="${q.fileUrl}" target="_blank" style="color:#38bdf8; display:block; font-size:12px; margin-top:5px;">📄 আপনার আপলোড করা ফাইল</a>` : `<img src="${q.fileUrl}" style="max-width:100%; max-height:120px; border-radius:6px; margin-top:5px; display:block;">`) : '';
+                      
+                      let ansDisplay = q.status === 'solved' ? `
+                          <div style="background:#1e293b; border-left:3px solid #10b981; padding:10px; margin-top:8px; border-radius:4px;">
+                              <div style="color:#10b981; font-weight:bold; font-size:12px; margin-bottom:4px;">👨‍🏫 শিক্ষকের উত্তর:</div>
+                              <p style="font-size:13px; color:#f8fafc; margin-bottom:4px;">${q.answerText || ''}</p>
+                              ${q.answerFileUrl ? `<a href="${q.answerFileUrl}" target="_blank" style="color:#38bdf8; font-size:12px; display:block;">📎 উত্তরপত্র ফাইল দেখুন</a>` : ''}
+                          </div>
+                      ` : `<div style="color:#f59e0b; font-size:12px; margin-top:6px;">⏳ শিক্ষক উত্তর এখনো দেননি (Pending)</div>`;
+
+                      let statusBadge = q.status === 'solved' ? `<span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px;">মীমাংসিত</span>` : `<span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:4px; font-size:10px;">অপেক্ষমান</span>`;
+
+                      html += `
+                          <div style="background:#162032; border:1px solid #334155; padding:10px; border-radius:6px; margin-bottom:10px;">
+                              <div style="display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-bottom:4px;">
+                                  <span>📚 ${q.subject.toUpperCase()} (${q.paper}) - ${q.chapter}</span>
+                                  ${statusBadge}
+                              </div>
+                              <p style="font-size:13px; margin-bottom:5px;">${q.text || ''}</p>
+                              ${fileDisplay}
+                              ${ansDisplay}
+                          </div>
+                      `;
+                  }
+              }
+
+              container.innerHTML = html !== '' ? html : '<p style="color:#94a3b8; text-align:center; font-size:13px;">আপনি এখনো কোনো প্রশ্ন করেননি।</p>';
+              
+              if(solvedCount > 0) {
+                  badge.innerText = solvedCount;
+                  badge.style.display = 'flex';
+              } else {
+                  badge.style.display = 'none';
+              }
+          });
+      }
+
       window.openNoticeModal = function() {
           document.getElementById('noticeModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
       }
-
-      window.closeNoticeModal = function() {
-          document.getElementById('noticeModal').style.display = 'none';
-      }
+      window.closeNoticeModal = function() { document.getElementById('noticeModal').style.display = 'none'; }
 
       window.openResultModal = async function() {
           if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
@@ -414,10 +617,7 @@
           document.getElementById('dropdownMenu').classList.remove('show');
           await loadAllExamResultsList();
       }
-
-      window.closeResultModal = function() {
-          document.getElementById('resultListModal').style.display = 'none';
-      }
+      window.closeResultModal = function() { document.getElementById('resultListModal').style.display = 'none'; }
 
       window.openNotesModal = () => {
           document.getElementById('notesModal').style.display = 'flex';
