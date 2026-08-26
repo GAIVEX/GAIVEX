@@ -22,7 +22,7 @@
         }
 
         /* হেডার ও অন্যান্য উপাদান যেন ব্যাকগ্রাউন্ডের উপরে স্পষ্টভাবে থাকে */
-        .navbar, .notification-bar, .hero-section, .site-footer, .modal, .floating-ai-btn { position: relative; z-index: 10; }
+        .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn { position: relative; z-index: 10; }
 
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid #334155; gap: 10px; position: sticky; top: 0; z-index: 100; }
         
@@ -48,48 +48,9 @@
         .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; flex-shrink: 0; }
         .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        /* নোটিফিকেশন বার স্টাইল */
-        .notification-bar {
-            background: linear-gradient(90deg, #1e293b, #0f172a);
-            border-bottom: 1px solid #334155;
-            padding: 8px 4%;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: #e2e8f0;
-        }
-        .notification-badge {
-            background: #f43f5e;
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .notification-text {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .notification-close {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 16px;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .notification-close:hover { color: #f43f5e; }
-
-        .hero-section { text-align: center; padding: 25px 15px; max-width: 1000px; margin: 0 auto; flex: 1; width: 100%; }
+        .hero-section { text-align: center; padding: 30px 15px; max-width: 1000px; margin: 0 auto; flex: 1; width: 100%; }
         
-        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; margin-top: 20px; }
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; margin-top: 20px; }
         .subject-box { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(5px); border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; cursor: pointer; }
         .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
         .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
@@ -99,58 +60,6 @@
         
         .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
         .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
-
-        /* Q&A / FAQ সেকশন স্টাইল */
-        .qa-section {
-            margin-top: 30px;
-            text-align: left;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .qa-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            color: #38bdf8;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 10px;
-        }
-        .qa-item {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-        .qa-question {
-            padding: 12px 15px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #f8fafc;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.2s;
-        }
-        .qa-question:hover { background: #1e293b; color: #38bdf8; }
-        .qa-answer {
-            padding: 0 15px 12px 15px;
-            font-size: 13px;
-            color: #94a3b8;
-            line-height: 1.5;
-            display: none;
-            border-top: 1px dashed #334155;
-            padding-top: 10px;
-        }
-        .qa-item.active .qa-answer { display: block; }
-        .qa-item.active .qa-icon { transform: rotate(180deg); }
-        .qa-icon { transition: transform 0.3s ease; color: #38bdf8; }
 
         /* ফ্লোটিং এআই বাটন স্টাইল */
         .floating-ai-btn {
@@ -224,7 +133,7 @@
 </head>
 <body>
 
-    <!-- ব্যাকগ্রাউন্ড অ্যানিমেশন -->
+    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
     <div class="global-bg-container">
         <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
         <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
@@ -262,17 +171,6 @@
         </div>
     </header>
 
-    <!-- নতুন সংযোজিত নোটিফিকেশন বার -->
-    <div class="notification-bar" id="topNotificationBar">
-        <div class="notification-badge">🔔 আপডেট</div>
-        <div class="notification-text">
-            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-                আজকের লাইভ মডেল টেস্ট শুরু হয়ে গেছে! এছাড়া পদার্থবিজ্ঞান ও রসায়নের নতুন হ্যান্ডনোট যুক্ত করা হয়েছে।
-            </marquee>
-        </div>
-        <button class="notification-close" onclick="document.getElementById('topNotificationBar').style.display='none'">&times;</button>
-    </div>
-
     <main class="hero-section">
         <a href="liveexam.html" class="exam-banner-box">
             <div class="live-badge-new">🔴 LIVE EXAM</div>
@@ -284,7 +182,7 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
-        <!-- হোম স্ক্রিনের বিষয়ের বক্সসমূহ -->
+        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
@@ -295,54 +193,6 @@
             <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
-
-        <!-- নতুন সংযোজিত Q&A (প্রশ্ন ও উত্তর) সেকশন -->
-        <section class="qa-section">
-            <div class="qa-header">
-                <span>❓</span>
-                <h3 style="margin: 0;">সাধারণ প্রশ্ন ও উত্তর (Q&A)</h3>
-            </div>
-            
-            <div class="qa-item">
-                <div class="qa-question" onclick="toggleQA(this)">
-                    <span>১. GAIVEX-এ লাইভ পরীক্ষা কীভাবে দেব?</span>
-                    <span class="qa-icon">▼</span>
-                </div>
-                <div class="qa-answer">
-                    হোম পেজের "🔴 LIVE EXAM" ব্যানারটিতে ক্লিক করলেই আপনি রানিং লাইভ পরীক্ষায় অংশগ্রহণ করতে পারবেন। তবে পরীক্ষা শুরু করার পূর্বে অ্যাকাউন্টে লগইন থাকা আবশ্যক।
-                </div>
-            </div>
-
-            <div class="qa-item">
-                <div class="qa-question" onclick="toggleQA(this)">
-                    <span>২. পরীক্ষার পর সঠিক উত্তর ও ব্যাখ্যা কীভাবে দেখব?</span>
-                    <span class="qa-icon">▼</span>
-                </div>
-                <div class="qa-answer">
-                    পরীক্ষা শেষ করার পর বা আপনার প্রোফাইলের "রেজাল্ট" / "পরীক্ষার হিস্টোরি" অপশনে গিয়ে উক্ত পরীক্ষার ওপর ক্লিক করলেই প্রশ্নভিত্তিক সঠিক উত্তর ও বিস্তারিত ব্যাখ্যা দেখতে পারবেন।
-                </div>
-            </div>
-
-            <div class="qa-item">
-                <div class="qa-question" onclick="toggleQA(this)">
-                    <span>৩. GAIVEX AI কী এবং কীভাবে সাহায্য করতে পারে?</span>
-                    <span class="qa-icon">▼</span>
-                </div>
-                <div class="qa-answer">
-                    GAIVEX AI হলো অ্যাডমিশন পরীক্ষার্থীদের জন্য একটি বিশেষ এআই অ্যাসিস্ট্যান্ট। ফ্লোটিং রোবট আইকনে ক্লিক করে যে কোনো বিষয়, কঠিন ম্যাথ বা বায়োলজি কনসেপ্ট সম্পর্কিত প্রশ্ন সরাসরি করতে পারবেন।
-                </div>
-            </div>
-
-            <div class="qa-item">
-                <div class="qa-question" onclick="toggleQA(this)">
-                    <span>৪. অধ্যায়ভিত্তিক নোটস ও পিডিএফ কোথায় পাব?</span>
-                    <span class="qa-icon">▼</span>
-                </div>
-                <div class="qa-answer">
-                    মেনু বা হোম পেজের "📚 নোটস" অপশনে ক্লিক করে বিষয়, পত্র ও নির্দিষ্ট অধ্যায় সিলেক্ট করলে ওই অধ্যায়ের সকল হ্যান্ডনোট এবং পিডিএফ পেয়ে যাবেন।
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- নোটিশ বোর্ড মোডাল -->
@@ -386,6 +236,7 @@
                 <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
             
+            <!-- ফিল্টার ড্রপডাউন -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
@@ -405,6 +256,7 @@
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
+            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
             <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
                 <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
             </div>
@@ -491,15 +343,6 @@
         </div>
       </div>
     </div>
-
-    <!-- JavaScript & Firebase -->
-    <script>
-        // Q&A টগল ফাংশন
-        function toggleQA(element) {
-            const qaItem = element.parentElement;
-            qaItem.classList.toggle('active');
-        }
-    </script>
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
