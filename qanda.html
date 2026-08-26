@@ -31,6 +31,10 @@
         .badge-solved { background: #10b981; color: #fff; }
         .bookmark-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; cursor: pointer; color: #94a3b8; }
         .bookmark-btn.bookmarked { color: #f43f5e; }
+
+        .upload-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .camera-box { background: #0f172a; border: 1px dashed #475569; padding: 10px; border-radius: 6px; text-align: center; cursor: pointer; }
+        .camera-box:hover { border-color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -72,8 +76,26 @@
                 <label>প্রশ্ন বা সমস্যা লিখুন:</label>
                 <textarea id="qText" rows="3" placeholder="আপনার প্রশ্নটি বিস্তারিত লিখুন..."></textarea>
 
-                <label>ছবি বা পিডিএফ (ঐচ্ছিক):</label>
-                <input type="file" id="qFile" accept="image/*,.pdf">
+                <label>ছবি বা ফাইল যুক্ত করার মাধ্যম:</label>
+                <div class="upload-options">
+                    <!-- ডিরেক্ট ক্যামেরা ওপেন করার ইনপুট (capture="environment" দিয়ে ব্যাক ক্যামেরা সেট করা হয়েছে) -->
+                    <div class="camera-box" onclick="document.getElementById('qCamera').click()">
+                        <span style="font-size: 20px;">📸</span>
+                        <div style="font-size: 12px; color: #38bdf8; font-weight: bold; margin-top: 3px;">সরাসরি ছবি তুলুন</div>
+                    </div>
+                    <!-- ফাইল বা গ্যালারি থেকে সিলেক্ট করার ইনপুট -->
+                    <div class="camera-box" onclick="document.getElementById('qFile').click()">
+                        <span style="font-size: 20px;">📁</span>
+                        <div style="font-size: 12px; color: #cbd5e1; font-weight: bold; margin-top: 3px;">ফাইল / গ্যালারি</div>
+                    </div>
+                </div>
+                
+                <!-- হিডেন ফাইল ইনপুট দুটি -->
+                <input type="file" id="qCamera" accept="image/*" capture="environment" style="display:none;" onchange="previewFile(this)">
+                <input type="file" id="qFile" accept="image/*,.pdf" style="display:none;" onchange="previewFile(this)">
+
+                <!-- ফাইল সিলেক্ট বা তোলার পর নাম দেখানোর জন্য -->
+                <div id="filePreviewText" style="font-size: 12px; color: #10b981; margin-bottom: 10px;"></div>
 
                 <button type="submit" class="btn" id="submitBtn">প্রশ্ন সাবমিট করুন</button>
             </form>
@@ -96,7 +118,7 @@
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
@@ -118,6 +140,7 @@
         let currentUser = null;
         let allQuestionsData = {};
         let currentTab = 'all';
+        let selectedFileToUpload = null;
 
         const chaptersData = {
             physics: {
@@ -134,7 +157,7 @@
             },
             math: {
                 paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
-                paper2: ["অধ্যায় বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
+                paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
             }
         };
 
@@ -157,6 +180,17 @@
             }
         };
 
+        window.previewFile = function(input) {
+            if(input.files && input.files[0]) {
+                selectedFileToUpload = input.files[0];
+                document.getElementById('filePreviewText').innerText = `✅ নির্বাচিত ফাইল: ${selectedFileToUpload.name}`;
+                
+                // অপর ইনপুটটি রিসেট করে দেওয়া যাতে দুটি একসাথে সিলেক্ট না হয়
+                if(input.id === 'qCamera') document.getElementById('qFile').value = '';
+                if(input.id === 'qFile') document.getElementById('qCamera').value = '';
+            }
+        }
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             fetchQuestions();
@@ -178,9 +212,8 @@
             const paper = document.getElementById('qPaper').value;
             const chapter = document.getElementById('qChapter').value;
             const text = document.getElementById('qText').value;
-            const fileInput = document.getElementById('qFile').files[0];
 
-            if(!text && !fileInput) { alert("প্রশ্ন বা ফাইল যুক্ত করুন!"); return; }
+            if(!text && !selectedFileToUpload) { alert("প্রশ্ন বা ছবি যুক্ত করুন!"); return; }
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.innerText = "আপলোড হচ্ছে...";
@@ -188,11 +221,11 @@
 
             try {
                 let fileUrl = "", fileType = "";
-                if(fileInput) {
-                    const fRef = storageRef(storage, `qa_files/${Date.now()}_${fileInput.name}`);
-                    const snapshot = await uploadBytes(fRef, fileInput);
+                if(selectedFileToUpload) {
+                    const fRef = storageRef(storage, `qa_files/${Date.now()}_${selectedFileToUpload.name}`);
+                    const snapshot = await uploadBytes(fRef, selectedFileToUpload);
                     fileUrl = await getDownloadURL(snapshot.ref);
-                    fileType = fileInput.type.includes('pdf') ? 'pdf' : 'image';
+                    fileType = selectedFileToUpload.type.includes('pdf') ? 'pdf' : 'image';
                 }
 
                 const newQRef = push(ref(db, 'qa_questions'));
@@ -208,6 +241,8 @@
 
                 alert("প্রশ্ন সফলভাবে সাবমিট হয়েছে!");
                 document.getElementById('questionForm').reset();
+                document.getElementById('filePreviewText').innerText = '';
+                selectedFileToUpload = null;
             } catch(err) {
                 alert("ত্রুটি: " + err.message);
             } finally {
@@ -235,7 +270,6 @@
             for(let id in allQuestionsData) {
                 const q = allQuestionsData[id];
                 
-                // ফিল্টারিং লজিক
                 if(currentTab === 'my' && (!currentUser || q.uid !== currentUser.uid)) continue;
                 if(currentTab === 'bookmark') {
                     if(!currentUser || !q.bookmarks || !q.bookmarks[currentUser.uid]) continue;
