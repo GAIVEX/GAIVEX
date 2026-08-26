@@ -1038,7 +1038,7 @@ window.removeAttachment = function(){
 
 
 /* ===============================
-   SUBMIT QUESTION (SYNCED WITH TEACHER)
+   SUBMIT QUESTION
 ================================ */
 
 window.submitQuestion = async function(){
@@ -1067,7 +1067,6 @@ window.submitQuestion = async function(){
     btn.innerText = "⏳ প্রশ্ন প্রকাশ হচ্ছে...";
 
     try{
-        // Teacher Panel-এর সাথে মিলিয়ে qanda/questions পাথে সেভ করা হচ্ছে
         const questionRef = push(ref(db, "qanda/questions"));
         const questionId = questionRef.key;
 
@@ -1092,7 +1091,6 @@ window.submitQuestion = async function(){
 
         await set(questionRef, questionData);
 
-        // Student Notification
         const notificationRef = push(ref(db, `notifications/${currentUser.uid}`));
         await set(notificationRef, {
             type: "question_submitted",
@@ -1122,13 +1120,23 @@ window.submitQuestion = async function(){
 
 
 /* ===============================
-   LOAD QUESTIONS (REALTIME)
+   LOAD QUESTIONS (REALTIME FOR ALL STUDENTS)
 ================================ */
 
 function loadQuestions(){
     const qRef = ref(db, "qanda/questions");
     onValue(qRef, (snapshot) => {
-        allQuestions = snapshot.val() || {};
+        const val = snapshot.val() || {};
+        allQuestions = {};
+        
+        // Structure data consistently with Key handling
+        Object.keys(val).forEach(key => {
+            allQuestions[key] = {
+                ...val[key],
+                questionId: val[key].questionId || key
+            };
+        });
+
         renderQuestions();
     }, (error) => {
         console.error(error);
@@ -1185,13 +1193,15 @@ window.updateViewChapters = function(){
     renderQuestions();
 };
 
+window.renderQuestions = renderQuestions;
+
 
 /* ===============================
    BOOKMARK CHECK
 ================================ */
 
 async function isBookmarked(questionId){
-    if(!currentUser) return false;
+    if(!currentUser || !questionId) return false;
     const snap = await get(ref(db, `qanda_bookmarks/${currentUser.uid}/${questionId}`));
     return snap.exists();
 }
@@ -1247,7 +1257,7 @@ async function renderQuestions(){
 
 
 /* ===============================
-   QUESTION HTML (WITH TEACHER ANSWER DISPLAY)
+   QUESTION HTML (DISPLAY ALL & TEACHER ANSWERS)
 ================================ */
 
 function createQuestionHTML(q, bookmarked){
@@ -1270,9 +1280,9 @@ function createQuestionHTML(q, bookmarked){
         ? `<span class="status answered">✓ উত্তর দেওয়া হয়েছে</span>`
         : `<span class="status">⏳ উত্তর অপেক্ষমাণ</span>`;
 
-    // Teacher Panel Answer Display
+    // Teacher Panel Answer Display Logic
     let answerHtml = "";
-    if(q.status === "answered"){
+    if(q.status === "answered" || q.answerText || q.answerVoice){
         answerHtml = `
             <div class="answer-box">
                 <div class="answer-title">👨‍🏫 শিক্ষকের উত্তর:</div>
