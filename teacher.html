@@ -8,9 +8,8 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- KaTeX CSS & JS for LaTeX Rendering -->
+<!-- KaTeX CSS & JS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
@@ -113,7 +112,7 @@ button,input,select,textarea{
     width:100%;
     padding:12px;
     border:none;
-    border-radius:9px;
+    border-radius:99px;
     background:linear-gradient(135deg,#38bdf8,#0284c7);
     color:#07111f;
     font-size:15px;
@@ -274,11 +273,6 @@ button,input,select,textarea{
     border-left:4px solid #10b981;
 }
 
-.question-card.cancelled{
-    border-left:4px solid #ef4444;
-    opacity:0.75;
-}
-
 .question-top{
     display:flex;
     justify-content:space-between;
@@ -307,11 +301,6 @@ button,input,select,textarea{
 .status.answered{
     background:rgba(16,185,129,.15);
     color:#34d399;
-}
-
-.status.cancelled{
-    background:rgba(239,68,68,.15);
-    color:#fca5a5;
 }
 
 .meta{
@@ -404,7 +393,7 @@ button,input,select,textarea{
     font-weight:600;
 }
 
-/* ================= ANSWER MODAL ================= */
+/* ================= MODAL ================= */
 
 .modal{
     position:fixed;
@@ -466,28 +455,12 @@ button,input,select,textarea{
     outline:none;
 }
 
-.answer-textarea:focus{
-    border-color:#38bdf8;
-}
-
 .upload-area{
     margin-top:12px;
     padding:14px;
     border:1px dashed #475569;
     border-radius:8px;
     background:#0f172a;
-}
-
-.upload-area label{
-    display:block;
-    font-size:13px;
-    color:#cbd5e1;
-    margin-bottom:6px;
-}
-
-.upload-area input{
-    width:100%;
-    color:#cbd5e1;
 }
 
 .record-box{
@@ -508,15 +481,6 @@ button,input,select,textarea{
     font-weight:700;
 }
 
-.record-btn.recording{
-    background:#991b1b;
-}
-
-.audio-preview{
-    width:100%;
-    margin-top:10px;
-}
-
 .save-answer{
     width:100%;
     margin-top:15px;
@@ -528,8 +492,6 @@ button,input,select,textarea{
     font-weight:700;
     cursor:pointer;
 }
-
-/* ================= EMPTY ================= */
 
 .empty{
     text-align:center;
@@ -546,195 +508,86 @@ button,input,select,textarea{
     color:#38bdf8;
 }
 
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:850px){
-    .stats-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .filter-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
 @media(max-width:550px){
-    .header{
-        padding:0 10px;
-    }
-
-    .header-logo{
-        font-size:19px;
-    }
-
-    .teacher-badge{
-        display:none;
-    }
-
-    .dashboard{
-        padding:12px;
-    }
-
-    .stats-grid{
-        gap:8px;
-    }
-
-    .stat-card{
-        padding:12px;
-    }
-
-    .filter-grid{
-        grid-template-columns:1fr;
-    }
-
-    .question-top{
-        flex-direction:column;
-    }
-
-    .question-footer{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .action-btns{
-        width:100%;
-        flex-direction:column;
-    }
-
-    .answer-btn,
-    .view-btn,
-    .cancel-btn{
-        width:100%;
-    }
+    .header{ padding:0 10px; }
+    .header-logo{ font-size:19px; }
+    .teacher-badge{ display:none; }
+    .dashboard{ padding:12px; }
+    .stats-grid{ grid-template-columns:repeat(2,1fr); gap:8px; }
+    .filter-grid{ grid-template-columns:1fr; }
+    .question-top{ flex-direction:column; }
+    .question-footer{ flex-direction:column; align-items:stretch; }
+    .action-btns{ width:100%; flex-direction:column; }
+    .answer-btn,.view-btn,.cancel-btn{ width:100%; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
-
     <div class="login-box">
-
-        <div class="logo">
-            GAIVEX<span>.</span>
-        </div>
-
-        <div class="login-subtitle">
-            Teacher Panel
-        </div>
+        <div class="logo">GAIVEX<span>.</span></div>
+        <div class="login-subtitle">Teacher Panel</div>
 
         <form id="teacherLoginForm">
-
             <div class="form-group">
                 <label>Teacher No.</label>
-                <input
-                    type="text"
-                    id="teacherNo"
-                    placeholder="GVX-001098"
-                    required
-                >
+                <input type="text" id="teacherNo" placeholder="GVX-001098" required>
             </div>
-
             <div class="form-group">
                 <label>Teacher Password</label>
-                <input
-                    type="password"
-                    id="teacherPassword"
-                    placeholder="Teacher Password"
-                    required
-                >
+                <input type="password" id="teacherPassword" placeholder="Teacher Password" required>
             </div>
-
             <div class="form-group">
                 <label>Admin Email</label>
-                <input
-                    type="email"
-                    id="adminEmail"
-                    placeholder="gaiyumtamim@gmail.com"
-                    required
-                >
+                <input type="email" id="adminEmail" placeholder="gaiyumtamim@gmail.com" required>
             </div>
-
-            <button class="login-btn" type="submit">
-                🔐 Teacher Panel-এ প্রবেশ করুন
-            </button>
-
+            <button class="login-btn" type="submit">🔐 Teacher Panel-এ প্রবেশ করুন</button>
             <div id="loginError" class="login-error"></div>
-
         </form>
-
     </div>
-
 </div>
 
-
-<!-- ================= TEACHER PANEL ================= -->
-
+<!-- PANEL -->
 <div id="teacherPanel" class="teacher-panel hidden">
-
     <header class="header">
-
-        <div class="header-logo">
-            GAIVEX<span>.</span>
-        </div>
-
+        <div class="header-logo">GAIVEX<span>.</span></div>
         <div class="teacher-info">
-
-            <div class="teacher-badge">
-                👨‍🏫 Teacher No: GVX-001098
-            </div>
-
-            <button class="logout-btn" onclick="teacherLogout()">
-                Logout
-            </button>
-
+            <div class="teacher-badge">👨‍🏫 Teacher No: GVX-001098</div>
+            <button class="logout-btn" onclick="teacherLogout()">Logout</button>
         </div>
-
     </header>
 
-
     <main class="dashboard">
-
         <!-- STATS -->
-
         <div class="stats-grid">
-
             <div class="stat-card">
                 <div class="stat-icon">📚</div>
                 <div class="stat-number" id="totalQuestions">0</div>
                 <div class="stat-label">মোট প্রশ্ন</div>
             </div>
-
             <div class="stat-card">
                 <div class="stat-icon">⏳</div>
                 <div class="stat-number" id="pendingQuestions">0</div>
                 <div class="stat-label">উত্তর দেওয়া হয়নি</div>
             </div>
-
             <div class="stat-card">
                 <div class="stat-icon">✅</div>
                 <div class="stat-number" id="answeredQuestions">0</div>
                 <div class="stat-label">উত্তর দেওয়া হয়েছে</div>
             </div>
-
             <div class="stat-card">
                 <div class="stat-icon">👨‍🎓</div>
                 <div class="stat-number" id="studentCount">0</div>
                 <div class="stat-label">শিক্ষার্থী</div>
             </div>
-
         </div>
 
-
         <!-- FILTER -->
-
         <div class="filter-box">
-
             <div class="filter-grid">
-
                 <select id="filterSubject">
                     <option value="">সব বিষয়</option>
                     <option value="physics">পদার্থবিজ্ঞান</option>
@@ -742,178 +595,82 @@ button,input,select,textarea{
                     <option value="biology">জীববিজ্ঞান</option>
                     <option value="math">উচ্চতর গণিত</option>
                 </select>
-
                 <select id="filterPaper">
                     <option value="">সব পত্র</option>
                     <option value="paper1">১ম পত্র</option>
                     <option value="paper2">২য় পত্র</option>
                 </select>
-
                 <select id="filterChapter">
                     <option value="">সব অধ্যায়</option>
                 </select>
-
                 <select id="filterStatus">
                     <option value="">সব প্রশ্ন</option>
                     <option value="pending">উত্তর দেওয়া হয়নি</option>
                     <option value="answered">উত্তর দেওয়া হয়েছে</option>
-                    <option value="cancelled">বাতিলকৃত প্রশ্ন</option>
                 </select>
-
             </div>
-
-            <input
-                class="search-input"
-                id="searchQuestion"
-                style="margin-top:10px;"
-                placeholder="🔎 শিক্ষার্থী/প্রশ্ন খুঁজুন..."
-            >
-
+            <input class="search-input" id="searchQuestion" style="margin-top:10px;" placeholder="🔎 শিক্ষার্থী/প্রশ্ন খুঁজুন...">
         </div>
-
 
         <!-- QUESTIONS -->
-
         <div id="questionsContainer" class="questions-container">
-
-            <div class="loading">
-                প্রশ্ন লোড হচ্ছে...
-            </div>
-
+            <div class="loading">প্রশ্ন লোড হচ্ছে...</div>
         </div>
-
     </main>
-
 </div>
 
-
-<!-- ================= ANSWER MODAL ================= -->
-
+<!-- ANSWER MODAL -->
 <div id="answerModal" class="modal">
-
     <div class="modal-content">
-
         <div class="modal-header">
-
             <h3>✍️ শিক্ষার্থীর প্রশ্নের উত্তর</h3>
-
-            <button class="close-btn" onclick="closeAnswerModal()">
-                &times;
-            </button>
-
+            <button class="close-btn" onclick="closeAnswerModal()">&times;</button>
         </div>
-
         <div id="answerQuestionInfo"></div>
 
-
         <div class="form-group">
-
-            <label>
-                লিখিত উত্তর (LaTeX কোড সমর্থন করে)
-            </label>
-
-            <textarea
-                id="teacherAnswerText"
-                class="answer-textarea"
-                placeholder="এখানে শিক্ষার্থীর প্রশ্নের বিস্তারিত উত্তর লিখুন..."
-            ></textarea>
-
+            <label>লিখিত উত্তর (LaTeX কোড সমর্থন করে)</label>
+            <textarea id="teacherAnswerText" class="answer-textarea" placeholder="এখানে শিক্ষার্থীর প্রশ্নের বিস্তারিত উত্তর লিখুন..."></textarea>
         </div>
-
-
-        <!-- IMAGE -->
 
         <div class="upload-area">
-
-            <label>
-                🖼️ ছবি দিয়ে উত্তর
-            </label>
-
-            <input
-                type="file"
-                id="teacherImage"
-                accept="image/*"
-            >
-
+            <label style="color:#cbd5e1;font-size:13px;">🖼️ ছবি দিয়ে উত্তর</label>
+            <input type="file" id="teacherImage" accept="image/*" style="width:100%;margin-top:5px;color:#fff;">
         </div>
-
-
-        <!-- PDF -->
 
         <div class="upload-area">
-
-            <label>
-                📄 PDF দিয়ে উত্তর
-            </label>
-
-            <input
-                type="file"
-                id="teacherPdf"
-                accept="application/pdf"
-            >
-
+            <label style="color:#cbd5e1;font-size:13px;">📄 PDF দিয়ে উত্তর</label>
+            <input type="file" id="teacherPdf" accept="application/pdf" style="width:100%;margin-top:5px;color:#fff;">
         </div>
-
-
-        <!-- VOICE -->
 
         <div class="record-box">
-
-            <label style="display:block;color:#cbd5e1;font-size:13px;margin-bottom:8px;">
-                🎤 ভয়েসে বুঝিয়ে দিন
-            </label>
-
-            <button
-                id="recordBtn"
-                class="record-btn"
-                onclick="toggleRecording()"
-            >
-                🎙️ রেকর্ড শুরু করুন
-            </button>
-
-            <audio
-                id="audioPreview"
-                class="audio-preview"
-                controls
-                style="display:none;"
-            ></audio>
-
+            <label style="display:block;color:#cbd5e1;font-size:13px;margin-bottom:8px;">🎤 ভয়েসে বুঝিয়ে দিন</label>
+            <button id="recordBtn" class="record-btn" onclick="toggleRecording()">🎙️ রেকর্ড শুরু করুন</button>
+            <audio id="audioPreview" style="width:100%;margin-top:10px;display:none;" controls></audio>
         </div>
 
-
-        <button
-            class="save-answer"
-            onclick="submitTeacherAnswer()"
-        >
-            ✅ উত্তর প্রকাশ করুন
-        </button>
-
+        <button class="save-answer" onclick="submitTeacherAnswer()">✅ উত্তর প্রকাশ করুন</button>
     </div>
-
 </div>
 
-
-<!-- ================= CANCEL REASON MODAL ================= -->
-
+<!-- DELETE / CANCEL REASON MODAL -->
 <div id="cancelModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 style="color:#ef4444;">❌ প্রশ্ন বাতিলের কারণ</h3>
+            <h3 style="color:#ef4444;">🗑️ প্রশ্ন ডিলিট / বাতিল করুন</h3>
             <button class="close-btn" onclick="closeCancelModal()">&times;</button>
         </div>
         <div class="form-group">
-            <label>কেন প্রশ্নটি বাতিল করছেন তা লিখুন (শিক্ষার্থী এটি দেখতে পাবে):</label>
-            <textarea id="cancelReasonText" class="answer-textarea" placeholder="উদাহরণ: আপনার প্রশ্নটি অস্পষ্ট বা অসম্পূর্ণ..."></textarea>
+            <label>ডিলিট করার কারণ উল্লেখ করুন (শিক্ষার্থীর নোটিফিকেশনে যাবে):</label>
+            <textarea id="cancelReasonText" class="answer-textarea" placeholder="উদাহরণ: প্রশ্নটি অস্পষ্ট বা নির্দেশিকা বহির্ভূত..."></textarea>
         </div>
-        <button class="cancel-btn" style="width:100%;padding:12px;margin-top:10px;" onclick="confirmCancelQuestion()">
-            ❌ প্রশ্ন বাতিল নিশ্চিত করুন
+        <button class="cancel-btn" style="width:100%;padding:12px;margin-top:10px;font-weight:700;" onclick="confirmCancelQuestion()">
+            🗑️ প্রশ্নটি সম্পূর্ণ মুছে ফেলুন (Delete)
         </button>
     </div>
 </div>
 
-
-<!-- ================= FOLLOW UP CHAT MODAL ================= -->
-
+<!-- FOLLOW UP CHAT MODAL -->
 <div id="followupModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -923,9 +680,7 @@ button,input,select,textarea{
         
         <div id="followupQuestionSummary" style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:15px;font-size:13px;color:#94a3b8;"></div>
 
-        <!-- Chat History List -->
         <div id="followupChatContainer" style="max-height:300px;overflow-y:auto;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:15px;display:flex;flex-direction:column;gap:10px;">
-            <!-- Messages render dynamically -->
         </div>
 
         <div class="form-group">
@@ -933,33 +688,13 @@ button,input,select,textarea{
             <textarea id="followupAnswerText" class="answer-textarea" style="min-height:90px;" placeholder="ফলো-আপ প্রশ্নের সমাধান বা ব্যাখ্যা লিখুন..."></textarea>
         </div>
 
-        <button class="save-answer" onclick="submitFollowupAnswer()">
-            💬 ফলো-আপ উত্তর পাঠান
-        </button>
+        <button class="save-answer" onclick="submitFollowupAnswer()">💬 ফলো-আপ উত্তর পাঠান</button>
     </div>
 </div>
 
-
 <script type="module">
-
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    onValue,
-    set,
-    push,
-    update,
-    remove
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, push, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -971,23 +706,12 @@ const firebaseConfig = {
     appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
-
-/* =====================================================
-   TEACHER LOGIN
-===================================================== */
 
 const TEACHER_NO = "GVX-001098";
 const TEACHER_PASSWORD = "GAIVEX#@014265";
 const ADMIN_EMAIL = "gaiyumtamim@gmail.com";
-
-
-/* =====================================================
-   DATA
-===================================================== */
 
 let allQuestions = {};
 let selectedQuestionId = null;
@@ -996,121 +720,27 @@ let mediaRecorder = null;
 let audioChunks = [];
 let recordedAudioBase64 = "";
 
-
-/* =====================================================
-   CHAPTER DATA
-===================================================== */
-
 const chaptersData = {
     physics: {
-        paper1: [
-            "অধ্যায় ১: ভৌতজগৎ ও পরিমাপ",
-            "অধ্যায় ২: ভেক্টর",
-            "অধ্যায় ৩: গতিবিদ্যা",
-            "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান",
-            "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা",
-            "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ",
-            "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম",
-            "অধ্যায় ৮: পর্যায়বৃত্ত গতি",
-            "অধ্যায় ৯: তরঙ্গ",
-            "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"
-        ],
-        paper2: [
-            "অধ্যায় ১: তাপগতিবিদ্যা",
-            "অধ্যায় ২: স্থির তড়িৎ",
-            "অধ্যায় ৩: চল তড়িৎ",
-            "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব",
-            "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",
-            "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান",
-            "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান",
-            "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা",
-            "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
-            "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
-            "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"
-        ]
+        paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
+        paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"]
     },
     chemistry: {
-        paper1: [
-            "অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার",
-            "অধ্যায় ২: গুণগত রসায়ন",
-            "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন",
-            "অধ্যায় ৪: রাসায়নিক পরিবর্তন",
-            "অধ্যায় ৫: কর্মমুখী রসায়ন"
-        ],
-        paper2: [
-            "অধ্যায় ১: পরিবেশ রসায়ন",
-            "অধ্যায় ২: জৈব রসায়ন",
-            "অধ্যায় ৩: পরিমাণগত রসায়ন",
-            "অধ্যায় ৪: তড়িৎ রসায়ন",
-            "অধ্যায় ৫: অর্থনৈতিক রসায়ন"
-        ]
+        paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"],
+        paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
     },
     biology: {
-        paper1: [
-            "অধ্যায় ১: কোষ ও এর গঠন",
-            "অধ্যায় ২: কোষ বিভাজন",
-            "অধ্যায় ৩: কোষ রসায়ন",
-            "অধ্যায় ৪: অণুজীব",
-            "অধ্যায় ৫: শৈবাল ও ছত্রাক",
-            "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা",
-            "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",
-            "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র",
-            "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব",
-            "অধ্যায় ১০: উদ্ভিদ প্রজনন",
-            "অধ্যায় ১১: জীবপ্রযুক্তি",
-            "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"
-        ],
-        paper2: [
-            "অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
-            "অধ্যায় ২: প্রাণীর পরিচিতি",
-            "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ",
-            "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন",
-            "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া",
-            "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন",
-            "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা",
-            "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ",
-            "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা",
-            "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা",
-            "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন",
-            "অধ্যায় ১২: প্রাণীর আচরণ"
-        ]
+        paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
+        paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
     },
     math: {
-        paper1: [
-            "অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক",
-            "অধ্যায় ২: ভেক্টর",
-            "অধ্যায় ৩: সরলরেখা",
-            "অধ্যায় ৪: বৃত্ত",
-            "অধ্যায় ৫: বিন্যাস ও সমাবেশ",
-            "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত",
-            "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",
-            "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র",
-            "অধ্যায় ৯: অন্তরীকরণ (Differentiation)",
-            "অধ্যায় ১০: যোগজীকরণ (Integration)"
-        ],
-        paper2: [
-            "অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা",
-            "অধ্যায় ২: রৈখিক প্রোগ্রামন",
-            "অধ্যায় ৩: জটিল সংখ্যা",
-            "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ",
-            "অধ্যায় ৫: দ্বিপদী বিস্তৃতি",
-            "অধ্যায় ৬: কনিক",
-            "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",
-            "অধ্যায় ৮: স্থিতিবিদ্যা",
-            "অধ্যায় ৯: সমতলে বস্তুকণার গতি",
-            "অধ্যায় ১০: সম্ভাবনা (Probability)"
-        ]
+        paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
+        paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
     }
 };
 
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
 document.getElementById("teacherLoginForm").addEventListener("submit", function(e){
     e.preventDefault();
-
     const no = document.getElementById("teacherNo").value.trim();
     const password = document.getElementById("teacherPassword").value;
     const email = document.getElementById("adminEmail").value.trim().toLowerCase();
@@ -1125,19 +755,9 @@ document.getElementById("teacherLoginForm").addEventListener("submit", function(
     }
 });
 
-
-/* =====================================================
-   CHECK LOGIN
-===================================================== */
-
 if(sessionStorage.getItem("gaivexTeacherLoggedIn") === "true"){
     showTeacherPanel();
 }
-
-
-/* =====================================================
-   SHOW PANEL
-===================================================== */
 
 function showTeacherPanel(){
     document.getElementById("loginScreen").classList.add("hidden");
@@ -1145,20 +765,10 @@ function showTeacherPanel(){
     listenToQuestions();
 }
 
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
 window.teacherLogout = function(){
     sessionStorage.removeItem("gaivexTeacherLoggedIn");
     location.reload();
 };
-
-
-/* =====================================================
-   FILTER CHAPTER
-===================================================== */
 
 const subjectSelect = document.getElementById("filterSubject");
 const paperSelect = document.getElementById("filterPaper");
@@ -1170,7 +780,6 @@ paperSelect.addEventListener("change", updateChapters);
 function updateChapters(){
     const subject = subjectSelect.value;
     const paper = paperSelect.value;
-
     chapterSelect.innerHTML = `<option value="">সব অধ্যায়</option>`;
 
     if(subject && paper && chaptersData[subject] && chaptersData[subject][paper]){
@@ -1181,7 +790,6 @@ function updateChapters(){
             chapterSelect.appendChild(option);
         });
     }
-
     renderQuestions();
 }
 
@@ -1189,21 +797,15 @@ document.getElementById("filterStatus").addEventListener("change", renderQuestio
 document.getElementById("searchQuestion").addEventListener("input", renderQuestions);
 chapterSelect.addEventListener("change", renderQuestions);
 
-
-/* =====================================================
-   LISTEN TO QUESTIONS (REALTIME UPDATES)
-===================================================== */
-
+// REALTIME LISTENER
 function listenToQuestions(){
     const container = document.getElementById("questionsContainer");
     const qRef = ref(db, "qanda/questions");
 
-    // Realtime Listener
     onValue(qRef, (snapshot) => {
         allQuestions = snapshot.exists() ? snapshot.val() : {};
         renderQuestions();
         
-        // Active follow-up chat UI live update
         if(selectedQuestionId && document.getElementById("followupModal").classList.contains("show")){
             renderFollowupChatList(selectedQuestionId);
         }
@@ -1213,10 +815,14 @@ function listenToQuestions(){
     });
 }
 
-
-/* =====================================================
-   RENDER QUESTIONS
-===================================================== */
+function getFollowupArray(q){
+    if (!q) return [];
+    let raw = q.followups || q.followUpMessages || q.followUp || q.followupsList;
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'object') return Object.values(raw);
+    return [];
+}
 
 function renderQuestions(){
     const container = document.getElementById("questionsContainer");
@@ -1233,7 +839,7 @@ function renderQuestions(){
         if(paper && q.paper !== paper) return false;
         if(chapter && q.chapter !== chapter) return false;
 
-        const qStatus = q.status === "answered" ? "answered" : (q.status === "cancelled" ? "cancelled" : "pending");
+        const qStatus = q.status === "answered" ? "answered" : "pending";
         if(status && qStatus !== status) return false;
 
         if(search){
@@ -1257,23 +863,13 @@ function renderQuestions(){
 
     questions.forEach(([id, q]) => {
         const isAnswered = q.status === "answered";
-        const isCancelled = q.status === "cancelled";
         
-        let statusClass = "pending";
-        let statusText = "উত্তর অপেক্ষমাণ";
-
-        if(isAnswered){
-            statusClass = "answered";
-            statusText = "উত্তর দেওয়া হয়েছে";
-        } else if(isCancelled){
-            statusClass = "cancelled";
-            statusText = "প্রশ্নটি বাতিল করা হয়েছে";
-        }
+        let statusClass = isAnswered ? "answered" : "pending";
+        let statusText = isAnswered ? "উত্তর দেওয়া হয়েছে" : "উত্তর অপেক্ষমাণ";
 
         const date = q.createdAt ? new Date(q.createdAt).toLocaleString("bn-BD") : "";
 
         let questionFile = "";
-
         if(q.fileData){
             if(q.fileType && q.fileType.startsWith("image/")){
                 questionFile = `<div class="file-preview"><img src="${q.fileData}"></div>`;
@@ -1282,14 +878,7 @@ function renderQuestions(){
             }
         }
 
-        // Cancelled Reason Display
-        let cancelReasonHtml = "";
-        if(isCancelled && q.cancelReason){
-            cancelReasonHtml = `<div style="margin-top:10px;padding:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:6px;color:#fca5a5;font-size:13px;">❌ <b>বাতিলের কারণ:</b> ${escapeHtml(q.cancelReason)}</div>`;
-        }
-
-        // Check for follow-up questions count
-        const followups = q.followups ? Object.values(q.followups) : [];
+        const followups = getFollowupArray(q);
         const followupBadge = followups.length > 0 ? `<span style="background:#f59e0b;color:#000;border-radius:10px;padding:2px 6px;font-size:10px;margin-left:5px;">${followups.length} Follow-up</span>` : "";
 
         html += `
@@ -1312,7 +901,6 @@ function renderQuestions(){
             <div class="question-text render-latex">${escapeHtml(q.questionText || "কোনো লিখিত প্রশ্ন নেই।")}</div>
 
             ${questionFile}
-            ${cancelReasonHtml}
 
             <div class="question-footer">
                 <div style="color:#64748b;font-size:11px;">Question ID: ${id.substring(0,8)}</div>
@@ -1324,7 +912,7 @@ function renderQuestions(){
                         💬 চ্যাট / ফলো-আপ ${followupBadge}
                     </button>
                     <button class="cancel-btn" onclick="cancelQuestion('${id}')">
-                        ❌ Cancel
+                        🗑️ Delete
                     </button>
                 </div>
             </div>
@@ -1334,7 +922,6 @@ function renderQuestions(){
 
     container.innerHTML = html;
     
-    // LaTeX Rendering Call
     renderMathInElement(container, {
         delimiters: [
             {left: '$$', right: '$$', display: true},
@@ -1346,11 +933,7 @@ function renderQuestions(){
     });
 }
 
-
-/* =====================================================
-   CANCEL QUESTION WITH REASON
-===================================================== */
-
+// 💥 DELETE / COMPLETE REMOVAL LOGIC
 window.cancelQuestion = function(id){
     pendingCancelId = id;
     document.getElementById("cancelReasonText").value = "";
@@ -1364,7 +947,6 @@ window.closeCancelModal = function(){
 
 window.confirmCancelQuestion = async function(){
     if(!pendingCancelId) return;
-
     const reason = document.getElementById("cancelReasonText").value.trim();
     if(!reason){
         alert("অনুগ্রহ করে প্রশ্নটি বাতিল করার কারণ উল্লেখ করুন।");
@@ -1373,19 +955,13 @@ window.confirmCancelQuestion = async function(){
 
     try{
         const q = allQuestions[pendingCancelId];
-        await update(ref(db, `qanda/questions/${pendingCancelId}`), {
-            status: "cancelled",
-            cancelledAt: Date.now(),
-            cancelledBy: TEACHER_NO,
-            cancelReason: reason
-        });
-
-        // Notify Student
+        
+        // ১. স্টুডেন্টকে নোটিফিকেশন পাঠানো
         if(q && q.studentUid){
             const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
             await set(notificationRef, {
                 type: "qanda_cancelled",
-                title: "আপনার প্রশ্নটি বাতিল করা হয়েছে",
+                title: "আপনার প্রশ্নটি বাতিল/মুছে ফেলা হয়েছে",
                 message: `কারণ: ${reason}`,
                 questionId: pendingCancelId,
                 createdAt: Date.now(),
@@ -1393,17 +969,15 @@ window.confirmCancelQuestion = async function(){
             });
         }
 
-        alert("প্রশ্নটি বাতিল করা হয়েছে এবং কারণ সংরক্ষণ করা হয়েছে।");
+        // ২. ডাটাবেস থেকে প্রশ্নটি সরাসরি রিমুভ (Set null) করা (ফলে স্টুডেন্ট অ্যাপ থেকেও সাথে সাথে ডিলিট হয়ে যাবে)
+        await set(ref(db, `qanda/questions/${pendingCancelId}`), null);
+
+        alert("🗑️ প্রশ্নটি ডাটাবেস এবং স্টুডেন্ট অ্যাপ থেকে সম্পূর্ণভাবে ডিলিট করা হয়েছে।");
         closeCancelModal();
     }catch(e){
         alert("সমস্যা হয়েছে: " + e.message);
     }
 };
-
-
-/* =====================================================
-   STATS
-===================================================== */
 
 function updateStats(){
     const questions = Object.values(allQuestions);
@@ -1413,8 +987,7 @@ function updateStats(){
 
     questions.forEach(q => {
         if(q.status === "answered") answered++;
-        else if(q.status !== "cancelled") pending++;
-
+        else pending++;
         if(q.studentUid) students.add(q.studentUid);
     });
 
@@ -1424,18 +997,12 @@ function updateStats(){
     document.getElementById("studentCount").innerText = students.size;
 }
 
-
-/* =====================================================
-   OPEN ANSWER MODAL
-===================================================== */
-
 window.openAnswerModal = function(id){
     selectedQuestionId = id;
     const q = allQuestions[id];
     if(!q) return;
 
     let fileHtml = "";
-
     if(q.fileData){
         if(q.fileType && q.fileType.startsWith("image/")){
             fileHtml = `<div class="file-preview"><img src="${q.fileData}"></div>`;
@@ -1444,7 +1011,6 @@ window.openAnswerModal = function(id){
         }
     }
 
-    // Previous Answer Details (if exists)
     let previousAnswerHtml = "";
     if(q.answerText || q.answerImageData || q.answerPdfData || q.answerVoiceData){
         previousAnswerHtml = `
@@ -1471,7 +1037,6 @@ window.openAnswerModal = function(id){
         </div>
     `;
 
-    // LaTeX Render in Modal
     renderMathInElement(modalInfo, {
         delimiters: [
             {left: '$$', right: '$$', display: true},
@@ -1485,27 +1050,15 @@ window.openAnswerModal = function(id){
     document.getElementById("teacherAnswerText").value = q.answerText || "";
     document.getElementById("teacherImage").value = "";
     document.getElementById("teacherPdf").value = "";
-
     recordedAudioBase64 = "";
     document.getElementById("audioPreview").style.display = "none";
-
     document.getElementById("answerModal").classList.add("show");
 };
-
-
-/* =====================================================
-   CLOSE ANSWER MODAL
-===================================================== */
 
 window.closeAnswerModal = function(){
     document.getElementById("answerModal").classList.remove("show");
     selectedQuestionId = null;
 };
-
-
-/* =====================================================
-   SUBMIT ANSWER
-===================================================== */
 
 window.submitTeacherAnswer = async function(){
     if(!selectedQuestionId){
@@ -1544,7 +1097,6 @@ window.submitTeacherAnswer = async function(){
         }
 
         const answerId = push(ref(db, `qanda/questions/${selectedQuestionId}/answers`)).key;
-
         const answer = {
             teacherNo: TEACHER_NO,
             teacherEmail: ADMIN_EMAIL,
@@ -1555,10 +1107,8 @@ window.submitTeacherAnswer = async function(){
             createdAt: Date.now()
         };
 
-        // উত্তর সেভ করা
         await set(ref(db, `qanda/questions/${selectedQuestionId}/answers/${answerId}`), answer);
 
-        // মেইন প্রশ্ন আপডেট (সব শিক্ষার্থীদের পাবলিকভাবে দেখার জন্য)
         await update(ref(db, `qanda/questions/${selectedQuestionId}`), {
             status: "answered",
             answerText: answerText,
@@ -1570,14 +1120,8 @@ window.submitTeacherAnswer = async function(){
             answerVoiceData: recordedAudioBase64 || q.answerVoiceData || ""
         });
 
-        /*
-        ===============================================
-        STUDENT NOTIFICATION
-        ===============================================
-        */
         if(q.studentUid){
             const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
-
             await set(notificationRef, {
                 type: "qanda_answer",
                 title: "আপনার প্রশ্নের উত্তর এসেছে",
@@ -1598,10 +1142,7 @@ window.submitTeacherAnswer = async function(){
     }
 };
 
-
-/* =====================================================
-   FOLLOW-UP CHAT LOGIC
-===================================================== */
+/* ================= FOLLOW-UP CHAT LOGIC ================= */
 
 window.openFollowupModal = function(id){
     selectedQuestionId = id;
@@ -1628,34 +1169,36 @@ function renderFollowupChatList(id){
     const q = allQuestions[id];
     if(!q) return;
 
-    const followups = q.followups ? Object.entries(q.followups) : [];
+    const followups = getFollowupArray(q);
 
     if(followups.length === 0){
         container.innerHTML = `<div style="text-align:center;color:#64748b;font-size:13px;padding:10px;">এখনো কোনো নতুন ফলো-আপ বার্তা নেই।</div>`;
         return;
     }
 
-    // Sort chronologically
-    followups.sort(([aId, a], [bId, b]) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+    followups.sort((a, b) => Number(a.createdAt || a.timestamp || 0) - Number(b.createdAt || b.timestamp || 0));
 
     let chatHtml = "";
-    followups.forEach(([fId, f]) => {
-        const isStudent = f.sender === "student";
+    followups.forEach((f) => {
+        const msgText = f.text || f.message || f.content || f.question || "";
+        const senderType = f.sender || f.role || (f.studentUid ? "student" : "teacher");
+        const isStudent = senderType !== "teacher" && senderType !== "admin";
+        
         const alignStyle = isStudent ? "align-self:flex-start;background:#334155;color:#f8fafc;" : "align-self:flex-end;background:#0284c7;color:#fff;";
-        const senderLabel = isStudent ? `👨‍🎓 ${escapeHtml(q.studentName || "শিক্ষার্থী")}` : `👨‍🏫 Teacher (${TEACHER_NO})`;
-        const time = f.createdAt ? new Date(f.createdAt).toLocaleTimeString("bn-BD", {hour:'2-digit', minute:'2-digit'}) : "";
+        const senderLabel = isStudent ? `👨‍🎓 ${escapeHtml(f.senderName || q.studentName || "শিক্ষার্থী")}` : `👨‍🏫 Teacher (${TEACHER_NO})`;
+        const timeVal = f.createdAt || f.timestamp;
+        const time = timeVal ? new Date(timeVal).toLocaleTimeString("bn-BD", {hour:'2-digit', minute:'2-digit'}) : "";
 
         chatHtml += `
             <div style="max-width:85%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;${alignStyle}">
-                <div style="font-weight:700;font-size:11px;margin-bottom:3px;opacity:0.8;">${senderLabel} • ${time}</div>
-                <div class="render-latex" style="white-space:pre-wrap;">${escapeHtml(f.text || "")}</div>
+                <div style="font-weight:700;font-size:11px;margin-bottom:3px;opacity:0.8;">${senderLabel} ${time ? '• ' + time : ''}</div>
+                <div class="render-latex" style="white-space:pre-wrap;">${escapeHtml(msgText)}</div>
             </div>
         `;
     });
 
     container.innerHTML = chatHtml;
 
-    // Render Math in Chat
     renderMathInElement(container, {
         delimiters: [
             {left: '$$', right: '$$', display: true},
@@ -1666,7 +1209,6 @@ function renderFollowupChatList(id){
         throwOnError : false
     });
 
-    // Auto scroll bottom
     container.scrollTop = container.scrollHeight;
 }
 
@@ -1683,14 +1225,16 @@ window.submitFollowupAnswer = async function(){
         const q = allQuestions[selectedQuestionId];
         const followupRef = push(ref(db, `qanda/questions/${selectedQuestionId}/followups`));
         
-        await set(followupRef, {
+        const payload = {
             sender: "teacher",
             teacherNo: TEACHER_NO,
             text: text,
+            message: text,
             createdAt: Date.now()
-        });
+        };
 
-        // Notify student
+        await set(followupRef, payload);
+
         if(q.studentUid){
             const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
             await set(notificationRef, {
@@ -1709,10 +1253,7 @@ window.submitFollowupAnswer = async function(){
     }
 };
 
-
-/* =====================================================
-   VOICE RECORDING
-===================================================== */
+/* ================= VOICE & UTILS ================= */
 
 window.toggleRecording = async function(){
     const btn = document.getElementById("recordBtn");
@@ -1727,7 +1268,6 @@ window.toggleRecording = async function(){
     try{
         const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
         audioChunks = [];
-
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.ondataavailable = function(event){
@@ -1743,24 +1283,16 @@ window.toggleRecording = async function(){
             const audio = document.getElementById("audioPreview");
             audio.src = recordedAudioBase64;
             audio.style.display = "block";
-
             stream.getTracks().forEach(track => track.stop());
         };
 
         mediaRecorder.start();
-
         btn.innerText = "⏹️ রেকর্ড বন্ধ করুন";
         btn.classList.add("recording");
-
     }catch(error){
         alert("Microphone permission পাওয়া যায়নি।");
     }
 };
-
-
-/* =====================================================
-   FILE TO BASE64
-===================================================== */
 
 function fileToBase64(file){
     return new Promise((resolve,reject)=>{
@@ -1771,11 +1303,6 @@ function fileToBase64(file){
     });
 }
 
-
-/* =====================================================
-   BLOB TO BASE64
-===================================================== */
-
 function blobToBase64(blob){
     return new Promise((resolve,reject)=>{
         const reader = new FileReader();
@@ -1784,11 +1311,6 @@ function blobToBase64(blob){
         reader.readAsDataURL(blob);
     });
 }
-
-
-/* =====================================================
-   SUBJECT NAME
-===================================================== */
 
 function subjectName(subject){
     const names = {
@@ -1799,11 +1321,6 @@ function subjectName(subject){
     };
     return names[subject] || subject || "";
 }
-
-
-/* =====================================================
-   HTML ESCAPE
-===================================================== */
 
 function escapeHtml(value){
     if(value === null || value === undefined){
@@ -1816,8 +1333,6 @@ function escapeHtml(value){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
-
 </script>
-
 </body>
 </html>
