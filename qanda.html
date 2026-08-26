@@ -569,50 +569,38 @@ input[type=file]{
 <body>
 
 <header class="header">
-
     <a href="index.html" class="logo">GAIVEX<span>.</span></a>
-
     <div class="header-right">
-
         <button class="icon-btn" onclick="window.toggleNotifications()" title="Notifications">
             🔔
             <span id="notificationCount" class="notification-count">0</span>
         </button>
-
     </div>
-
 </header>
 
 <div id="notificationPanel" class="notification-panel">
-
     <div class="notification-header">
         <strong>🔔 নোটিফিকেশন</strong>
         <button onclick="window.markAllNotificationsRead()" style="background:none;border:none;color:#38bdf8;cursor:pointer;font-size:11px;">
             সব পড়া হয়েছে
         </button>
     </div>
-
     <div id="notificationList">
         <div class="empty">নোটিফিকেশন লোড হচ্ছে...</div>
     </div>
-
 </div>
 
 <main class="container">
-
     <div class="top-title">
         <h1>❓ GAIVEX Q&A</h1>
         <p>প্রশ্ন করুন • টিচারের উত্তর পান • গুরুত্বপূর্ণ প্রশ্ন সংরক্ষণ করুন</p>
     </div>
 
     <!-- ASK QUESTION -->
-
     <section class="card">
-
         <div class="card-title">✍️ নতুন প্রশ্ন করুন</div>
 
         <div class="filters">
-
             <select id="questionSubject" onchange="window.updateQuestionPapers()">
                 <option value="">বিষয় নির্বাচন করুন</option>
                 <option value="physics">পদার্থবিজ্ঞান</option>
@@ -630,7 +618,6 @@ input[type=file]{
             <select id="questionChapter">
                 <option value="">অধ্যায় নির্বাচন করুন</option>
             </select>
-
         </div>
 
         <textarea
@@ -640,7 +627,6 @@ input[type=file]{
         ></textarea>
 
         <div class="attachments">
-
             <label class="attach-btn">
                 📷 Camera
                 <input
@@ -671,7 +657,6 @@ input[type=file]{
                     onchange="window.handlePDF(event)"
                 >
             </label>
-
         </div>
 
         <div id="attachmentPreview" class="preview"></div>
@@ -679,33 +664,25 @@ input[type=file]{
         <button id="submitQuestionBtn" class="submit-btn" onclick="window.submitQuestion()">
             🚀 প্রশ্ন প্রকাশ করুন
         </button>
-
     </section>
 
     <!-- QUESTION LIST -->
-
     <section class="card">
-
         <div class="card-title">📚 শিক্ষার্থীদের প্রশ্ন ও উত্তর</div>
 
         <div class="question-toolbar">
-
             <button class="filter-btn active" id="allFilter" onclick="window.setQuestionFilter('all')">
                 🌐 All Questions
             </button>
-
             <button class="filter-btn" id="myFilter" onclick="window.setQuestionFilter('my')">
                 👤 My Questions
             </button>
-
             <button class="filter-btn" id="bookmarkFilter" onclick="window.setQuestionFilter('bookmark')">
                 ⭐ Bookmarks
             </button>
-
         </div>
 
         <div class="filters" style="margin-bottom:10px;">
-
             <select id="viewSubject" onchange="window.updateViewPapers()">
                 <option value="">সব বিষয়</option>
                 <option value="physics">পদার্থবিজ্ঞান</option>
@@ -723,40 +700,27 @@ input[type=file]{
             <select id="viewChapter" onchange="window.renderQuestions()">
                 <option value="">সব অধ্যায়</option>
             </select>
-
         </div>
 
         <div id="questionList">
             <div class="loading">প্রশ্ন লোড হচ্ছে...</div>
         </div>
-
     </section>
-
 </main>
 
 <!-- QUESTION VIEW MODAL -->
-
 <div id="questionModal" class="modal">
-
     <div class="modal-content">
-
         <div class="modal-title">
             <h3>📖 প্রশ্ন ও উত্তর</h3>
             <button class="close" onclick="window.closeQuestionModal()">×</button>
         </div>
-
         <div id="questionModalBody"></div>
-
     </div>
-
 </div>
 
-
 <script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
     getDatabase,
     ref,
@@ -766,20 +730,38 @@ import {
     update,
     remove,
     onValue
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import {
     getAuth,
     onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 /* ===============================
-   FIREBASE
+   UTILITY FUNCTIONS
 ================================ */
+function escapeHTML(value){
+    if(value === undefined || value === null) return "";
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
+function getSubjectName(subject){
+    const names = {
+        physics: "পদার্থবিজ্ঞান",
+        chemistry: "রসায়ন",
+        biology: "জীববিজ্ঞান",
+        math: "উচ্চতর গণিত"
+    };
+    return names[subject] || subject;
+}
+
+/* ===============================
+   FIREBASE CONFIG
+================================ */
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
     authDomain: "gaivexexam.firebaseapp.com",
@@ -800,135 +782,114 @@ let allQuestions = {};
 let currentFilter = "all";
 let selectedAttachment = null;
 
-
 /* ===============================
    CHAPTER DATA
 ================================ */
-
 const chaptersData = {
-
-physics: {
-
-paper1: [
-"অধ্যায় ১: ভৌতজগৎ ও পরিমাপ",
-"অধ্যায় ২: ভেক্টর",
-"অধ্যায় ৩: গতিবিদ্যা",
-"অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান",
-"অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা",
-"অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ",
-"অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম",
-"অধ্যায় ৮: পর্যায়বৃত্ত গতি",
-"অধ্যায় ৯: তরঙ্গ",
-"অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"
-],
-
-paper2: [
-"অধ্যায় ১: তাপগতিবিদ্যা",
-"অধ্যায় ২: স্থির তড়িৎ",
-"অধ্যায় ৩: চল তড়িৎ",
-"অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব",
-"অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",
-"অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান",
-"অধ্যায় ৭: ভৌত আলোকবিজ্ঞান",
-"অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা",
-"অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
-"অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
-"অধ্যায় ১১: জ্যোতির্বিজ্ঞান"
-]
-
-},
-
-chemistry: {
-
-paper1: [
-"অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার",
-"অধ্যায় ২: গুণগত রসায়ন",
-"অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন",
-"অধ্যায় ৪: রাসায়নিক পরিবর্তন",
-"অধ্যায় ৫: কর্মমুখী রসায়ন"
-],
-
-paper2: [
-"অধ্যায় ১: পরিবেশ রসায়ন",
-"অধ্যায় ২: জৈব রসায়ন",
-"অধ্যায় ৩: পরিমাণগত রসায়ন",
-"অধ্যায় ৪: তড়িৎ রসায়ন",
-"অধ্যায় ৫: অর্থনৈতিক রসায়ন"
-]
-
-},
-
-biology: {
-
-paper1: [
-"অধ্যায় ১: কোষ ও এর গঠন",
-"অধ্যায় ২: কোষ বিভাজন",
-"অধ্যায় ৩: কোষ রসায়ন",
-"অধ্যায় ৪: অণুজীব",
-"অধ্যায় ৫: শৈবাল ও ছত্রাক",
-"অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা",
-"অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",
-"অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র",
-"অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব",
-"অধ্যায় ১০: উদ্ভিদ প্রজনন",
-"অধ্যায় ১১: জীবপ্রযুক্তি",
-"অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"
-],
-
-paper2: [
-"অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
-"অধ্যায় ২: প্রাণীর পরিচিতি",
-"অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ",
-"অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন",
-"অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া",
-"অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন",
-"অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা",
-"অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ",
-"অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা",
-"অধ্যায় ১০: মানবদেহের প্রতিরক্ষা",
-"অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন",
-"অধ্যায় ১২: প্রাণীর আচরণ"
-]
-
-},
-
-math: {
-
-paper1: [
-"অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক",
-"অধ্যায় ২: ভেক্টর",
-"অধ্যায় ৩: সরলরেখা",
-"অধ্যায় ৪: বৃত্ত",
-"অধ্যায় ৫: বিন্যাস ও সমাবেশ",
-"অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত",
-"অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",
-"অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র",
-"অধ্যায় ৯: অন্তরীকরণ (Differentiation)",
-"অধ্যায় ১০: যোগজীকরণ (Integration)"
-],
-
-paper2: [
-"অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা",
-"অধ্যায় ২: রৈখিক প্রোগ্রামন",
-"অধ্যায় ৩: জটিল সংখ্যা",
-"অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ",
-"অধ্যায় ৫: দ্বিপদী বিস্তৃতি",
-"অধ্যায় ৬: কনিক",
-"অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",
-"অধ্যায় ৮: স্থিতিবিদ্যা",
-"অধ্যায় ৯: সমতলে বস্তুকণার গতি",
-"অধ্যায় ১০: সম্ভাবনা (Probability)"
-]
-
-}
-
+    physics: {
+        paper1: [
+            "অধ্যায় ১: ভৌতজগৎ ও পরিমাপ",
+            "অধ্যায় ২: ভেক্টর",
+            "অধ্যায় ৩: গতিবিদ্যা",
+            "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান",
+            "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা",
+            "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ",
+            "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম",
+            "অধ্যায় ৮: পর্যায়বৃত্ত গতি",
+            "অধ্যায় ৯: তরঙ্গ",
+            "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"
+        ],
+        paper2: [
+            "অধ্যায় ১: তাপগতিবিদ্যা",
+            "অধ্যায় ২: স্থির তড়িৎ",
+            "অধ্যায় ৩: চল তড়িৎ",
+            "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব",
+            "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",
+            "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান",
+            "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান",
+            "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা",
+            "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান",
+            "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",
+            "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"
+        ]
+    },
+    chemistry: {
+        paper1: [
+            "অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার",
+            "অধ্যায় ২: গুণগত রসায়ন",
+            "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন",
+            "অধ্যায় ৪: রাসায়নিক পরিবর্তন",
+            "অধ্যায় ৫: কর্মমুখী রসায়ন"
+        ],
+        paper2: [
+            "অধ্যায় ১: পরিবেশ রসায়ন",
+            "অধ্যায় ২: জৈব রসায়ন",
+            "অধ্যায় ৩: পরিমাণগত রসায়ন",
+            "অধ্যায় ৪: তড়িৎ রসায়ন",
+            "অধ্যায় ৫: অর্থনৈতিক রসায়ন"
+        ]
+    },
+    biology: {
+        paper1: [
+            "অধ্যায় ১: কোষ ও এর গঠন",
+            "অধ্যায় ২: কোষ বিভাজন",
+            "অধ্যায় ৩: কোষ রসায়ন",
+            "অধ্যায় ৪: অণুজীব",
+            "অধ্যায় ৫: শৈবাল ও ছত্রাক",
+            "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা",
+            "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",
+            "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র",
+            "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব",
+            "অধ্যায় ১০: উদ্ভিদ প্রজনন",
+            "অধ্যায় ১১: জীবপ্রযুক্তি",
+            "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"
+        ],
+        paper2: [
+            "অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
+            "অধ্যায় ২: প্রাণীর পরিচিতি",
+            "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ",
+            "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন",
+            "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া",
+            "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন",
+            "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা",
+            "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ",
+            "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা",
+            "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা",
+            "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন",
+            "অধ্যায় ১২: প্রাণীর আচরণ"
+        ]
+    },
+    math: {
+        paper1: [
+            "অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক",
+            "অধ্যায় ২: ভেক্টর",
+            "অধ্যায় ৩: সরলরেখা",
+            "অধ্যায় ৪: বৃত্ত",
+            "অধ্যায় ৫: বিন্যাস ও সমাবেশ",
+            "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত",
+            "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",
+            "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র",
+            "অধ্যায় ৯: অন্তরীকরণ (Differentiation)",
+            "অধ্যায় ১০: যোগজীকরণ (Integration)"
+        ],
+        paper2: [
+            "অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা",
+            "অধ্যায় ২: রৈখিক প্রোগ্রামন",
+            "অধ্যায় ৩: জটিল সংখ্যা",
+            "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ",
+            "অধ্যায় ৫: দ্বিপদী বিস্তৃতি",
+            "অধ্যায় ৬: কনিক",
+            "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",
+            "অধ্যায় ৮: স্থিতিবিদ্যা",
+            "অধ্যায় ৯: সমতলে বস্তুকণার গতি",
+            "অধ্যায় ১০: সম্ভাবনা (Probability)"
+        ]
+    }
 };
 
-
 /* ===============================
-   AUTH
+   AUTH & LISTENERS
 ================================ */
-
 onAuthStateChanged(auth, user => {
     currentUser = user;
     if(!user){
@@ -945,11 +906,9 @@ onAuthStateChanged(auth, user => {
     loadNotifications();
 });
 
-
 /* ===============================
    QUESTION FORM
 ================================ */
-
 window.updateQuestionPapers = function(){
     document.getElementById("questionPaper").value = "";
     document.getElementById("questionChapter").innerHTML = `<option value="">প্রথমে পত্র নির্বাচন করুন</option>`;
@@ -972,11 +931,9 @@ window.updateQuestionChapters = function(){
     });
 };
 
-
 /* ===============================
    ATTACHMENTS (IMAGE / PDF)
 ================================ */
-
 window.handleImage = function(event){
     const file = event.target.files[0];
     if(!file) return;
@@ -1036,11 +993,9 @@ window.removeAttachment = function(){
     document.getElementById("pdfInput").value="";
 };
 
-
 /* ===============================
    SUBMIT QUESTION
 ================================ */
-
 window.submitQuestion = async function(){
     if(!currentUser){
         alert("আগে লগইন করুন।");
@@ -1118,11 +1073,9 @@ window.submitQuestion = async function(){
     }
 };
 
-
 /* ===============================
-   LOAD QUESTIONS (REALTIME FOR ALL STUDENTS)
+   LOAD QUESTIONS
 ================================ */
-
 function loadQuestions(){
     const qRef = ref(db, "qanda/questions");
     onValue(qRef, (snapshot) => {
@@ -1143,11 +1096,9 @@ function loadQuestions(){
     });
 }
 
-
 /* ===============================
-   QUESTION FILTER
+   FILTERS & DISPLAY
 ================================ */
-
 window.setQuestionFilter = function(filter){
     currentFilter = filter;
     document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
@@ -1158,11 +1109,6 @@ window.setQuestionFilter = function(filter){
 
     window.renderQuestions();
 };
-
-
-/* ===============================
-   VIEW FILTERS
-================================ */
 
 window.updateViewPapers = function(){
     document.getElementById("viewPaper").value = "";
@@ -1192,21 +1138,11 @@ window.updateViewChapters = function(){
     window.renderQuestions();
 };
 
-
-/* ===============================
-   BOOKMARK CHECK
-================================ */
-
 async function isBookmarked(questionId){
     if(!currentUser || !questionId) return false;
     const snap = await get(ref(db, `qanda_bookmarks/${currentUser.uid}/${questionId}`));
     return snap.exists();
 }
-
-
-/* ===============================
-   RENDER QUESTIONS
-================================ */
 
 window.renderQuestions = async function(){
     const container = document.getElementById("questionList");
@@ -1251,11 +1187,6 @@ window.renderQuestions = async function(){
         container.appendChild(card);
     }
 };
-
-
-/* ===============================
-   QUESTION HTML
-================================ */
 
 function createQuestionHTML(q, bookmarked){
     const qId = q.questionId || q.key;
@@ -1320,11 +1251,9 @@ function createQuestionHTML(q, bookmarked){
     `;
 }
 
-
 /* ===============================
-   OPEN QUESTION MODAL
+   MODAL & REPLIES
 ================================ */
-
 window.openQuestion = async function(questionId){
     const q = allQuestions[questionId];
     if(!q) return;
@@ -1345,11 +1274,6 @@ window.openQuestion = async function(questionId){
     document.getElementById("questionModal").style.display = "flex";
     await loadReplies(questionId);
 };
-
-
-/* ===============================
-   LOAD REPLIES
-================================ */
 
 async function loadReplies(questionId){
     const box = document.getElementById("replyList");
@@ -1396,11 +1320,6 @@ async function loadReplies(questionId){
     }
 }
 
-
-/* ===============================
-   FOLLOW UP SUBMIT
-================================ */
-
 window.submitFollowup = async function(questionId){
     if(!currentUser){
         alert("আগে লগইন করুন।");
@@ -1440,11 +1359,6 @@ window.submitFollowup = async function(questionId){
     await loadReplies(questionId);
 };
 
-
-/* ===============================
-   TEACHER NOTIFICATION
-================================ */
-
 async function createTeacherNotification(questionId, message){
     const q = allQuestions[questionId];
     if(!q) return;
@@ -1461,11 +1375,6 @@ async function createTeacherNotification(questionId, message){
         read: false
     });
 }
-
-
-/* ===============================
-   BOOKMARK
-================================ */
 
 window.toggleBookmark = async function(questionId){
     if(!currentUser){
@@ -1488,15 +1397,13 @@ window.toggleBookmark = async function(questionId){
     window.renderQuestions();
 };
 
-
 /* ===============================
    NOTIFICATIONS
 ================================ */
-
-async function loadNotifications(){
+function loadNotifications(){
     if(!currentUser) return;
-    try{
-        const snap = await get(ref(db, `notifications/${currentUser.uid}`));
+    const nRef = ref(db, `notifications/${currentUser.uid}`);
+    onValue(nRef, (snap) => {
         const list = document.getElementById("notificationList");
 
         if(!snap.exists()){
@@ -1526,9 +1433,7 @@ async function loadNotifications(){
 
         list.innerHTML = html;
         updateNotificationCount(unread);
-    }catch(e){
-        console.error(e);
-    }
+    });
 }
 
 function updateNotificationCount(count){
@@ -1553,7 +1458,6 @@ window.openNotification = async function(id){
     await update(ref(db, `notifications/${currentUser.uid}/${id}`), { read: true });
 
     document.getElementById("notificationPanel").classList.remove("show");
-    await loadNotifications();
 
     if(n.questionId){
         if(allQuestions[n.questionId]){
@@ -1570,7 +1474,6 @@ window.deleteNotification = async function(event, id){
     if(!confirm("এই নোটিফিকেশনটি মুছে ফেলবেন?")) return;
 
     await remove(ref(db, `notifications/${currentUser.uid}/${id}`));
-    loadNotifications();
 };
 
 window.markAllNotificationsRead = async function(){
@@ -1585,37 +1488,11 @@ window.markAllNotificationsRead = async function(){
     });
 
     await update(ref(db), updates);
-    loadNotifications();
 };
-
-
-/* ===============================
-   CLOSE MODAL & UTILS
-================================ */
 
 window.closeQuestionModal = function(){
     document.getElementById("questionModal").style.display = "none";
 };
-
-function getSubjectName(subject){
-    const names = {
-        physics: "পদার্থবিজ্ঞান",
-        chemistry: "রসায়ন",
-        biology: "জীববিজ্ঞান",
-        math: "উচ্চতর গণিত"
-    };
-    return names[subject] || subject;
-}
-
-function escapeHTML(value){
-    if(value === undefined || value === null) return "";
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
 
 document.addEventListener("click", function(e){
     const panel = document.getElementById("notificationPanel");
@@ -1624,7 +1501,6 @@ document.addEventListener("click", function(e){
         panel.classList.remove("show");
     }
 });
-
 </script>
 
 </body>
