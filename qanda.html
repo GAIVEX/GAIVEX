@@ -539,13 +539,6 @@ input[type=file]{
     cursor:pointer;
 }
 
-.conversation{
-    background:#0f172a;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #334155;
-}
-
 .status{
     display:inline-block;
     padding:3px 8px;
@@ -852,7 +845,7 @@ const chaptersData = {
             "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব",
             "অধ্যায় ১০: উদ্ভিদ প্রজনন",
             "অধ্যায় ১১: জীবপ্রযুক্তি",
-            "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"
+            "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"
         ],
         paper2: [
             "অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",
@@ -1084,7 +1077,7 @@ window.submitQuestion = async function(){
 };
 
 /* ===============================
-   DELETE QUESTION (NEWLY ADDED)
+   DELETE QUESTION
 ================================ */
 window.deleteQuestion = async function(questionId){
     if(!currentUser){
@@ -1109,16 +1102,10 @@ window.deleteQuestion = async function(questionId){
     }
 
     try{
-        // 1. Remove Question
         await remove(ref(db, `qanda/questions/${questionId}`));
-
-        // 2. Remove Replies (if any)
         await remove(ref(db, `qanda_replies/${questionId}`));
-
-        // 3. Remove Bookmarks for this question
         await remove(ref(db, `qanda_bookmarks/${currentUser.uid}/${questionId}`));
 
-        // Close modal if open
         const modal = document.getElementById("questionModal");
         if(modal && modal.style.display === "flex"){
             window.closeQuestionModal();
@@ -1277,7 +1264,6 @@ function createQuestionHTML(q, bookmarked){
         `;
     }
 
-    // Check if the logged in user is the author of this question
     const isOwner = currentUser && (q.studentUid === currentUser.uid || q.uid === currentUser.uid);
 
     return `
@@ -1349,7 +1335,8 @@ async function loadReplies(questionId){
 
         if(snap.exists()){
             const replies = Object.values(snap.val());
-            replies.sort((a,b) => (a.createdAt || 0) - (a.createdAt || 0));
+            // সঠিক সোর্টিং ফিক্সড
+            replies.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
 
             replies.forEach(r => {
                 html += `
