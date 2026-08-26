@@ -112,7 +112,7 @@
         <div class="palette-section" id="paletteSection">
             <div class="palette-title">
                 <span>প্রশ্ন প্যালেট (নেভিগেশন)</span>
-                <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৩০</span>
+                <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
             <div class="palette-legend">
@@ -174,7 +174,7 @@
 
       let currentUser = null;
       let timerInterval = null;
-      let timeRemaining = 1200;
+      let timeRemaining = 1800; // ৩০ মিনিটের জন্য ১৮০০ সেকেন্ড
       let activeExamKey = "gaivex_exam_default";
       let examTimerKey = "gaivex_timer_default";
       let userSelections = {};
@@ -182,40 +182,60 @@
       let isSubmitted = false;
 
       const defaultExamData = {
-        id: "biology_mcq_30_v1",
-        title: "🧬 প্রাণীর পরিচিতি — ৩০টি MCQ",
-        duration: 20,
+        id: "chemistry_mcq_50_v1",
+        title: "🧪 রাসায়নিক পরিবর্তন — ৫০টি MCQ",
+        duration: 30,
         questions: [
-          { question: "প্রাণীদের দেহের গঠনগত ও কার্যগত মৌলিক একক কোনটি?", options: ["টিস্যু", "অঙ্গ", "কোষ", "অঙ্গতন্ত্র"], correct: 2, explanation: "কোষ হলো জীবদেহের গঠন ও কাজের মৌলিক একক।" },
-          { question: "কোন বৈশিষ্ট্যটি প্রাণীদের উদ্ভিদ থেকে পৃথক করতে সবচেয়ে গুরুত্বপূর্ণ?", options: ["কোষীয় গঠন", "শ্বসন", "পরভোজী পুষ্টি", "বিপাক"], correct: 2, explanation: "প্রাণীদের পুষ্টির ধরন পরভোজী (heterotrophic)." },
-          { question: "প্রাণীর দেহে টিস্যু গঠিত হয়—", options: ["অঙ্গ থেকে", "একই ধরনের কোষের সমষ্টি থেকে", "অঙ্গতন্ত্র থেকে", "বিভিন্ন অঙ্গের সমন্বয়ে"], correct: 1, explanation: "একই গঠন ও কাজের কোষসমূহের সমষ্টিকে টিস্যু বলে।" },
-          { question: "প্রাণীর টিস্যুর প্রধান শ্রেণি কয়টি?", options: ["২টি", "৩টি", "৪টি", "৫টি"], correct: 2, explanation: "আবরণী, যোজক, পেশি ও স্নায়ু টিস্যু।" },
-          { question: "দেহের বাইরের আবরণ ও বিভিন্ন অঙ্গের অভ্যন্তরীণ আবরণ গঠন করে কোন টিস্যু?", options: ["যোজক", "আবরণী", "পেশি", "স্নায়ু"], correct: 1, explanation: "আবরণী টিস্যু বহিরাবরণ তৈরি করে।" },
-          { question: "রক্ত কোন ধরনের টিস্যু?", options: ["আবরণী", "পেশি", "যোজক", "স্নায়ু"], correct: 2, explanation: "রক্ত একটি তরল যোজক টিস্যু।" },
-          { question: "কোন টিস্যুর প্রধান কাজ দেহের বিভিন্ন অংশের মধ্যে সংকেত পরিবহন?", options: ["আবরণী", "যোজক", "পেশি", "স্নায়ু"], correct: 3, explanation: "স্নায়ু টিস্যু সংকেত পরিবহনে কাজ করে।" },
-          { question: "প্রাণীর দেহে চলন ও অঙ্গসঞ্চালনের জন্য প্রধানত কোন টিস্যু দায়ী?", options: ["পেশি", "আবরণী", "যোজক", "স্নায়ু"], correct: 0, explanation: "পেশি টিস্যু চলন ও অঙ্গসঞ্চালন ঘটায়।" },
-          { question: "দ্বিপার্শ্বীয় প্রতিসাম্যকে কী বলা হয়?", options: ["Radial symmetry", "Bilateral symmetry", "Spherical symmetry", "Asymmetry"], correct: 1, explanation: "ডান ও বাম দুটি সমান অংশ পাওয়া গেলে তাকে Bilateral symmetry বলে।" },
-          { question: "হাইড্রার দেহে কোন ধরনের প্রতিসাম্য দেখা যায়?", options: ["দ্বিপার্শ্বীয়", "অপ্রতিসাম্য", "অরীয়", "গোলীয়"], correct: 2, explanation: "হাইড্রার অরীয় প্রতিসাম্য (radial symmetry) রয়েছে।" },
-          { question: "কোন প্রাণী অপ্রতিসম?", options: ["Hydra", "Sycon", "Earthworm", "Cockroach"], correct: 1, explanation: "Sycon একটি অপ্রতিসম স্পঞ্জ।" },
-          { question: "ভ্রূণের তিনটি জার্ম স্তর হলো—", options: ["Ectoderm, Mesoderm, Endoderm", "Epidermis, Dermis, Mesoderm", "Ectoderm, Epidermis, Endoderm", "Mesoderm, Dermis, Endoderm"], correct: 0, explanation: "এক্টোডার্ম, মেসোডার্ম ও এন্ডোডার্ম।" },
-          { question: "কোনটি দ্বিস্তরীয় (diploblastic) প্রাণী?", options: ["কেঁচো", "তেলাপোকা", "Hydra", "মানুষ"], correct: 2, explanation: "হাইড্রার ভ্রূণে দুটি জার্ম স্তর থাকে।" },
-          { question: "কোনটি ত্রিস্তরীয় প্রাণী?", options: ["Hydra", "Jellyfish", "Earthworm", "Sponge"], correct: 2, explanation: "কেঁচো একটি triploblastic প্রাণী।" },
-          { question: "Coelom বলতে কী বোঝায়?", options: ["অন্ত্রের গহ্বর", "দেহপ্রাচীর ও পরিপাকনালির মধ্যবর্তী মেসোডার্ম-আবৃত গহ্বর", "রক্তনালির গহ্বর", "শ্বাসনালির গহ্বর"], correct: 1, explanation: "মেসোডার্ম দ্বারা সম্পূর্ণ আবৃত দেহগহ্বর।" },
-          { question: "কোন প্রাণী Acoelomate?", options: ["Earthworm", "Cockroach", "Planaria", "Human"], correct: 2, explanation: "Planaria হলো acoelomate।" },
-          { question: "Pseudocoelom দেখা যায় কোন পর্বে?", options: ["Platyhelminthes", "Nematoda", "Annelida", "Mollusca"], correct: 1, explanation: "Nematoda পর্বে ছদ্মসিলোম থাকে।" },
-          { question: "প্রকৃত সিলোম প্রথম সুস্পষ্টভাবে কোন পর্বে দেখা যায়?", options: ["Porifera", "Cnidaria", "Platyhelminthes", "Annelida"], correct: 3, explanation: "Annelida পর্বে প্রকৃত সিলোম থাকে।" },
-          { question: "প্রাণীদেহের খণ্ডায়নকে কী বলা হয়?", options: ["Cephalization", "Segmentation", "Metamerism", "Regeneration"], correct: 2, explanation: "অনুদৈর্ঘ্য খণ্ডায়নকে metamerism বলে।" },
-          { question: "কেঁচোর দেহের খণ্ডায়ন কোন ধরনের?", options: ["Radial", "Metameric", "Asymmetrical", "Irregular"], correct: 1, explanation: "কেঁচোর দেহে Metameric খণ্ডায়ন থাকে।" },
-          { question: "Cephalization বলতে বোঝায়—", options: ["দেহের খণ্ডায়ন", "মাথায় সংবেদী অঙ্গ ও স্নায়ুকেন্দ্রের ঘনীভবন", "দেহের অরীয় বিভাজন", "দেহের বৃদ্ধি"], correct: 1, explanation: "মাথায় স্নায়ুকেন্দ্রের ঘনীভবন।" },
-          { question: "নিচের কোন পর্বের প্রাণী জলনালিতন্ত্রের জন্য বিশেষভাবে পরিচিত?", options: ["Porifera", "Annelida", "Arthropoda", "Mollusca"], correct: 0, explanation: "Porifera পর্বে canal system থাকে।" },
-          { question: "Cnidaria পর্বের প্রাণীদের বিশেষ বৈশিষ্ট্য কোনটি?", options: ["Nephridia", "Cnidoblast", "Malpighian tubule", "Flame cell"], correct: 1, explanation: "Cnidaria পর্বের বৈশিষ্ট্য Cnidoblast।" },
-          { question: "Platyhelminthes-এর প্রধান বৈশিষ্ট্য কোনটি?", options: ["দেহ খণ্ডিত", "দেহ চ্যাপ্টা", "দেহে jointed appendage আছে", "জলনালিতন্ত্র আছে"], correct: 1, explanation: "এদের দেহ চ্যাপ্টা প্রকৃতির।" },
-          { question: "Arthropoda পর্বের প্রধান বৈশিষ্ট্য কোনটি?", options: ["অখণ্ডিত দেহ", "সন্ধিযুক্ত উপাঙ্গ", "জলনালিতন্ত্র", "নেফ্রিডিয়া"], correct: 1, explanation: "এদের সন্ধিযুক্ত পা/উপাঙ্গ থাকে।" },
-          { question: "প্রাণীজগতের সবচেয়ে বড় পর্ব কোনটি?", options: ["Mollusca", "Annelida", "Arthropoda", "Chordata"], correct: 2, explanation: "Arthropoda হলো বৃহত্তম পর্ব।" },
-          { question: "Mollusca পর্বের সাধারণ বৈশিষ্ট্য কোনটি?", options: ["সাধারণত নরম দেহ", "সন্ধিযুক্ত পা", "দেহে নেমাটোসিস্ট", "দেহ সবসময় খণ্ডিত"], correct: 0, explanation: "মলাস্ক পর্বের প্রাণী নরম দেহযুক্ত।" },
-          { question: "Echinodermata-এর একান্ত বৈশিষ্ট্য কোনটি?", options: ["জলসংবহন তন্ত্র", "জলনালিকা তন্ত্র বা water vascular system", "সন্ধিযুক্ত পা", "নেফ্রিডিয়া"], correct: 1, explanation: "এদের water vascular system থাকে।" },
-          { question: "Chordata পর্বের প্রধান শনাক্তকারী বৈশিষ্ট্য কোনটি?", options: ["Cnidoblast", "Notochord", "Flame cell", "Water vascular system"], correct: 1, explanation: "Chordata-এর মূল বৈশিষ্ট্য Notochord।" },
-          { question: "নিচের কোনটি অমেরুদণ্ডী প্রাণী?", options: ["মাছ", "ব্যাঙ", "কেঁচো", "পাখি"], correct: 2, explanation: "কেঁচো অমেরুদণ্ডী প্রাণী।" }
+          { question: "কোনটি রাসায়নিক পরিবর্তনের প্রধান বৈশিষ্ট্য?", options: ["শুধু আকারের পরিবর্তন", "নতুন পদার্থ সৃষ্টি", "শুধু অবস্থার পরিবর্তন", "শুধু আয়তনের পরিবর্তন"], correct: 1, explanation: "রাসায়নিক পরিবর্তনে মূল পদার্থের রাসায়নিক গঠন পরিবর্তিত হয়ে নতুন ধর্মবিশিষ্ট পদার্থ সৃষ্টি হয়।" },
+          { question: "নিচের কোনটি রাসায়নিক পরিবর্তন?", options: ["বরফ গলা", "পানি বাষ্পীভূত হওয়া", "লোহার মরিচা পড়া", "কাচ ভাঙা"], correct: 2, explanation: "লোহা অক্সিজেন ও পানির উপস্থিতিতে বিক্রিয়া করে নতুন পদার্থ hydrated iron(III) oxide বা মরিচা তৈরি করে।" },
+          { question: "CaCO₃ → CaO + CO₂ বিক্রিয়াটি কোন ধরনের?", options: ["সংযোজন", "বিয়োজন", "প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 1, explanation: "একটি যৌগ ভেঙে একাধিক পদার্থ উৎপন্ন হয়েছে। তাই এটি বিয়োজন বিক্রিয়া।" },
+          { question: "CaO + H₂O → Ca(OH)₂ কোন ধরনের বিক্রিয়া?", options: ["সংযোজন", "বিয়োজন", "প্রতিস্থাপন", "জারণ"], correct: 0, explanation: "দুটি পদার্থ যুক্ত হয়ে একটি উৎপাদ তৈরি করেছে। তাই এটি সংযোজন বিক্রিয়া।" },
+          { question: "Zn + CuSO₄ → ZnSO₄ + Cu বিক্রিয়ায় কোনটি জারিত হয়?", options: ["Cu", "Cu²⁺", "Zn", "SO₄²⁻"], correct: 2, explanation: "Zn-এর জারণ সংখ্যা 0 থেকে +2 হয়েছে। তাই Zn জারিত হয়েছে।" },
+          { question: "একই বিক্রিয়ায় বিজারিত পদার্থ কোনটি?", options: ["Zn", "Cu²⁺", "SO₄²⁻", "Zn²⁺"], correct: 1, explanation: "Cu²⁺ দুটি ইলেকট্রন গ্রহণ করে Cu-তে পরিণত হয়েছে। ইলেকট্রন গ্রহণ = বিজারণ।" },
+          { question: "জারণ বলতে বোঝায়—", options: ["ইলেকট্রন গ্রহণ", "ইলেকট্রন বর্জন", "প্রোটন গ্রহণ", "নিউট্রন বর্জন"], correct: 1, explanation: "আধুনিক ধারণায় জারণ = ইলেকট্রন ত্যাগ।" },
+          { question: "বিজারণের ক্ষেত্রে—", options: ["ইলেকট্রন ত্যাগ হয়", "ইলেকট্রন গ্রহণ হয়", "অক্সিজেন সবসময় যুক্ত হয়", "হাইড্রোজেন সবসময় অপসারিত হয়"], correct: 1, explanation: "বিজারণে কোনো প্রজাতি ইলেকট্রন গ্রহণ করে।" },
+          { question: "যে পদার্থ অন্য পদার্থকে জারিত করে নিজে বিজারিত হয় তাকে বলে—", options: ["বিজারক", "জারক", "অনুঘটক", "দ্রাবক"], correct: 1, explanation: "জারক অন্য পদার্থ থেকে ইলেকট্রন গ্রহণ করে; ফলে নিজে বিজারিত হয়।" },
+          { question: "যে পদার্থ অন্য পদার্থকে বিজারিত করে নিজে জারিত হয় তাকে বলে—", options: ["জারক", "বিজারক", "অনুঘটক", "উৎপাদক"], correct: 1, explanation: "বিজারক ইলেকট্রন দান করে অন্য পদার্থকে বিজারিত করে এবং নিজে জারিত হয়।" },
+          { question: "H₂ + Cl₂ → 2HCl বিক্রিয়াটি—", options: ["বিয়োজন", "সংযোজন", "প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 1, explanation: "দুটি বিক্রিয়ক মিলে একটি যৌগ HCl তৈরি করেছে।" },
+          { question: "2KClO₃ → 2KCl + 3O₂ বিক্রিয়াটি কী?", options: ["সংযোজন", "বিয়োজন", "প্রতিস্থাপন", "নিরপেক্ষকরণ"], correct: 1, explanation: "KClO₃ একটি যৌগ ভেঙে KCl ও O₂ উৎপন্ন করেছে।" },
+          { question: "Fe + CuSO₄ → FeSO₄ + Cu বিক্রিয়াটি—", options: ["সংযোজন", "বিয়োজন", "একক প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 2, explanation: "Fe, Cu-কে তার লবণ থেকে প্রতিস্থাপিত করেছে। এটি একক প্রতিস্থাপন বিক্রিয়া।" },
+          { question: "AgNO₃ + NaCl → AgCl + NaNO₃ কোন ধরনের বিক্রিয়া?", options: ["সংযোজন", "বিয়োজন", "একক প্রতিস্থাপন", "দ্বি-প্রতিস্থাপন"], correct: 3, explanation: "দুটি যৌগের আয়ন পরস্পর বিনিময় করেছে। তাই এটি দ্বি-প্রতিস্থাপন বিক্রিয়া।" },
+          { question: "AgNO₃ ও NaCl-এর বিক্রিয়ায় উৎপন্ন AgCl-এর বৈশিষ্ট্য—", options: ["কালো গ্যাস", "সাদা অধঃক্ষেপ", "নীল দ্রবণ", "হলুদ গ্যাস"], correct: 1, explanation: "Ag⁺ ও Cl⁻ যুক্ত হয়ে অদ্রবণীয় সাদা AgCl অধঃক্ষেপ তৈরি করে।" },
+          { question: "রাসায়নিক সমীকরণ সমতাকরণের মূল ভিত্তি কোন সূত্র?", options: ["গ্যাসের সূত্র", "শক্তির সূত্র", "ভরের নিত্যতা সূত্র", "বয়েলের সূত্র"], correct: 2, explanation: "রাসায়নিক বিক্রিয়ায় মোট ভর অপরিবর্তিত থাকে। তাই বিক্রিয়ক ও উৎপাদে প্রতিটি মৌলের পরমাণুর সংখ্যা সমান রাখতে হয়।" },
+          { question: "নিচের কোন সমীকরণটি সঠিকভাবে সমতাকৃত?", options: ["H₂ + O₂ → H₂O", "H₂ + O₂ → 2H₂O", "2H₂ + O₂ → 2H₂O", "2H₂ + 2O₂ → 2H₂O"], correct: 2, explanation: "উভয় পাশে H = 4 এবং O = 2।" },
+          { question: "2Mg + O₂ → 2MgO বিক্রিয়ায় Mg-এর কী ঘটে?", options: ["বিজারণ", "জারণ", "নিরপেক্ষকরণ", "কোনো পরিবর্তন হয় না"], correct: 1, explanation: "Mg ইলেকট্রন ত্যাগ করে Mg²⁺ হয়। তাই Mg জারিত হয়।" },
+          { question: "MgO-তে Mg-এর জারণ সংখ্যা কত?", options: ["0", "+1", "+2", "−2"], correct: 2, explanation: "O-এর জারণ সংখ্যা −2। যৌগ নিরপেক্ষ হওয়ায় Mg = +2।" },
+          { question: "H₂O-তে অক্সিজেনের জারণ সংখ্যা—", options: ["+2", "−2", "+1", "−1"], correct: 1, explanation: "সাধারণত অক্সিজেনের জারণ সংখ্যা −2।" },
+          { question: "H₂O₂-তে অক্সিজেনের জারণ সংখ্যা কত?", options: ["−2", "−1", "+1", "0"], correct: 1, explanation: "Peroxide-এ অক্সিজেনের জারণ সংখ্যা বিশেষভাবে −1।" },
+          { question: "কোনো মৌলের মুক্ত অবস্থায় জারণ সংখ্যা—", options: ["+1", "−1", "0", "+2"], correct: 2, explanation: "মৌলিক বা free state-এ কোনো মৌলের oxidation number = 0।" },
+          { question: "KMnO₄-এ Mn-এর জারণ সংখ্যা কত?", options: ["+2", "+4", "+6", "+7"], correct: 3, explanation: "K = +1 এবং চারটি O = −8। তাই Mn = +7।" },
+          { question: "K₂Cr₂O₇-এ Cr-এর জারণ সংখ্যা—", options: ["+3", "+4", "+6", "+7"], correct: 2, explanation: "2(+1)+2x+7(−2)=0 ⇒ 2x=12 ⇒ x=+6।" },
+          { question: "নিচের কোনটি শক্তিশালী জারক?", options: ["Na", "KMnO₄", "H₂", "CO"], correct: 1, explanation: "KMnO₄, বিশেষ করে acidic medium-এ, শক্তিশালী জারক হিসেবে কাজ করে।" },
+          { question: "অনুঘটক কী করে?", options: ["বিক্রিয়ার সাম্য ধ্রুবক পরিবর্তন করে", "বিক্রিয়ার সক্রিয়ণ শক্তি কমায়", "উৎপাদের পরিমাণ সবসময় বাড়ায়", "বিক্রিয়ায় সম্পূর্ণভাবে শেষ হয়ে যায়"], correct: 1, explanation: "অনুঘটক বিকল্প কম সক্রিয়ণ-শক্তির পথ প্রদান করে বিক্রিয়ার হার পরিবর্তন করে।" },
+          { question: "অনুঘটক সাধারণত—", options: ["বিক্রিয়ার শেষে সম্পূর্ণ বিলীন হয়", "অপরিবর্তিত থাকে", "উৎপাদে পরিণত হয়", "বিক্রিয়ার সাম্য পরিবর্তন করে"], correct: 1, explanation: "অনুঘটক বিক্রিয়ার হার পরিবর্তন করলেও সামগ্রিকভাবে নিজে স্থায়ীভাবে ক্ষয়প্রাপ্ত হয় না।" },
+          { question: "Haber process-এ অনুঘটক হিসেবে ব্যবহৃত হয়—", options: ["Ni", "Fe", "Pt", "MnO₂"], correct: 1, explanation: "Haber process-এ N₂ ও H₂ থেকে NH₃ উৎপাদনে লোহা (Fe) catalyst হিসেবে ব্যবহৃত হয়।" },
+          { question: "Contact process-এ SO₂ থেকে SO₃ তৈরিতে অনুঘটক—", options: ["Fe", "Ni", "V₂O₅", "MnO₂"], correct: 2, explanation: "Contact process-এ V₂O₅ ব্যবহৃত হয়।" },
+          { question: "H₂O₂-এর বিয়োজন দ্রুত করতে কোন অনুঘটক ব্যবহৃত হতে পারে?", options: ["MnO₂", "NaCl", "CuSO₄", "CaCO₃"], correct: 0, explanation: "MnO₂, H₂O₂-এর দ্রুত বিয়োজনে কার্যকর অনুঘটক।" },
+          { question: "উষ্মাক্ষেপী বিক্রিয়ায়—", options: ["তাপ শোষিত হয়", "তাপ নির্গত হয়", "আলো সবসময় শোষিত হয়", "কোনো শক্তি পরিবর্তন হয় না"], correct: 1, explanation: "Exothermic reaction-এ বিক্রিয়া পরিবেশে তাপ শক্তি ছাড়ে।" },
+          { question: "উষ্মাশোষী বিক্রিয়ায়—", options: ["তাপ নির্গত হয়", "তাপ শোষিত হয়", "আলো উৎপন্ন হওয়া বাধ্যতামূলক", "চাপ সবসময় কমে"], correct: 1, explanation: "Endothermic reaction সংঘটিত হওয়ার জন্য পরিবেশ থেকে তাপ শোষণ করে।" },
+          { question: "নিচের কোনটি উষ্মাক্ষেপী?", options: ["সালোকসংশ্লেষণ", "CaCO₃-এর তাপীয় বিয়োজন", "জ্বালানি দহন", "বরফ গলা"], correct: 2, explanation: "দহনে প্রচুর তাপ নির্গত হয়, তাই এটি উষ্মাক্ষেপী।" },
+          { question: "সালোকসংশ্লেষণ কোন ধরনের শক্তিগত পরিবর্তন?", options: ["উষ্মাক্ষেপী", "উষ্মাশোষী", "জারণ নয়", "নিরপেক্ষ"], correct: 1, explanation: "সালোকসংশ্লেষণে সূর্যের শক্তি শোষিত হয়ে রাসায়নিক শক্তিতে সঞ্চিত হয়।" },
+          { question: "দহন বিক্রিয়ার জন্য অপরিহার্য—", options: ["N₂", "O₂", "CO₂", "H₂"], correct: 1, explanation: "সাধারণ দহন বিক্রিয়ায় অক্সিজেন প্রয়োজন হয়।" },
+          { question: "মিথেনের সম্পূর্ণ দহনের সমীকরণ কোনটি?", options: ["CH₄ + O₂ → CO + H₂", "CH₄ + 2O₂ → CO₂ + 2H₂O", "CH₄ + O₂ → C + H₂O", "CH₄ + CO₂ → H₂O"], correct: 1, explanation: "সম্পূর্ণ দহনে CH₄ থেকে CO₂ ও H₂O তৈরি হয়।" },
+          { question: "অসম্পূর্ণ দহনে সাধারণত কোন বিষাক্ত গ্যাস তৈরি হতে পারে?", options: ["CO", "O₂", "N₂", "H₂"], correct: 0, explanation: "অক্সিজেনের ঘাটতিতে কার্বনযুক্ত জ্বালানির অসম্পূর্ণ দহনে CO তৈরি হতে পারে।" },
+          { question: "লোহার মরিচা পড়ার জন্য প্রধানত প্রয়োজন—", options: ["শুধু N₂", "O₂ ও H₂O", "শুধু CO₂", "H₂ ও Cl₂"], correct: 1, explanation: "লোহার corrosion-এর জন্য অক্সিজেন ও আর্দ্রতা গুরুত্বপূর্ণ।" },
+          { question: "মরিচা প্রতিরোধে লোহার উপর Zn-এর প্রলেপ দেওয়াকে বলে—", options: ["Alloying", "Galvanization", "Distillation", "Electrolysis"], correct: 1, explanation: "লোহার উপর জিঙ্কের protective coating দেওয়াকে galvanization বলে।" },
+          { question: "Galvanization-এ Zn ব্যবহারের একটি কারণ—", options: ["Zn লোহার চেয়ে সহজে জারিত হয়", "Zn কোনো বিক্রিয়ায় অংশ নেয় না", "Zn সবসময় গ্যাস", "Zn-এর গলনাঙ্ক শূন্য"], correct: 0, explanation: "Zn লোহার আগে জারিত হয়ে sacrificial protection প্রদান করতে পারে।" },
+          { question: "নিচের কোনটি reversible reaction-এর উদাহরণ?", options: ["H₂ + Cl₂ → 2HCl", "N₂ + 3H₂ ⇌ 2NH₃", "CH₄ + 2O₂ → CO₂ + 2H₂O", "2Mg + O₂ → 2MgO"], correct: 1, explanation: "Haber process-এর বিক্রিয়া উভয় দিকেই চলতে পারে, তাই ⇌ দ্বারা প্রকাশ করা হয়।" },
+          { question: "রাসায়নিক সাম্যাবস্থায়—", options: ["বিক্রিয়া সম্পূর্ণ বন্ধ হয়ে যায়", "শুধু সম্মুখ বিক্রিয়া চলে", "সম্মুখ ও পশ্চাৎ বিক্রিয়ার হার সমান হয়", "সব বিক্রিয়ক শেষ হয়ে যায়"], correct: 2, explanation: "Dynamic equilibrium-এ forward ও backward reaction-এর হার সমান থাকে।" },
+          { question: "সাম্যাবস্থায় কোনটি সত্য?", options: ["ঘনমাত্রা অবশ্যই শূন্য", "macroscopic properties স্থির থাকে", "সব পদার্থের পরিমাণ সমান", "বিক্রিয়া বন্ধ থাকে"], correct: 1, explanation: "সাম্যাবস্থায় বিক্রিয়া চলমান থাকলেও দৃশ্যমান/পরিমাপযোগ্য ধর্মগুলো স্থির থাকে।" },
+          { question: "Le Chatelier-এর নীতি অনুযায়ী সাম্যাবস্থায় চাপ বাড়ালে—", options: ["সবসময় চাপের কোনো প্রভাব নেই", "সাম্য অধিক গ্যাসীয় অণুর দিকে যায়", "সাম্য কম গ্যাসীয় অণুর দিকে সরে", "বিক্রিয়া বন্ধ হয়ে যায়"], correct: 2, explanation: "চাপ বৃদ্ধির প্রভাব কমাতে সাম্য সাধারণত কম সংখ্যক গ্যাসীয় মোলের দিকে সরে যায়।" },
+          { question: "N₂ + 3H₂ ⇌ 2NH₃ বিক্রিয়ায় চাপ বাড়ালে সাম্য—", options: ["বামদিকে", "ডানদিকে", "কোনো দিকে নয়", "প্রথমে বামে পরে ডানে"], correct: 1, explanation: "বাম পাশে গ্যাসীয় মোল = 4, ডান পাশে = 2। চাপ বাড়ালে কম মোলের দিকে অর্থাৎ NH₃-এর দিকে সাম্য সরে।" },
+          { question: "রাসায়নিক বিক্রিয়ার হার সবচেয়ে সরাসরি কোন বিষয়ের দ্বারা প্রভাবিত হয়?", options: ["তাপমাত্রা", "পদার্থের নাম", "রং", "পাত্রের আকৃতি সবসময়"], correct: 0, explanation: "তাপমাত্রা বাড়লে সাধারণত কণার গতিশক্তি ও কার্যকর সংঘর্ষের সংখ্যা বাড়ে, ফলে reaction rate বৃদ্ধি পায়।" },
+          { question: "তাপমাত্রা বাড়ালে অধিকাংশ রাসায়নিক বিক্রিয়ার হার—", options: ["কমে", "বাড়ে", "অপরিবর্তিত থাকে", "শূন্য হয়"], correct: 1, explanation: "তাপমাত্রা বৃদ্ধিতে বেশি সংখ্যক অণু activation energy অতিক্রম করতে পারে।" },
+          { question: "গুঁড়ো CaCO₃ এবং বড় CaCO₃-এর মধ্যে কোনটি HCl-এর সঙ্গে দ্রুত বিক্রিয়া করবে?", options: ["বড় টুকরা", "গুঁড়ো CaCO₃", "দুটিই একই", "কোনোটিই নয়"], correct: 1, explanation: "গুঁড়ো পদার্থের surface area বেশি, তাই HCl-এর সঙ্গে কার্যকর সংঘর্ষ বেশি হয় এবং বিক্রিয়া দ্রুত হয়।" },
+          { question: "2H₂O₂ → 2H₂O + O₂ বিক্রিয়ায় H₂O₂ কী হিসেবে কাজ করছে?", options: ["শুধু জারক", "শুধু বিজারক", "জারক ও বিজারক উভয়", "অনুঘটক"], correct: 2, explanation: "H₂O₂-এর একটি অংশ জারিত এবং অন্য অংশ বিজারিত হতে পারে। তাই এটি disproportionation reaction দেখায়।" },
+          { question: "নিচের কোন বিক্রিয়াটি একই সঙ্গে জারণ-বিজারণ বিক্রিয়া?", options: ["NaCl → Na⁺ + Cl⁻", "HCl + NaOH → NaCl + H₂O", "Zn + CuSO₄ → ZnSO₄ + Cu", "AgNO₃ + NaCl → AgCl + NaNO₃"], correct: 2, explanation: "Zn ইলেকট্রন ত্যাগ করে জারিত হয় এবং Cu²⁺ ইলেকট্রন গ্রহণ করে বিজারিত হয়। তাই এটি redox reaction।" }
         ]
       };
 
@@ -240,7 +260,7 @@
         activeExamKey = "gaivex_submitted_" + cleanId;
         examTimerKey = "gaivex_timer_" + cleanId;
 
-        const totalSeconds = (examData.duration || 20) * 60;
+        const totalSeconds = (examData.duration || 30) * 60;
         const savedTimer = localStorage.getItem(examTimerKey);
         timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalSeconds;
 
@@ -426,14 +446,13 @@
 
         if (currentUser) {
           try {
-            // 🔥 হোমপেজের রিভিউ পপআপ কাজ করার জন্য এখানে questions এবং userAnswers সেভ করা বাধ্যতামূলক ছিল
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
               examTitle: examData.title || "লাইভ পরীক্ষা",
               score: finalScore,
               total: total,
               submittedAt: new Date().toISOString(),
-              questions: examData.questions, // মূল প্রশ্ন ও ব্যাখ্যা ডেটাবেজে পাঠানো হলো
-              userAnswers: userSelections   // ইউজারের দেওয়া উত্তর ডেটাবেজে পাঠানো হলো
+              questions: examData.questions,
+              userAnswers: userSelections
             });
           } catch(err) { console.error("Error saving score:", err); }
         }
