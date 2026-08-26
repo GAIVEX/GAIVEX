@@ -3,39 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - Teacher Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>GAIVEX - টিচার প্যানেল</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
-        input, textarea, select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; margin-bottom: 10px; }
-        .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .btn-save { background: #10b981; color: white; }
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.85); border-bottom: 1px solid #334155; }
+        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
+        .container { max-width: 850px; margin: 20px auto; padding: 15px; width: 100%; flex: 1; }
+        .card { background: rgba(30, 41, 59, 0.9); border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        label { font-weight: 600; display: block; margin-top: 10px; margin-bottom: 4px; font-size: 13px; }
+        input, textarea { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; margin-bottom: 10px; }
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; background: #10b981; color: white; }
+        .question-item { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
+    <header class="navbar">
+        <a href="index.html" class="logo">GAIVEX Teacher Panel</a>
+    </header>
+
     <div class="container">
-        <h2 style="color: #38bdf8; margin-bottom: 20px;">👨‍🏫 GAIVEX Teacher Panel</h2>
-        
         <!-- লগইন সেকশন -->
         <div id="teacherLoginCard" class="card">
-            <h3>শিক্ষক লগইন</h3>
+            <h3>🔐 শিক্ষক লগইন</h3>
             <form onsubmit="handleTeacherLogin(event)">
-                <label>Teacher ID:</label><input type="text" id="tId" required placeholder="GVX-001098">
-                <label>Password:</label><input type="password" id="tPass" required placeholder="GAIVEX#@014265">
-                <button type="submit" class="btn btn-save" style="width:100%;">লগইন করুন</button>
+                <label>Teacher No. / Admin Email:</label>
+                <input type="text" id="tEmail" placeholder="GVX-001098 বা gaiyumtamim@gmail.com" required>
+                <label>Teacher Password:</label>
+                <input type="password" id="tPass" placeholder="GAIVEX#@014265" required>
+                <button type="submit" class="btn" style="width:100%; margin-top:10px;">লগইন করুন</button>
             </form>
         </div>
 
-        <!-- প্রশ্ন লিস্ট ও উত্তর দেওয়ার সেকশন -->
-        <div id="teacherDashboard" style="display: none;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                <h3 style="color: #10b981;">স্টুডেন্টদের প্রশ্নসমূহ</h3>
-                <button class="btn" style="background:#ef4444; color:#fff;" onclick="location.reload()">লগআউট</button>
+        <!-- ড্যাশবোর্ড সেকশন -->
+        <div id="teacherDashboard" class="card" style="display:none;">
+            <h2>📚 স্টুডেন্টদের প্রশ্নসমূহ ও উত্তর প্রদান</h2>
+            <div id="teacherQuestionsList" style="margin-top: 15px;">
+                <p style="color:#94a3b8;">লোড হচ্ছে...</p>
             </div>
-            <div id="teacherQuestionsList"></div>
         </div>
     </div>
 
@@ -47,73 +53,111 @@
             apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
             authDomain: "gaivexexam.firebaseapp.com",
             databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-            projectId: "gaivexexam"
+            projectId: "gaivexexam",
+            storageBucket: "gaivexexam.firebasestorage.app",
+            messagingSenderId: "956204530190",
+            appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        window.handleTeacherLogin = (e) => {
+        window.handleTeacherLogin = function(e) {
             e.preventDefault();
-            const id = document.getElementById('tId').value;
-            const pass = document.getElementById('tPass').value;
+            const idInput = document.getElementById('tEmail').value.trim();
+            const passInput = document.getElementById('tPass').value.trim();
 
-            if(id === "GVX-001098" && pass === "GAIVEX#@014265") {
+            if((idInput === 'GVX-001098' || idInput === 'gaiyumtamim@gmail.com') && passInput === 'GAIVEX#@014265') {
                 document.getElementById('teacherLoginCard').style.display = 'none';
                 document.getElementById('teacherDashboard').style.display = 'block';
                 loadTeacherQuestions();
             } else {
-                alert("ভুল আইডি বা পাসওয়ার্ড!");
+                alert(" ভুল শিক্ষক আইডি বা পাসওয়ার্ড!");
             }
         }
 
         async function loadTeacherQuestions() {
-            const snapshot = await get(ref(db, 'questions'));
             const container = document.getElementById('teacherQuestionsList');
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                let html = '';
-                Object.values(data).forEach(q => {
-                    html += `
-                        <div class="card">
-                            <p style="font-size:12px; color:#38bdf8;">স্টুডেন্ট: ${q.userName} | বিষয়: ${q.subject} (${q.chapter})</p>
-                            <p style="font-size:14px; margin: 8px 0;"><b>প্রশ্ন:</b> ${q.questionText}</p>
-                            ${q.fileUrl ? `<img src="${q.fileUrl}" style="max-width:150px; border-radius:4px; margin-bottom:8px;">` : ''}
-                            
-                            <div style="background:#0f172a; padding:10px; border-radius:6px; margin-top:10px;">
-                                <textarea id="replyText_${q.id}" placeholder="আপনার উত্তর লিখুন..."></textarea>
-                                <button class="btn btn-save" onclick="sendReply('${q.id}', '${q.uid}')">উত্তর ও নোটিফিকেশন পাঠান</button>
+            try {
+                const snapshot = await get(ref(db, 'qa_questions'));
+                if(snapshot.exists()) {
+                    const data = snapshot.val();
+                    let html = '';
+                    for(let id in data) {
+                        const q = data[id];
+                        let mediaHtml = q.fileUrl ? `<img src="${q.fileUrl}" style="max-width:100%; border-radius:6px; margin-top:8px;">` : '';
+                        html += `
+                            <div class="question-item">
+                                <div style="font-size:12px; color:#38bdf8; font-weight:bold;">স্টুডেন্ট: ${q.authorName} (${q.subject} - ${q.chapter})</div>
+                                <p style="font-size:14px; margin:6px 0;">${q.text}</p>
+                                ${mediaHtml}
+                                <div style="margin-top:10px; background:#0f172a; padding:10px; border-radius:6px;">
+                                    <label>উত্তর লিখুন:</label>
+                                    <textarea id="ans_${id}" rows="3" placeholder="শিক্ষকের উত্তর লিখুন...">${q.answer || ''}</textarea>
+                                    
+                                    <label>উত্তর ছবি / পিডিএফ (ঐচ্ছিক):</label>
+                                    <input type="file" id="ansFile_${id}" accept="image/*,application/pdf">
+
+                                    <label>ভয়েস নোট ফাইল (ঐচ্ছিক অডিও আপলোড):</label>
+                                    <input type="file" id="ansVoice_${id}" accept="audio/*">
+
+                                    <button onclick="submitAnswer('${id}')" class="btn" style="margin-top:6px;">উত্তর সাবমিট করুন ও নোটিফিকেশন পাঠান</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p>কোনো প্রশ্ন নেই।</p>';
+                        `;
+                    }
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color:#94a3b8;">কোনো প্রশ্ন নেই।</p>';
+                }
+            } catch(e) {
+                container.innerHTML = '<p style="color:#ef4444;">লোড করতে ত্রুটি হয়েছে।</p>';
             }
         }
 
-        window.sendReply = async (qId, studentUid) => {
-            const replyText = document.getElementById(`replyText_${qId}`).value;
-            if(!replyText) { alert("উত্তর লিখুন!"); return; }
+        window.submitAnswer = async function(qId) {
+            const answerText = document.getElementById(`ans_${qId}`).value;
+            const fileInput = document.getElementById(`ansFile_${qId}`);
+            const voiceInput = document.getElementById(`ansVoice_${qId}`);
 
-            // প্রশ্নে উত্তর আপডেট করা
-            await update(ref(db, `questions/${qId}`), {
-                reply: { text: replyText, timestamp: Date.now() },
-                status: 'answered'
+            let ansFileUrl = "";
+            if(fileInput.files.length > 0) {
+                ansFileUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
+
+            let voiceUrl = "";
+            if(voiceInput.files.length > 0) {
+                voiceUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(voiceInput.files[0]);
+                });
+            }
+
+            // প্রশ্নের ডেটাবেজ আপডেট
+            await update(ref(db, `qa_questions/${qId}`), {
+                answer: answerText,
+                answerFile: ansFileUrl,
+                voiceNote: voiceUrl
             });
 
-            // স্টুডেন্টের নোটিফিকেশনে পাঠানো
-            const notifRef = ref(db, `notifications/${studentUid}`);
-            const newNotifKey = Date.now();
-            await update(ref(db, `notifications/${studentUid}/${newNotifKey}`), {
-                title: "আপনার প্রশ্নের উত্তর দেওয়া হয়েছে!",
-                message: "শিক্ষক মহাশয় আপনার প্রশ্নের সমাধান দিয়েছেন। দেখতে ক্লিক করুন।",
-                date: Date.now(),
-                read: false
-            });
+            // স্টুডেন্টের জন্য নোটিফিকেশন ট্রিগার করা (সংশ্লিষ্ট স্টুডেন্টের নোটিফিকেশন নোডে যোগ হবে)
+            // প্রশ্ন থেকে uid নিয়ে নোটিফিকেশন পাঠাতে হবে
+            const snap = await get(ref(db, `qa_questions/${qId}/uid`));
+            if(snap.exists()) {
+                const studentUid = snap.val();
+                await push(ref(db, `notifications/${studentUid}`), {
+                    title: "আপনার প্রশ্নের উত্তর দেওয়া হয়েছে!",
+                    message: "শিক্ষক মহাশয় আপনার প্রশ্নের উত্তর প্রদান করেছেন। দেখতে এখানে ক্লিক করুন।",
+                    link: "qanda.html",
+                    date: Date.now()
+                });
+            }
 
-            alert("উত্তর সফলভাবে পাঠানো হয়েছে!");
+            alert("উত্তর সফলভাবে সাবমিট করা হয়েছে এবং স্টুডেন্টকে নোটিফিকেশন পাঠানো হয়েছে!");
             loadTeacherQuestions();
         }
     </script>
