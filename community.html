@@ -30,7 +30,7 @@
         .tab-btn { flex: 1; padding: 8px 6px; border: none; background: none; color: #94a3b8; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; border-bottom: 2px solid transparent; }
         .tab-btn.active { color: #38bdf8; border-bottom-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
 
-        /* পিন্ড মেসেজ স্টিকি বার (কম জায়গায় ১ লাইনে দেখাবে) */
+        /* পিন্ড মেসেজ স্টিকি বার */
         .pinned-bar {
             background: #1e293b;
             border-bottom: 1px solid #38bdf8;
@@ -242,7 +242,7 @@
       let userRole = 'student';
       let currentTab = 'student';
       let replyingTo = null;
-      let pinnedMessagesList = []; // পিন মেসেজের লিস্ট রাখার জন্য
+      let pinnedMessagesList = [];
 
       onAuthStateChanged(auth, async (user) => {
         currentUser = user;
@@ -268,7 +268,7 @@
           } else {
               inputContainer.style.display = 'flex';
           }
-          cancelReply();
+          window.cancelReply();
           loadMessages();
       };
 
@@ -295,12 +295,10 @@
               for (let key in data) {
                   const msg = data[key];
                   
-                  // ১. পিন মেসেজ আলাদা ফিল্টার করা (সর্বশেষ পিন হওয়া ডাটা শেষে যুক্ত হবে)
                   if (msg.isPinned) {
                       pinnedMessagesList.push(msg);
                   }
 
-                  // ২. নরমাল মেসেজ লিস্ট তৈরি
                   const isMe = currentUser && currentUser.uid === msg.uid;
                   const canDelete = isMe || userRole === 'admin' || userRole === 'teacher';
                   
@@ -325,7 +323,7 @@
                   if(msg.role === 'admin') roleBadge = `<span class="role-badge" style="background:#ef4444;">ADMIN</span>`;
                   else if(msg.role === 'teacher') roleBadge = `<span class="role-badge" style="background:#10b981;">TEACHER</span>`;
 
-                  let deleteHTML = canDelete ? `<button class="delete-btn" title="ডিলিট করুন" onclick="deleteMessage('${dbPath}', '${key}')">🗑️</button>` : '';
+                  let deleteHTML = canDelete ? `<button class="delete-btn" title="ডিলিট করুন" onclick="window.deleteMessage('${dbPath}', '${key}')">🗑️</button>` : '';
                   const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'}) : '';
 
                   card.innerHTML = `
@@ -351,13 +349,11 @@
                   messagesBox.appendChild(card);
               }
 
-              // পিন মেসেজ বার আপডেট করা
               renderPinnedBar();
               messagesBox.scrollTop = messagesBox.scrollHeight;
           });
       }
 
-      // পিন মেসেজ বার ও ড্রপডাউন রেন্ডার করার ফাংশন
       function renderPinnedBar() {
           const pinnedBar = document.getElementById('pinnedBar');
           const pinnedBarText = document.getElementById('pinnedBarText');
@@ -371,12 +367,10 @@
 
           pinnedBar.style.display = 'flex';
           
-          // সর্বশেষ পিন করা মেসেজটি দেখাবে (Array-র শেষ এলিমেন্ট)
           const latestPinned = pinnedMessagesList[pinnedMessagesList.length - 1];
           const firstLine = latestPinned.text.split('\n')[0]; 
           pinnedBarText.innerText = firstLine;
 
-          // ড্রপডাউন প্রস্তুত করা (সর্বশেষ পিনটি সবার উপরে দেখাবে)
           pinnedDropdown.innerHTML = '';
           [...pinnedMessagesList].reverse().forEach((msg) => {
               const item = document.createElement('div');
@@ -385,29 +379,26 @@
               item.innerText = `📌 ${line}`;
               item.onclick = (e) => {
                   e.stopPropagation();
-                  showPinnedModal(msg.text);
+                  window.showPinnedModal(msg.text);
                   pinnedDropdown.style.display = 'none';
               };
               pinnedDropdown.appendChild(item);
           });
       }
 
-      // ড্রপডাউন টগল করা
       window.togglePinnedDropdown = function() {
           const dropdown = document.getElementById('pinnedDropdown');
           if (pinnedMessagesList.length > 1) {
               dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
           } else if (pinnedMessagesList.length === 1) {
-              // যদি একটাই পিন থাকে সরাসরি ফুল মেসেজ দেখাবে
-              showPinnedModal(pinnedMessagesList[0].text);
+              window.showPinnedModal(pinnedMessagesList[0].text);
           }
       };
 
-      // সম্পূর্ণ পিন মেসেজের মোডাল পপআপ দেখানো
-      function showPinnedModal(fullText) {
+      window.showPinnedModal = function(fullText) {
           document.getElementById('pinnedModalText').innerText = fullText;
           document.getElementById('pinnedModal').style.display = 'flex';
-      }
+      };
 
       window.closePinnedModal = function() {
           document.getElementById('pinnedModal').style.display = 'none';
@@ -440,7 +431,7 @@
           try {
               await push(ref(db, dbPath), msgData);
               input.value = '';
-              cancelReply();
+              window.cancelReply();
           } catch(e) {
               alert("মেসেজ পাঠাতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
           }
@@ -470,6 +461,7 @@
       };
 
       function escapeHTML(str) {
+          if(!str) return '';
           return str.replace(/[&<>'"]/g, 
               tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
           );
