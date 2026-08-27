@@ -518,21 +518,128 @@ button,input,select,textarea{
     color:#38bdf8;
 }
 
-/* COMMUNITY CHAT MODAL STYLING */
-.tab-btn-group { display: flex; gap: 8px; margin-bottom: 12px; }
+/* COMMUNITY CHAT MODAL STYLING FIXES */
+.comm-modal-card {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    max-height: 650px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden !important;
+}
+
+.tab-btn-group { display: flex; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
 .tab-btn-comm { flex: 1; padding: 8px; border: 1px solid #334155; background: #0f172a; color: #94a3b8; border-radius: 6px; cursor: pointer; font-weight: bold; }
 .tab-btn-comm.active { background: #38bdf8; color: #0f172a; }
 
-.pinned-msg-box { background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; font-size: 13px; color: #fbbf24; }
-.pinned-header { font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+/* 1-Line Pinned Bar */
+.pinned-bar {
+    background: #0f172a;
+    border: 1px solid #38bdf8;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+    z-index: 10;
+}
+.pinned-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 90%;
+}
+.pinned-tag { color: #f97316; font-weight: bold; flex-shrink: 0; }
+.pinned-text-preview { color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.comm-msg-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 13px; position: relative; }
-.comm-msg-card.pinned { border-color: #f59e0b; }
+.pinned-dropdown {
+    display: none;
+    position: absolute;
+    top: 115px;
+    left: 16px;
+    right: 16px;
+    background: #1e293b;
+    border: 1px solid #38bdf8;
+    border-radius: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.pinned-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #334155;
+    font-size: 12px;
+    color: #e2e8f0;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pinned-item:last-child { border-bottom: none; }
+.pinned-item:hover { background: #334155; }
+
+/* Messages Box Flex Scroll */
+.comm-messages-box {
+    flex: 1;
+    overflow-y: auto;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comm-msg-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-size: 13px; position: relative; }
+.comm-msg-card.pinned { border-color: #f97316; }
 .comm-msg-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .comm-sender { font-weight: bold; color: #38bdf8; font-size: 12px; }
 .comm-actions { display: flex; gap: 6px; }
 .comm-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0.8; }
 .comm-btn:hover { opacity: 1; }
+
+/* Sticky Footer Input Area */
+.comm-footer-input {
+    flex-shrink: 0;
+    background: #1e293b;
+    border-top: 1px solid #334155;
+    padding-top: 8px;
+}
+
+/* Modals Overlay */
+.modal-overlay-inner {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.modal-card-inner {
+    background: #1e293b;
+    border: 1px solid #38bdf8;
+    border-radius: 12px;
+    padding: 16px;
+    max-width: 450px;
+    width: 100%;
+    color: #fff;
+}
 
 @media(max-width:550px){
     .header{ padding:0 10px; }
@@ -721,8 +828,8 @@ button,input,select,textarea{
 
 <!-- COMMUNITY CHAT / TEACHER NOTICE MODAL -->
 <div id="communityModal" class="modal">
-    <div class="modal-content" style="max-width:700px;">
-        <div class="modal-header">
+    <div class="modal-content comm-modal-card" style="max-width:700px;">
+        <div class="modal-header" style="flex-shrink: 0;">
             <h3>💬 Community Chat & Notices</h3>
             <button class="close-btn" onclick="closeCommunityModal()">&times;</button>
         </div>
@@ -732,34 +839,52 @@ button,input,select,textarea{
             <button class="tab-btn-comm" id="commTabStudent" onclick="switchCommTab('student')">💬 Student Chat</button>
         </div>
 
-        <!-- Pinned Messages Section -->
-        <div id="pinnedSection" class="pinned-msg-box hidden">
-            <div class="pinned-header">
-                <span>📌 Pinned Message</span>
-                <button onclick="unpinMessage()" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:bold;">Unpin ✕</button>
+        <!-- 1-Line Sticky Pinned Bar -->
+        <div class="pinned-bar" id="pinnedBar" onclick="togglePinnedDropdown()">
+            <div class="pinned-content">
+                <span class="pinned-tag">📌 Pinned:</span>
+                <span class="pinned-text-preview" id="pinnedBarText">কোনো মেসেজ পিন করা নেই</span>
             </div>
-            <div id="pinnedMsgContent" style="margin-top:4px;"></div>
+            <span style="font-size:10px; color:#94a3b8;">▼</span>
         </div>
 
-        <!-- Messages Area -->
-        <div id="commMessagesContainer" style="max-height:300px;overflow-y:auto;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:12px;">
+        <!-- Dropdown for multiple pinned messages -->
+        <div class="pinned-dropdown" id="pinnedDropdown"></div>
+
+        <!-- Scrollable Messages Area -->
+        <div id="commMessagesContainer" class="comm-messages-box">
             <div class="loading">মেসেজ লোড হচ্ছে...</div>
         </div>
 
-        <!-- Reply Bar Preview -->
-        <div id="commReplyBar" style="display:none;justify-content:space-between;align-items:center;background:#0f172a;border-left:3px solid #38bdf8;padding:6px 10px;border-radius:4px;font-size:12px;margin-bottom:8px;">
-            <div>
-                <span style="color:#38bdf8;font-weight:bold;" id="commReplyTargetUser">কারো মেসেজ</span>-কে রিপ্লাই:
-                <div style="color:#94a3b8;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:250px;" id="commReplyTargetText">...</div>
+        <!-- Sticky Footer Input Box Area -->
+        <div class="comm-footer-input">
+            <!-- Reply Bar Preview -->
+            <div id="commReplyBar" style="display:none;justify-space-between;align-items:center;background:#0f172a;border-left:3px solid #38bdf8;padding:6px 10px;border-radius:4px;font-size:12px;margin-bottom:8px;">
+                <div>
+                    <span style="color:#38bdf8;font-weight:bold;" id="commReplyTargetUser">কারো মেসেজ</span>-কে রিপ্লাই:
+                    <div style="color:#94a3b8;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:250px;" id="commReplyTargetText">...</div>
+                </div>
+                <span style="cursor:pointer;color:#f43f5e;font-weight:bold;" onclick="cancelCommReply()">✕</span>
             </div>
-            <span style="cursor:pointer;color:#f43f5e;font-weight:bold;" onclick="cancelCommReply()">✕</span>
-        </div>
 
-        <!-- Input Box -->
-        <div class="form-group" style="margin-bottom:8px;">
-            <textarea id="commInputText" class="answer-textarea" style="min-height:70px;" placeholder="নোটিশ বা মেসেজ লিখুন..."></textarea>
+            <!-- Input Box -->
+            <div class="form-group" style="margin-bottom:8px;">
+                <textarea id="commInputText" class="answer-textarea" style="min-height:60px; height:60px;" placeholder="নোটিশ বা মেসেজ লিখুন..."></textarea>
+            </div>
+            <button class="save-answer" style="margin-top:0;" onclick="sendCommMessage()">➤ মেসেজ / নোটিশ প্রকাশ করুন</button>
         </div>
-        <button class="save-answer" style="margin-top:0;" onclick="sendCommMessage()">➤ মেসেজ / নোটিশ প্রকাশ করুন</button>
+    </div>
+</div>
+
+<!-- PINNED MESSAGE FULL VIEW MODAL -->
+<div class="modal-overlay-inner" id="pinnedModal">
+    <div class="modal-card-inner">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:#f97316; font-weight:bold;">
+            <span>📌 Pinned Message</span>
+            <span style="cursor:pointer; color:#f43f5e; font-size:18px; font-weight:bold;" onclick="closePinnedModal()">✕</span>
+        </div>
+        <div id="pinnedModalText" style="max-height:60vh; overflow-y:auto; white-space:pre-wrap; font-size:14px; line-height:1.5; color:#cbd5e1; margin-bottom:15px;"></div>
+        <button style="background:#ef4444; border:none; color:#fff; width:100%; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="unpinCurrentModalMessage()">Unpin ✕</button>
     </div>
 </div>
 
@@ -793,6 +918,8 @@ let recordedAudioBase64 = "";
 
 let currentCommTab = 'teacher';
 let commReplyingTo = null;
+let pinnedMessagesList = [];
+let selectedPinnedKey = null;
 
 const chaptersData = {
     physics: {
@@ -1007,7 +1134,7 @@ function renderQuestions(){
     });
 }
 
-// DELETE / COMPLETE REMOVAL LOGIC
+// DELETE LOGIC
 window.cancelQuestion = function(id){
     pendingCancelId = id;
     document.getElementById("cancelReasonText").value = "";
@@ -1341,6 +1468,7 @@ window.openCommunityModal = function(){
 window.closeCommunityModal = function(){
     document.getElementById("communityModal").classList.remove("show");
     cancelCommReply();
+    document.getElementById("pinnedDropdown").style.display = 'none';
 };
 
 window.switchCommTab = function(tab){
@@ -1348,19 +1476,20 @@ window.switchCommTab = function(tab){
     document.getElementById("commTabNotice").classList.toggle("active", tab === 'teacher');
     document.getElementById("commTabStudent").classList.toggle("active", tab === 'student');
     cancelCommReply();
+    document.getElementById("pinnedDropdown").style.display = 'none';
     loadCommMessages();
 };
 
 function loadCommMessages(){
     const dbPath = currentCommTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
     const container = document.getElementById("commMessagesContainer");
-    const pinnedSec = document.getElementById("pinnedSection");
 
     onValue(ref(db, dbPath), (snapshot) => {
         container.innerHTML = "";
-        pinnedSec.classList.add("hidden");
+        pinnedMessagesList = [];
 
         if(!snapshot.exists()){
+            renderPinnedBar();
             container.innerHTML = `<div style="text-align:center;color:#64748b;padding:15px;">কোনো নোটিশ বা বার্তা নেই।</div>`;
             return;
         }
@@ -1372,12 +1501,8 @@ function loadCommMessages(){
             const msg = data[key];
             const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString("bn-BD", {hour:'2-digit', minute:'2-digit'}) : "";
             
-            if(msg.isPinned && currentCommTab === 'student'){
-                document.getElementById("pinnedMsgContent").innerHTML = `
-                    <b>${escapeHtml(msg.senderName)}:</b> ${escapeHtml(msg.text)}
-                `;
-                pinnedSec.classList.remove("hidden");
-                pinnedSec.setAttribute("data-pin-key", key);
+            if(msg.isPinned){
+                pinnedMessagesList.push({ key: key, ...msg });
             }
 
             let roleBadge = "";
@@ -1395,7 +1520,8 @@ function loadCommMessages(){
 
             let pinBtnHTML = "";
             if(currentCommTab === 'student'){
-                pinBtnHTML = `<button class="comm-btn" title="পিন করুন" onclick="pinCommMessage('${key}')">📌</button>`;
+                const pinIcon = msg.isPinned ? '📌' : '📍';
+                pinBtnHTML = `<button class="comm-btn" title="${msg.isPinned ? 'Unpin' : 'Pin'}" onclick="togglePinCommMessage('${key}', ${msg.isPinned || false})">${pinIcon}</button>`;
             }
 
             html += `
@@ -1415,9 +1541,85 @@ function loadCommMessages(){
         }
 
         container.innerHTML = html;
+        renderPinnedBar();
         container.scrollTop = container.scrollHeight;
     });
 }
+
+function renderPinnedBar(){
+    const pinnedBar = document.getElementById("pinnedBar");
+    const pinnedBarText = document.getElementById("pinnedBarText");
+    const pinnedDropdown = document.getElementById("pinnedDropdown");
+
+    if (pinnedMessagesList.length === 0) {
+        pinnedBar.style.display = 'none';
+        pinnedDropdown.style.display = 'none';
+        return;
+    }
+
+    pinnedBar.style.display = 'flex';
+    
+    const latestPinned = pinnedMessagesList[pinnedMessagesList.length - 1];
+    const firstLine = latestPinned.text.split('\n')[0]; 
+    pinnedBarText.innerText = firstLine;
+
+    pinnedDropdown.innerHTML = '';
+    [...pinnedMessagesList].reverse().forEach((msg) => {
+        const item = document.createElement('div');
+        item.className = 'pinned-item';
+        const line = msg.text.split('\n')[0];
+        item.innerHTML = `<span>📌 ${escapeHtml(line)}</span><span style="color:#ef4444;font-size:11px;margin-left:8px;" onclick="event.stopPropagation(); unpinSpecificMsg('${msg.key}')">✕</span>`;
+        item.onclick = (e) => {
+            e.stopPropagation();
+            window.showPinnedModal(msg.key, msg.text);
+            pinnedDropdown.style.display = 'none';
+        };
+        pinnedDropdown.appendChild(item);
+    });
+}
+
+window.togglePinnedDropdown = function() {
+    const dropdown = document.getElementById('pinnedDropdown');
+    if (pinnedMessagesList.length > 1) {
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    } else if (pinnedMessagesList.length === 1) {
+        window.showPinnedModal(pinnedMessagesList[0].key, pinnedMessagesList[0].text);
+    }
+};
+
+window.showPinnedModal = function(key, fullText) {
+    selectedPinnedKey = key;
+    document.getElementById('pinnedModalText').innerText = fullText;
+    document.getElementById('pinnedModal').style.display = 'flex';
+};
+
+window.closePinnedModal = function() {
+    document.getElementById('pinnedModal').style.display = 'none';
+    selectedPinnedKey = null;
+};
+
+window.unpinCurrentModalMessage = async function() {
+    if(selectedPinnedKey) {
+        await unpinSpecificMsg(selectedPinnedKey);
+        closePinnedModal();
+    }
+};
+
+async function unpinSpecificMsg(key) {
+    const dbPath = currentCommTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
+    try {
+        await update(ref(db, `${dbPath}/${key}`), { isPinned: false });
+    } catch(e) {}
+}
+
+window.togglePinCommMessage = async function(key, isPinned){
+    const dbPath = currentCommTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
+    try{
+        await update(ref(db, `${dbPath}/${key}`), { isPinned: !isPinned });
+    }catch(e){
+        alert("পিন আপডেট করতে ত্রুটি ঘটেছে: " + e.message);
+    }
+};
 
 window.sendCommMessage = async function(){
     const textInput = document.getElementById("commInputText");
@@ -1470,34 +1672,6 @@ window.deleteCommMessage = async function(path, key){
         }catch(e){
             alert("ডিলিট করতে ত্রুটি ঘটেছে।");
         }
-    }
-};
-
-window.pinCommMessage = async function(key){
-    try{
-        const snapshot = await get(ref(db, 'community_student_chats'));
-        if(snapshot.exists()){
-            const data = snapshot.val();
-            for(let k in data){
-                if(data[k].isPinned){
-                    await update(ref(db, `community_student_chats/${k}`), { isPinned: false });
-                }
-            }
-        }
-        await update(ref(db, `community_student_chats/${key}`), { isPinned: true });
-        alert("📌 মেসেজটি পিন করা হয়েছে!");
-    }catch(e){
-        alert("পিন করতে ত্রুটি ঘটেছে: " + e.message);
-    }
-};
-
-window.unpinMessage = async function(){
-    const key = document.getElementById("pinnedSection").getAttribute("data-pin-key");
-    if(key){
-        try{
-            await update(ref(db, `community_student_chats/${key}`), { isPinned: false });
-            document.getElementById("pinnedSection").classList.add("hidden");
-        }catch(e){}
     }
 };
 
