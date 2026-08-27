@@ -8,7 +8,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         
-        /* height: 100dvh ব্যবহার করা হয়েছে যেন মোবাইল ব্রাউজারে ইনপুট বার ঢেকে না যায় */
         body { 
             background-color: #0f172a; 
             color: #f8fafc; 
@@ -26,10 +25,63 @@
         .nav-right { display: flex; align-items: center; gap: 10px; }
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 5px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 13px; }
 
-        /* ট্যাব মেনু (প্যাডিং ও সাইজ ছোট করা হয়েছে) */
+        /* ট্যাব মেনু */
         .tab-header { display: flex; background: #1e293b; border-bottom: 1px solid #334155; flex-shrink: 0; }
         .tab-btn { flex: 1; padding: 8px 6px; border: none; background: none; color: #94a3b8; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; border-bottom: 2px solid transparent; }
         .tab-btn.active { color: #38bdf8; border-bottom-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+
+        /* পিন্ড মেসেজ স্টিকি বার (কম জায়গায় ১ লাইনে দেখাবে) */
+        .pinned-bar {
+            background: #1e293b;
+            border-bottom: 1px solid #38bdf8;
+            padding: 6px 12px;
+            font-size: 12px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .pinned-content {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 90%;
+        }
+        .pinned-tag { color: #f97316; font-weight: bold; flex-shrink: 0; }
+        .pinned-text-preview { color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* পিন মেসেজের ড্রপডাউন লিস্ট */
+        .pinned-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            right: 10px;
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .pinned-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #334155;
+            font-size: 12px;
+            color: #e2e8f0;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .pinned-item:last-child { border-bottom: none; }
+        .pinned-item:hover { background: #334155; }
 
         /* চ্যাট বক্স লেআউট */
         .chat-container { flex: 1; display: flex; flex-direction: column; background: #0b1120; overflow: hidden; position: relative; }
@@ -46,19 +98,17 @@
         .role-badge { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #ea580c; color: #fff; text-transform: uppercase; }
         
         .msg-text { line-height: 1.4; white-space: pre-wrap; }
-        
         .msg-meta { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; opacity: 0.75; }
         .delete-btn { background: none; border: none; color: #f43f5e; cursor: pointer; font-size: 12px; padding: 0 4px; opacity: 0.8; }
-        .delete-btn:hover { opacity: 1; }
 
-        /* রিপ্লাই বক্স প্রিভিউ (WhatsApp Like Quoted Message) */
+        /* রিপ্লাই বক্স প্রিভিউ */
         .reply-preview-box { background: rgba(15, 23, 42, 0.6); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; opacity: 0.9; cursor: pointer; }
         .msg-right .reply-preview-box { background: rgba(0, 0, 0, 0.2); border-left-color: #fff; }
         .reply-preview-sender { font-weight: bold; color: #38bdf8; font-size: 11px; }
         .msg-right .reply-preview-sender { color: #fff; }
         .reply-preview-text { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 200px; }
 
-        /* ইনপুট এরিয়া (নিচে ঢেকে যাওয়া রোধ করতে Safe Area Inset এবং flex-shrink দেওয়া হয়েছে) */
+        /* ইনপুট এরিয়া */
         .input-area-container { 
             background: #1e293b; 
             border-top: 1px solid #334155; 
@@ -78,6 +128,30 @@
         .btn-send { background: #38bdf8; color: #0f172a; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; flex-shrink: 0; font-weight: bold; }
 
         .notice-only-msg { text-align: center; color: #94a3b8; font-size: 13px; padding: 15px; }
+
+        /* পিন মেসেজ পপআপ মোডাল */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 400px;
+            width: 100%;
+            color: #fff;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: #f97316; font-weight: bold; }
+        .modal-close { cursor: pointer; color: #f43f5e; font-size: 18px; font-weight: bold; }
+        .modal-body { max-height: 60vh; overflow-y: auto; white-space: pre-wrap; font-size: 14px; line-height: 1.5; color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -90,23 +164,34 @@
         </div>
     </header>
 
-    <!-- উপরের দিকে স্টুডেন্ট এবং টিচার/এডমিন সেকশন বাটন -->
+    <!-- ট্যাব মেনু -->
     <div class="tab-header">
         <button class="tab-btn active" id="btnStudentTab" onclick="switchTab('student')">💬 Student Chat</button>
         <button class="tab-btn" id="tabTeacherBtn" onclick="switchTab('teacher')">📢 Teacher & Admin Notices</button>
     </div>
 
-    <!-- কমিউনিটি চ্যাট এরিয়া -->
+    <!-- চ্যাট এরিয়া -->
     <div class="chat-container">
         
+        <!-- পিন করা মেসেজ বার (১ লাইনে থাকবে) -->
+        <div class="pinned-bar" id="pinnedBar" onclick="togglePinnedDropdown()">
+            <div class="pinned-content">
+                <span class="pinned-tag">📌 Pinned:</span>
+                <span class="pinned-text-preview" id="pinnedBarText">কোনো মেসেজ পিন করা নেই</span>
+            </div>
+            <span style="font-size:10px; color:#94a3b8;">▼</span>
+        </div>
+
+        <!-- একাধিক পিন মেসেজের ড্রপডাউন লিস্ট -->
+        <div class="pinned-dropdown" id="pinnedDropdown"></div>
+
         <!-- সকল মেসেজ দেখানোর স্থান -->
         <div class="messages-box" id="messagesBox">
             <p style="color:#94a3b8; text-align:center; margin-top:20px;">মেসেজ লোড হচ্ছে...</p>
         </div>
 
-        <!-- স্টুডেন্ট ইনপুট বক্স (শুধু স্টুডেন্ট চ্যাট ট্যাবে একটিভ থাকবে) -->
+        <!-- ইনপুট বক্স -->
         <div class="input-area-container" id="inputContainer">
-            <!-- রিপ্লাই বার প্রিভিউ -->
             <div class="active-reply-bar" id="activeReplyBar">
                 <div>
                     <span style="color:#38bdf8; font-weight:bold;" id="replyTargetUser">কারো মেসেজ</span>-কে রিপ্লাই দেওয়া হচ্ছে:
@@ -119,6 +204,17 @@
                 <input type="text" id="msgInput" class="chat-input" placeholder="Message..." onkeypress="if(event.key === 'Enter') sendMessage()">
                 <button class="btn-send" onclick="sendMessage()">➤</button>
             </div>
+        </div>
+    </div>
+
+    <!-- পিন করা মেসেজ ফুল দেখার মোডাল -->
+    <div class="modal-overlay" id="pinnedModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span>📌 Pinned Message</span>
+                <span class="modal-close" onclick="closePinnedModal()">✕</span>
+            </div>
+            <div class="modal-body" id="pinnedModalText"></div>
         </div>
     </div>
 
@@ -143,26 +239,24 @@
       const auth = getAuth(app);
 
       let currentUser = null;
-      let userRole = 'student'; // 'admin', 'teacher', or 'student'
+      let userRole = 'student';
       let currentTab = 'student';
-      let replyingTo = null; // Stores reply object if replying to a message
+      let replyingTo = null;
+      let pinnedMessagesList = []; // পিন মেসেজের লিস্ট রাখার জন্য
 
-      // অথেন্টিকেশন চেক & রোল নিরূপণ
       onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         if (user) {
-            // ডেটাবেজ থেকে রোল চেক (যদি ইউজার Admin/Teacher হয়)
             try {
                 const roleSnap = await get(ref(db, `users/${user.uid}/role`));
                 if (roleSnap.exists()) {
-                    userRole = roleSnap.val(); // e.g. 'admin' or 'teacher'
+                    userRole = roleSnap.val();
                 }
             } catch(e) {}
         }
         loadMessages();
       });
 
-      // ট্যাব পরিবর্তন ফাংশন
       window.switchTab = function(tab) {
           currentTab = tab;
           document.getElementById('btnStudentTab').classList.toggle('active', tab === 'student');
@@ -170,7 +264,6 @@
 
           const inputContainer = document.getElementById('inputContainer');
           if (tab === 'teacher') {
-              // টিচার/এডমিন ট্যাবে স্টুডেন্টদের মেসেজ দেওয়ার অপশন সম্পূর্ণ হাইড থাকবে
               inputContainer.style.display = 'none';
           } else {
               inputContainer.style.display = 'flex';
@@ -179,14 +272,16 @@
           loadMessages();
       };
 
-      // মেসেজ লোড করার ফাংশন
       function loadMessages() {
           const dbPath = currentTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
           const messagesBox = document.getElementById('messagesBox');
 
           onValue(ref(db, dbPath), (snapshot) => {
               messagesBox.innerHTML = '';
+              pinnedMessagesList = [];
+
               if (!snapshot.exists()) {
+                  renderPinnedBar();
                   if(currentTab === 'teacher') {
                       messagesBox.innerHTML = '<div class="notice-only-msg">📢 টিচার ও এডমিনদের থেকে এখনো কোনো নোটিশ দেওয়া হয়নি।</div>';
                   } else {
@@ -196,12 +291,19 @@
               }
 
               const data = snapshot.val();
+
               for (let key in data) {
                   const msg = data[key];
+                  
+                  // ১. পিন মেসেজ আলাদা ফিল্টার করা (সর্বশেষ পিন হওয়া ডাটা শেষে যুক্ত হবে)
+                  if (msg.isPinned) {
+                      pinnedMessagesList.push(msg);
+                  }
+
+                  // ২. নরমাল মেসেজ লিস্ট তৈরি
                   const isMe = currentUser && currentUser.uid === msg.uid;
                   const canDelete = isMe || userRole === 'admin' || userRole === 'teacher';
                   
-                  // মেসেজ কার্ড তৈরি
                   const card = document.createElement('div');
                   if (currentTab === 'teacher') {
                       card.className = 'msg-card msg-notice';
@@ -209,7 +311,6 @@
                       card.className = `msg-card ${isMe ? 'msg-right' : 'msg-left'}`;
                   }
 
-                  // রিপ্লাই প্রিভিউ তৈরি (যদি মেসেজটিতে কারো রিপ্লাই থাকে)
                   let replyHTML = '';
                   if (msg.replyTo) {
                       replyHTML = `
@@ -220,15 +321,11 @@
                       `;
                   }
 
-                  // রোল ব্যাজ (Admin/Teacher হলে দেখাবে)
                   let roleBadge = '';
                   if(msg.role === 'admin') roleBadge = `<span class="role-badge" style="background:#ef4444;">ADMIN</span>`;
                   else if(msg.role === 'teacher') roleBadge = `<span class="role-badge" style="background:#10b981;">TEACHER</span>`;
 
-                  // ডিলিট বাটন (নিজের মেসেজ অথবা Admin/Teacher হলে ডিলিট করতে পারবে)
                   let deleteHTML = canDelete ? `<button class="delete-btn" title="ডিলিট করুন" onclick="deleteMessage('${dbPath}', '${key}')">🗑️</button>` : '';
-
-                  // সময় ফর্ম্যাট
                   const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'}) : '';
 
                   card.innerHTML = `
@@ -243,7 +340,6 @@
                       </div>
                   `;
 
-                  // স্টুডেন্ট ট্যাবে যেকোনো মেসেজে ক্লিক করলে WhatsApp-এর মতো রিপ্লাই অপশন চালু হবে
                   if(currentTab === 'student') {
                       card.onclick = (e) => {
                           if (!e.target.classList.contains('delete-btn')) {
@@ -254,12 +350,69 @@
 
                   messagesBox.appendChild(card);
               }
-              // স্ক্রোল একদম নিচে পাঠানো
+
+              // পিন মেসেজ বার আপডেট করা
+              renderPinnedBar();
               messagesBox.scrollTop = messagesBox.scrollHeight;
           });
       }
 
-      // মেসেজ পাঠানোর ফাংশন
+      // পিন মেসেজ বার ও ড্রপডাউন রেন্ডার করার ফাংশন
+      function renderPinnedBar() {
+          const pinnedBar = document.getElementById('pinnedBar');
+          const pinnedBarText = document.getElementById('pinnedBarText');
+          const pinnedDropdown = document.getElementById('pinnedDropdown');
+
+          if (pinnedMessagesList.length === 0) {
+              pinnedBar.style.display = 'none';
+              pinnedDropdown.style.display = 'none';
+              return;
+          }
+
+          pinnedBar.style.display = 'flex';
+          
+          // সর্বশেষ পিন করা মেসেজটি দেখাবে (Array-র শেষ এলিমেন্ট)
+          const latestPinned = pinnedMessagesList[pinnedMessagesList.length - 1];
+          const firstLine = latestPinned.text.split('\n')[0]; 
+          pinnedBarText.innerText = firstLine;
+
+          // ড্রপডাউন প্রস্তুত করা (সর্বশেষ পিনটি সবার উপরে দেখাবে)
+          pinnedDropdown.innerHTML = '';
+          [...pinnedMessagesList].reverse().forEach((msg) => {
+              const item = document.createElement('div');
+              item.className = 'pinned-item';
+              const line = msg.text.split('\n')[0];
+              item.innerText = `📌 ${line}`;
+              item.onclick = (e) => {
+                  e.stopPropagation();
+                  showPinnedModal(msg.text);
+                  pinnedDropdown.style.display = 'none';
+              };
+              pinnedDropdown.appendChild(item);
+          });
+      }
+
+      // ড্রপডাউন টগল করা
+      window.togglePinnedDropdown = function() {
+          const dropdown = document.getElementById('pinnedDropdown');
+          if (pinnedMessagesList.length > 1) {
+              dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+          } else if (pinnedMessagesList.length === 1) {
+              // যদি একটাই পিন থাকে সরাসরি ফুল মেসেজ দেখাবে
+              showPinnedModal(pinnedMessagesList[0].text);
+          }
+      };
+
+      // সম্পূর্ণ পিন মেসেজের মোডাল পপআপ দেখানো
+      function showPinnedModal(fullText) {
+          document.getElementById('pinnedModalText').innerText = fullText;
+          document.getElementById('pinnedModal').style.display = 'flex';
+      }
+
+      window.closePinnedModal = function() {
+          document.getElementById('pinnedModal').style.display = 'none';
+      };
+
       window.sendMessage = async function() {
           if (!currentUser) {
               alert("মেসেজ পাঠাতে হলে আগে আপনাকে লগইন করতে হবে!");
@@ -293,7 +446,6 @@
           }
       };
 
-      // রিপ্লাই সেট করা (WhatsApp Style)
       function setReplyMode(sender, text) {
           replyingTo = { sender: sender, text: text };
           document.getElementById('replyTargetUser').innerText = sender;
@@ -302,13 +454,11 @@
           document.getElementById('msgInput').focus();
       }
 
-      // রিপ্লাই বাতিল করা
       window.cancelReply = function() {
           replyingTo = null;
           document.getElementById('activeReplyBar').style.display = 'none';
       };
 
-      // মেসেজ ডিলিট করার ফাংশন (Admin, Teacher & Owner specific)
       window.deleteMessage = async function(path, key) {
           if (confirm("আপনি কি নিশ্চিত যে এই ম্যাসেজটি ডিলিট করতে চান?")) {
               try {
