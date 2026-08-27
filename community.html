@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAIVEX - Community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; height: 100vh; display: flex; flex-direction: column; }
+        
+        .nav-header { background: #1e293b; padding: 12px 20px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 20px; font-weight: 700; color: #38bdf8; text-decoration: none; }
+        .logo span { color: #f43f5e; }
+
+        /* ট্যাব হেডার */
+        .tab-bar { display: flex; background: #1e293b; border-bottom: 1px solid #334155; }
+        .tab-btn { flex: 1; padding: 12px; background: none; border: none; color: #94a3b8; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: #38bdf8; border-bottom-color: #38bdf8; background: #0f172a; }
+
+        .chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .tab-content { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+        .tab-content.active { display: flex; }
+
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        
+        /* মেসেজ কার্ড স্টাইল */
+        .message-card { background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 12px; max-width: 82%; width: fit-content; word-wrap: break-word; position: relative; }
+        .message-card.my-msg { align-self: flex-end; background: #0284c7; border-color: #38bdf8; color: #fff; }
+        .message-card.admin-teacher-msg { background: #1e1b4b; border-color: #6366f1; width: 100%; max-width: 100%; }
+
+        .sender-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 4px; font-size: 12px; }
+        .sender-name { font-weight: bold; color: #38bdf8; }
+        .my-msg .sender-name { color: #bae6fd; }
+        .badge-role { background: #f43f5e; color: white; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        
+        /* রিপ্লাই বক্স উইজেট */
+        .reply-preview-box { background: rgba(0, 0, 0, 0.25); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; }
+        .reply-preview-name { font-weight: bold; color: #38bdf8; }
+        .reply-preview-text { color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .msg-text { font-size: 14px; line-height: 1.4; white-space: pre-wrap; }
+        .msg-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; color: #94a3b8; }
+        .my-msg .msg-footer { color: #e0f2fe; }
+
+        .msg-actions { display: flex; gap: 8px; }
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0.8; transition: 0.2s; color: inherit; }
+        .action-btn:hover { opacity: 1; transform: scale(1.1); }
+        .btn-delete { color: #ef4444; }
+
+        /* ইনপুট এরিয়া */
+        .chat-input-area { background: #1e293b; padding: 10px 15px; border-top: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
+        .active-reply-banner { background: #0f172a; border-left: 3px solid #38bdf8; padding: 6px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .input-row { display: flex; gap: 10px; }
+        .chat-input-area input { flex: 1; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 8px; outline: none; font-size: 14px; }
+        .chat-input-area input:focus { border-color: #38bdf8; }
+        .send-btn { background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <header class="nav-header">
+        <a href="index.html" class="logo">GAIVEX<span>.</span> Community</a>
+        <a href="index.html" style="color:#94a3b8; text-decoration:none; font-size:13px; font-weight:bold;">🏠 হোম</a>
+    </header>
+
+    <!-- নেভিগেশন ট্যাব -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('student')">💬 Student Chat</button>
+        <button class="tab-btn" onclick="switchTab('teacher')">📌 Teacher & Admin Notice</button>
+    </div>
+
+    <div class="chat-container">
+        <!-- ১. স্টুডেন্ট চ্যাট সেকশন -->
+        <div id="studentTab" class="tab-content active">
+            <div class="chat-box" id="studentChatBox">
+                <p style="text-align:center; color:#94a3b8; font-size:13px;">মেসেজ লোড হচ্ছে...</p>
+            </div>
+
+            <!-- স্টুডেন্ট মেসেজ ইনপুট -->
+            <div class="chat-input-area">
+                <div id="replyBanner" class="active-reply-banner" style="display: none;">
+                    <div>
+                        <span style="color:#38bdf8; font-weight:bold;">রিপ্লাই দিচ্ছেন: </span>
+                        <span id="replyTargetName" style="color:#fff;"></span>
+                        <div id="replyTargetText" style="color:#94a3b8; font-size:11px;"></div>
+                    </div>
+                    <button onclick="cancelReply()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold;">✕</button>
+                </div>
+                <div class="input-row">
+                    <input type="text" id="studentMsgInput" placeholder="আপনার বার্তা লিখুন..." onkeypress="handleKeyPress(event, 'student')">
+                    <button class="send-btn" onclick="sendStudentMessage()">পাঠান</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ২. টিচার ও অ্যাডমিন নোটিশ সেকশন (স্টুডেন্টদের জন্য নো-ইনপুট / রিড ওনলি) -->
+        <div id="teacherTab" class="tab-content">
+            <div class="chat-box" id="teacherChatBox">
+                <p style="text-align:center; color:#94a3b8; font-size:13px;">নোটিশ লোড হচ্ছে...</p>
+            </div>
+            <div style="background:#1e293b; padding:12px; text-align:center; color:#94a3b8; font-size:12px; border-top:1px solid #334155;">
+                🔒 এই সেকশনে শুধুমাত্র Admin ও Teacher-গণ তথ্য প্রকাশ করতে পারবেন।
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getDatabase, ref, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+        authDomain: "gaivexexam.firebaseapp.com",
+        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+        projectId: "gaivexexam",
+        storageBucket: "gaivexexam.firebasestorage.app",
+        messagingSenderId: "956204530190",
+        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+
+      let currentUser = null;
+      let userRole = 'student'; // ডিফল্ট রোল
+      let selectedReplyMsg = null;
+
+      // ইউজার অথেন্টিকেশন ও রোল যাচাই
+      onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        if (!user) {
+          alert("কমিউনিটি ব্যবহার করতে হলে প্রথমে লগইন করুন!");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // রিয়েলটাইম ডেটাবেজ থেকে রোল চেক (admin / teacher / student)
+        try {
+          const roleSnap = await get(ref(db, `users/${user.uid}/role`));
+          if(roleSnap.exists()) {
+            userRole = roleSnap.val();
+          }
+        } catch(e) {}
+        
+        loadStudentChats();
+        loadTeacherNotices();
+      });
+
+      // ট্যাব সুইচ লজিক
+      window.switchTab = function(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        if (tab === 'student') {
+          document.querySelectorAll('.tab-btn')[0].classList.add('active');
+          document.getElementById('studentTab').classList.add('active');
+        } else {
+          document.querySelectorAll('.tab-btn')[1].classList.add('active');
+          document.getElementById('teacherTab').classList.add('active');
+        }
+      };
+
+      // ১. স্টুডেন্ট চ্যাট লোড করা
+      function loadStudentChats() {
+        const chatRef = ref(db, 'community_student_chats');
+        onValue(chatRef, (snapshot) => {
+          const container = document.getElementById('studentChatBox');
+          container.innerHTML = '';
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            for (let id in data) {
+              const msg = data[id];
+              const isMe = currentUser && currentUser.uid === msg.uid;
+              const canDelete = isMe || userRole === 'admin' || userRole === 'teacher';
+
+              let replyHTML = '';
+              if (msg.replyTo) {
+                replyHTML = `
+                  <div class="reply-preview-box">
+                    <div class="reply-preview-name">${msg.replyTo.name}</div>
+                    <div class="reply-preview-text">${msg.replyTo.text}</div>
+                  </div>`;
+              }
+
+              const msgCard = document.createElement('div');
+              msgCard.className = `message-card ${isMe ? 'my-msg' : ''}`;
+              msgCard.innerHTML = `
+                <div class="sender-header">
+                    <span class="sender-name">${msg.userName}</span>
+                </div>
+                ${replyHTML}
+                <div class="msg-text">${escapeHTML(msg.text)}</div>
+                <div class="msg-footer">
+                    <span>${new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'})}</span>
+                    <div class="msg-actions">
+                        <button class="action-btn" onclick="setReply('${id}', '${escapeHTML(msg.userName)}', '${escapeHTML(msg.text)}')">↩️ রিপ্লাই</button>
+                        ${canDelete ? `<button class="action-btn btn-delete" onclick="deleteMessage('community_student_chats', '${id}')">🗑️</button>` : ''}
+                    </div>
+                </div>
+              `;
+              container.appendChild(msgCard);
+            }
+            container.scrollTop = container.scrollHeight;
+          } else {
+            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">এখনো কোনো মেসেজ নেই। প্রথম বার্তাটি লিখুন!</p>';
+          }
+        });
+      }
+
+      // ২. টিচার/অ্যাডমিন নোটিশ লোড করা
+      function loadTeacherNotices() {
+        const noticeRef = ref(db, 'community_teacher_notices');
+        onValue(noticeRef, (snapshot) => {
+          const container = document.getElementById('teacherChatBox');
+          container.innerHTML = '';
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            for (let id in data) {
+              const msg = data[id];
+              const canDelete = userRole === 'admin' || userRole === 'teacher';
+
+              const msgCard = document.createElement('div');
+              msgCard.className = 'message-card admin-teacher-msg';
+              msgCard.innerHTML = `
+                <div class="sender-header">
+                    <span class="sender-name" style="color:#818cf8;">📢 ${msg.userName} <span class="badge-role">${msg.role.toUpperCase()}</span></span>
+                </div>
+                <div class="msg-text">${escapeHTML(msg.text)}</div>
+                <div class="msg-footer">
+                    <span>${new Date(msg.timestamp).toLocaleDateString('bn-BD')} - ${new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'})}</span>
+                    ${canDelete ? `<button class="action-btn btn-delete" onclick="deleteMessage('community_teacher_notices', '${id}')">🗑️ মুছে ফেলুন</button>` : ''}
+                </div>
+              `;
+              container.appendChild(msgCard);
+            }
+            container.scrollTop = container.scrollHeight;
+          } else {
+            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">শিক্ষক বা অ্যাডমিন থেকে এখনো কোনো অফিশিয়াল তথ্য পোস্ট করা হয়নি।</p>';
+          }
+        });
+      }
+
+      // মেসেজ পাঠানো (Student Chat)
+      window.sendStudentMessage = async function() {
+        const input = document.getElementById('studentMsgInput');
+        const text = input.value.trim();
+        if (!text || !currentUser) return;
+
+        const payload = {
+          uid: currentUser.uid,
+          userName: currentUser.displayName || currentUser.email.split('@')[0],
+          text: text,
+          timestamp: Date.now()
+        };
+
+        if (selectedReplyMsg) {
+          payload.replyTo = selectedReplyMsg;
+        }
+
+        await push(ref(db, 'community_student_chats'), payload);
+        input.value = '';
+        cancelReply();
+      };
+
+      // রিপ্লাই অপশন সেট করা (WhatsApp Style)
+      window.setReply = function(id, name, text) {
+        selectedReplyMsg = { id, name, text };
+        document.getElementById('replyTargetName').innerText = name;
+        document.getElementById('replyTargetText').innerText = text;
+        document.getElementById('replyBanner').style.display = 'flex';
+        document.getElementById('studentMsgInput').focus();
+      };
+
+      window.cancelReply = function() {
+        selectedReplyMsg = null;
+        document.getElementById('replyBanner').style.display = 'none';
+      };
+
+      // মেসেজ ডিলিট (স্টুডেন্ট নিজে অথবা অ্যাডমিন/টিচার)
+      window.deleteMessage = async function(nodePath, messageId) {
+        if (confirm("আপনি কি নিশ্চিত যে এই মেসেজটি ডিলিট করতে চান?")) {
+          await remove(ref(db, `${nodePath}/${messageId}`));
+        }
+      };
+
+      window.handleKeyPress = function(e, type) {
+        if (e.key === 'Enter') {
+          sendStudentMessage();
+        }
+      };
+
+      function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, 
+          tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+      }
+    </script>
+</body>
+</html>
