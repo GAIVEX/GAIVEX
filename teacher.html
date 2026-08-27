@@ -765,7 +765,7 @@ button,input,select,textarea{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, push, update, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -1007,7 +1007,7 @@ function renderQuestions(){
     });
 }
 
-// 💥 DELETE / COMPLETE REMOVAL LOGIC
+// DELETE / COMPLETE REMOVAL LOGIC
 window.cancelQuestion = function(id){
     pendingCancelId = id;
     document.getElementById("cancelReasonText").value = "";
@@ -1030,7 +1030,6 @@ window.confirmCancelQuestion = async function(){
     try{
         const q = allQuestions[pendingCancelId];
         
-        // ১. স্টুডেন্টকে নোটিফিকেশন পাঠানো
         if(q && q.studentUid){
             const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
             await set(notificationRef, {
@@ -1043,7 +1042,6 @@ window.confirmCancelQuestion = async function(){
             });
         }
 
-        // ২. ডাটাবেস থেকে প্রশ্নটি সরাসরি রিমুভ (Set null) করা
         await set(ref(db, `qanda/questions/${pendingCancelId}`), null);
 
         alert("🗑️ প্রশ্নটি ডাটাবেস এবং স্টুডেন্ট অ্যাপ থেকে সম্পূর্ণভাবে ডিলিট করা হয়েছে।");
@@ -1286,7 +1284,6 @@ function renderFollowupChatList(id){
     container.scrollTop = container.scrollHeight;
 }
 
-// 💥 UPDATED FUNCTION FOR FIXING FOLLOW-UP STATUS ISSUE
 window.submitFollowupAnswer = async function(){
     if(!selectedQuestionId) return;
 
@@ -1308,10 +1305,8 @@ window.submitFollowupAnswer = async function(){
             createdAt: Date.now()
         };
 
-        // ১. ফলো-আপ বার্তা সেভ
         await set(followupRef, payload);
 
-        // ২. মেইন কোয়েশ্চেন আপডেট করে status = 'answered' করা
         await update(ref(db, `qanda/questions/${selectedQuestionId}`), {
             status: "answered",
             lastRepliedBy: "teacher",
@@ -1372,15 +1367,12 @@ function loadCommMessages(){
 
         const data = snapshot.val();
         let html = "";
-        let pinnedFound = false;
 
         for(let key in data){
             const msg = data[key];
             const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString("bn-BD", {hour:'2-digit', minute:'2-digit'}) : "";
             
-            // Pin Handling
             if(msg.isPinned && currentCommTab === 'student'){
-                pinnedFound = true;
                 document.getElementById("pinnedMsgContent").innerHTML = `
                     <b>${escapeHtml(msg.senderName)}:</b> ${escapeHtml(msg.text)}
                 `;
@@ -1483,7 +1475,6 @@ window.deleteCommMessage = async function(path, key){
 
 window.pinCommMessage = async function(key){
     try{
-        // পূর্বে পিন করা বার্তা থাকলে আনপিন করা
         const snapshot = await get(ref(db, 'community_student_chats'));
         if(snapshot.exists()){
             const data = snapshot.val();
@@ -1493,7 +1484,6 @@ window.pinCommMessage = async function(key){
                 }
             }
         }
-        // নতুন বার্তা পিন করা
         await update(ref(db, `community_student_chats/${key}`), { isPinned: true });
         alert("📌 মেসেজটি পিন করা হয়েছে!");
     }catch(e){
@@ -1555,7 +1545,7 @@ window.toggleRecording = async function(){
 function fileToBase64(file){
     return new Promise((resolve,reject)=>{
         const reader = new FileReader();
-        reader.onload = () => resolve(resolve.result);
+        reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
