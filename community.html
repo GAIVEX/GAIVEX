@@ -8,146 +8,105 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .nav-header { background: #1e293b; padding: 12px 20px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-size: 20px; font-weight: 700; color: #38bdf8; text-decoration: none; }
+
+        /* হেডার স্টাইল */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; z-index: 100; }
+        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
         .logo span { color: #f43f5e; }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 14px; }
 
-        .tab-bar { display: flex; background: #1e293b; border-bottom: 1px solid #334155; }
-        .tab-btn { flex: 1; padding: 12px; background: none; border: none; color: #94a3b8; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: #38bdf8; border-bottom-color: #38bdf8; background: #0f172a; }
+        /* ট্যাব মেনু (Student Chat / Teacher & Admin Notice) */
+        .tab-header { display: flex; background: #1e293b; border-bottom: 1px solid #334155; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #94a3b8; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: #38bdf8; border-bottom-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
 
-        .chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .tab-content { flex: 1; display: none; flex-direction: column; overflow: hidden; position: relative; }
-        .tab-content.active { display: flex; }
+        /* চ্যাট বক্স লেআউট */
+        .chat-container { flex: 1; display: flex; flex-direction: column; background: #0b1120; overflow: hidden; position: relative; }
+        .messages-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
 
-        /* পিন করা মেসেজ ব্যানার */
-        .pinned-bar { background: #1e293b; border-bottom: 1px solid #38bdf8; padding: 8px 15px; font-size: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #38bdf8; }
-        .pinned-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
-
-        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        /* মেসেজ বাবল স্টাইল */
+        .msg-card { display: flex; flex-direction: column; max-width: 80%; width: fit-content; border-radius: 12px; padding: 8px 12px; position: relative; font-size: 14px; word-wrap: break-word; }
+        .msg-left { align-self: flex-start; background: #1e293b; border: 1px solid #334155; color: #f8fafc; border-top-left-radius: 2px; }
+        .msg-right { align-self: flex-end; background: #0284c7; color: #ffffff; border-top-right-radius: 2px; }
+        .msg-notice { align-self: center; max-width: 90%; background: #1e293b; border: 1px solid #38bdf8; border-left: 4px solid #38bdf8; border-radius: 8px; width: 100%; }
         
-        /* মেসেজ কার্ড স্টাইল */
-        .message-card { background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 12px; max-width: 82%; width: fit-content; word-wrap: break-word; position: relative; user-select: none; -webkit-user-select: none; }
-        .message-card.my-msg { align-self: flex-end; background: #0284c7; border-color: #38bdf8; color: #fff; }
-        .message-card.admin-teacher-msg { background: #1e1b4b; border-color: #6366f1; width: 100%; max-width: 100%; }
-
-        .sender-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 4px; font-size: 12px; }
-        .sender-name { font-weight: bold; color: #38bdf8; }
-        .my-msg .sender-name { color: #bae6fd; }
-        .badge-role { background: #f43f5e; color: white; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .pin-icon { font-size: 10px; margin-left: 5px; color: #fbbf24; }
+        .msg-sender { font-size: 11px; font-weight: 700; color: #38bdf8; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .msg-right .msg-sender { color: #e0f2fe; }
+        .role-badge { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #ea580c; color: #fff; text-transform: uppercase; }
         
-        /* রিপ্লাই ও রিয়্যাকশন ডিসপ্লে */
-        .reply-preview-box { background: rgba(0, 0, 0, 0.25); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; }
-        .reply-preview-name { font-weight: bold; color: #38bdf8; }
-        .reply-preview-text { color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .msg-text { line-height: 1.4; white-space: pre-wrap; }
+        
+        .msg-meta { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; opacity: 0.75; }
+        .delete-btn { background: none; border: none; color: #f43f5e; cursor: pointer; font-size: 12px; padding: 0 4px; opacity: 0.8; }
+        .delete-btn:hover { opacity: 1; }
 
-        .reactions-display { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
-        .reaction-badge { background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; padding: 2px 6px; border-radius: 12px; font-size: 11px; cursor: pointer; }
-
-        .msg-text { font-size: 14px; line-height: 1.4; white-space: pre-wrap; }
-        .msg-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; color: #94a3b8; }
-        .my-msg .msg-footer { color: #e0f2fe; }
+        /* রিপ্লাই বক্স প্রিভিউ (WhatsApp Like Quoted Message) */
+        .reply-preview-box { background: rgba(15, 23, 42, 0.6); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; opacity: 0.9; cursor: pointer; }
+        .msg-right .reply-preview-box { background: rgba(0, 0, 0, 0.2); border-left-color: #fff; }
+        .reply-preview-sender { font-weight: bold; color: #38bdf8; font-size: 11px; }
+        .msg-right .reply-preview-sender { color: #fff; }
+        .reply-preview-text { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 200px; }
 
         /* ইনপুট এরিয়া */
-        .chat-input-area { background: #1e293b; padding: 10px 15px; border-top: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
-        .active-reply-banner { background: #0f172a; border-left: 3px solid #38bdf8; padding: 6px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-        .input-row { display: flex; gap: 10px; }
-        .chat-input-area input { flex: 1; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 8px; outline: none; font-size: 14px; }
-        .chat-input-area input:focus { border-color: #38bdf8; }
-        .send-btn { background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .input-area-container { background: #1e293b; border-top: 1px solid #334155; padding: 10px 15px; display: flex; flex-direction: column; gap: 6px; }
+        .active-reply-bar { display: none; justify-content: space-between; align-items: center; background: #0f172a; border-left: 3px solid #38bdf8; padding: 6px 10px; border-radius: 4px; font-size: 12px; }
+        .active-reply-bar .close-reply { cursor: pointer; color: #f43f5e; font-weight: bold; }
+        
+        .input-row { display: flex; gap: 8px; align-items: center; }
+        .chat-input { flex: 1; background: #0f172a; border: 1px solid #475569; border-radius: 20px; padding: 10px 16px; color: #fff; font-size: 14px; outline: none; }
+        .chat-input:focus { border-color: #38bdf8; }
+        .btn-send { background: #38bdf8; color: #0f172a; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0; font-weight: bold; }
 
-        /* লং প্রেস পপআপ মেনাল মোডাল */
-        .action-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: flex-end; }
-        .action-modal-content { background: #1e293b; border-top: 1px solid #334155; border-radius: 16px 16px 0 0; width: 100%; max-width: 500px; padding: 20px; animation: slideUp 0.2s ease-out; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .emoji-bar { display: flex; justify-content: space-around; background: #0f172a; padding: 10px; border-radius: 30px; margin-bottom: 15px; border: 1px solid #334155; }
-        .emoji-btn { font-size: 22px; cursor: pointer; transition: 0.2s; background: none; border: none; }
-        .emoji-btn:hover { transform: scale(1.3); }
-
-        .menu-options { display: flex; flex-direction: column; gap: 8px; }
-        .menu-opt-btn { background: #0f172a; color: #fff; border: 1px solid #334155; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; }
-        .menu-opt-btn.danger { color: #f43f5e; border-color: #f43f5e; }
+        .notice-only-msg { text-align: center; color: #94a3b8; font-size: 13px; padding: 15px; }
     </style>
 </head>
 <body>
 
-    <header class="nav-header">
+    <!-- হেডার -->
+    <header class="navbar">
         <a href="index.html" class="logo">GAIVEX<span>.</span> Community</a>
-        <a href="index.html" style="color:#94a3b8; text-decoration:none; font-size:13px; font-weight:bold;">🏠 হোম</a>
+        <div class="nav-right">
+            <a href="index.html" class="btn-auth">🏠 হোম</a>
+        </div>
     </header>
 
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('student')">💬 Student Chat</button>
-        <button class="tab-btn" onclick="switchTab('teacher')">📌 Teacher & Admin Notice</button>
+    <!-- উপরের দিকে স্টুডেন্ট এবং টিচার/এডমিন সেকশন বাটন -->
+    <div class="tab-header">
+        <button class="tab-btn active" id="btnStudentTab" onclick="switchTab('student')">💬 Student Chat</button>
+        <button class="tab-btn" id="tabTeacherBtn" onclick="switchTab('teacher')">📢 Teacher & Admin Notices</button>
     </div>
 
+    <!-- কমিউনিটি চ্যাট এরিয়া -->
     <div class="chat-container">
-        <!-- ১. স্টুডেন্ট চ্যাট সেকশন -->
-        <div id="studentTab" class="tab-content active">
-            <!-- পিন্ড মেসেজ নোটিফিকেশন ব্যানার -->
-            <div id="pinnedMsgBanner" class="pinned-bar" style="display: none;" onclick="scrollToPinnedMsg()">
-                <div class="pinned-text">📌 <span id="pinnedMsgText"></span></div>
-                <small style="color: #94a3b8;">দেখুন</small>
-            </div>
-
-            <div class="chat-box" id="studentChatBox">
-                <p style="text-align:center; color:#94a3b8; font-size:13px;">মেসেজ লোড হচ্ছে...</p>
-            </div>
-
-            <div class="chat-input-area">
-                <div id="replyBanner" class="active-reply-banner" style="display: none;">
-                    <div>
-                        <span style="color:#38bdf8; font-weight:bold;">রিপ্লাই দিচ্ছেন: </span>
-                        <span id="replyTargetName" style="color:#fff;"></span>
-                        <div id="replyTargetText" style="color:#94a3b8; font-size:11px;"></div>
-                    </div>
-                    <button onclick="cancelReply()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold;">✕</button>
-                </div>
-                <div class="input-row">
-                    <input type="text" id="studentMsgInput" placeholder="আপনার বার্তা লিখুন..." onkeypress="handleKeyPress(event)">
-                    <button class="send-btn" onclick="sendStudentMessage()">পাঠান</button>
-                </div>
-            </div>
+        
+        <!-- সকল মেসেজ দেখানোর স্থান -->
+        <div class="messages-box" id="messagesBox">
+            <p style="color:#94a3b8; text-align:center; margin-top:20px;">মেসেজ লোড হচ্ছে...</p>
         </div>
 
-        <!-- ২. টিচার ও অ্যাডমিন নোটিশ সেকশন -->
-        <div id="teacherTab" class="tab-content">
-            <div class="chat-box" id="teacherChatBox">
-                <p style="text-align:center; color:#94a3b8; font-size:13px;">নোটিশ লোড হচ্ছে...</p>
+        <!-- স্টুডেন্ট ইনপুট বক্স (শুধু স্টুডেন্ট চ্যাট ট্যাবে একটিভ থাকবে) -->
+        <div class="input-area-container" id="inputContainer">
+            <!-- রিপ্লাই বার প্রিভিউ -->
+            <div class="active-reply-bar" id="activeReplyBar">
+                <div>
+                    <span style="color:#38bdf8; font-weight:bold;" id="replyTargetUser">কারো মেসেজ</span>-কে রিপ্লাই দেওয়া হচ্ছে:
+                    <div style="color:#94a3b8; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:260px;" id="replyTargetText">...</div>
+                </div>
+                <span class="close-reply" onclick="cancelReply()">✕</span>
             </div>
-            <div style="background:#1e293b; padding:12px; text-align:center; color:#94a3b8; font-size:12px; border-top:1px solid #334155;">
-                🔒 এই সেকশনে শুধুমাত্র Admin ও Teacher-গণ তথ্য প্রকাশ করতে পারবেন।
+
+            <div class="input-row">
+                <input type="text" id="msgInput" class="chat-input" placeholder="আপনার বার্তা লিখুন (মেসেজে ক্লিক করে রিপ্লাই দিন)..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button class="btn-send" onclick="sendMessage()">➤</button>
             </div>
         </div>
     </div>
 
-    <!-- লং প্রেস পপআপ মেনু মোডাল -->
-    <div id="actionModal" class="action-modal" onclick="closeActionModal(event)">
-        <div class="action-modal-content" onclick="event.stopPropagation()">
-            <!-- রিয়্যাকশন বার -->
-            <div class="emoji-bar">
-                <button class="emoji-btn" onclick="addReaction('👍')">👍</button>
-                <button class="emoji-btn" onclick="addReaction('❤️')">❤️</button>
-                <button class="emoji-btn" onclick="addReaction('😂')">😂</button>
-                <button class="emoji-btn" onclick="addReaction('😮')">😮</button>
-                <button class="emoji-btn" onclick="addReaction('😢')">😢</button>
-                <button class="emoji-btn" onclick="addReaction('🙏')">🙏</button>
-            </div>
-            <!-- অ্যাকশন অপশনস -->
-            <div class="menu-options">
-                <button class="menu-opt-btn" onclick="triggerReplyFromModal()">↩️ রিপ্লাই করুন</button>
-                <button class="menu-opt-btn" onclick="togglePinMsg()">📌 পিন করুন / আনপিন করুন</button>
-                <button id="deleteMenuBtn" class="menu-opt-btn danger" onclick="triggerDeleteFromModal()" style="display: none;">🗑️ মেসেজ ডিলিট করুন</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Firebase Script -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, push, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -165,258 +124,186 @@
       const auth = getAuth(app);
 
       let currentUser = null;
-      let userRole = 'student';
-      let selectedReplyMsg = null;
-      
-      // লং প্রেস অপশনের জন্য সিলেক্টেড মেসেজ ডাটা
-      let activeTargetMsg = null; 
-      let longPressTimer = null;
-      let pinnedMsgId = null;
+      let userRole = 'student'; // 'admin', 'teacher', or 'student'
+      let currentTab = 'student';
+      let replyingTo = null; // Stores reply object if replying to a message
 
+      // অথেন্টিকেশন চেক & রোল নিরূপণ
       onAuthStateChanged(auth, async (user) => {
         currentUser = user;
-        if (!user) {
-          alert("কমিউনিটি ব্যবহার করতে হলে প্রথমে লগইন করুন!");
-          window.location.href = "index.html";
-          return;
+        if (user) {
+            // ডেটাবেজ থেকে রোল চেক (যদি ইউজার Admin/Teacher হয়)
+            try {
+                const roleSnap = await get(ref(db, `users/${user.uid}/role`));
+                if (roleSnap.exists()) {
+                    userRole = roleSnap.val(); // e.g. 'admin' or 'teacher'
+                }
+            } catch(e) {}
         }
-
-        try {
-          const roleSnap = await get(ref(db, `users/${user.uid}/role`));
-          if(roleSnap.exists()) userRole = roleSnap.val();
-        } catch(e) {}
-        
-        loadStudentChats();
-        loadTeacherNotices();
+        loadMessages();
       });
 
+      // ট্যাব পরিবর্তন ফাংশন
       window.switchTab = function(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        if (tab === 'student') {
-          document.querySelectorAll('.tab-btn')[0].classList.add('active');
-          document.getElementById('studentTab').classList.add('active');
-        } else {
-          document.querySelectorAll('.tab-btn')[1].classList.add('active');
-          document.getElementById('teacherTab').classList.add('active');
-        }
-      };
+          currentTab = tab;
+          document.getElementById('btnStudentTab').classList.toggle('active', tab === 'student');
+          document.getElementById('tabTeacherBtn').classList.toggle('active', tab === 'teacher');
 
-      // ১. স্টুডেন্ট চ্যাট লোড
-      function loadStudentChats() {
-        const chatRef = ref(db, 'community_student_chats');
-        onValue(chatRef, (snapshot) => {
-          const container = document.getElementById('studentChatBox');
-          container.innerHTML = '';
-          let foundPinned = false;
-
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            for (let id in data) {
-              const msg = data[id];
-              const isMe = currentUser && currentUser.uid === msg.uid;
-
-              // পিন চেক
-              if (msg.isPinned) {
-                foundPinned = true;
-                pinnedMsgId = id;
-                document.getElementById('pinnedMsgText').innerText = `${msg.userName}: ${msg.text}`;
-                document.getElementById('pinnedMsgBanner').style.display = 'flex';
-              }
-
-              // রিপ্লাই এইচটিএমএল
-              let replyHTML = '';
-              if (msg.replyTo) {
-                replyHTML = `
-                  <div class="reply-preview-box">
-                    <div class="reply-preview-name">${msg.replyTo.name}</div>
-                    <div class="reply-preview-text">${msg.replyTo.text}</div>
-                  </div>`;
-              }
-
-              // রিয়্যাকশন এইচটিএমএল
-              let reactionsHTML = '';
-              if (msg.reactions) {
-                reactionsHTML = '<div class="reactions-display">';
-                const counts = {};
-                Object.values(msg.reactions).forEach(r => counts[r] = (counts[r] || 0) + 1);
-                for (let emoji in counts) {
-                  reactionsHTML += `<span class="reaction-badge">${emoji} ${counts[emoji]}</span>`;
-                }
-                reactionsHTML += '</div>';
-              }
-
-              const msgCard = document.createElement('div');
-              msgCard.id = `msg-${id}`;
-              msgCard.className = `message-card ${isMe ? 'my-msg' : ''}`;
-              
-              // লং প্রেস ও মাউস ইভেন্ট লিসেনার
-              msgCard.addEventListener('touchstart', (e) => startLongPress(e, id, msg, isMe));
-              msgCard.addEventListener('touchend', cancelLongPress);
-              msgCard.addEventListener('mousedown', (e) => startLongPress(e, id, msg, isMe));
-              msgCard.addEventListener('mouseup', cancelLongPress);
-
-              msgCard.innerHTML = `
-                <div class="sender-header">
-                    <span class="sender-name">${msg.userName} ${msg.isPinned ? '<span class="pin-icon">📌</span>' : ''}</span>
-                </div>
-                ${replyHTML}
-                <div class="msg-text">${escapeHTML(msg.text)}</div>
-                ${reactionsHTML}
-                <div class="msg-footer">
-                    <span>${new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'})}</span>
-                </div>
-              `;
-              container.appendChild(msgCard);
-            }
-            if(!foundPinned) document.getElementById('pinnedMsgBanner').style.display = 'none';
-            container.scrollTop = container.scrollHeight;
+          const inputContainer = document.getElementById('inputContainer');
+          if (tab === 'teacher') {
+              // টিচার/এডমিন ট্যাবে স্টুডেন্টদের মেসেজ দেওয়ার অপশন সম্পূর্ণ হাইড থাকবে
+              inputContainer.style.display = 'none';
           } else {
-            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">এখনো কোনো মেসেজ নেই।</p>';
+              inputContainer.style.display = 'flex';
           }
-        });
+          cancelReply();
+          loadMessages();
+      };
+
+      // মেসেজ লোড করার ফাংশন
+      function loadMessages() {
+          const dbPath = currentTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
+          const messagesBox = document.getElementById('messagesBox');
+
+          onValue(ref(db, dbPath), (snapshot) => {
+              messagesBox.innerHTML = '';
+              if (!snapshot.exists()) {
+                  if(currentTab === 'teacher') {
+                      messagesBox.innerHTML = '<div class="notice-only-msg">📢 টিচার ও এডমিনদের থেকে এখনো কোনো নোটিশ দেওয়া হয়নি।</div>';
+                  } else {
+                      messagesBox.innerHTML = '<div class="notice-only-msg">💬 এখানে কোনো বার্তা নেই। প্রথম বার্তাটি লিখুন!</div>';
+                  }
+                  return;
+              }
+
+              const data = snapshot.val();
+              for (let key in data) {
+                  const msg = data[key];
+                  const isMe = currentUser && currentUser.uid === msg.uid;
+                  const canDelete = isMe || userRole === 'admin' || userRole === 'teacher';
+                  
+                  // মেসেজ কার্ড তৈরি
+                  const card = document.createElement('div');
+                  if (currentTab === 'teacher') {
+                      card.className = 'msg-card msg-notice';
+                  } else {
+                      card.className = `msg-card ${isMe ? 'msg-right' : 'msg-left'}`;
+                  }
+
+                  // রিপ্লাই প্রিভিউ তৈরি (যদি মেসেজটিতে কারো রিপ্লাই থাকে)
+                  let replyHTML = '';
+                  if (msg.replyTo) {
+                      replyHTML = `
+                          <div class="reply-preview-box">
+                              <div class="reply-preview-sender">${escapeHTML(msg.replyTo.sender)}</div>
+                              <div class="reply-preview-text">${escapeHTML(msg.replyTo.text)}</div>
+                          </div>
+                      `;
+                  }
+
+                  // রোল ব্যাজ (Admin/Teacher হলে দেখাবে)
+                  let roleBadge = '';
+                  if(msg.role === 'admin') roleBadge = `<span class="role-badge" style="background:#ef4444;">ADMIN</span>`;
+                  else if(msg.role === 'teacher') roleBadge = `<span class="role-badge" style="background:#10b981;">TEACHER</span>`;
+
+                  // ডিলিট বাটন (নিজের মেসেজ অথবা Admin/Teacher হলে ডিলিট করতে পারবে)
+                  let deleteHTML = canDelete ? `<button class="delete-btn" title="ডিলিট করুন" onclick="deleteMessage('${dbPath}', '${key}')">🗑️</button>` : '';
+
+                  // সময় ফর্ম্যাট
+                  const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'}) : '';
+
+                  card.innerHTML = `
+                      <div class="msg-sender">
+                          <span>${escapeHTML(msg.senderName)} ${roleBadge}</span>
+                      </div>
+                      ${replyHTML}
+                      <div class="msg-text">${escapeHTML(msg.text)}</div>
+                      <div class="msg-meta">
+                          <span>${timeStr}</span>
+                          ${deleteHTML}
+                      </div>
+                  `;
+
+                  // স্টুডেন্ট ট্যাবে যেকোনো মেসেজে ক্লিক করলে WhatsApp-এর মতো রিপ্লাই অপশন চালু হবে
+                  if(currentTab === 'student') {
+                      card.onclick = (e) => {
+                          if (!e.target.classList.contains('delete-btn')) {
+                              setReplyMode(msg.senderName, msg.text);
+                          }
+                      };
+                  }
+
+                  messagesBox.appendChild(card);
+              }
+              // স্ক্রোল একদম নিচে পাঠানো
+              messagesBox.scrollTop = messagesBox.scrollHeight;
+          });
       }
 
-      // ২. টিচার ও অ্যাডমিন নোটিশ লোড
-      function loadTeacherNotices() {
-        const noticeRef = ref(db, 'community_teacher_notices');
-        onValue(noticeRef, (snapshot) => {
-          const container = document.getElementById('teacherChatBox');
-          container.innerHTML = '';
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            for (let id in data) {
-              const msg = data[id];
-              const canDelete = userRole === 'admin' || userRole === 'teacher';
-
-              const msgCard = document.createElement('div');
-              msgCard.className = 'message-card admin-teacher-msg';
-              msgCard.innerHTML = `
-                <div class="sender-header">
-                    <span class="sender-name" style="color:#818cf8;">📢 ${msg.userName} <span class="badge-role">${msg.role.toUpperCase()}</span></span>
-                </div>
-                <div class="msg-text">${escapeHTML(msg.text)}</div>
-                <div class="msg-footer">
-                    <span>${new Date(msg.timestamp).toLocaleDateString('bn-BD')} - ${new Date(msg.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'})}</span>
-                    ${canDelete ? `<button style="background:none; border:none; color:#ef4444; cursor:pointer;" onclick="deleteNotice('${id}')">🗑️ ডিলিট</button>` : ''}
-                </div>
-              `;
-              container.appendChild(msgCard);
-            }
-            container.scrollTop = container.scrollHeight;
-          } else {
-            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">কোনো নোটিশ পাওয়া যায়নি।</p>';
+      // মেসেজ পাঠানোর ফাংশন
+      window.sendMessage = async function() {
+          if (!currentUser) {
+              alert("মেসেজ পাঠাতে হলে আগে আপনাকে লগইন করতে হবে!");
+              return;
           }
-        });
+
+          const input = document.getElementById('msgInput');
+          const text = input.value.trim();
+          if (!text) return;
+
+          const dbPath = 'community_student_chats';
+
+          const msgData = {
+              uid: currentUser.uid,
+              senderName: currentUser.displayName || currentUser.email.split('@')[0],
+              text: text,
+              role: userRole,
+              timestamp: Date.now()
+          };
+
+          if (replyingTo) {
+              msgData.replyTo = replyingTo;
+          }
+
+          try {
+              await push(ref(db, dbPath), msgData);
+              input.value = '';
+              cancelReply();
+          } catch(e) {
+              alert("মেসেজ পাঠাতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
+          }
+      };
+
+      // রিপ্লাই সেট করা (WhatsApp Style)
+      function setReplyMode(sender, text) {
+          replyingTo = { sender: sender, text: text };
+          document.getElementById('replyTargetUser').innerText = sender;
+          document.getElementById('replyTargetText').innerText = text;
+          document.getElementById('activeReplyBar').style.display = 'flex';
+          document.getElementById('msgInput').focus();
       }
 
-      // লং প্রেস লজিক (Long Press Handle)
-      function startLongPress(e, id, msg, isMe) {
-        longPressTimer = setTimeout(() => {
-          activeTargetMsg = { id, ...msg, isMe };
-          openActionModal(isMe);
-        }, 500); // ৫০০ মিলি-সেকেন্ড চেপে রাখলে অপশন পপআপ হবে
-      }
-
-      function cancelLongPress() {
-        clearTimeout(longPressTimer);
-      }
-
-      function openActionModal(isMe) {
-        const canDelete = isMe || userRole === 'admin' || userRole === 'teacher';
-        document.getElementById('deleteMenuBtn').style.display = canDelete ? 'flex' : 'none';
-        document.getElementById('actionModal').style.display = 'flex';
-      }
-
-      window.closeActionModal = function() {
-        document.getElementById('actionModal').style.display = 'none';
-        activeTargetMsg = null;
-      };
-
-      // মেসেজে রিয়্যাকশন দেয়া
-      window.addReaction = async function(emoji) {
-        if (!activeTargetMsg || !currentUser) return;
-        await update(ref(db, `community_student_chats/${activeTargetMsg.id}/reactions/${currentUser.uid}`), emoji);
-        closeActionModal();
-      };
-
-      // মোডাল থেকে রিপ্লাই ক্লিক
-      window.triggerReplyFromModal = function() {
-        if (!activeTargetMsg) return;
-        selectedReplyMsg = { id: activeTargetMsg.id, name: activeTargetMsg.userName, text: activeTargetMsg.text };
-        document.getElementById('replyTargetName').innerText = activeTargetMsg.userName;
-        document.getElementById('replyTargetText').innerText = activeTargetMsg.text;
-        document.getElementById('replyBanner').style.display = 'flex';
-        document.getElementById('studentMsgInput').focus();
-        closeActionModal();
-      };
-
-      // মেসেজ পিন/আনপিন করা
-      window.togglePinMsg = async function() {
-        if (!activeTargetMsg) return;
-        const currentPinStatus = activeTargetMsg.isPinned || false;
-        await update(ref(db, `community_student_chats/${activeTargetMsg.id}`), { isPinned: !currentPinStatus });
-        closeActionModal();
-      };
-
-      // মোডাল থেকে ডিলিট
-      window.triggerDeleteFromModal = async function() {
-        if (!activeTargetMsg) return;
-        if (confirm("মেসেজটি ডিলিট করতে চান?")) {
-          await remove(ref(db, `community_student_chats/${activeTargetMsg.id}`));
-        }
-        closeActionModal();
-      };
-
-      window.deleteNotice = async function(id) {
-        if (confirm("নোটিশটি ডিলিট করতে চান?")) {
-          await remove(ref(db, `community_teacher_notices/${id}`));
-        }
-      };
-
-      window.scrollToPinnedMsg = function() {
-        if (pinnedMsgId) {
-          const el = document.getElementById(`msg-${pinnedMsgId}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      };
-
-      // স্টুডেন্ট মেসেজ সেন্ড
-      window.sendStudentMessage = async function() {
-        const input = document.getElementById('studentMsgInput');
-        const text = input.value.trim();
-        if (!text || !currentUser) return;
-
-        const payload = {
-          uid: currentUser.uid,
-          userName: currentUser.displayName || currentUser.email.split('@')[0],
-          text: text,
-          timestamp: Date.now()
-        };
-
-        if (selectedReplyMsg) {
-          payload.replyTo = selectedReplyMsg;
-        }
-
-        await push(ref(db, 'community_student_chats'), payload);
-        input.value = '';
-        cancelReply();
-      };
-
+      // রিপ্লাই বাতিল করা
       window.cancelReply = function() {
-        selectedReplyMsg = null;
-        document.getElementById('replyBanner').style.display = 'none';
+          replyingTo = null;
+          document.getElementById('activeReplyBar').style.display = 'none';
       };
 
-      window.handleKeyPress = function(e) {
-        if (e.key === 'Enter') sendStudentMessage();
+      // মেসেজ ডিলিট করার ফাংশন (Admin, Teacher & Owner specific)
+      window.deleteMessage = async function(path, key) {
+          if (confirm("আপনি কি নিশ্চিত যে এই ম্যাসেজটি ডিলিট করতে চান?")) {
+              try {
+                  await remove(ref(db, `${path}/${key}`));
+              } catch(e) {
+                  alert("ডিলিট করার অনুমতি নেই অথবা কোনো ত্রুটি ঘটেছে।");
+              }
+          }
       };
 
       function escapeHTML(str) {
-        return str.replace(/[&<>'"]/g, 
-          tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-        );
+          return str.replace(/[&<>'"]/g, 
+              tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+          );
       }
     </script>
 </body>
