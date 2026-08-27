@@ -969,7 +969,7 @@ window.confirmCancelQuestion = async function(){
             });
         }
 
-        // ২. ডাটাবেস থেকে প্রশ্নটি সরাসরি রিমুভ (Set null) করা (ফলে স্টুডেন্ট অ্যাপ থেকেও সাথে সাথে ডিলিট হয়ে যাবে)
+        // ২. ডাটাবেস থেকে প্রশ্নটি সরাসরি রিমুভ (Set null) করা
         await set(ref(db, `qanda/questions/${pendingCancelId}`), null);
 
         alert("🗑️ প্রশ্নটি ডাটাবেস এবং স্টুডেন্ট অ্যাপ থেকে সম্পূর্ণভাবে ডিলিট করা হয়েছে।");
@@ -1212,6 +1212,7 @@ function renderFollowupChatList(id){
     container.scrollTop = container.scrollHeight;
 }
 
+// 💥 UPDATED FUNCTION FOR FIXING FOLLOW-UP STATUS ISSUE
 window.submitFollowupAnswer = async function(){
     if(!selectedQuestionId) return;
 
@@ -1233,7 +1234,15 @@ window.submitFollowupAnswer = async function(){
             createdAt: Date.now()
         };
 
+        // ১. ফলো-আপ বার্তা সেভ
         await set(followupRef, payload);
+
+        // ২. মেইন কোয়েশ্চেন আপডেট করে status = 'answered' করা
+        await update(ref(db, `qanda/questions/${selectedQuestionId}`), {
+            status: "answered",
+            lastRepliedBy: "teacher",
+            updatedAt: Date.now()
+        });
 
         if(q.studentUid){
             const notificationRef = push(ref(db, `notifications/${q.studentUid}`));
