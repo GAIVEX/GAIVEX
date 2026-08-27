@@ -7,6 +7,11 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- KaTeX CSS & JS (Mathematical Formula Rendering Support) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
 <style>
 *{
     box-sizing:border-box;
@@ -1246,6 +1251,19 @@ window.renderQuestions = async function(){
         card.innerHTML = createQuestionHTML(q, bookmarked);
         container.appendChild(card);
     }
+
+    // KaTeX এর সাহায্যে সব ফর্মুলা এবং গাণিতিক কোড রেন্ডার করা
+    if (typeof renderMathInElement === "function") {
+        renderMathInElement(container, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError : false
+        });
+    }
 };
 
 function createQuestionHTML(q, bookmarked){
@@ -1264,17 +1282,38 @@ function createQuestionHTML(q, bookmarked){
         }
     }
 
-    const status = q.status === "answered"
+    const isAnswered = q.status === "answered";
+
+    const status = isAnswered
         ? `<span class="status answered">✓ উত্তর দেওয়া হয়েছে</span>`
         : `<span class="status">⏳ উত্তর অপেক্ষমাণ</span>`;
 
+    // শিক্ষক প্যানেলের উত্তরগুলো প্রসেস করার উন্নত লজিক
+    let ansText = q.answerText || "";
+    let ansVoice = q.answerVoiceData || q.answerVoice || "";
+    let ansImg = q.answerImageData || "";
+    let ansPdf = q.answerPdfData || "";
+
+    if (!ansText && q.answers) {
+        const answersList = Object.values(q.answers);
+        if (answersList.length > 0) {
+            const lastAns = answersList[answersList.length - 1];
+            ansText = lastAns.answerText || lastAns.text || "";
+            ansVoice = lastAns.voiceData || lastAns.audioUrl || ansVoice;
+            ansImg = lastAns.imageData || ansImg;
+            ansPdf = lastAns.pdfData || ansPdf;
+        }
+    }
+
     let answerHtml = "";
-    if(q.status === "answered" || q.answerText || q.answerVoice){
+    if(isAnswered || ansText || ansVoice || ansImg || ansPdf){
         answerHtml = `
             <div class="answer-box">
                 <div class="answer-title">👨‍🏫 শিক্ষকের উত্তর:</div>
-                ${q.answerText ? `<div class="answer-text">${escapeHTML(q.answerText)}</div>` : ''}
-                ${q.answerVoice ? `<audio controls class="voice-player" src="${q.answerVoice}"></audio>` : ''}
+                ${ansText ? `<div class="answer-text">${escapeHTML(ansText)}</div>` : ''}
+                ${ansImg ? `<img src="${ansImg}" class="question-image">` : ''}
+                ${ansPdf ? `<a href="${ansPdf}" target="_blank" class="pdf-link">📄 উত্তরের PDF দেখুন</a>` : ''}
+                ${ansVoice ? `<audio controls class="voice-player" src="${ansVoice}"></audio>` : ''}
             </div>
         `;
     }
@@ -1403,6 +1442,19 @@ async function loadReplies(questionId){
         }
 
         box.innerHTML = html;
+
+        // KaTeX Render in modal reply list
+        if (typeof renderMathInElement === "function") {
+            renderMathInElement(box, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError : false
+            });
+        }
     }catch(e){
         console.error("Replies error:", e);
         box.innerHTML = `<div class="empty">উত্তর লোড করা যায়নি।</div>`;
