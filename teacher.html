@@ -176,6 +176,16 @@ button,input,select,textarea{
     color:#cbd5e1;
 }
 
+.chat-modal-btn{
+    border:none;
+    background:#38bdf8;
+    color:#0f172a;
+    padding:7px 12px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:700;
+}
+
 .logout-btn{
     border:none;
     background:#ef4444;
@@ -508,6 +518,22 @@ button,input,select,textarea{
     color:#38bdf8;
 }
 
+/* COMMUNITY CHAT MODAL STYLING */
+.tab-btn-group { display: flex; gap: 8px; margin-bottom: 12px; }
+.tab-btn-comm { flex: 1; padding: 8px; border: 1px solid #334155; background: #0f172a; color: #94a3b8; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.tab-btn-comm.active { background: #38bdf8; color: #0f172a; }
+
+.pinned-msg-box { background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; font-size: 13px; color: #fbbf24; }
+.pinned-header { font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+
+.comm-msg-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 13px; position: relative; }
+.comm-msg-card.pinned { border-color: #f59e0b; }
+.comm-msg-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.comm-sender { font-weight: bold; color: #38bdf8; font-size: 12px; }
+.comm-actions { display: flex; gap: 6px; }
+.comm-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0.8; }
+.comm-btn:hover { opacity: 1; }
+
 @media(max-width:550px){
     .header{ padding:0 10px; }
     .header-logo{ font-size:19px; }
@@ -556,6 +582,7 @@ button,input,select,textarea{
         <div class="header-logo">GAIVEX<span>.</span></div>
         <div class="teacher-info">
             <div class="teacher-badge">👨‍🏫 Teacher No: GVX-001098</div>
+            <button class="chat-modal-btn" onclick="openCommunityModal()">📢 Community Chat</button>
             <button class="logout-btn" onclick="teacherLogout()">Logout</button>
         </div>
     </header>
@@ -692,9 +719,53 @@ button,input,select,textarea{
     </div>
 </div>
 
+<!-- COMMUNITY CHAT / TEACHER NOTICE MODAL -->
+<div id="communityModal" class="modal">
+    <div class="modal-content" style="max-width:700px;">
+        <div class="modal-header">
+            <h3>💬 Community Chat & Notices</h3>
+            <button class="close-btn" onclick="closeCommunityModal()">&times;</button>
+        </div>
+
+        <div class="tab-btn-group">
+            <button class="tab-btn-comm active" id="commTabNotice" onclick="switchCommTab('teacher')">📢 Teacher & Admin Notices</button>
+            <button class="tab-btn-comm" id="commTabStudent" onclick="switchCommTab('student')">💬 Student Chat</button>
+        </div>
+
+        <!-- Pinned Messages Section -->
+        <div id="pinnedSection" class="pinned-msg-box hidden">
+            <div class="pinned-header">
+                <span>📌 Pinned Message</span>
+                <button onclick="unpinMessage()" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:bold;">Unpin ✕</button>
+            </div>
+            <div id="pinnedMsgContent" style="margin-top:4px;"></div>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="commMessagesContainer" style="max-height:300px;overflow-y:auto;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:12px;">
+            <div class="loading">মেসেজ লোড হচ্ছে...</div>
+        </div>
+
+        <!-- Reply Bar Preview -->
+        <div id="commReplyBar" style="display:none;justify-content:space-between;align-items:center;background:#0f172a;border-left:3px solid #38bdf8;padding:6px 10px;border-radius:4px;font-size:12px;margin-bottom:8px;">
+            <div>
+                <span style="color:#38bdf8;font-weight:bold;" id="commReplyTargetUser">কারো মেসেজ</span>-কে রিপ্লাই:
+                <div style="color:#94a3b8;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:250px;" id="commReplyTargetText">...</div>
+            </div>
+            <span style="cursor:pointer;color:#f43f5e;font-weight:bold;" onclick="cancelCommReply()">✕</span>
+        </div>
+
+        <!-- Input Box -->
+        <div class="form-group" style="margin-bottom:8px;">
+            <textarea id="commInputText" class="answer-textarea" style="min-height:70px;" placeholder="নোটিশ বা মেসেজ লিখুন..."></textarea>
+        </div>
+        <button class="save-answer" style="margin-top:0;" onclick="sendCommMessage()">➤ মেসেজ / নোটিশ প্রকাশ করুন</button>
+    </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, push, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -719,6 +790,9 @@ let pendingCancelId = null;
 let mediaRecorder = null;
 let audioChunks = [];
 let recordedAudioBase64 = "";
+
+let currentCommTab = 'teacher';
+let commReplyingTo = null;
 
 const chaptersData = {
     physics: {
@@ -1262,6 +1336,181 @@ window.submitFollowupAnswer = async function(){
     }
 };
 
+/* ================= COMMUNITY CHAT & TEACHER NOTICES FOR TEACHER ================= */
+
+window.openCommunityModal = function(){
+    document.getElementById("communityModal").classList.add("show");
+    loadCommMessages();
+};
+
+window.closeCommunityModal = function(){
+    document.getElementById("communityModal").classList.remove("show");
+    cancelCommReply();
+};
+
+window.switchCommTab = function(tab){
+    currentCommTab = tab;
+    document.getElementById("commTabNotice").classList.toggle("active", tab === 'teacher');
+    document.getElementById("commTabStudent").classList.toggle("active", tab === 'student');
+    cancelCommReply();
+    loadCommMessages();
+};
+
+function loadCommMessages(){
+    const dbPath = currentCommTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
+    const container = document.getElementById("commMessagesContainer");
+    const pinnedSec = document.getElementById("pinnedSection");
+
+    onValue(ref(db, dbPath), (snapshot) => {
+        container.innerHTML = "";
+        pinnedSec.classList.add("hidden");
+
+        if(!snapshot.exists()){
+            container.innerHTML = `<div style="text-align:center;color:#64748b;padding:15px;">কোনো নোটিশ বা বার্তা নেই।</div>`;
+            return;
+        }
+
+        const data = snapshot.val();
+        let html = "";
+        let pinnedFound = false;
+
+        for(let key in data){
+            const msg = data[key];
+            const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString("bn-BD", {hour:'2-digit', minute:'2-digit'}) : "";
+            
+            // Pin Handling
+            if(msg.isPinned && currentCommTab === 'student'){
+                pinnedFound = true;
+                document.getElementById("pinnedMsgContent").innerHTML = `
+                    <b>${escapeHtml(msg.senderName)}:</b> ${escapeHtml(msg.text)}
+                `;
+                pinnedSec.classList.remove("hidden");
+                pinnedSec.setAttribute("data-pin-key", key);
+            }
+
+            let roleBadge = "";
+            if(msg.role === 'admin') roleBadge = `<span style="background:#ef4444;color:#fff;font-size:9px;padding:1px 4px;border-radius:3px;">ADMIN</span>`;
+            else if(msg.role === 'teacher') roleBadge = `<span style="background:#10b981;color:#fff;font-size:9px;padding:1px 4px;border-radius:3px;">TEACHER</span>`;
+
+            let replyHTML = "";
+            if(msg.replyTo){
+                replyHTML = `
+                    <div style="background:rgba(255,255,255,0.08);border-left:2px solid #38bdf8;padding:3px 6px;border-radius:4px;margin-bottom:4px;font-size:11px;">
+                        <span style="color:#38bdf8;font-weight:bold;">${escapeHtml(msg.replyTo.sender)}</span>: ${escapeHtml(msg.replyTo.text)}
+                    </div>
+                `;
+            }
+
+            let pinBtnHTML = "";
+            if(currentCommTab === 'student'){
+                pinBtnHTML = `<button class="comm-btn" title="পিন করুন" onclick="pinCommMessage('${key}')">📌</button>`;
+            }
+
+            html += `
+                <div class="comm-msg-card ${msg.isPinned ? 'pinned' : ''}">
+                    <div class="comm-msg-meta">
+                        <span class="comm-sender">${escapeHtml(msg.senderName)} ${roleBadge} <span style="font-weight:normal;font-size:10px;color:#64748b;">• ${timeStr}</span></span>
+                        <div class="comm-actions">
+                            ${currentCommTab === 'student' ? `<button class="comm-btn" title="রিপ্লাই" onclick="setCommReplyMode('${escapeHtml(msg.senderName)}', '${escapeHtml(msg.text)}')">↩️</button>` : ''}
+                            ${pinBtnHTML}
+                            <button class="comm-btn" title="ডিলিট করুন" onclick="deleteCommMessage('${dbPath}', '${key}')">🗑️</button>
+                        </div>
+                    </div>
+                    ${replyHTML}
+                    <div style="line-height:1.4;white-space:pre-wrap;color:#e2e8f0;">${escapeHtml(msg.text)}</div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+window.sendCommMessage = async function(){
+    const textInput = document.getElementById("commInputText");
+    const text = textInput.value.trim();
+    if(!text){
+        alert("মেসেজ টাইপ করুন।");
+        return;
+    }
+
+    const dbPath = currentCommTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
+    
+    const msgData = {
+        uid: "teacher_" + TEACHER_NO,
+        senderName: `Teacher (${TEACHER_NO})`,
+        text: text,
+        role: 'teacher',
+        timestamp: Date.now()
+    };
+
+    if(commReplyingTo && currentCommTab === 'student'){
+        msgData.replyTo = commReplyingTo;
+    }
+
+    try{
+        await push(ref(db, dbPath), msgData);
+        textInput.value = "";
+        cancelCommReply();
+    }catch(e){
+        alert("মেসেজ পাঠাতে ব্যর্থ হয়েছে: " + e.message);
+    }
+};
+
+window.setCommReplyMode = function(sender, text){
+    commReplyingTo = { sender: sender, text: text };
+    document.getElementById("commReplyTargetUser").innerText = sender;
+    document.getElementById("commReplyTargetText").innerText = text;
+    document.getElementById("commReplyBar").style.display = 'flex';
+    document.getElementById("commInputText").focus();
+};
+
+window.cancelCommReply = function(){
+    commReplyingTo = null;
+    document.getElementById("commReplyBar").style.display = 'none';
+};
+
+window.deleteCommMessage = async function(path, key){
+    if(confirm("আপনি কি নিশ্চিত যে এই নোটিশ/মেসেজটি ডিলিট করতে চান?")){
+        try{
+            await remove(ref(db, `${path}/${key}`));
+        }catch(e){
+            alert("ডিলিট করতে ত্রুটি ঘটেছে।");
+        }
+    }
+};
+
+window.pinCommMessage = async function(key){
+    try{
+        // পূর্বে পিন করা বার্তা থাকলে আনপিন করা
+        const snapshot = await get(ref(db, 'community_student_chats'));
+        if(snapshot.exists()){
+            const data = snapshot.val();
+            for(let k in data){
+                if(data[k].isPinned){
+                    await update(ref(db, `community_student_chats/${k}`), { isPinned: false });
+                }
+            }
+        }
+        // নতুন বার্তা পিন করা
+        await update(ref(db, `community_student_chats/${key}`), { isPinned: true });
+        alert("📌 মেসেজটি পিন করা হয়েছে!");
+    }catch(e){
+        alert("পিন করতে ত্রুটি ঘটেছে: " + e.message);
+    }
+};
+
+window.unpinMessage = async function(){
+    const key = document.getElementById("pinnedSection").getAttribute("data-pin-key");
+    if(key){
+        try{
+            await update(ref(db, `community_student_chats/${key}`), { isPinned: false });
+            document.getElementById("pinnedSection").classList.add("hidden");
+        }catch(e){}
+    }
+};
+
 /* ================= VOICE & UTILS ================= */
 
 window.toggleRecording = async function(){
@@ -1306,7 +1555,7 @@ window.toggleRecording = async function(){
 function fileToBase64(file){
     return new Promise((resolve,reject)=>{
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve(resolve.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
