@@ -129,21 +129,11 @@
 
         select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
         select:focus { border-color: #38bdf8; }
-
-        /* লিডারবোর্ড নির্দিষ্ট স্টাইল */
-        .leaderboard-item { display: flex; align-items: center; justify-content: space-between; background: #1e293b; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #334155; }
-        .leaderboard-rank { font-weight: bold; font-size: 15px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #334155; color: #f8fafc; flex-shrink: 0; }
-        .rank-1 { background: #eab308; color: #0f172a; font-size: 18px; }
-        .rank-2 { background: #94a3b8; color: #0f172a; font-size: 18px; }
-        .rank-3 { background: #b45309; color: #fff; font-size: 18px; }
-        .leaderboard-user { display: flex; align-items: center; gap: 10px; flex: 1; margin-left: 10px; overflow: hidden; }
-        .leaderboard-name { font-size: 14px; font-weight: 600; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .leaderboard-score { font-size: 14px; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.3); flex-shrink: 0; }
     </style>
 </head>
 <body>
 
-    <!-- ব্যাকগ্রাউন্ড অ্যানিমেশন -->
+    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
     <div class="global-bg-container">
         <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
         <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
@@ -167,7 +157,6 @@
                     <a href="gaivexai.html">🤖 GAIVEX AI</a>
                     <a href="community.html">💬 GAIVEX TUTO</a>
                     <a href="qanda.html">❓ Q&A</a>
-                    <button onclick="openLeaderboardModal()">🏆 লিডারবোর্ড</button>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
                     <button onclick="openResultModal()">📊 রেজাল্ট</button>
                     <button onclick="openNotesModal()">📚 নোটস</button>
@@ -195,12 +184,11 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
-        <!-- বিষয়ভিত্তিক গ্রিড -->
+        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
             <div class="subject-box" onclick="location.href='community.html'"><div class="icon">💬</div><h3>GAIVEX TUTO</h3></div>
             <div class="subject-box" onclick="location.href='qanda.html'"><div class="icon">❓</div><h3>Q&A</h3></div>
-            <div class="subject-box" onclick="openLeaderboardModal()"><div class="icon">🏆</div><h3>লিডারবোর্ড</h3></div>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
             <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
@@ -210,38 +198,6 @@
             <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
     </main>
-
-    <!-- লিডারবোর্ড মোডাল -->
-    <div id="leaderboardModal" class="modal">
-      <div class="modal-content" style="max-width: 550px;">
-        <div class="modal-header">
-            <h3>🏆 Live Exam Leaderboard</h3>
-            <button class="modal-close-x" onclick="closeLeaderboardModal()">&times;</button>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px;">
-            <select id="leaderboardSubject" onchange="updateLeaderboardChapterOptions(); filterLeaderboardData();">
-                <option value="">সকল বিষয়</option>
-                <option value="physics">পদার্থবিজ্ঞান</option>
-                <option value="chemistry">রসায়ন</option>
-                <option value="biology">জীববিজ্ঞান</option>
-                <option value="math">উচ্চতর গণিত</option>
-            </select>
-            
-            <select id="leaderboardChapter" onchange="filterLeaderboardData()">
-                <option value="">সকল অধ্যায়</option>
-            </select>
-        </div>
-
-        <div id="leaderboardListContainer" style="max-height: 350px; overflow-y: auto; background: #0f172a; border-radius: 10px; border: 1px solid #334155; padding: 10px; margin-top: 5px;">
-            <p style="color: #94a3b8; text-align: center; font-size: 13px;">লিডারবোর্ড লোড হচ্ছে...</p>
-        </div>
-
-        <div class="btn-group" style="margin-top: 15px;">
-            <button type="button" class="btn btn-close" onclick="closeLeaderboardModal()" style="flex: 1;">বন্ধ করুন</button>
-        </div>
-      </div>
-    </div>
 
     <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
@@ -284,6 +240,7 @@
                 <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
             
+            <!-- ফিল্টার ড্রপডাউন -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
@@ -303,6 +260,7 @@
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
+            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
             <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
                 <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
             </div>
@@ -412,7 +370,6 @@
 
       let currentUser = null;
       let studentExamDataMap = {};
-      let rawLeaderboardData = [];
 
       const chaptersData = {
           physics: {
@@ -424,7 +381,7 @@
               paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
           },
           biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"],
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
               paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
           },
           math: {
@@ -446,117 +403,6 @@
           }
       }
 
-      /* ================= লিডারবোর্ড লজিক ================= */
-      window.openLeaderboardModal = async function() {
-          document.getElementById('leaderboardModal').style.display = 'flex';
-          document.getElementById('dropdownMenu').classList.remove('show');
-          await fetchLiveExamLeaderboard();
-      }
-
-      window.closeLeaderboardModal = function() {
-          document.getElementById('leaderboardModal').style.display = 'none';
-      }
-
-      window.updateLeaderboardChapterOptions = function() {
-          const sub = document.getElementById('leaderboardSubject').value;
-          const chapSelect = document.getElementById('leaderboardChapter');
-          chapSelect.innerHTML = '<option value="">সকল অধ্যায়</option>';
-          
-          if (sub && chaptersData[sub]) {
-              for (let paper in chaptersData[sub]) {
-                  chaptersData[sub][paper].forEach((chap) => {
-                      chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-                  });
-              }
-          }
-      };
-
-      async function fetchLiveExamLeaderboard() {
-          const container = document.getElementById('leaderboardListContainer');
-          container.innerHTML = '<p style="color: #38bdf8; text-align: center; font-size: 13px;">লিডারবোর্ড লোড হচ্ছে...</p>';
-
-          try {
-              const snapshot = await get(ref(db, 'exam_attempts'));
-              
-              if (snapshot.exists()) {
-                  const allAttempts = snapshot.val();
-                  rawLeaderboardData = [];
-
-                  for (let uid in allAttempts) {
-                      const userExams = allAttempts[uid];
-                      for (let examId in userExams) {
-                          const exam = userExams[examId];
-
-                          rawLeaderboardData.push({
-                              name: exam.userName || 'Unknown Student',
-                              score: Number(exam.score) || 0,
-                              total: Number(exam.total) || 0,
-                              subject: exam.subject || '', 
-                              chapter: exam.chapter || '', 
-                              submittedAt: exam.submittedAt ? new Date(exam.submittedAt).getTime() : 0
-                          });
-                      }
-                  }
-
-                  filterLeaderboardData();
-              } else {
-                  container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px;">কোনো রেজাল্ট ডেটা পাওয়া যায়নি।</p>';
-              }
-          } catch (e) {
-              console.error(e);
-              container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:13px;">লিডারবোর্ড লোড করতে সমস্যা হয়েছে।</p>';
-          }
-      }
-
-      window.filterLeaderboardData = function() {
-          const selectedSubject = document.getElementById('leaderboardSubject').value;
-          const selectedChapter = document.getElementById('leaderboardChapter').value;
-          const container = document.getElementById('leaderboardListContainer');
-
-          let filteredList = rawLeaderboardData.filter(item => {
-              let matchSubject = selectedSubject === '' || item.subject === selectedSubject;
-              let matchChapter = selectedChapter === '' || item.chapter === selectedChapter;
-              return matchSubject && matchChapter;
-          });
-
-          if (filteredList.length === 0) {
-              container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top:15px;">এই বিষয় বা অধ্যায়ে কোনো পরীক্ষার তথ্য পাওয়া যায়নি।</p>';
-              return;
-          }
-
-          // ১. স্কোর বড় থেকে ছোট ২. আগে জমা দেওয়া পরীক্ষার্থী আগে
-          filteredList.sort((a, b) => {
-              if (b.score === a.score) {
-                  return a.submittedAt - b.submittedAt;
-              }
-              return b.score - a.score;
-          });
-
-          let html = '';
-          filteredList.forEach((student, index) => {
-              const rank = index + 1;
-              let rankClass = '';
-              let rankBadge = rank;
-
-              if (rank === 1) { rankClass = 'rank-1'; rankBadge = '🥇'; }
-              else if (rank === 2) { rankClass = 'rank-2'; rankBadge = '🥈'; }
-              else if (rank === 3) { rankClass = 'rank-3'; rankBadge = '🥉'; }
-
-              html += `
-                  <div class="leaderboard-item">
-                      <div class="leaderboard-rank ${rankClass}">${rankBadge}</div>
-                      <div class="leaderboard-user">
-                          <div class="leaderboard-name">${student.name}</div>
-                      </div>
-                      <div class="leaderboard-score">${student.score} / ${student.total}</div>
-                  </div>
-              `;
-          });
-
-          container.innerHTML = html;
-      };
-
-      /* ================= নোটিশ বোর্ড ================= */
       window.openNoticeModal = function() {
           document.getElementById('noticeModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
@@ -566,7 +412,6 @@
           document.getElementById('noticeModal').style.display = 'none';
       }
 
-      /* ================= রেজাল্ট মোডাল ================= */
       window.openResultModal = async function() {
           if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
           document.getElementById('resultListModal').style.display = 'flex';
@@ -578,7 +423,6 @@
           document.getElementById('resultListModal').style.display = 'none';
       }
 
-      /* ================= নোটস মোডাল ================= */
       window.openNotesModal = () => {
           document.getElementById('notesModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
@@ -652,7 +496,6 @@
           }
       }
 
-      /* ================= অথেনটিকেশন ও প্রোফাইল ================= */
       window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
       
       window.toggleProfileModal = async (show) => {
