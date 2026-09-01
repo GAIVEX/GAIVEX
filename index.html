@@ -465,7 +465,7 @@
       let currentUser = null;
       let studentExamDataMap = {};
       let cachedNotices = [];
-      let allRawExamAttempts = null; // সকল পরীক্ষার হিস্ট্রি ক্যাশ রাখার জন্য
+      let allRawExamAttempts = null;
 
       // Toast Notification function
       window.showToast = function(message) {
@@ -715,7 +715,7 @@
       }
 
       /* =========================================================
-         ADVANCED LEADERBOARD SYSTEM (EXAM & SUBJECT FILTERABLE)
+         FIXED ADVANCED LEADERBOARD SYSTEM (AUTO NAME FETCHING)
          ========================================================= */
 
       async function fetchAndSetupLeaderboard() {
@@ -728,7 +728,6 @@
           if (snapshot.exists()) {
             allRawExamAttempts = snapshot.val();
             
-            // সকল পরীক্ষা সংগ্রহ করে ফিল্টার ড্রপডাউনে যুক্ত করা
             let examOptionsMap = {};
             for (let uid in allRawExamAttempts) {
               for (let examId in allRawExamAttempts[uid]) {
@@ -772,10 +771,8 @@
           for (let examId in allRawExamAttempts[uid]) {
             const attempt = allRawExamAttempts[uid][examId];
             
-            // ফিল্টার ১: পরীক্ষাভিত্তিক ফিল্টার
             if (selectedExam !== 'ALL' && examId !== selectedExam) continue;
 
-            // ফিল্টার ২: বিষয়ভিত্তিক ফিল্টার (যদি পরীক্ষার তথ্যে বিষয় সংজ্ঞায়িত থাকে)
             if (selectedSubject !== 'ALL') {
               const examSubject = (attempt.subject || '').toLowerCase();
               const examTitle = (attempt.examTitle || '').toLowerCase();
@@ -784,21 +781,38 @@
               }
             }
 
-            const studentName = attempt.studentName || 'শিক্ষার্থী';
+            // --- নাম নির্ধারণের উন্নত লজিক (Name Auto-Detection) ---
+            let studentName = attempt.studentName;
+            
+            // যদি নাম 'শিক্ষার্থী' বা ফাঁকা থাকে, তখন Firebase Auth বা Email থেকে নাম বের করবে
+            if (!studentName || studentName === 'শিক্ষার্থী') {
+              if (currentUser && uid === currentUser.uid) {
+                studentName = currentUser.displayName || currentUser.email.split('@')[0];
+              } else if (attempt.userEmail) {
+                studentName = attempt.userEmail.split('@')[0];
+              } else if (attempt.userName) {
+                studentName = attempt.userName;
+              } else {
+                studentName = 'শিক্ষার্থী (' + uid.substring(0, 4) + ')';
+              }
+            }
+
             const score = Number(attempt.score) || 0;
             const total = Number(attempt.total) || 0;
             const submittedAt = attempt.submittedAt || 0;
 
             if (selectedExam === 'ALL') {
-              // সব পরীক্ষার মোট স্কোর বা সর্বোচ্চ স্কোর গণনার লজিক
               if (!leaderboardMap[uid]) {
                 leaderboardMap[uid] = { uid: uid, name: studentName, score: score, total: total, submittedAt: submittedAt };
               } else {
                 leaderboardMap[uid].score += score;
                 leaderboardMap[uid].total += total;
+                // নাম না থাকলে অন্য এটেম্পট থেকে আপডেট নেওয়া
+                if(leaderboardMap[uid].name.startsWith('শিক্ষার্থী (')) {
+                  leaderboardMap[uid].name = studentName;
+                }
               }
             } else {
-              // নির্দিষ্ট পরীক্ষার জন্য প্রতি শিক্ষার্থীর সেরা বা শেষ এটেম্পট
               if (!leaderboardMap[uid] || score > leaderboardMap[uid].score) {
                 leaderboardMap[uid] = { uid: uid, name: studentName, score: score, total: total, submittedAt: submittedAt };
               }
@@ -806,13 +820,11 @@
           }
         }
 
-        // স্কোরের ভিত্তিতে সাজানো (টাই হলে জমার সময়ের ভিত্তিতে)
         let sortedList = Object.values(leaderboardMap).sort((a, b) => {
           if (b.score !== a.score) return b.score - a.score;
           return a.submittedAt - b.submittedAt;
         });
 
-        // লগইন করা স্টুডেন্টের র‍্যাঙ্ক হিসাব
         if (currentUser && sortedList.length > 0) {
           const myIndex = sortedList.findIndex(item => item.uid === currentUser.uid);
           if (myIndex !== -1) {
@@ -839,7 +851,6 @@
           userSummaryContainer.innerHTML = '';
         }
 
-        // সার্চ ফিল্টার প্রয়োগ
         if (searchQuery) {
           sortedList = sortedList.filter(user => user.name.toLowerCase().includes(searchQuery));
         }
