@@ -216,6 +216,22 @@
         </div>
         
         <div class="nav-right-group">
+            <!-- নোটিফিকেশন সিস্টেম বেল আইকন ও ড্রপডাউন -->
+            <div class="menu-container">
+                <button class="menu-btn" onclick="toggleNotificationDropdown()" title="নোটিফিকেশন" style="position: relative;">
+                    🔔 <span id="notificationBadge" style="display:none; position:absolute; top:-3px; right:-3px; background:#f43f5e; color:#fff; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:50%; min-width:16px; text-align:center;">0</span>
+                </button>
+                <div class="dropdown-menu" id="notificationDropdown" style="width: 280px; right: 0; left: auto; max-height: 350px; overflow-y: auto; padding: 5px;">
+                    <div style="padding: 8px 10px; font-weight: bold; border-bottom: 1px solid var(--border-color); color: #38bdf8; display: flex; justify-content: space-between; align-items: center;">
+                        <span>🔔 নোটিফিকেশন</span>
+                        <span style="font-size: 11px; cursor:pointer; color:var(--subtext);" onclick="markAllAsRead()">সব পঠিত</span>
+                    </div>
+                    <div id="notificationListContainer">
+                        <p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">কোনো নোটিফিকেশন নেই</p>
+                    </div>
+                </div>
+            </div>
+
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="থিম পরিবর্তন করুন">☀️</button>
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
@@ -418,7 +434,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -489,10 +505,16 @@
 
       window.toggleMenu = function() {
           document.getElementById('dropdownMenu').classList.toggle('show');
+          document.getElementById('notificationDropdown').classList.remove('show');
+      }
+
+      window.toggleNotificationDropdown = function() {
+          document.getElementById('notificationDropdown').classList.toggle('show');
+          document.getElementById('dropdownMenu').classList.remove('show');
       }
 
       window.onclick = function(event) {
-          if (!event.target.matches('.menu-btn') && !event.target.closest('.menu-btn')) {
+          if (!event.target.matches('.menu-btn') && !event.target.closest('.menu-btn') && !event.target.closest('.dropdown-menu')) {
               const dropdowns = document.getElementsByClassName("dropdown-menu");
               for (let i = 0; i < dropdowns.length; i++) {
                   dropdowns[i].classList.remove('show');
@@ -889,6 +911,114 @@
         } catch(e) {}
       }
 
+      // Notification System implementation
+      async function setupNotifications(user) {
+          const badge = document.getElementById('notificationBadge');
+          const listContainer = document.getElementById('notificationListContainer');
+          
+          if (!user) {
+              badge.style.display = 'none';
+              listContainer.innerHTML = '<p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">লগইন করুন</p>';
+              return;
+          }
+
+          try {
+              // Fetch user-specific notifications and global notices/updates
+              const userNotifRef = ref(db, `notifications/users/${user.uid}`);
+              const globalNotifRef = ref(db, `notifications/global`);
+              
+              const [userSnap, globalSnap] = await Promise.all([get(userNotifRef), get(globalNotifRef)]);
+              
+              let allNotifs = [];
+              let unreadCount = 0;
+
+              if (userSnap.exists()) {
+                  const data = userSnap.val();
+                  for (let id in data) {
+                      allNotifs.push({ id, ...data[id], targetType: 'user' });
+                      if (!data[id].read) unreadCount++;
+                  }
+              }
+
+              if (globalSnap.exists()) {
+                  const data = globalSnap.val();
+                  for (let id in data) {
+                      allNotifs.push({ id, ...data[id], targetType: 'global' });
+                      if (!data[id].read) unreadCount++;
+                  }
+              }
+
+              // Sort by timestamp desc
+              allNotifs.sort((a, b) => (b.time || 0) - (a.time || 0));
+
+              if (unreadCount > 0) {
+                  badge.innerText = unreadCount;
+                  badge.style.display = 'inline-block';
+              } else {
+                  badge.style.display = 'none';
+              }
+
+              if (allNotifs.length > 0) {
+                  let html = '';
+                  allNotifs.forEach(item => {
+                      let readBg = item.read ? 'var(--modal-bg)' : 'var(--card-hover)';
+                      let dateStr = item.time ? new Date(item.time).toLocaleDateString('bn-BD') : '';
+                      html += `
+                          <div style="background:${readBg}; padding:10px; border-radius:6px; margin-bottom:6px; border:1px solid var(--border-color); font-size:12px; cursor:pointer;" onclick="markSingleAsRead('${item.id}', '${item.targetType}')">
+                              <div style="font-weight:bold; color:#38bdf8; margin-bottom:2px;">📌 ${item.title || 'নোটিফিকেশন'}</div>
+                              <div style="color:var(--text-color); line-height:1.4;">${item.message || item.description || ''}</div>
+                              <div style="color:var(--subtext); font-size:10px; margin-top:4px; text-align:right;">${dateStr}</div>
+                          </div>
+                      `;
+                  });
+                  listContainer.innerHTML = html;
+              } else {
+                  listContainer.innerHTML = '<p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">কোনো নতুন নোটিফিকেশন নেই</p>';
+              }
+          } catch (err) {
+              listContainer.innerHTML = '<p style="text-align: center; font-size: 12px; color: #ef4444; padding: 15px;">লোডিং ত্রুটি</p>';
+          }
+      }
+
+      window.markSingleAsRead = async function(id, type) {
+          if (!currentUser) return;
+          try {
+              if (type === 'user') {
+                  await update(ref(db, `notifications/users/${currentUser.uid}/${id}`), { read: true });
+              } else {
+                  await update(ref(db, `notifications/global/${id}`), { read: true });
+              }
+              setupNotifications(currentUser);
+          } catch(e) {}
+      }
+
+      window.markAllAsRead = async function() {
+          if (!currentUser) return;
+          try {
+              const userNotifRef = ref(db, `notifications/users/${currentUser.uid}`);
+              const globalNotifRef = ref(db, `notifications/global`);
+              
+              const [userSnap, globalSnap] = await Promise.all([get(userNotifRef), get(globalNotifRef)]);
+              
+              let updates = {};
+              if (userSnap.exists()) {
+                  Object.keys(userSnap.val()).forEach(id => {
+                      updates[`notifications/users/${currentUser.uid}/${id}/read`] = true;
+                  });
+              }
+              if (globalSnap.exists()) {
+                  Object.keys(globalSnap.val()).forEach(id => {
+                      updates[`notifications/global/${id}/read`] = true;
+                  });
+              }
+              if (Object.keys(updates).length > 0) {
+                  await update(ref(db), updates);
+                  showToast("সকল নোটিফিকেশন পঠিত করা হয়েছে!");
+                  setupNotifications(currentUser);
+              }
+          } catch(e) { showToast("ত্রুটি ঘটেছে"); }
+      }
+
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const c = document.getElementById('authNavContainer');
@@ -898,9 +1028,11 @@
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
+          setupNotifications(user);
         } else {
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
           dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
+          setupNotifications(null);
         }
       });
 
