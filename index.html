@@ -9,6 +9,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
         
+        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন (ডিএনএ ও অন্যান্য সায়েন্টিফিক আইকন) */
         .global-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .floating-element { position: absolute; font-size: 45px; opacity: 0.18; animation: floatRotateAnim 15s infinite linear; }
         
@@ -20,6 +21,7 @@
             100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
         }
 
+        /* হেডার ও অন্যান্য উপাদান যেন ব্যাকগ্রাউন্ডের উপরে স্পষ্টভাবে থাকে */
         .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn { position: relative; z-index: 10; }
 
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid #334155; gap: 10px; position: sticky; top: 0; z-index: 100; }
@@ -28,43 +30,15 @@
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
         .logo span { color: #f43f5e; }
         
-        .nav-right-group { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+        .nav-right-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
         .menu-container { position: relative; }
-        .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .menu-btn:hover { border-color: #38bdf8; background: #1e293b; }
-
+        .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
         .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
         .dropdown-menu a:last-child, .dropdown-menu button:last-child { border-bottom: none; }
         .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: #334155; color: #38bdf8; }
         .dropdown-menu.show { display: block; }
-
-        /* নোটিফিকেশন সিএসএস ফিক্স */
-        .notification-container { position: relative; }
-        .notif-badge { position: absolute; top: -5px; right: -5px; background: #f43f5e; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; padding: 2px 6px; border: 2px solid #0f172a; }
-        
-        .notification-dropdown { 
-            width: 280px !important; 
-            right: 0 !important; 
-            left: auto !important; 
-            top: 48px; 
-        }
-
-        @media screen and (max-width: 480px) {
-            .notification-dropdown {
-                width: 260px !important;
-                right: -10px !important;
-            }
-        }
-
-        .notification-header { padding: 10px 15px; border-bottom: 1px solid #334155; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; background: #0f172a; }
-        .notification-item { padding: 10px 12px; border-bottom: 1px solid #334155; transition: 0.2s; cursor: pointer; text-align: left; }
-        .notification-item:hover { background: #334155; }
-        .notification-item.unread { background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; }
-        .notification-item h5 { color: #f8fafc; font-size: 13px; margin-bottom: 2px; }
-        .notification-item p { color: #94a3b8; font-size: 12px; line-height: 1.3; margin: 0; }
-        .notification-item .notif-time { font-size: 10px; color: #38bdf8; margin-top: 4px; display: block; }
 
         #authNavContainer { display: flex; gap: 8px; align-items: center; }
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
@@ -87,6 +61,7 @@
         .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
         .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
 
+        /* ফ্লোটিং এআই বাটন স্টাইল */
         .floating-ai-btn {
             position: fixed;
             bottom: 25px;
@@ -158,6 +133,7 @@
 </head>
 <body>
 
+    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
     <div class="global-bg-container">
         <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
         <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
@@ -167,6 +143,7 @@
         <div class="floating-element" style="top: 40%; left: 5%; animation-duration: 17s; animation-delay: 5s;">⚛️</div>
     </div>
 
+    <!-- ফ্লোটিং এআই বাটন -->
     <a href="gaivexai.html" class="floating-ai-btn">
         <span style="font-size: 18px;">🤖</span>
     </a>
@@ -190,22 +167,6 @@
         </div>
         
         <div class="nav-right-group">
-            <div class="notification-container">
-                <button class="menu-btn" onclick="toggleNotificationMenu()">
-                    🔔
-                    <span id="notifBadge" class="notif-badge" style="display: none;">0</span>
-                </button>
-                <div class="dropdown-menu notification-dropdown" id="notificationMenu">
-                    <div class="notification-header">
-                        <span>📢 নোটিফিকেশন</span>
-                        <span onclick="clearNotifBadge()" style="font-size: 11px; color: #94a3b8; cursor: pointer;">পড়া হয়েছে</span>
-                    </div>
-                    <div id="notificationList" style="max-height: 320px; overflow-y: auto;">
-                        <p style="color: #94a3b8; text-align: center; padding: 15px; font-size: 13px;">নোটিফিকেশন লোড হচ্ছে...</p>
-                    </div>
-                </div>
-            </div>
-
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
             </div>
@@ -223,6 +184,7 @@
             <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
         </a>
 
+        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
             <div class="subject-box" onclick="location.href='community.html'"><div class="icon">💬</div><h3>GAIVEX TUTO</h3></div>
@@ -278,6 +240,7 @@
                 <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
             
+            <!-- ফিল্টার ড্রপডাউন -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
@@ -297,6 +260,7 @@
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
+            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
             <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
                 <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
             </div>
@@ -386,7 +350,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -428,18 +392,6 @@
 
       window.toggleMenu = function() {
           document.getElementById('dropdownMenu').classList.toggle('show');
-          document.getElementById('notificationMenu').classList.remove('show');
-      }
-
-      window.toggleNotificationMenu = function() {
-          document.getElementById('notificationMenu').classList.toggle('show');
-          document.getElementById('dropdownMenu').classList.remove('show');
-          clearNotifBadge();
-      }
-
-      window.clearNotifBadge = function() {
-          const badge = document.getElementById('notifBadge');
-          if (badge) badge.style.display = 'none';
       }
 
       window.onclick = function(event) {
@@ -449,79 +401,6 @@
                   dropdowns[i].classList.remove('show');
               }
           }
-      }
-
-      function initNotificationSystem(userId) {
-          const globalNotifRef = ref(db, 'notifications/global');
-          
-          onValue(globalNotifRef, (snapshot) => {
-              let globalList = snapshot.exists() ? Object.values(snapshot.val()) : [];
-              
-              if (userId) {
-                  const personalNotifRef = ref(db, `notifications/personal/${userId}`);
-                  onValue(personalNotifRef, (userSnapshot) => {
-                      let personalList = userSnapshot.exists() ? Object.values(userSnapshot.val()) : [];
-                      renderNotifications([...globalList, ...personalList]);
-                  });
-              } else {
-                  renderNotifications(globalList);
-              }
-          });
-      }
-
-      function renderNotifications(list) {
-          const container = document.getElementById('notificationList');
-          const badge = document.getElementById('notifBadge');
-
-          list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-          if (list.length === 0) {
-              container.innerHTML = '<p style="color:#94a3b8; text-align:center; padding:15px; font-size:12px;">কোনো নোটিফিকেশন নেই</p>';
-              badge.style.display = 'none';
-              return;
-          }
-
-          let html = '';
-          let unreadCount = 0;
-
-          list.forEach((item) => {
-              if (!item.read) unreadCount++;
-              
-              let icon = '📢';
-              if (item.type === 'exam') icon = '🔴';
-              else if (item.type === 'qna') icon = '💬';
-              else if (item.type === 'note') icon = '📚';
-              else if (item.type === 'custom') icon = '✉️';
-
-              const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }) : '';
-
-              html += `
-                  <div class="notification-item ${item.read ? '' : 'unread'}" onclick="handleNotifClick('${item.type}', '${item.targetUrl || ''}')">
-                      <h5>${icon} ${item.title || 'নতুন আপডেট'}</h5>
-                      <p>${item.message || ''}</p>
-                      <span class="notif-time">${timeStr}</span>
-                  </div>
-              `;
-          });
-
-          container.innerHTML = html;
-
-          if (unreadCount > 0) {
-              badge.innerText = unreadCount > 9 ? '9+' : unreadCount;
-              badge.style.display = 'inline-block';
-          }
-      }
-
-      window.handleNotifClick = function(type, targetUrl) {
-          if (targetUrl && targetUrl !== 'undefined') {
-              window.location.href = targetUrl;
-          } else {
-              if (type === 'exam') window.location.href = 'liveexam.html';
-              else if (type === 'qna') window.location.href = 'qanda.html';
-              else if (type === 'note') openNotesModal();
-              else openNoticeModal();
-          }
-          document.getElementById('notificationMenu').classList.remove('show');
       }
 
       window.openNoticeModal = function() {
@@ -846,11 +725,9 @@
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
-          initNotificationSystem(user.uid);
         } else {
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
           dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
-          initNotificationSystem(null);
         }
       });
 
