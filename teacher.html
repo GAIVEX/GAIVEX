@@ -860,7 +860,7 @@ button,input,select,textarea{
         <!-- Sticky Footer Input Box Area -->
         <div class="comm-footer-input" id="commFooterInputArea">
             <!-- Reply Bar Preview -->
-            <div id="commReplyBar" style="display:none;justify-space-between;align-items:center;background:#0f172a;border-left:3px solid #38bdf8;padding:6px 10px;border-radius:4px;font-size:12px;margin-bottom:8px;">
+            <div id="commReplyBar" style="display:none;justify-content:space-between;align-items:center;background:#0f172a;border-left:3px solid #38bdf8;padding:6px 10px;border-radius:4px;font-size:12px;margin-bottom:8px;">
                 <div>
                     <span style="color:#38bdf8;font-weight:bold;" id="commReplyTargetUser">কারো মেসেজ</span>-কে রিপ্লাই:
                     <div style="color:#94a3b8;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:250px;" id="commReplyTargetText">...</div>
@@ -1581,9 +1581,16 @@ function renderBroadcastForm(){
     `;
 }
 
+/* ================= FIXED BROADCAST & NOTIFICATION DELETE LOGIC ================= */
+
 window.sendBroadcastNotification = async function(){
-    const title = document.getElementById("broadcastTitle").value.trim();
-    const message = document.getElementById("broadcastBody").value.trim();
+    const titleObj = document.getElementById("broadcastTitle");
+    const bodyObj = document.getElementById("broadcastBody");
+
+    if(!titleObj || !bodyObj) return;
+
+    const title = titleObj.value.trim();
+    const message = bodyObj.value.trim();
 
     if(!title || !message){
         alert("দয়া করে শিরোনাম এবং বার্তা উভয়ই পূরণ করুন।");
@@ -1593,8 +1600,6 @@ window.sendBroadcastNotification = async function(){
     if(!confirm("আপনি কি নিশ্চিত যে সকল শিক্ষার্থীকে এই নোটিফিকেশনটি পাঠাতে চান?")) return;
 
     try{
-        // Fetch all students/users uids or push to a global notification channel/broadcast node
-        // Let's grab all question submitters or broadcast globally to users node
         const usersSnap = await get(ref(db, "users"));
         const studentsSet = new Set();
 
@@ -1602,13 +1607,11 @@ window.sendBroadcastNotification = async function(){
             Object.keys(usersSnap.val()).forEach(uid => studentsSet.add(uid));
         }
 
-        // Also collect UIDs from questions database to ensure delivery
         Object.values(allQuestions).forEach(q => {
             if(q.studentUid) studentsSet.add(q.studentUid);
         });
 
         if(studentsSet.size === 0){
-            // Fallback general broadcast node if individual uids not tracked
             await push(ref(db, "global_broadcast_notifications"), {
                 title: title,
                 message: message,
@@ -1628,7 +1631,6 @@ window.sendBroadcastNotification = async function(){
                     read: false
                 };
             });
-            // Also save as global notice so it appears in teacher notices
             await push(ref(db, "community_teacher_notices"), {
                 uid: "teacher_" + TEACHER_NO,
                 senderName: `Teacher (${TEACHER_NO}) [Announcement]`,
@@ -1640,12 +1642,27 @@ window.sendBroadcastNotification = async function(){
         }
 
         alert("✅ সফলভাবে সকল শিক্ষার্থীর কাছে নোটিফিকেশন পাঠানো হয়েছে!");
-        document.getElementById("broadcastTitle").value = "";
-        document.getElementById("broadcastBody").value = "";
+        
+        // আগে ফিল্ড ফাঁকা করে তারপর ট্যাবে সুইচ করা
+        titleObj.value = "";
+        bodyObj.value = "";
         switchCommTab('teacher');
 
     }catch(e){
         alert("নোটিফিকেশন পাঠাতে সমস্যা হয়েছে: " + e.message);
+    }
+};
+
+// নির্দিষ্ট ইউজারের পাঠানো নোটিফিকেশন ডিলিট করার গ্লোবাল ফাংশন
+window.deleteNotification = async function(uid, notificationId){
+    if(!uid || !notificationId) return;
+    if(confirm("আপনি কি নোটিফিকেশনটি মুছে ফেলতে চান?")){
+        try {
+            await remove(ref(db, `notifications/${uid}/${notificationId}`));
+            alert("🗑️ নোটিফিকেশনটি ডিলিট করা হয়েছে।");
+        } catch(e) {
+            alert("নোটিফিকেশন মুছতে ব্যর্থ হয়েছে: " + e.message);
+        }
     }
 };
 
