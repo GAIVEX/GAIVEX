@@ -4,12 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GAIVEX - Admission Exam Portal</title>
+    <!-- SEO & Open Graph Meta Tags -->
+    <meta name="description" content="মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট, প্র্যাকটিস, নোটস ও এআই সহায়তা।">
+    <meta property="og:title" content="GAIVEX - Admission Exam Portal">
+    <meta property="og:description" content="স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক GAIVEX এর সাথে।">
+    <meta property="og:type" content="website">
+    
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; transition: background 0.3s, color 0.3s; }
         
-        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন (ডিএনএ ও অন্যান্য সায়েন্টিফিক আইকন) */
+        /* Light/Dark Theme Variables */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --nav-bg: rgba(30, 41, 59, 0.85);
+            --border-color: #334155;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --card-hover: #334155;
+            --modal-bg: #1e293b;
+            --input-bg: #0f172a;
+            --input-border: #475569;
+            --subtext: #94a3b8;
+        }
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #0f172a;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --border-color: #cbd5e1;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-hover: #e2e8f0;
+            --modal-bg: #ffffff;
+            --input-bg: #f8fafc;
+            --input-border: #cbd5e1;
+            --subtext: #64748b;
+        }
+
+        body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        
+        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন */
         .global-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .floating-element { position: absolute; font-size: 45px; opacity: 0.18; animation: floatRotateAnim 15s infinite linear; }
         
@@ -21,10 +54,9 @@
             100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
         }
 
-        /* হেডার ও অন্যান্য উপাদান যেন ব্যাকগ্রাউন্ডের উপরে স্পষ্টভাবে থাকে */
         .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn { position: relative; z-index: 10; }
 
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid #334155; gap: 10px; position: sticky; top: 0; z-index: 100; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: var(--nav-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-color); gap: 10px; position: sticky; top: 0; z-index: 100; }
         
         .nav-left-group { display: flex; align-items: center; gap: 10px; }
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
@@ -32,31 +64,33 @@
         
         .nav-right-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
+        .theme-toggle-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
         .menu-container { position: relative; }
-        .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
-        .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
+        .menu-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; overflow: hidden; }
+        .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: var(--text-color); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border-color); transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
         .dropdown-menu a:last-child, .dropdown-menu button:last-child { border-bottom: none; }
-        .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: #334155; color: #38bdf8; }
+        .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: var(--card-hover); color: #38bdf8; }
         .dropdown-menu.show { display: block; }
 
         #authNavContainer { display: flex; gap: 8px; align-items: center; }
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn-auth:hover { background: #7dd3fc; }
         
-        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 4px 10px; border-radius: 20px; border: 1px solid #475569; max-width: 140px; overflow: hidden; }
+        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: var(--card-hover); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-color); max-width: 140px; overflow: hidden; }
         .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; flex-shrink: 0; }
         .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
         .hero-section { text-align: center; padding: 30px 15px; max-width: 1000px; margin: 0 auto; flex: 1; width: 100%; }
         
         .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; margin-top: 20px; }
-        .subject-box { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(5px); border: 1px solid #334155; border-radius: 12px; padding: 20px 10px; text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; transition: 0.3s; cursor: pointer; }
-        .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #334155; }
+        .subject-box { background: var(--card-bg); backdrop-filter: blur(5px); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px 10px; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; transition: 0.3s; cursor: pointer; }
+        .subject-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: var(--card-hover); }
         .subject-box .icon { font-size: 32px; margin-bottom: 8px; }
 
-        .exam-banner-box { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(5px); border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; text-align: left; transition: 0.3s; text-decoration: none; display: block; color: white; }
-        .exam-banner-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: #253346; }
+        .exam-banner-box { background: var(--card-bg); backdrop-filter: blur(5px); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; margin-bottom: 15px; text-align: left; transition: 0.3s; text-decoration: none; display: block; color: var(--text-color); }
+        .exam-banner-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: var(--card-hover); }
         
         .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
         .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
@@ -87,27 +121,27 @@
             background: linear-gradient(135deg, #7dd3fc, #38bdf8);
         }
 
-        .notice-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
-        .notice-item h4 { color: #f8fafc; font-size: 15px; margin-bottom: 5px; }
-        .notice-item p { color: #94a3b8; font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
-        .notice-item img { max-width: 100%; border-radius: 6px; margin-top: 8px; border: 1px solid #334155; }
+        .notice-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
+        .notice-item h4 { color: var(--text-color); font-size: 15px; margin-bottom: 5px; }
+        .notice-item p { color: var(--subtext); font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
+        .notice-item img { max-width: 100%; border-radius: 6px; margin-top: 8px; border: 1px solid var(--border-color); }
         .notice-date { font-size: 11px; color: #38bdf8; margin-top: 5px; display: block; }
 
-        .site-footer { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(8px); border-top: 1px solid #334155; padding: 30px 20px 20px; margin-top: auto; text-align: center; }
+        .site-footer { background: var(--card-bg); backdrop-filter: blur(8px); border-top: 1px solid var(--border-color); padding: 30px 20px 20px; margin-top: auto; text-align: center; }
         .footer-logo { font-size: 22px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; }
         .footer-logo span { color: #f43f5e; }
-        .footer-tagline { font-size: 16px; color: #f8fafc; font-weight: 600; margin-bottom: 6px; }
-        .footer-subtagline { color: #94a3b8; font-size: 13px; margin-bottom: 15px; line-height: 1.4; }
+        .footer-tagline { font-size: 16px; color: var(--text-color); font-weight: 600; margin-bottom: 6px; }
+        .footer-subtagline { color: var(--subtext); font-size: 13px; margin-bottom: 15px; line-height: 1.4; }
         
         .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 15px; }
-        .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
+        .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: var(--input-bg); border: 1px solid var(--border-color); transition: 0.3s; }
         .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
         .social-btn svg { width: 22px; height: 22px; }
 
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; border:1px solid #334155; position: relative; }
+        .modal-content { background:var(--modal-bg); color:var(--text-color); padding:20px; border-radius:12px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; border:1px solid var(--border-color); position: relative; }
         .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:13px; }
-        .modal-content input { width:100%; padding:9px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:8px; }
+        .modal-content input { width:100%; padding:9px; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color); font-size:14px; margin-bottom:8px; }
         
         .btn-group { display:flex; gap:10px; margin-top:15px; }
         .btn { padding:10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; text-align: center; font-size: 14px; text-decoration: none; }
@@ -115,25 +149,40 @@
         .btn-close { background:#ef4444; color:white; }
         .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; padding: 10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
         
-        .tab-menu { display:flex; border-bottom: 1px solid #334155; margin-bottom: 15px; }
-        .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
+        .tab-menu { display:flex; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
+        .tab-btn { flex:1; padding: 8px; background: none; border: none; color: var(--subtext); font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .modal-header h3 { color: #38bdf8; font-size: 18px; margin: 0; }
-        .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
+        .modal-close-x { background: none; border: none; color: var(--subtext); font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
         .modal-close-x:hover { color: #f43f5e; }
 
-        .history-item { background:#1e293b; padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
-        .history-item:hover { border-color:#38bdf8; background:#253346; }
+        .history-item { background:var(--modal-bg); padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
+        .history-item:hover { border-color:#38bdf8; background:var(--card-hover); }
 
-        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
+        select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
         select:focus { border-color: #38bdf8; }
+
+        /* Toast Notification System */
+        #toastContainer { position: fixed; bottom: 85px; right: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+        .toast { background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-left: 4px solid #38bdf8; animation: slideInToast 0.3s ease; pointer-events: auto; }
+        @keyframes slideInToast { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Skeleton Loading UI */
+        .skeleton { background: linear-gradient(90deg, var(--input-bg) 25%, var(--card-hover) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; height: 18px; margin-bottom: 8px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* Leaderboard table styling */
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        .leaderboard-table th, .leaderboard-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .leaderboard-table th { color: #38bdf8; font-weight: bold; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <!-- পুরো স্ক্রিন জুড়েই ডিএনএ, পরমাণু ও সায়েন্টিফিক আইকনের স্পষ্ট অ্যানিমেশন ব্যাকগ্রাউন্ড -->
+    <div id="toastContainer"></div>
+
     <div class="global-bg-container">
         <div class="floating-element" style="top: 8%; left: 10%; animation-duration: 12s;">🧬</div>
         <div class="floating-element" style="top: 25%; left: 85%; animation-duration: 16s; animation-delay: 2s;">⚛️</div>
@@ -143,7 +192,6 @@
         <div class="floating-element" style="top: 40%; left: 5%; animation-duration: 17s; animation-delay: 5s;">⚛️</div>
     </div>
 
-    <!-- ফ্লোটিং এআই বাটন -->
     <a href="gaivexai.html" class="floating-ai-btn">
         <span style="font-size: 18px;">🤖</span>
     </a>
@@ -159,6 +207,7 @@
                     <a href="qanda.html">❓ Q&A</a>
                     <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
                     <button onclick="openResultModal()">📊 রেজাল্ট</button>
+                    <button onclick="openLeaderboardModal()">🏆 লিডারবোর্ড</button>
                     <button onclick="openNotesModal()">📚 নোটস</button>
                     <div id="dropdownAuthAction"></div>
                 </div>
@@ -167,6 +216,7 @@
         </div>
         
         <div class="nav-right-group">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="থিম পরিবর্তন করুন">☀️</button>
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
             </div>
@@ -176,21 +226,21 @@
     <main class="hero-section">
         <a href="liveexam.html" class="exam-banner-box">
             <div class="live-badge-new">🔴 LIVE EXAM</div>
-            <h2 id="liveExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Daily Live Exam</h2>
+            <h2 id="liveExamTitle" style="font-size: 18px; font-weight: 600;">Daily Live Exam</h2>
         </a>
 
         <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="exam-banner-box">
             <div class="practice-badge-new">📝 PRACTICE EXAM</div>
-            <h2 id="practiceExamTitle" style="font-size: 18px; color: #f8fafc; font-weight: 600;">Practice Exam</h2>
+            <h2 id="practiceExamTitle" style="font-size: 18px; font-weight: 600;">Practice Exam</h2>
         </a>
 
-        <!-- হোম স্ক্রিনের নোটিশ বোর্ড, রেজাল্ট, নোটস এবং বিষয়ভিত্তিক বক্সসমূহ -->
         <div class="subject-grid">
             <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
             <div class="subject-box" onclick="location.href='community.html'"><div class="icon">💬</div><h3>GAIVEX TUTO</h3></div>
             <div class="subject-box" onclick="location.href='qanda.html'"><div class="icon">❓</div><h3>Q&A</h3></div>
             <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
+            <div class="subject-box" onclick="openLeaderboardModal()"><div class="icon">🏆</div><h3>লিডারবোর্ড</h3></div>
             <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
             <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
@@ -206,8 +256,11 @@
             <h3>📢 সকল গুরুত্বপূর্ণ নোটিশ</h3>
             <button class="modal-close-x" onclick="closeNoticeModal()">&times;</button>
         </div>
-        <div id="popupNoticeList" style="max-height:350px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
-            <p style="color:#94a3b8; text-align:center; font-size:13px;">নোটিশ লোড হচ্ছে...</p>
+        <div style="margin-bottom: 8px;">
+            <input type="text" id="noticeSearchInput" placeholder="নোটিশ খুঁজুন..." oninput="filterNotices()" style="font-size: 13px; padding: 6px 10px;">
+        </div>
+        <div id="popupNoticeList" style="max-height:350px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:10px;">
+            <div class="skeleton"></div><div class="skeleton"></div>
         </div>
         <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-close" onclick="closeNoticeModal()" style="flex: 1;">বন্ধ করুন</button>
@@ -222,12 +275,29 @@
             <h3>📊 সকল পরীক্ষার রেজাল্ট</h3>
             <button class="modal-close-x" onclick="closeResultModal()">&times;</button>
         </div>
-        <div style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">যে পরীক্ষার রেজাল্ট ও সমাধান দেখতে চান তার ওপর ক্লিক করুন:</div>
-        <div id="allExamResultListContainer" style="max-height:320px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;">
-            <p style="color:#94a3b8; text-align:center; font-size:13px;">লোড হচ্ছে...</p>
+        <div style="font-size: 13px; color: var(--subtext); margin-bottom: 8px;">যে পরীক্ষার রেজাল্ট ও সমাধান দেখতে চান তার ওপর ক্লিক করুন:</div>
+        <div id="allExamResultListContainer" style="max-height:320px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:10px;">
+            <div class="skeleton"></div><div class="skeleton"></div>
         </div>
         <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-close" onclick="closeResultModal()" style="flex: 1;">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- লিডারবোর্ড মোডাল -->
+    <div id="leaderboardModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h3>🏆 সেরা পারফর্মার্স (লিডারবোর্ড)</h3>
+            <button class="modal-close-x" onclick="closeLeaderboardModal()">&times;</button>
+        </div>
+        <div style="font-size: 13px; color: var(--subtext); margin-bottom: 5px;">সর্বোচ্চ নম্বরপ্রাপ্ত শিক্ষার্থীদের তালিকা:</div>
+        <div id="leaderboardListContainer" style="max-height:320px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:10px;">
+            <div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+        <div class="btn-group" style="margin-top: 15px;">
+            <button type="button" class="btn btn-close" onclick="closeLeaderboardModal()" style="flex: 1;">বন্ধ করুন</button>
         </div>
       </div>
     </div>
@@ -240,7 +310,6 @@
                 <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
             
-            <!-- ফিল্টার ড্রপডাউন -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
@@ -260,9 +329,8 @@
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
 
-            <!-- নোট লিস্ট দেখানোর কন্টেইনার -->
-            <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 10px; max-height: 320px; min-height: 180px;">
-                <p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
+            <div id="notesListContainer" style="flex: 1; overflow-y: auto; background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 10px; max-height: 320px; min-height: 180px;">
+                <p style="color: var(--subtext); text-align: center; font-size: 13px; margin-top: 20px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
             </div>
 
             <div class="btn-group" style="margin-top: 15px;">
@@ -287,7 +355,7 @@
                 <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
         </div>
-        <div style="margin-top:20px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
+        <div style="margin-top:20px; border-top:1px solid var(--border-color); padding-top:10px; color:var(--subtext); font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
     </footer>
 
     <!-- অথেন্টিকেশন মোডাল -->
@@ -323,10 +391,10 @@
             <h3>📊 স্টুডেন্ট পোর্টাল ও পারফরম্যান্স</h3>
             <button class="modal-close-x" onclick="toggleProfileModal(false)">&times;</button>
         </div>
-        <div id="profileDetails" style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; margin-bottom:12px; font-size:13px;"></div>
+        <div id="profileDetails" style="background:var(--input-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px; font-size:13px;"></div>
         <div id="performanceBox" style="margin-bottom: 15px;"></div>
         <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি (বিস্তারিত দেখতে ক্লিক করুন):</h4>
-        <div id="examHistoryContainer" style="max-height:220px; overflow-y:auto; background:#0f172a; border-radius:8px; border:1px solid #334155; padding:10px;"></div>
+        <div id="examHistoryContainer" style="max-height:220px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:10px;"></div>
         <div class="btn-group">
             <button type="button" class="btn btn-close" onclick="handleLogout()">লগআউট</button>
             <button type="button" class="btn btn-save" onclick="toggleProfileModal(false)">বন্ধ করুন</button>
@@ -341,7 +409,7 @@
             <h3 id="reviewExamTitle">পরীক্ষার বিস্তারিত সমাধান</h3>
             <button class="modal-close-x" onclick="closeExamReviewModal()">&times;</button>
         </div>
-        <div id="examReviewBody" style="max-height: 400px; overflow-y: auto; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;"></div>
+        <div id="examReviewBody" style="max-height: 400px; overflow-y: auto; background: var(--input-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);"></div>
         <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-save" onclick="closeExamReviewModal()" style="flex: 1;">ফিরে যান</button>
         </div>
@@ -370,6 +438,35 @@
 
       let currentUser = null;
       let studentExamDataMap = {};
+      let cachedNotices = [];
+
+      // Toast Notification function
+      window.showToast = function(message) {
+          const container = document.getElementById('toastContainer');
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.innerText = message;
+          container.appendChild(toast);
+          setTimeout(() => {
+              toast.style.opacity = '0';
+              setTimeout(() => toast.remove(), 300);
+          }, 3000);
+      }
+
+      // Theme toggle functionality
+      window.toggleTheme = function() {
+          const body = document.body;
+          const currentTheme = body.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          body.setAttribute('data-theme', newTheme);
+          document.getElementById('themeToggleBtn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
+          localStorage.setItem('gaivex_theme', newTheme);
+      }
+
+      // Load saved theme
+      const savedTheme = localStorage.getItem('gaivex_theme') || 'dark';
+      document.body.setAttribute('data-theme', savedTheme);
+      document.getElementById('themeToggleBtn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
 
       const chaptersData = {
           physics: {
@@ -407,20 +504,27 @@
           document.getElementById('noticeModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
       }
-
       window.closeNoticeModal = function() {
           document.getElementById('noticeModal').style.display = 'none';
       }
 
       window.openResultModal = async function() {
-          if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
+          if(!currentUser) { showToast("আগে লগইন করুন!"); toggleAuthModal(true); return; }
           document.getElementById('resultListModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
           await loadAllExamResultsList();
       }
-
       window.closeResultModal = function() {
           document.getElementById('resultListModal').style.display = 'none';
+      }
+
+      window.openLeaderboardModal = async function() {
+          document.getElementById('leaderboardModal').style.display = 'flex';
+          document.getElementById('dropdownMenu').classList.remove('show');
+          await loadLeaderboard();
+      }
+      window.closeLeaderboardModal = function() {
+          document.getElementById('leaderboardModal').style.display = 'none';
       }
 
       window.openNotesModal = () => {
@@ -433,7 +537,7 @@
           const paperSelect = document.getElementById('filterPaper');
           paperSelect.innerHTML = '<option value="">পত্র বাছুন</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
           document.getElementById('filterChapter').innerHTML = '<option value="">আগে পত্র বাছুন</option>';
-          document.getElementById('notesListContainer').innerHTML = '<p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে পত্র ও অধ্যায় সিলেক্ট করুন।</p>';
+          document.getElementById('notesListContainer').innerHTML = '<p style="color: var(--subtext); text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে পত্র ও অধ্যায় সিলেক্ট করুন।</p>';
       };
 
       window.updateStudentChapterOptions = function() {
@@ -455,11 +559,11 @@
           const container = document.getElementById('notesListContainer');
 
           if (!subject || !paper || !chapter) {
-              container.innerHTML = '<p style="color: #94a3b8; text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে সবগুলো অপশন সিলেক্ট করুন।</p>';
+              container.innerHTML = '<p style="color: var(--subtext); text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে সবগুলো অপশন সিলেক্ট করুন।</p>';
               return;
           }
 
-          container.innerHTML = '<p style="color: #38bdf8; text-align: center; font-size: 13px; margin-top: 20px;">নোট লোড হচ্ছে...</p>';
+          container.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
 
           try {
               const snapshot = await get(ref(db, 'notes'));
@@ -474,22 +578,22 @@
                           if (note.contentType === 'pdf') {
                               contentDisplay = `<a href="${note.contentUrl}" target="_blank" style="display:inline-block; margin-top:10px; background:#0284c7; color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:bold;">📄 পিডিএফ ফাইল দেখুন / ডাউনলোড করুন</a>`;
                           } else if (note.contentType === 'image') {
-                              contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid #334155;">`;
+                              contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid var(--border-color);">`;
                           } else {
-                              contentDisplay = `<p style="color:#cbd5e1; font-size:13px; margin-top:10px; white-space:pre-wrap; background:#0f172a; padding:10px; border-radius:6px;">${note.textContent}</p>`;
+                              contentDisplay = `<p style="color:var(--text-color); font-size:13px; margin-top:10px; white-space:pre-wrap; background:var(--input-bg); padding:10px; border-radius:6px;">${note.textContent}</p>`;
                           }
 
                           html += `
-                              <div style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:12px; border:1px solid #334155;">
+                              <div style="background:var(--modal-bg); padding:15px; border-radius:8px; margin-bottom:12px; border:1px solid var(--border-color);">
                                   <h4 style="color:#38bdf8; font-size:15px; margin-bottom:4px;">📌 ${note.title}</h4>
                                   ${contentDisplay}
                               </div>
                           `;
                       }
                   }
-                  container.innerHTML = html !== '' ? html : '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top: 20px;">এই অধ্যায়ে কোনো নোট আপলোড করা হয়নি।</p>';
+                  container.innerHTML = html !== '' ? html : '<p style="color:var(--subtext); text-align:center; font-size:13px; margin-top: 20px;">এই অধ্যায়ে কোনো নোট আপলোড করা হয়নি।</p>';
               } else {
-                  container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; margin-top: 20px;">কোনো নোট পাওয়া যায়নি।</p>';
+                  container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:13px; margin-top: 20px;">কোনো নোট পাওয়া যায়নি।</p>';
               }
           } catch(e) {
               container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:13px; margin-top: 20px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
@@ -500,7 +604,7 @@
       
       window.toggleProfileModal = async (show) => {
         if(show) {
-          if(!currentUser) { alert("আগে লগইন করুন!"); toggleAuthModal(true); return; }
+          if(!currentUser) { showToast("আগে লগইন করুন!"); toggleAuthModal(true); return; }
           document.getElementById('profileDetails').innerHTML = `<b>শিক্ষার্থী:</b> ${currentUser.displayName || 'নাম নেই'}<br><b>ইমেইল:</b> ${currentUser.email}`;
           await loadStudentHistory();
         }
@@ -514,26 +618,36 @@
         document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
       };
 
-      window.handleGoogleSignIn = async () => { await signInWithPopup(auth, googleProvider); toggleAuthModal(false); };
+      window.handleGoogleSignIn = async () => { await signInWithPopup(auth, googleProvider); toggleAuthModal(false); showToast("সফলভাবে লগইন হয়েছে!"); };
       window.handleEmailRegister = async (e) => {
         e.preventDefault();
-        const res = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
-        await updateProfile(res.user, { displayName: document.getElementById('regName').value });
-        toggleAuthModal(false);
+        try {
+          const res = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
+          await updateProfile(res.user, { displayName: document.getElementById('regName').value });
+          toggleAuthModal(false);
+          showToast("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+        } catch(err) { showToast("ত্রুটি: " + err.message); }
       };
-      window.handleEmailLogin = async (e) => { e.preventDefault(); await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); toggleAuthModal(false); };
+      window.handleEmailLogin = async (e) => { 
+        e.preventDefault(); 
+        try {
+          await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); 
+          toggleAuthModal(false);
+          showToast("সফলভাবে লগইন হয়েছে!");
+        } catch(err) { showToast("লগইন ব্যর্থ হয়েছে!"); }
+      };
       
       window.handleForgotPassword = async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
-        if (!email) { alert("দয়া করে প্রথমে আপনার ইমেইল বক্সটি পূরণ করুন!"); return; }
+        if (!email) { showToast("দয়া করে প্রথমে আপনার ইমেইল বক্সটি পূরণ করুন!"); return; }
         try {
           await sendPasswordResetEmail(auth, email);
-          alert("পাসওয়ার্ড রিসেট করার লিংক আপনার ইমেইলে পাঠানো হয়েছে।");
-        } catch (error) { alert("ত্রুটি: " + error.message); }
+          showToast("পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে।");
+        } catch (error) { showToast("ত্রুটি: " + error.message); }
       };
 
-      window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); };
+      window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); showToast("লগআউট করা হয়েছে।"); };
 
       async function loadAllExamResultsList() {
         const container = document.getElementById('allExamResultListContainer');
@@ -561,16 +675,59 @@
                 <div class="history-item" onclick="closeResultModal(); openExamReview('${id}')">
                   <div>
                     <div style="color:#38bdf8; font-weight:bold;">📌 ${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:#94a3b8; font-size:11px;">${dateStr} (সমাধান দেখতে ক্লিক করুন)</div>
+                    <div style="color:var(--subtext); font-size:11px;">${dateStr} (সমাধান দেখতে ক্লিক করুন)</div>
                   </div>
                   <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
                 </div>`;
             }
             container.innerHTML = listHTML;
           } else {
-            container.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:12px;">কোনো পরীক্ষার রেজাল্ট পাওয়া যায়নি।</p>';
+            container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">কোনো পরীক্ষার রেজাল্ট পাওয়া যায়নি।</p>';
           }
         } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
+      }
+
+      async function loadLeaderboard() {
+        const container = document.getElementById('leaderboardListContainer');
+        container.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+        try {
+          const snapshot = await get(ref(db, 'exam_attempts'));
+          if (snapshot.exists()) {
+            const allUsersAttempts = snapshot.val();
+            let leaderboardMap = {};
+
+            for (let uid in allUsersAttempts) {
+              for (let examId in allUsersAttempts[uid]) {
+                const attempt = allUsersAttempts[uid][examId];
+                const studentName = attempt.studentName || 'শিক্ষার্থী';
+                const score = Number(attempt.score) || 0;
+                const total = Number(attempt.total) || 0;
+
+                if (!leaderboardMap[uid] || score > leaderboardMap[uid].score) {
+                  leaderboardMap[uid] = { name: studentName, score: score, total: total };
+                }
+              }
+            }
+
+            let sortedList = Object.values(leaderboardMap).sort((a, b) => b.score - a.score).slice(0, 10);
+
+            if (sortedList.length > 0) {
+              let tableHTML = `<table class="leaderboard-table"><tr><th>র‍্যাঙ্ক</th><th>নাম</th><th>সর্বোচ্চ স্কোর</th></tr>`;
+              sortedList.forEach((user, index) => {
+                let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+                tableHTML += `<tr><td>${medal}</td><td>${user.name}</td><td><b>${user.score}/${user.total}</b></td></tr>`;
+              });
+              tableHTML += `</table>`;
+              container.innerHTML = tableHTML;
+            } else {
+              container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">লিডারবোর্ডে কোনো ডেটা নেই।</p>';
+            }
+          } else {
+            container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">লিডারবোর্ডে কোনো ডেটা নেই।</p>';
+          }
+        } catch (e) {
+          container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">লোড করতে সমস্যা হয়েছে।</p>';
+        }
       }
 
       async function loadStudentHistory() {
@@ -604,22 +761,22 @@
                 <div class="history-item" onclick="toggleProfileModal(false); openExamReview('${id}')">
                   <div>
                     <div style="color:#38bdf8; font-weight:bold;">${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:#94a3b8; font-size:11px;">${dateStr} (বিস্তারিত দেখতে ক্লিক করুন)</div>
+                    <div style="color:var(--subtext); font-size:11px;">${dateStr} (বিস্তারিত দেখতে ক্লিক করুন)</div>
                   </div>
                   <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
                 </div>`;
             }
             const accuracy = totalPossible > 0 ? ((totalScore / totalPossible) * 100).toFixed(1) : 0;
             perfBox.innerHTML = `
-              <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #38bdf8; display:flex; justify-content:space-around; text-align:center;">
-                <div><b style="font-size:16px;">${totalExams}</b><br><small style="color:#94a3b8;">মোট পরীক্ষা</small></div>
-                <div><b style="font-size:16px; color:#10b981;">${accuracy}%</b><br><small style="color:#94a3b8;">এক্যুরেসি</small></div>
-                <div><b style="font-size:16px; color:#38bdf8;">${totalScore}/${totalPossible}</b><br><small style="color:#94a3b8;">মোট নম্বর</small></div>
+              <div style="background:var(--input-bg); padding:10px; border-radius:8px; border:1px solid #38bdf8; display:flex; justify-content:space-around; text-align:center;">
+                <div><b style="font-size:16px;">${totalExams}</b><br><small style="color:var(--subtext);">মোট পরীক্ষা</small></div>
+                <div><b style="font-size:16px; color:#10b981;">${accuracy}%</b><br><small style="color:var(--subtext);">এক্যুরেসি</small></div>
+                <div><b style="font-size:16px; color:#38bdf8;">${totalScore}/${totalPossible}</b><br><small style="color:var(--subtext);">মোট নম্বর</small></div>
               </div>`;
             historyContainer.innerHTML = historyHTML;
           } else {
             perfBox.innerHTML = '';
-            historyContainer.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:12px;">কোনো ইতিহাস পাওয়া যায়নি।</p>';
+            historyContainer.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">কোনো ইতিহাস পাওয়া যায়নি।</p>';
           }
         } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
       }
@@ -649,17 +806,17 @@
                   const statusColor = isCorrect ? '#10b981' : '#ef4444';
 
                   html += `
-                    <div style="background:#1e293b; padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor};">
+                    <div style="background:var(--modal-bg); padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor}; border: 1px solid var(--border-color);">
                         <div style="font-weight:bold; margin-bottom:6px;">প্রশ্ন ${index + 1}: ${q.question || q.title || ''}</div>
-                        <div style="font-size:12px; color:#94a3b8; margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAnsText}</span></div>
+                        <div style="font-size:12px; color:var(--subtext); margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAnsText}</span></div>
                         <div style="font-size:12px; color:#38bdf8; margin-bottom:4px;">সঠিক উত্তর: <b>${q.correctAnswer}</b></div>
-                        <div style="font-size:12px; color:#cbd5e1; background:#0f172a; padding:6px; border-radius:4px; margin-top:6px;"><b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
+                        <div style="font-size:12px; color:var(--text-color); background:var(--input-bg); padding:6px; border-radius:4px; margin-top:6px;"><b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
                     </div>
                   `;
               });
               reviewBody.innerHTML = html;
           } else {
-              reviewBody.innerHTML = '<p style="color:#94a3b8; text-align:center; font-size:13px; padding:20px;">এই পরীক্ষার বিস্তারিত প্রশ্ন বা ব্যাখ্যা ডেটাবেজে সংরক্ষণ করা হয়নি।</p>';
+              reviewBody.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:13px; padding:20px;">এই পরীক্ষার বিস্তারিত প্রশ্ন বা ব্যাখ্যা ডেটাবেজে সংরক্ষণ করা হয়নি।</p>';
           }
 
           document.getElementById('examReviewModal').style.display = 'flex';
@@ -675,27 +832,43 @@
               const snapshot = await get(ref(db, 'notices'));
               if (snapshot.exists()) {
                   const data = snapshot.val();
-                  const sortedNotices = Object.values(data).sort((a, b) => b.date - a.date);
-                  
-                  popupList.innerHTML = '';
-                  sortedNotices.forEach(item => {
-                      const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
-                      let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
-                      popupList.innerHTML += `
-                          <div class="notice-item">
-                              <h4>📌 ${item.title}</h4>
-                              <p>${item.description}</p>
-                              ${imgTag}
-                              <span class="notice-date">তারিখ: ${dateStr}</span>
-                          </div>
-                      `;
-                  });
+                  cachedNotices = Object.values(data).sort((a, b) => b.date - a.date);
+                  renderNotices(cachedNotices);
               } else {
-                  popupList.innerHTML = '<p style="color:#94a3b8; font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
+                  popupList.innerHTML = '<p style="color:var(--subtext); font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
               }
           } catch (e) {
               popupList.innerHTML = '<p style="color:#f43f5e; font-size:13px; text-align:center;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
           }
+      }
+
+      function renderNotices(notices) {
+          const popupList = document.getElementById('popupNoticeList');
+          if (notices.length === 0) {
+              popupList.innerHTML = '<p style="color:var(--subtext); font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
+              return;
+          }
+          popupList.innerHTML = '';
+          notices.forEach(item => {
+              const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
+              let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
+              popupList.innerHTML += `
+                  <div class="notice-item">
+                      <h4>📌 ${item.title}</h4>
+                      <p>${item.description}</p>
+                      ${imgTag}
+                      <span class="notice-date">তারিখ: ${dateStr}</span>
+                  </div>
+              `;
+          });
+      }
+
+      window.filterNotices = function() {
+          const query = document.getElementById('noticeSearchInput').value.toLowerCase();
+          const filtered = cachedNotices.filter(item => 
+              item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)
+          );
+          renderNotices(filtered);
       }
 
       async function loadLiveExamTitle() {
