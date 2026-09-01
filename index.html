@@ -67,14 +67,21 @@
 
         .menu-container { position: relative; }
         .menu-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
         .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; overflow: hidden; }
         
-        /* নোটিফিকেশন ড্রপডাউন পজিশন ফিক্স (মোবাইলে যেন কেটে না যায়) */
+        /* নোটিফিকেশন ড্রপডাউন পজিশন ফিক্স (যাতে কোনোভাবেই বামে কেটে না যায়) */
         #notificationDropdown {
             width: 280px !important;
-            right: 0 !important;
+            right: -60px !important;
             left: auto !important;
             max-width: 85vw;
+        }
+
+        @media screen and (max-width: 480px) {
+            #notificationDropdown {
+                right: -40px !important;
+            }
         }
 
         .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: var(--text-color); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border-color); transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
@@ -230,7 +237,7 @@
                         <span style="font-size: 11px; cursor:pointer; color:var(--subtext);" onclick="markAllAsRead()">সব পঠিত</span>
                     </div>
                     <div id="notificationListContainer">
-                        <p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">কোনো নোটিফিকেশন নেই</p>
+                        <p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">কোনো নতুন নোটিফিকেশন নেই</p>
                     </div>
                 </div>
             </div>
@@ -494,7 +501,7 @@
               paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
           },
           biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"],
               paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
           },
           math: {
