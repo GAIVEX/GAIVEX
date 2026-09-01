@@ -42,6 +42,7 @@
 
         body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
         
+        /* পুরো স্ক্রিন জুড়েই ব্যাকগ্রাউন্ড অ্যানিমেশন */
         .global-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .floating-element { position: absolute; font-size: 45px; opacity: 0.18; animation: floatRotateAnim 15s infinite linear; }
         
@@ -67,17 +68,7 @@
 
         .menu-container { position: relative; }
         .menu-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
         .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; overflow: hidden; }
-        
-        /* নোটিফিকেশন ড্রপডাউন পজিশন ফিক্স */
-        #notificationDropdown {
-            width: 280px !important;
-            right: 0 !important;
-            left: auto !important;
-            max-width: 85vw;
-        }
-
         .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: var(--text-color); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border-color); transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
         .dropdown-menu a:last-child, .dropdown-menu button:last-child { border-bottom: none; }
         .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: var(--card-hover); color: #38bdf8; }
@@ -104,6 +95,7 @@
         .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
         .practice-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
 
+        /* ফ্লোটিং এআই বাটন স্টাইল */
         .floating-ai-btn {
             position: fixed;
             bottom: 25px;
@@ -166,19 +158,22 @@
         .modal-close-x { background: none; border: none; color: var(--subtext); font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
         .modal-close-x:hover { color: #f43f5e; }
 
-        .history-item { background:var(--modal-bg); padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid var(--border-color); display:flex; justify-space-between; align-items:center; cursor:pointer; transition:0.2s; }
+        .history-item { background:var(--modal-bg); padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
         .history-item:hover { border-color:#38bdf8; background:var(--card-hover); }
 
         select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
         select:focus { border-color: #38bdf8; }
 
+        /* Toast Notification System */
         #toastContainer { position: fixed; bottom: 85px; right: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
         .toast { background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-left: 4px solid #38bdf8; animation: slideInToast 0.3s ease; pointer-events: auto; }
         @keyframes slideInToast { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
+        /* Skeleton Loading UI */
         .skeleton { background: linear-gradient(90deg, var(--input-bg) 25%, var(--card-hover) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; height: 18px; margin-bottom: 8px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+        /* Leaderboard table styling */
         .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
         .leaderboard-table th, .leaderboard-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
         .leaderboard-table th { color: #38bdf8; font-weight: bold; }
@@ -221,21 +216,6 @@
         </div>
         
         <div class="nav-right-group">
-            <div class="menu-container">
-                <button class="menu-btn" onclick="toggleNotificationDropdown()" title="নোটিফিকেশন" style="position: relative;">
-                    🔔 <span id="notificationBadge" style="display:none; position:absolute; top:-3px; right:-3px; background:#f43f5e; color:#fff; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:50%; min-width:16px; text-align:center;">0</span>
-                </button>
-                <div class="dropdown-menu" id="notificationDropdown" style="max-height: 350px; overflow-y: auto; padding: 5px;">
-                    <div style="padding: 8px 10px; font-weight: bold; border-bottom: 1px solid var(--border-color); color: #38bdf8; display: flex; justify-content: space-between; align-items: center;">
-                        <span>🔔 নোটিফিকেশন</span>
-                        <span style="font-size: 11px; cursor:pointer; color:var(--subtext);" onclick="markAllAsRead()">সব পঠিত</span>
-                    </div>
-                    <div id="notificationListContainer">
-                        <p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">কোনো নতুন নোটিফিকেশন নেই</p>
-                    </div>
-                </div>
-            </div>
-
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="থিম পরিবর্তন করুন">☀️</button>
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
@@ -438,7 +418,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -460,6 +440,7 @@
       let studentExamDataMap = {};
       let cachedNotices = [];
 
+      // Toast Notification function
       window.showToast = function(message) {
           const container = document.getElementById('toastContainer');
           const toast = document.createElement('div');
@@ -472,6 +453,7 @@
           }, 3000);
       }
 
+      // Theme toggle functionality
       window.toggleTheme = function() {
           const body = document.body;
           const currentTheme = body.getAttribute('data-theme');
@@ -481,6 +463,7 @@
           localStorage.setItem('gaivex_theme', newTheme);
       }
 
+      // Load saved theme
       const savedTheme = localStorage.getItem('gaivex_theme') || 'dark';
       document.body.setAttribute('data-theme', savedTheme);
       document.getElementById('themeToggleBtn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
@@ -495,7 +478,7 @@
               paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
           },
           biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"],
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
               paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
           },
           math: {
@@ -506,16 +489,10 @@
 
       window.toggleMenu = function() {
           document.getElementById('dropdownMenu').classList.toggle('show');
-          document.getElementById('notificationDropdown').classList.remove('show');
-      }
-
-      window.toggleNotificationDropdown = function() {
-          document.getElementById('notificationDropdown').classList.toggle('show');
-          document.getElementById('dropdownMenu').classList.remove('show');
       }
 
       window.onclick = function(event) {
-          if (!event.target.matches('.menu-btn') && !event.target.closest('.menu-btn') && !event.target.closest('.dropdown-menu')) {
+          if (!event.target.matches('.menu-btn') && !event.target.closest('.menu-btn')) {
               const dropdowns = document.getElementsByClassName("dropdown-menu");
               for (let i = 0; i < dropdowns.length; i++) {
                   dropdowns[i].classList.remove('show');
@@ -568,7 +545,7 @@
           const paper = document.getElementById('filterPaper').value;
           const chapSelect = document.getElementById('filterChapter');
           chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
-          if(sub && paper && chaptersData[sub] && chaptersData[sub][paper]) {
+          if(sub && paper && chaptersData[sub][paper]) {
               chaptersData[sub][paper].forEach((chap) => {
                   chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
               });
@@ -603,7 +580,7 @@
                           } else if (note.contentType === 'image') {
                               contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid var(--border-color);">`;
                           } else {
-                              contentDisplay = `<p style="color:var(--text-color); font-size:13px; margin-top:10px; white-space:pre-wrap; background:var(--input-bg); padding:10px; border-radius:6px;">${note.textContent || ''}</p>`;
+                              contentDisplay = `<p style="color:var(--text-color); font-size:13px; margin-top:10px; white-space:pre-wrap; background:var(--input-bg); padding:10px; border-radius:6px;">${note.textContent}</p>`;
                           }
 
                           html += `
@@ -641,16 +618,7 @@
         document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
       };
 
-      window.handleGoogleSignIn = async () => { 
-        try {
-            await signInWithPopup(auth, googleProvider); 
-            toggleAuthModal(false); 
-            showToast("সফলভাবে লগইন হয়েছে!"); 
-        } catch(e) {
-            showToast("লগইন ভুল হয়েছে!");
-        }
-      };
-
+      window.handleGoogleSignIn = async () => { await signInWithPopup(auth, googleProvider); toggleAuthModal(false); showToast("সফলভাবে লগইন হয়েছে!"); };
       window.handleEmailRegister = async (e) => {
         e.preventDefault();
         try {
@@ -660,7 +628,6 @@
           showToast("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
         } catch(err) { showToast("ত্রুটি: " + err.message); }
       };
-
       window.handleEmailLogin = async (e) => { 
         e.preventDefault(); 
         try {
@@ -684,7 +651,6 @@
 
       async function loadAllExamResultsList() {
         const container = document.getElementById('allExamResultListContainer');
-        if (!currentUser) return;
         try {
           const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
           if (snapshot.exists()) {
@@ -700,7 +666,7 @@
               let dateStr = 'তারিখ নেই';
               if (item.submittedAt) {
                 const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate.getTime())) {
+                if (!isNaN(parsedDate)) {
                   dateStr = parsedDate.toLocaleDateString('bn-BD');
                 }
               }
@@ -767,7 +733,6 @@
       async function loadStudentHistory() {
         const historyContainer = document.getElementById('examHistoryContainer');
         const perfBox = document.getElementById('performanceBox');
-        if (!currentUser) return;
         try {
           const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
           if (snapshot.exists()) {
@@ -787,7 +752,7 @@
               let dateStr = 'তারিখ নেই';
               if (item.submittedAt) {
                 const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate.getTime())) {
+                if (!isNaN(parsedDate)) {
                   dateStr = parsedDate.toLocaleDateString('bn-BD');
                 }
               }
@@ -837,7 +802,7 @@
                       }
                   }
 
-                  const isCorrect = String(userAnsText).trim() === String(q.correctAnswer).trim();
+                  const isCorrect = userAnsText === q.correctAnswer;
                   const statusColor = isCorrect ? '#10b981' : '#ef4444';
 
                   html += `
@@ -867,7 +832,7 @@
               const snapshot = await get(ref(db, 'notices'));
               if (snapshot.exists()) {
                   const data = snapshot.val();
-                  cachedNotices = Object.values(data).sort((a, b) => (b.date || 0) - (a.date || 0));
+                  cachedNotices = Object.values(data).sort((a, b) => b.date - a.date);
                   renderNotices(cachedNotices);
               } else {
                   popupList.innerHTML = '<p style="color:var(--subtext); font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
@@ -885,12 +850,12 @@
           }
           popupList.innerHTML = '';
           notices.forEach(item => {
-              const dateStr = item.date ? new Date(item.date).toLocaleDateString('bn-BD') : '';
+              const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
               let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
               popupList.innerHTML += `
                   <div class="notice-item">
-                      <h4>📌 ${item.title || ''}</h4>
-                      <p>${item.description || ''}</p>
+                      <h4>📌 ${item.title}</h4>
+                      <p>${item.description}</p>
                       ${imgTag}
                       <span class="notice-date">তারিখ: ${dateStr}</span>
                   </div>
@@ -901,8 +866,7 @@
       window.filterNotices = function() {
           const query = document.getElementById('noticeSearchInput').value.toLowerCase();
           const filtered = cachedNotices.filter(item => 
-              (item.title && item.title.toLowerCase().includes(query)) || 
-              (item.description && item.description.toLowerCase().includes(query))
+              item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)
           );
           renderNotices(filtered);
       }
@@ -925,99 +889,18 @@
         } catch(e) {}
       }
 
-      function setupNotifications(user) {
-          const badge = document.getElementById('notificationBadge');
-          const listContainer = document.getElementById('notificationListContainer');
-          
-          if (!user) {
-              badge.style.display = 'none';
-              listContainer.innerHTML = '<p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">লগইন করুন</p>';
-              return;
-          }
-
-          const globalNotifRef = ref(db, 'notifications/global');
-          
-          onValue(globalNotifRef, (snapshot) => {
-              if (snapshot.exists()) {
-                  const data = snapshot.val();
-                  let allNotifs = [];
-                  let unreadCount = 0;
-
-                  for (let id in data) {
-                      const item = data[id];
-                      allNotifs.push({ id, ...item });
-                      if (!item.read) unreadCount++;
-                  }
-
-                  allNotifs.sort((a, b) => (b.time || 0) - (a.time || 0));
-
-                  if (unreadCount > 0) {
-                      badge.innerText = unreadCount;
-                      badge.style.display = 'inline-block';
-                  } else {
-                      badge.style.display = 'none';
-                  }
-
-                  let html = '';
-                  allNotifs.forEach(item => {
-                      let readBg = item.read ? 'var(--modal-bg)' : 'var(--card-hover)';
-                      let dateStr = item.time ? new Date(item.time).toLocaleDateString('bn-BD') : '';
-                      html += `
-                          <div style="background:${readBg}; padding:10px; border-radius:6px; margin-bottom:6px; border:1px solid var(--border-color); font-size:12px; cursor:pointer;" onclick="markSingleAsRead('${item.id}')">
-                              <div style="font-weight:bold; color:#38bdf8; margin-bottom:2px;">📌 ${item.title || 'নোটিফিকেশন'}</div>
-                              <div style="color:var(--text-color); line-height:1.4;">${item.message || item.description || ''}</div>
-                              <div style="color:var(--subtext); font-size:10px; margin-top:4px; text-align:right;">${dateStr}</div>
-                          </div>
-                      `;
-                  });
-                  listContainer.innerHTML = html;
-              } else {
-                  badge.style.display = 'none';
-                  listContainer.innerHTML = '<p style="text-align: center; font-size: 12px; color: var(--subtext); padding: 15px;">কোনো নতুন নোটিফিকেশন নেই</p>';
-              }
-          });
-      }
-
-      window.markSingleAsRead = async function(id) {
-          if (!currentUser) return;
-          try {
-              await update(ref(db, `notifications/global/${id}`), { read: true });
-          } catch(e) {}
-      }
-
-      window.markAllAsRead = async function() {
-          if (!currentUser) return;
-          try {
-              const globalNotifRef = ref(db, `notifications/global`);
-              const globalSnap = await get(globalNotifRef);
-              
-              let updates = {};
-              if (globalSnap.exists()) {
-                  Object.keys(globalSnap.val()).forEach(id => {
-                      updates[`notifications/global/${id}/read`] = true;
-                  });
-              }
-              if (Object.keys(updates).length > 0) {
-                  await update(ref(db), updates);
-                  showToast("সকল নোটিফিকেশন পঠিত করা হয়েছে!");
-              }
-          } catch(e) { showToast("ত্রুটি ঘটেছে"); }
-      }
-
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const c = document.getElementById('authNavContainer');
         const dropdownAuth = document.getElementById('dropdownAuthAction');
         
         if (user) {
-          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0) : 'U');
+          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
-          setupNotifications(user);
         } else {
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
           dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
-          setupNotifications(null);
         }
       });
 
