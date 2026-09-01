@@ -147,7 +147,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -174,60 +174,60 @@
       let isSubmitted = false;
 
       const defaultExamData = {
-        id: "human_reproduction_mcq_50_v1",
-        title: "🧬 মানব জীবনের ধারাবাহিকতা — ৫০টি MCQ",
+        id: "newtonian_mechanics_mcq_50_v1",
+        title: "⚡ নিউটনীয় বলবিদ্যা (Newtonian Mechanics) — ৫০টি গুরুত্বপূর্ণ MCQ",
         duration: 30,
         questions: [
-          { question: "মানবদেহে গ্যামেট উৎপাদনের জন্য কোন কোষ বিভাজন অপরিহার্য?", options: ["মাইটোসিস", "মিয়োসিস", "অ্যামাইটোসিস", "বাইনারি ফিশন"], correct: 1, explanation: "মিয়োসিসের মাধ্যমে ক্রোমোজোম সংখ্যা অর্ধেকে নেমে আসে এবং হ্যাপ্লয়েড গ্যামেট তৈরি হয়। নিষেকের সময় দুটি হ্যাপ্লয়েড গ্যামেট মিলিত হয়ে ডিপ্লয়েড জাইগোট তৈরি করে।" },
-          { question: "মানুষের একটি প্রাথমিক শুক্রাণু মাতৃকোষে ক্রোমোজোম সংখ্যা কত?", options: ["23", "44", "46", "92"], correct: 2, explanation: "প্রাথমিক শুক্রাণু মাতৃকোষ (primary spermatocyte) ডিপ্লয়েড, তাই এতে 46টি ক্রোমোজোম থাকে।" },
-          { question: "একটি প্রাথমিক শুক্রাণু মাতৃকোষ থেকে মিয়োসিস সম্পন্ন হলে কয়টি শুক্রাণু তৈরি হতে পারে?", options: ["1", "2", "3", "4"], correct: 3, explanation: "একটি primary spermatocyte → 2টি secondary spermatocyte → 4টি spermatid → 4টি spermatozoa।" },
-          { question: "মানুষের শুক্রাণুর হ্যাপ্লয়েড ক্রোমোজোম সংখ্যা—", options: ["46", "44", "23", "22"], correct: 2, explanation: "শুক্রাণু একটি হ্যাপ্লয়েড গ্যামেট। এতে 22টি অটোসোম + 1টি যৌন ক্রোমোজোম থাকে।" },
-          { question: "শুক্রাণু উৎপাদন কোথায় ঘটে?", options: ["সেমিনাল ভেসিকল", "সেমিনিফেরাস টিউবিউল", "এপিডিডাইমিস", "প্রোস্টেট গ্রন্থি"], correct: 1, explanation: "অণ্ডকোষের seminiferous tubule-এ spermatogenesis সম্পন্ন হয়।" },
-          { question: "শুক্রাণুর পরিপক্বতা প্রধানত কোথায় সম্পন্ন হয়?", options: ["অণ্ডকোষ", "এপিডিডাইমিস", "প্রোস্টেট", "সেমিনাল ভেসিকল"], correct: 1, explanation: "অণ্ডকোষে উৎপন্ন শুক্রাণু epididymis-এ গিয়ে পরিপক্বতা লাভ করে এবং সঞ্চিত থাকে।" },
-          { question: "Sertoli কোষের প্রধান কাজ কোনটি?", options: ["টেস্টোস্টেরন উৎপাদন", "শুক্রাণু কোষকে পুষ্টি প্রদান", "প্রোজেস্টেরন উৎপাদন", "ডিম্বাণু উৎপাদন"], correct: 1, explanation: "Sertoli cell developing sperm cell-কে পুষ্টি ও সহায়তা দেয় এবং spermatogenesis নিয়ন্ত্রণে গুরুত্বপূর্ণ ভূমিকা রাখে।" },
-          { question: "টেস্টোস্টেরন কোন কোষ থেকে প্রধানত নিঃসৃত হয়?", options: ["Sertoli cell", "Leydig cell", "Spermatid", "Spermatogonium"], correct: 1, explanation: "অণ্ডকোষের interstitial বা Leydig cell থেকে testosterone উৎপন্ন হয়।" },
-          { question: "পুরুষের Leydig কোষকে উদ্দীপিত করে কোন হরমোন?", options: ["FSH", "LH", "TSH", "ADH"], correct: 1, explanation: "পুরুষের ক্ষেত্রে LH-কে ICSH-ও বলা হয়। এটি Leydig cell-কে testosterone উৎপাদনে উদ্দীপিত করে।" },
-          { question: "Spermatogenesis শুরু হওয়ার প্রধান হরমোনীয় উদ্দীপনা আসে—", options: ["FSH ও LH", "TSH ও ADH", "GH ও TSH", "ACTH ও ADH"], correct: 0, explanation: "FSH Sertoli cell ও spermatogenesis-এ এবং LH Leydig cell-এর testosterone উৎপাদনে গুরুত্বপূর্ণ ভূমিকা রাখে।" },
-          { question: "মানুষের একটি প্রাথমিক ডিম্বাণু মাতৃকোষে ক্রোমোজোম সংখ্যা—", options: ["23", "44", "46", "92"], correct: 2, explanation: "Primary oocyte ডিপ্লয়েড হওয়ায় এতে 46টি ক্রোমোজোম থাকে।" },
-          { question: "একটি primary oocyte থেকে কার্যকর ডিম্বাণু কয়টি তৈরি হয়?", options: ["1", "2", "3", "4"], correct: 0, explanation: "Oogenesis-এ অসম সাইটোপ্লাজমিক বিভাজনের কারণে একটি বড় functional ovum এবং polar body তৈরি হয়।" },
-          { question: "Oogenesis-এর ক্ষেত্রে অসম সাইটোপ্লাজমিক বিভাজনের প্রধান কারণ—", options: ["চারটি সমান ডিম্বাণু তৈরি করা", "ডিম্বাণুকে বেশি সাইটোপ্লাজম প্রদান করা", "ক্রোমোজোম সংখ্যা বৃদ্ধি করা", "নিষেক বন্ধ করা"], correct: 1, explanation: "ভ্রূণের প্রাথমিক বিকাশে প্রয়োজনীয় অঙ্গাণু ও পুষ্টি সরবরাহের জন্য ovum অধিকাংশ cytoplasm ধারণ করে।" },
-          { question: "মানুষের ডিম্বাণু কোন ধরনের?", options: ["Y-বহনকারী", "X-বহনকারী", "X অথবা Y উভয় ধরনের", "কোনো যৌন ক্রোমোজোম নেই"], correct: 1, explanation: "মানুষের স্ত্রী গ্যামেট সবসময় X ক্রোমোজোম বহন করে।" },
-          { question: "সন্তানের লিঙ্গ নির্ধারণে কোন গ্যামেট ভূমিকা রাখে?", options: ["শুধু ডিম্বাণু", "শুধু শুক্রাণু", "উভয়ই সমানভাবে", "জরায়ু"], correct: 1, explanation: "ডিম্বাণু সবসময় X বহন করে। শুক্রাণু X অথবা Y বহন করতে পারে। X শুক্রাণু + X ডিম্বাণু = XX; Y শুক্রাণু + X ডিম্বাণু = XY।" },
-          { question: "নিষেক সাধারণত কোথায় ঘটে?", options: ["জরায়ু", "যোনি", "ফ্যালোপিয়ান টিউব", "ডিম্বাশয়"], correct: 2, explanation: "সাধারণত fallopian tube-এর ampulla অঞ্চলে শুক্রাণু ও ডিম্বাণুর মিলন ঘটে।" },
-          { question: "নিষেকের ফলে প্রথম যে কোষটি সৃষ্টি হয় তাকে কী বলে?", options: ["Morula", "Blastocyst", "Zygote", "Gastrula"], correct: 2, explanation: "শুক্রাণু ও ডিম্বাণুর নিউক্লিয়াসের মিলনে diploid zygote সৃষ্টি হয়।" },
-          { question: "মানব জাইগোটে ক্রোমোজোম সংখ্যা—", options: ["23", "44", "46", "92"], correct: 2, explanation: "23 ক্রোমোজোমবিশিষ্ট শুক্রাণু ও 23 ক্রোমোজোমবিশিষ্ট ডিম্বাণুর মিলনে 46 ক্রোমোজোমের diploid zygote তৈরি হয়।" },
-          { question: "নিষেকের সময় শুক্রাণুর কোন অংশ প্রথমে ডিম্বাণুর আবরণ ভেদে গুরুত্বপূর্ণ ভূমিকা রাখে?", options: ["মধ্যখণ্ড", "লেজ", "Acrosome", "নিউক্লিয়াস"], correct: 2, explanation: "Acrosome-এ থাকা বিভিন্ন এনজাইম ডিম্বাণুর আবরণ ভেদ করতে সাহায্য করে।" },
-          { question: "Acrosome কোন অঙ্গাণু থেকে উৎপন্ন?", options: ["মাইটোকন্ড্রিয়া", "গলজি বডি", "রাইবোসোম", "লাইসোসোম"], correct: 1, explanation: "শুক্রাণুর acrosome মূলত Golgi apparatus থেকে গঠিত হয়।" },
-          { question: "শুক্রাণুর লেজের প্রধান কাজ—", options: ["ATP তৈরি", "DNA তৈরি", "চলনে সাহায্য করা", "এনজাইম তৈরি"], correct: 2, explanation: "Flagellum বা লেজের সঞ্চালনের মাধ্যমে শুক্রাণু ডিম্বাণুর দিকে অগ্রসর হয়।" },
-          { question: "শুক্রাণুর মধ্যখণ্ডে কোন অঙ্গাণু প্রচুর থাকে?", options: ["রাইবোসোম", "মাইটোকন্ড্রিয়া", "গলজি বডি", "লাইসোসোম"], correct: 1, explanation: "শুক্রাণুর চলাচলের জন্য প্রয়োজনীয় ATP উৎপাদনে mitochondria গুরুত্বপূর্ণ।" },
-          { question: "নিষেকের পর polyspermy প্রতিরোধে কোন পরিবর্তনটি গুরুত্বপূর্ণ?", options: ["Cortical reaction", "DNA replication", "Crossing over", "Cytokinesis"], correct: 0, explanation: "একটি শুক্রাণু ডিম্বাণুতে প্রবেশ করার পর cortical granule-এর প্রতিক্রিয়ায় ডিম্বাণুর আবরণে পরিবর্তন ঘটে, ফলে অন্য শুক্রাণুর প্রবেশ বাধাগ্রস্ত হয়।" },
-          { question: "মানুষের ঋতুচক্রের গড় দৈর্ঘ্য কত?", options: ["14 দিন", "21 দিন", "28 দিন", "40 দিন"], correct: 2, explanation: "আদর্শভাবে মানব নারীর menstrual cycle প্রায় 28 দিনের। তবে বাস্তবে ব্যক্তিভেদে কিছুটা কম-বেশি হতে পারে।" },
-          { question: "28 দিনের ঋতুচক্রে সাধারণত ডিম্বস্ফোটন ঘটে—", options: ["1ম দিনে", "7ম দিনে", "14তম দিনে", "28তম দিনে"], correct: 2, explanation: "28 দিনের আদর্শ menstrual cycle-এ LH surge-এর পর প্রায় 14তম দিনে ovulation ঘটে।" },
-          { question: "ডিম্বস্ফোটনের জন্য সবচেয়ে গুরুত্বপূর্ণ হরমোনীয় ঘটনা—", options: ["FSH হঠাৎ বন্ধ হওয়া", "LH surge", "Insulin surge", "TSH surge"], correct: 1, explanation: "LH-এর আকস্মিক বৃদ্ধি বা LH surge পরিণত Graafian follicle থেকে ovum নির্গমনে প্রধান ভূমিকা রাখে।" },
-          { question: "Ovulation-এর পর Graafian follicle রূপান্তরিত হয়ে কী তৈরি করে?", options: ["Placenta", "Corpus luteum", "Corpus albicans", "Morula"], correct: 1, explanation: "Ovulation-এর পর follicle-এর অবশিষ্ট অংশ corpus luteum তৈরি করে, যা প্রধানত progesterone নিঃসরণ করে।" },
-          { question: "Corpus luteum-এর প্রধান হরমোন—", options: ["Testosterone", "Progesterone", "Thyroxine", "ADH"], correct: 1, explanation: "Progesterone জরায়ুর endometrium-কে ভ্রূণ স্থাপনের উপযোগী ও রক্ষণাবেক্ষণ করতে সাহায্য করে।" },
-          { question: "জরায়ুর কোন স্তরে ভ্রূণের implantation ঘটে?", options: ["Myometrium", "Perimetrium", "Endometrium", "Mesometrium"], correct: 2, explanation: "জরায়ুর অভ্যন্তরীণ আবরণ endometrium-এ blastocyst implantation করে।" },
-          { question: "Implantation সাধারণত নিষেকের কতদিন পর শুরু হয়?", options: ["1 দিন", "2 দিন", "6–7 দিন", "20 দিন"], correct: 2, explanation: "নিষেকের কয়েকদিন পর blastocyst জরায়ুতে পৌঁছে এবং সাধারণত প্রায় 6–7 দিনের দিকে endometrium-এ implantation শুরু করে।" },
-          { question: "Blastocyst-এর যে অংশ ভবিষ্যতে ভ্রূণ তৈরি করে—", options: ["Trophoblast", "Inner cell mass", "Zona pellucida", "Corona radiata"], correct: 1, explanation: "Blastocyst-এর inner cell mass বা embryoblast থেকে মূল ভ্রূণীয় দেহ গঠিত হয়।" },
-          { question: "Blastocyst-এর trophoblast প্রধানত কী গঠনে ভূমিকা রাখে?", options: ["মস্তিষ্ক", "প্লাসেন্টার অংশ", "হৃদপিণ্ড", "কিডনি"], correct: 1, explanation: "Trophoblast implantation এবং placenta গঠনে গুরুত্বপূর্ণ ভূমিকা পালন করে।" },
-          { question: "গর্ভাবস্থা শনাক্ত করতে কোন হরমোন সবচেয়ে গুরুত্বপূর্ণ?", options: ["FSH", "hCG", "TSH", "GH"], correct: 1, explanation: "Implantation-এর পর trophoblast থেকে human chorionic gonadotropin বা hCG নিঃসৃত হয়। Pregnancy test-এ এই হরমোন শনাক্ত করা হয়।" },
-          { question: "hCG-এর প্রধান প্রাথমিক কাজ—", options: ["Corpus luteum বজায় রাখা", "Ovulation ঘটানো", "শুক্রাণু উৎপাদন করা", "ঋতুস্রাব শুরু করা"], correct: 0, explanation: "hCG corpus luteum-কে বজায় রাখতে সাহায্য করে, ফলে progesterone উৎপাদন অব্যাহত থাকে এবং endometrium বজায় থাকে।" },
-          { question: "প্লাসেন্টার একটি গুরুত্বপূর্ণ কাজ হলো—", options: ["শুধু রক্ত তৈরি করা", "মা ও ভ্রূণের মধ্যে পদার্থের বিনিময়", "শুধু হজম করা", "শুধু স্নায়ু তৈরি করা"], correct: 1, explanation: "Placenta অক্সিজেন, পুষ্টি, বর্জ্য পদার্থ ইত্যাদির বিনিময়ে গুরুত্বপূর্ণ ভূমিকা রাখে।" },
-          { question: "সাধারণত মায়ের ও ভ্রূণের রক্ত—", options: ["সরাসরি সম্পূর্ণভাবে মিশে যায়", "সাধারণত সরাসরি মিশে না", "সবসময় একই রক্তনালিতে থাকে", "একই হিমোগ্লোবিন ব্যবহার করে"], correct: 1, explanation: "Placental barrier-এর মাধ্যমে পদার্থের আদান-প্রদান ঘটে; সাধারণ অবস্থায় maternal ও fetal blood সরাসরি মিশে যায় না।" },
-          { question: "ভ্রূণের সঙ্গে প্লাসেন্টার সংযোগকারী গঠন—", options: ["Fallopian tube", "Umbilical cord", "Vas deferens", "Ureter"], correct: 1, explanation: "Umbilical cord-এর মাধ্যমে ভ্রূণ placenta-এর সঙ্গে সংযুক্ত থাকে।" },
-          { question: "Umbilical cord-এ সাধারণত কয়টি রক্তনালি থাকে?", options: ["1টি", "2টি", "3টি", "4টি"], correct: 2, explanation: "সাধারণত 2টি umbilical artery এবং 1টি umbilical vein থাকে।" },
-          { question: "Umbilical vein কী বহন করে?", options: ["ভ্রূণ থেকে অক্সিজেনবিহীন রক্ত", "প্লাসেন্টা থেকে ভ্রূণের দিকে অক্সিজেন ও পুষ্টিসমৃদ্ধ রক্ত", "শুধু CO₂", "শুধু ইউরিয়া"], correct: 1, explanation: "Umbilical vein placenta থেকে fetus-এর দিকে অপেক্ষাকৃত বেশি অক্সিজেন ও পুষ্টিসমৃদ্ধ রক্ত বহন করে।" },
-          { question: "Umbilical arteries কী বহন করে?", options: ["ভ্রূণ থেকে প্লাসেন্টার দিকে অপেক্ষাকৃত অক্সিজেন-স্বল্প রক্ত", "প্লাসেন্টা থেকে ভ্রূণের দিকে অক্সিজেনসমৃদ্ধ রক্ত", "শুধু পুষ্টি", "শুধু হরমোন"], correct: 0, explanation: "Umbilical arteries ভ্রূণ থেকে placenta-এর দিকে বর্জ্য ও অপেক্ষাকৃত কম অক্সিজেনযুক্ত রক্ত বহন করে।" },
-          { question: "ভ্রূণের তিনটি germ layer-এর মধ্যে কোনটি সবচেয়ে বাইরের?", options: ["Endoderm", "Mesoderm", "Ectoderm", "Trophoderm"], correct: 2, explanation: "Gastrulation-এর পর তিনটি germ layer তৈরি হয়—বাইরে ectoderm, মাঝখানে mesoderm এবং ভেতরে endoderm।" },
-          { question: "স্নায়ুতন্ত্র প্রধানত কোন germ layer থেকে উৎপন্ন?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Trophoblast"], correct: 0, explanation: "Ectoderm থেকে nervous system এবং epidermis-এর মতো বিভিন্ন গঠন তৈরি হয়।" },
-          { question: "পেশি ও অস্থি প্রধানত কোন germ layer থেকে উৎপন্ন?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Trophoblast"], correct: 1, explanation: "Mesoderm থেকে muscle, bone, connective tissue, blood ইত্যাদি বিভিন্ন গঠন তৈরি হয়।" },
-          { question: "পরিপাকনালির আবরণ প্রধানত কোন germ layer থেকে উৎপন্ন?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Amnion"], correct: 2, explanation: "Endoderm থেকে digestive tract-এর epithelial lining এবং কিছু associated organs-এর epithelial অংশ তৈরি হয়।" },
-          { question: "ভ্রূণকে ঘিরে থাকা তরলপূর্ণ থলির তরলকে কী বলে?", options: ["Synovial fluid", "Amniotic fluid", "Lymph", "Plasma"], correct: 1, explanation: "Amniotic fluid ভ্রূণকে যান্ত্রিক আঘাত থেকে সুরক্ষা দেয় এবং ভ্রূণের স্বাভাবিক বিকাশে সহায়তা করে।" },
-          { question: "Amniotic fluid-এর একটি গুরুত্বপূর্ণ কাজ—", options: ["ভ্রূণকে যান্ত্রিক আঘাত থেকে রক্ষা করা", "ভ্রূণের রক্ত সরাসরি তৈরি করা", "ডিম্বাণু তৈরি করা", "শুক্রাণু তৈরি করা"], correct: 0, explanation: "Amniotic fluid একটি cushioning medium হিসেবে কাজ করে এবং ভ্রূণকে বাহ্যিক আঘাত থেকে সুরক্ষা দেয়।" },
-          { question: "মানুষের গর্ভকাল সাধারণত প্রায়—", options: ["90 দিন", "180 দিন", "280 দিন", "365 দিন"], correct: 2, explanation: "শেষ মাসিকের প্রথম দিন থেকে হিসাব করলে মানব গর্ভকাল প্রায় 280 দিন বা 40 সপ্তাহ।" },
-          { question: "প্রসবের সময় জরায়ুর সংকোচন বাড়াতে প্রধান ভূমিকা পালন করে—", options: ["Oxytocin", "Insulin", "Thyroxine", "Glucagon"], correct: 0, explanation: "Oxytocin জরায়ুর smooth muscle-এর contraction বৃদ্ধি করে এবং প্রসব প্রক্রিয়ায় গুরুত্বপূর্ণ ভূমিকা রাখে।" },
-          { question: "দুধ উৎপাদনের জন্য প্রধান হরমোন—", options: ["Oxytocin", "Prolactin", "hCG", "LH"], correct: 1, explanation: "Prolactin mammary gland-এ দুধ উৎপাদনকে উদ্দীপিত করে। Oxytocin মূলত দুধ নিঃসরণ বা milk ejection-এ সাহায্য করে।" },
-          { question: "নিচের কোন ক্রমটি মানব ভ্রূণের প্রাথমিক বিকাশের সঠিক ক্রম?", options: ["Zygote → Blastocyst → Morula → Implantation", "Zygote → Morula → Blastocyst → Implantation", "Morula → Zygote → Blastocyst → Implantation", "Blastocyst → Zygote → Morula → Implantation"], correct: 1, explanation: "নিষেকের পর zygote বারবার cleavage-এর মাধ্যমে morula তৈরি করে। এরপর blastocyst তৈরি হয় এবং পরে তা জরায়ুর endometrium-এ implantation করে।" }
+          { question: "বল ও বলের ক্রিয়াকালের গুণফলকে কী বলে?", options: ["বলের ঘাত", "ভরবেগ", "ক্ষমতা", "শক্তি"], correct: 0, explanation: "বলের ঘাত (Impulse of Force) = বল (F) × সময় (t)। এটি ভরবেগের পরিবর্তনের সমান।" },
+          { question: "নিউটনের গতির দ্বিতীয় সূত্র কোনটি প্রদান করে?", options: ["বলের গুণগত মান", "বলের পরিমাপ ও সমীকরণ (F = ma)", "জড়তার সংজ্ঞা", "ক্রিয়া-প্রতিক্রিয়া"], correct: 1, explanation: "প্রথম সূত্র থেকে বলের সংজ্ঞা ও জড়তা পাওয়া যায়, আর দ্বিতীয় সূত্র থেকে বলের পরিমাপযোগ্য সমীকরণ F = ma পাওয়া যায়।" },
+          { question: "১ কেজি ভরের কোনো বস্তুর ওপর ১ এন বল প্রয়োগ করলে ত্বরণ কত হবে?", options: ["1 ms⁻²", "9.8 ms⁻²", "0.1 ms⁻²", "0 ms⁻²"], correct: 0, explanation: "F = ma ⟹ a = F / m = 1 N / 1 kg = 1 ms⁻²।" },
+          { question: "কোনো বস্তুর ভরবেগ দ্বিগুণ করা হলে তার গতিশক্তি কত গুণ হবে?", options: ["দ্বিগুণ", "তিনগুণ", "চারগুণ", "অর্ধেক"], correct: 2, explanation: "গতিশক্তি E_k = p² / (2m)। ভরবেগ p দ্বিগুণ (2p) করা হলে গতিশক্তি (2)² = 4 গুণ হবে।" },
+          { question: "রকেটের উড্ডয়ন নিউটনের কোন সূত্রের ওপর ভিত্তি করে চলে?", options: ["প্রথম সূত্র", "দ্বিতীয় সূত্র", "তৃতীয় সূত্র", "মহাকর্ষ সূত্র"], correct: 2, explanation: "রকেট থেকে তীব্র বেগে গ্যাস নির্গমন (ক্রিয়া) রকেটকে বিপরীত দিকে ঠেলে দেয় (প্রতিক্রিয়া), যা নিউটনের ৩য় সূত্রের প্রয়োগ।" },
+          { question: "কৌণিক ভরবেগের একক কোনটি?", options: ["kg m s⁻¹", "kg m² s⁻¹", "N s", "J s⁻¹"], correct: 1, explanation: "L = Iω = mvr ⟹ একক = kg × m s⁻¹ × m = kg m² s⁻¹ (বা J·s)।" },
+          { question: "কৌণিক ভরবেগ এবং কৌণিক বেগের সম্পর্ক নির্দেশকারী রাশি কোনটি?", options: ["ভর", "জড়তার ভ্রামক", "বল", "টর্ক"], correct: 1, explanation: "কৌণিক ভরবেগ L = Iω, যেখানে I হলো জড়তার ভ্রামক (Moment of Inertia)।" },
+          { question: "সরু ও সুষম দণ্ডের মধ্যবিন্দু দিয়ে অতিক্রান্ত লম্ব অক্ষের সাপেক্ষে জড়তার ভ্রামক কত?", options: ["(1/12) ML²", "1/3 ML²", "1/2 MR²", "2/5 MR²"], correct: 0, explanation: "দণ্ডের কেন্দ্রগামী লম্ব অক্ষের সাপেক্ষে জড়তার ভ্রামক I = (1/12) ML²।" },
+          { question: "সরু ও সুষম দণ্ডের এক প্রান্ত দিয়ে অতিক্রান্ত লম্ব অক্ষের সাপেক্ষে জড়তার ভ্রামক কত?", options: ["1/12 ML²", "1/3 ML²", "1/2 MR²", "MR²"], correct: 1, explanation: "দণ্ডের প্রান্তগামী লম্ব অক্ষের সাপেক্ষে জড়তার ভ্রামক I = (1/3) ML²।" },
+          { question: "সুষম চাকতির (Disc) কেন্দ্রগামী ও তলের সাথে লম্ব অক্ষের সাপেক্ষে জড়তার ভ্রামক কত?", options: ["MR²", "1/2 MR²", "2/5 MR²", "1/4 MR²"], correct: 1, explanation: "চাকতির (Disc) ক্ষেত্রে I = (1/2) MR²।" },
+          { question: "একটি নিরেট গোলকের (Solid Sphere) নিজ ব্যাসের সাপেক্ষে জড়তার ভ্রামক কত?", options: ["2/5 MR²", "2/3 MR²", "1/2 MR²", "MR²"], correct: 0, explanation: "নিরেট গোলকের ব্যাসের সাপেক্ষে জড়তার ভ্রামক I = (2/5) MR²।" },
+          { question: "একটি ফাপা গোলকের (Hollow Sphere) নিজ ব্যাসের সাপেক্ষে জড়তার ভ্রামক কত?", options: ["2/5 MR²", "2/3 MR²", "1/2 MR²", "MR²"], correct: 1, explanation: "পাতলা ফাপা গোলকের ক্ষেত্রে জড়তার ভ্রামক I = (2/3) MR²।" },
+          { question: "ঘূর্ণন গতির ক্ষেত্রে নিউটনের দ্বিতীয় সূত্রের কৌণিক রূপ কোনটি?", options: ["F = ma", "τ = Iα", "L = Iω", "W = τθ"], correct: 1, explanation: "রৈখিক গতিতে F = ma এর অনুরূপ কৌণিক গতিতে টর্ক τ = Iα, যেখানে α হলো কৌণিক ত্বরণ।" },
+          { question: "টর্কের (Torque) মাত্রাসমীকরণ কোনটি?", options: ["MLT⁻²", "ML²T⁻²", "ML²T⁻¹", "ML⁻¹T⁻²"], correct: 1, explanation: "টর্ক = বল × দূরত্ব ⟹ [τ] = MLT⁻² × L = ML²T⁻² (কাজের মাত্রার সমান)।" },
+          { question: "কৌণিক ভরবেগের সংরক্ষণ সূত্র অনুসারে বাইসাইকেলের চাকার ঘূর্ণন গতি কেমন থাকে?", options: ["টর্ক স্থির থাকে", "বাহ্যিক টর্ক শূন্য হলে কৌণিক ভরবেগ ধ্রুব থাকে", "কৌণিক বেগ বৃদ্ধি পায়", "জড়তার ভ্রামক শূন্য হয়"], correct: 1, explanation: "যদি মোট বাহ্যিক টর্ক ∑τ = 0 হয়, তবে কৌণিক ভরবেগ L = Iω = ধ্রুবক থাকে।" },
+          { question: "কেন্দ্রমুখী বল (Centripetal Force) দ্বারা কৃতকাজ কত?", options: ["সর্বোচ্চ", "ধনাত্মক", "ঋণাত্মক", "শূন্য"], correct: 3, explanation: "কেন্দ্রমুখী বল সবসময় বস্তুর সরনের সাথে লম্বভাবে (90°) কাজ করে। W = F s cos(90°) = 0।" },
+          { question: "ব্যাংকিং কোণ (Banking Angle) tan θ এর সঠিক সমীকরণ কোনটি?", options: ["v² / (rg)", "rg / v²", "v / (rg)", "v² r / g"], correct: 0, explanation: "রাস্তার ব্যাংকিং কোণের ক্ষেত্রে tan θ = v² / (rg)।" },
+          { question: "একটি বস্তুর ঘূর্ণন ব্যাসার্ধ K এবং ভর M হলে জড়তার ভ্রামক I = কত?", options: ["MK", "MK²", "M / K²", "M²K"], correct: 1, explanation: "ঘূর্ণন ব্যাসার্ধের (Radius of Gyration) সংজ্ঞা অনুসারে I = MK²।" },
+          { question: "কৌণিক বেগের একক কোনটি?", options: ["rad s⁻¹", "rad s⁻²", "m s⁻¹", "degree"], correct: 0, explanation: "কৌণিক সরণ / সময় = rad / s = rad s⁻¹।" },
+          { question: "রৈখিক বেগ (v) ও কৌণিক বেগ (ω) এর সঠিক ভেক্টর সম্পর্ক কোনটি?", options: ["v⃗ = r⃗ × ω⃗", "v⃗ = ω⃗ × r⃗", "v = r ω", "ω⃗ = v⃗ × r⃗"], correct: 1, explanation: "ভেক্টর রূপটি হলো v⃗ = ω⃗ × r⃗।" },
+          { question: "সংঘর্ষের (Collision) সময় কোন রাশিটি সর্বদাই সংরক্ষিত থাকে?", options: ["গতিশক্তি", "মোট ভরবেগ", "স্থিতিশক্তি", "উভয় গতিশক্তি ও ভরবেগ"], correct: 1, explanation: "স্থিতিস্থাপক বা অস্থিতিস্থাপক যেকোনো সংঘর্ষেই মোট রৈখিক ভরবেগ সংরক্ষিত থাকে।" },
+          { question: "পূর্ণ স্থিতিস্থাপক (Elastic) সংঘর্ষে কোনটি সংরক্ষিত থাকে?", options: ["শুধুমাত্র ভরবেগ", "শুধুমাত্র গতিশক্তি", "ভরবেগ ও গতিশক্তি উভয়ই", "কোনোটিই নয়"], correct: 2, explanation: "পূর্ণ স্থিতিস্থাপক সংঘর্ষে রৈখিক ভরবেগ এবং মোট গতিশক্তি দুটিই সংরক্ষিত থাকে।" },
+          { question: "যদি দুটি বস্তু ধাক্কা খেয়ে একত্রে আটকে যায়, তবে সংঘর্ষটি কেমন?", options: ["স্থিতিস্থাপক", "পূর্ণ অস্থিতিস্থাপক", "আংশিক স্থিতিস্থাপক", "কৌণিক"], correct: 1, explanation: "ধাক্কার পর বস্তুদ্বয় আটকে গেলে গতিশক্তির অপচয় সর্বোচ্চ হয়, একে পূর্ণ অস্থিতিস্থাপক (Perfectly Inelastic) সংঘর্ষ বলে।" },
+          { question: "বন্দুক থেকে গুলি ছুড়লে বন্দুকের পশ্চাৎ বেগ (Recoil velocity) তৈরি হওয়ার কারণ—", options: ["ভরবেগের সংরক্ষণ নীতি", "শক্তি সংরক্ষণ নীতি", "ভর সংরক্ষণ নীতি", "মহাকর্ষ নীতি"], correct: 0, explanation: "প্রাথমিক মোট ভরবেগ (০) = শেষ মোট ভরবেগ (m v + M V = 0) ⟹ রৈখিক ভরবেগের সংরক্ষণ নীতি।" },
+          { question: "একটি কণার ভর ২ কেজি এবং এটি ৩ ms⁻¹ বেগে চলছে। কণাটির ভরবেগ কত?", options: ["6 kg m s⁻¹", "1.5 kg m s⁻¹", "18 kg m s⁻¹", "5 kg m s⁻¹"], correct: 0, explanation: "p = m v = 2 kg × 3 ms⁻¹ = 6 kg m s⁻¹।" },
+          { question: "কোনো বস্তুর ওপর ৫ N বল ২ সেকেন্ড ধরে ক্রিয়া করলে বলের ঘাত কত হবে?", options: ["2.5 N s", "10 N s", "7 N s", "3 N s"], correct: 1, explanation: "J = F × t = 5 N × 2 s = 10 N s।" },
+          { question: "কৌণিক ত্বরণের (Angular Acceleration) একক কোনটি?", options: ["rad s⁻¹", "rad s⁻²", "m s⁻²", "rad s"], correct: 1, explanation: "কৌণিক বেগ পরিবর্তনের হার ⟹ rad/s / s = rad s⁻²।" },
+          { question: "ঘূর্ণায়মান কোনো বস্তুর আইস-স্কেটার যখন হাত গুটিয়ে নেয়, তখন তার ঘূর্ণন বেগ—", options: ["কমে যায়", "বৃদ্ধি পায়", "একই থাকে", "শূন্য হয়"], correct: 1, explanation: "হাত গুটালে জড়তার ভ্রামক (I) কমে। কৌণিক ভরবেগ L = Iω ধ্রুব রাখতে কৌণিক বেগ (ω) বৃদ্ধি পায়।" },
+          { question: "রাস্তার বাক নেওয়ার সময় গাড়ি উল্টে যাওয়ার শর্ত কোনটি?", options: ["v > √(rg tanθ)", "v < √(rg tanθ)", "v = 0", "v > rg"], correct: 0, explanation: "নিরাপদ বেগের মান v = √(rg tanθ)। এর চেয়ে বেগ বেশি হলে গাড়িটি উল্টে বা পিছলে যেতে পারে।" },
+          { question: "জড়তার ভ্রামক কোন বিষয়ের ওপর নির্ভর করে না?", options: ["বস্তুর ভর", "ঘূর্ণন অক্ষের অবস্থান", "বস্তুর আকারের ওপর", "বস্তুর কৌণিক বেগের ওপর"], correct: 3, explanation: "I = ∑mr²। জড়তার ভ্রামক ভর ও ভরের বণ্টনের (অক্ষের দূরত্ব) ওপর নির্ভর করে, কিন্তু কৌণিক বেগের ওপর নয়।" },
+          { question: "একটি চাকার জড়তার ভ্রামক 2 kg m² এবং এটি 4 rad s⁻² কৌণিক ত্বরণে ঘুরছে। টর্কের মান কত?", options: ["8 N m", "2 N m", "0.5 N m", "16 N m"], correct: 0, explanation: "τ = I α = 2 × 4 = 8 N m।" },
+          { question: "ঘূর্ণন গতিশক্তির (Rotational Kinetic Energy) সমীকরণ কোনটি?", options: ["1/2 m v²", "1/2 I ω²", "I ω", "1/2 I² ω"], correct: 1, explanation: "রৈখিক গতিশক্তি (1/2 m v²) এর সমতুল্য ঘূর্ণন গতিশক্তি E_r = 1/2 I ω²।" },
+          { question: "মহাকাশে একজন নভোচারী পেনসিল ছেড়ে দিলে সেটি—", options: ["নিচে পড়ে যাবে", "নভোচারীর সাথে ভাসতে থাকবে", "উপরে উঠে যাবে", "তুলে নেওয়া যাবে না"], correct: 1, explanation: "মহাকাশযানের ভেতরে নভোচারী ও পেনসিল উভয়েই ওজনহীনতা অনুভব করে এবং একই দ্রুতিতে ভাসতে থাকে।" },
+          { question: "একই ভরের দুটি গোলক নিরেট ও ফাপা হলে কোনটির জড়তার ভ্রামক বেশি?", options: ["নিরেট গোলক", "ফাপা গোলক", "উভয়ের সমান", "ব্যাসার্ধের ওপর নির্ভর করবে না"], correct: 1, explanation: "সমান ভর ও ব্যাসার্ধের ক্ষেত্রে ফাপা গোলকের (2/3 MR² = 0.67 MR²) জড়তার ভ্রামক নিরেট গোলক (2/5 MR² = 0.4 MR²) অপেক্ষা বেশি।" },
+          { question: "নিউটনের ৩য় সূত্র অনুযায়ী ক্রিয়া ও প্রতিক্রিয়া বল—", options: ["একই বস্তুর ওপর কাজ করে", "ভিন্ন বস্তুর ওপর কাজ করে", "পরস্পরকে বাতিল করে দেয়", "সমান ও একই দিকে কাজ করে"], correct: 1, explanation: "ক্রিয়া এবং প্রতিক্রিয়া সর্বদা দুটি ভিন্ন বস্তুর ওপর যুগপৎভাবে কাজ করে, তাই তারা একে অপরকে বাতিল করে না।" },
+          { question: "জড়তার ভ্রামকের সমান্তরাল অক্ষ উপপাদ্য (Parallel Axis Theorem) কোনটি?", options: ["I = I_c + M h²", "I = I_x + I_y", "I = I_c + M h", "I = M K²"], correct: 0, explanation: "সমান্তরাল অক্ষ উপপাদ্য: I = I_g + M h² (যেখানে I_g বা I_c হলো কেন্দ্রগামী অক্ষের সাপেক্ষে জড়তার ভ্রামক)।" },
+          { question: "জড়তার ভ্রামকের লম্ব অক্ষ উপপাদ্য (Perpendicular Axis Theorem) কোনটি?", options: ["I_z = I_x + I_y", "I_z = I_x - I_y", "I = I_c + M h²", "I_x = I_y + I_z"], correct: 0, explanation: "দুইটি পরস্পর লম্ব অক্ষের জড়তার ভ্রামকের যোগফল তাদের ছেদবিন্দুগামী লম্ব অক্ষের সমান: I_z = I_x + I_y।" },
+          { question: "লিফট a ত্বরণে ওপরে উঠলে ভেতরে থাকা কোনো ব্যক্তির সাপেক্ষ ওজন কত হবে?", options: ["m(g - a)", "m(g + a)", "mg", "ma"], correct: 1, explanation: "লিফট ওপরে ত্বরান্বিত হলে কার্যকর ত্বরণ বৃদ্ধি পায় (g + a), ফলে সাপেক্ষ ওজন W = m(g + a) হয় (ভারী অনুভব হয়)।" },
+          { question: "লিফট a ত্বরণে নিচে নামলে ভেতরের ব্যক্তির সাপেক্ষ ওজন কত হবে?", options: ["m(g - a)", "m(g + a)", "mg", "0"], correct: 0, explanation: "লিফট নিচে ত্বরান্বিত হলে কার্যকর ত্বরণ হ্রাস পায় (g - a), তাই সাপেক্ষ ওজন W = m(g - a) হয় (হালকা অনুভব হয়)।" },
+          { question: "লিফটের তার ছিঁড়ে মুক্তভাবে নিচে পড়লে (a = g) ভেতরের ব্যক্তির ওজন কত হবে?", options: ["mg", "2 mg", "অসীম", "শূন্য"], correct: 3, explanation: "মুক্তভাবে পতনের ক্ষেত্রে a = g, সুতরাং W = m(g - g) = 0। ব্যক্তি ওজনহীনতা অনুভব করবেন।" },
+          { question: "অপকেন্দ্র বল (Centrifugal Force) মূলত কী ধরনের বল?", options: ["অস্তিত্বশীল বাস্তব বল", "অবাস্তব বা অঘটন বল (Fictitious / Pseudo force)", "মহাকর্ষ বল", "নিউক্লীয় বল"], correct: 1, explanation: "অপকেন্দ্র বল কোনো বাস্তব আন্তঃক্রিয়া বল নয়, এটি ঘূর্ণায়মান অসড় কাঠামোতে অনুভূত একটি অঘটন বা অলীক বল।" },
+          { question: "সাম্যাবস্থায় কোনো বস্তুর ওপর নিট বল (Net Force) কত?", options: ["ধ্রুবক", "শূন্য", "সর্বোচ্চ", "ঋণাত্মক"], correct: 1, explanation: "সাম্যাবস্থায় (Equilibrium) বস্তুর ত্বরণ a = 0 থাকে, ফলে মোট লব্ধি বল ∑F = 0 হয়।" },
+          { question: "বৃত্তাকার পথে সমদ্রুতিতে ঘূর্ণায়মান কণার ত্বরণ কেমন হয়?", options: ["স্পর্শকীয় ত্বরণ থাকে", "শুধুমাত্র কেন্দ্রমুখী ত্বরণ থাকে", "কোনো ত্বরণ থাকে না", "ত্বরণ ধ্রুব থাকে"], correct: 1, explanation: "সমদ্রুতিতে ঘুরলেও গতির দিক প্রতিনিয়ত পরিবর্তিত হয়, তাই কেন্দ্র বরাবর কেন্দ্রমুখী ত্বরণ a_c = v²/r উপস্থিত থাকে।" },
+          { question: "একটি কণার জড়তার ভ্রামক 10 kg m² এবং কৌণিক বেগ 2 rad s⁻¹ হলে কৌণিক ভরবেগ কত?", options: ["20 kg m² s⁻¹", "5 kg m² s⁻¹", "40 kg m² s⁻¹", "10 kg m² s⁻¹"], correct: 0, explanation: "L = I ω = 10 × 2 = 20 kg m² s⁻¹।" },
+          { question: "ঘোড়ার গাড়ি টানার সময় ঘোড়া কোনটির ওপর বল প্রয়োগ করে সামনে এগিয়ে যায়?", options: ["গাড়ির ওপর", "মাটির (ভূমির) ওপর", "বাতাসের ওপর", "নিজের ওপর"], correct: 1, explanation: "ঘোড়া পায়ের সাহায্যে মাটিতে পেছনে বল (ক্রিয়া) প্রয়োগ করে, এবং মাটি ঘোড়াকে সমমানের বিপরীত প্রতিক্রিয়া বল দিয়ে সামনে ঠেলে দেয়।" },
+          { question: "একটি বস্তুকে ১০ মি/সে বেগে ৫ মি ব্যাসার্ধের বৃত্তাকার পথে ঘোরালে কেন্দ্রমুখী ত্বরণ কত?", options: ["20 ms⁻²", "2 ms⁻²", "50 ms⁻²", "10 ms⁻²"], correct: 0, explanation: "a_c = v² / r = (10)² / 5 = 100 / 5 = 20 ms⁻²।" },
+          { question: "পৃথিবী পৃষ্ঠে কোনো বস্তুর ভর 60 kg হলে চাঁদে বস্তুটির ভর কত হবে?", options: ["10 kg", "60 kg", "360 kg", "0 kg"], correct: 1, explanation: "বস্তুর ভর (Mass) স্থানভেদে পরিবর্তিত হয় না। তাই চাঁদেও ভর 60 kg থাকবে (যদিও ওজন ৬ ভাগের ১ ভাগ হবে)।" },
+          { question: "গ্রহের গতি সংক্রান্ত কেপলারের ২য় সূত্রটি কোন রাশির সংরক্ষণশীলতা প্রকাশ করে?", options: ["শক্তি", "রৈখিক ভরবেগ", "কৌণিক ভরবেগ", "ভর"], correct: 2, explanation: "কেপলারের ক্ষেত্রফলের সূত্র (২য় সূত্র) মূলত কৌণিক ভরবেগের সংরক্ষণশীলতার নীতি মেনে চলে।" },
+          { question: "ক্রিয়া এবং প্রতিক্রিয়া বলের মধ্যবর্তী কোণ কত?", options: ["0°", "90°", "180°", "360°"], correct: 2, explanation: "ক্রিয়া ও প্রতিক্রিয়া বল সমমানের কিন্তু সম্পূর্ণ বিপরীতমুখী (180°) হয়ে থাকে।" },
+          { question: "বলের মাত্রাসমীকরণ কোনটি?", options: ["MLT⁻²", "ML²T⁻²", "MLT⁻¹", "ML⁻¹T⁻²"], correct: 0, explanation: "F = ma ⟹ [F] = M × LT⁻² = MLT⁻²।" }
         ]
       };
 
@@ -436,18 +436,31 @@
 
         showSubmittedResult(userSelections, finalScore);
 
-        if (currentUser) {
-          try {
+        // Firebase-এ ডাটা সেভ এবং ফিল্টার লিস্টের জন্য ক্যাটাগরি তৈরি
+        const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
+        const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
+
+        try {
+          // ১. গ্লোবাল ফিল্টার অপশনে বিষয় অটো যুক্ত করার জন্য ক্যাটাগরি আপডেট
+          await update(ref(db, `exam_categories/${examIdClean}`), {
+            id: examIdClean,
+            title: currentExamTitle,
+            lastSubmittedAt: new Date().toISOString()
+          });
+
+          // ২. ইউজার সাবমিশন ডাটা সেভ
+          if (currentUser) {
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
-              examTitle: examData.title || "লাইভ পরীক্ষা",
+              examId: examIdClean,
+              examTitle: currentExamTitle,
               score: finalScore,
               total: total,
               submittedAt: new Date().toISOString(),
               questions: examData.questions,
               userAnswers: userSelections
             });
-          } catch(err) { console.error("Error saving score:", err); }
-        }
+          }
+        } catch(err) { console.error("Error saving score:", err); }
       }
 
       function showSubmittedResult(userAnswers, score) {
@@ -486,7 +499,7 @@
         resDiv.innerHTML = `
           <div class="score-board">
             <h2>পরীক্ষার ফলাফল</h2>
-            <p class="already-submitted-msg">⚠️You have provided this test?</p>
+            <p class="already-submitted-msg">⚠️ আপনি ইতিপূর্বে এই পরীক্ষাটি জমা দিয়েছেন!</p>
             <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total} (প্রতি ভুল উত্তরে ০.২৫ কাটা হয়েছে)</p>
             <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা ফিল্টার করে দেখতে পারেন।</p>
           </div>
