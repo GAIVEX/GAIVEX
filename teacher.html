@@ -689,7 +689,7 @@ button,input,select,textarea{
         <div class="header-logo">GAIVEX<span>.</span></div>
         <div class="teacher-info">
             <div class="teacher-badge">👨‍🏫 Teacher No: GVX-001098</div>
-            <button class="chat-modal-btn" onclick="openCommunityModal()">📢 Community Chat</button>
+            <button class="chat-modal-btn" onclick="openCommunityModal()">📢 Community & Broadcast</button>
             <button class="logout-btn" onclick="teacherLogout()">Logout</button>
         </div>
     </header>
@@ -830,13 +830,14 @@ button,input,select,textarea{
 <div id="communityModal" class="modal">
     <div class="modal-content comm-modal-card" style="max-width:700px;">
         <div class="modal-header" style="flex-shrink: 0;">
-            <h3>💬 Community Chat & Notices</h3>
+            <h3>📢 Community Chat & Student Notification Center</h3>
             <button class="close-btn" onclick="closeCommunityModal()">&times;</button>
         </div>
 
         <div class="tab-btn-group">
             <button class="tab-btn-comm active" id="commTabNotice" onclick="switchCommTab('teacher')">📢 Teacher & Admin Notices</button>
             <button class="tab-btn-comm" id="commTabStudent" onclick="switchCommTab('student')">💬 Student Chat</button>
+            <button class="tab-btn-comm" id="commTabBroadcast" onclick="switchCommTab('broadcast')">🔔 Direct Notification</button>
         </div>
 
         <!-- 1-Line Sticky Pinned Bar -->
@@ -851,13 +852,13 @@ button,input,select,textarea{
         <!-- Dropdown for multiple pinned messages -->
         <div class="pinned-dropdown" id="pinnedDropdown"></div>
 
-        <!-- Scrollable Messages Area -->
+        <!-- Scrollable Messages Area / Broadcast Panel -->
         <div id="commMessagesContainer" class="comm-messages-box">
             <div class="loading">মেসেজ লোড হচ্ছে...</div>
         </div>
 
         <!-- Sticky Footer Input Box Area -->
-        <div class="comm-footer-input">
+        <div class="comm-footer-input" id="commFooterInputArea">
             <!-- Reply Bar Preview -->
             <div id="commReplyBar" style="display:none;justify-space-between;align-items:center;background:#0f172a;border-left:3px solid #38bdf8;padding:6px 10px;border-radius:4px;font-size:12px;margin-bottom:8px;">
                 <div>
@@ -871,7 +872,7 @@ button,input,select,textarea{
             <div class="form-group" style="margin-bottom:8px;">
                 <textarea id="commInputText" class="answer-textarea" style="min-height:60px; height:60px;" placeholder="নোটিশ বা মেসেজ লিখুন..."></textarea>
             </div>
-            <button class="save-answer" style="margin-top:0;" onclick="sendCommMessage()">➤ মেসেজ / নোটিশ প্রকাশ করুন</button>
+            <button class="save-answer" id="commSendBtn" style="margin-top:0;" onclick="sendCommMessage()">➤ মেসেজ / নোটিশ প্রকাশ করুন</button>
         </div>
     </div>
 </div>
@@ -1475,12 +1476,28 @@ window.switchCommTab = function(tab){
     currentCommTab = tab;
     document.getElementById("commTabNotice").classList.toggle("active", tab === 'teacher');
     document.getElementById("commTabStudent").classList.toggle("active", tab === 'student');
+    document.getElementById("commTabBroadcast").classList.toggle("active", tab === 'broadcast');
+    
     cancelCommReply();
     document.getElementById("pinnedDropdown").style.display = 'none';
-    loadCommMessages();
+
+    const inputArea = document.getElementById("commFooterInputArea");
+    const pinnedBar = document.getElementById("pinnedBar");
+
+    if(tab === 'broadcast'){
+        pinnedBar.style.display = 'none';
+        inputArea.style.display = 'none';
+        renderBroadcastForm();
+    } else {
+        pinnedBar.style.display = 'flex';
+        inputArea.style.display = 'block';
+        loadCommMessages();
+    }
 };
 
 function loadCommMessages(){
+    if(currentCommTab === 'broadcast') return;
+
     const dbPath = currentCommTab === 'student' ? 'community_student_chats' : 'community_teacher_notices';
     const container = document.getElementById("commMessagesContainer");
 
@@ -1545,6 +1562,92 @@ function loadCommMessages(){
         container.scrollTop = container.scrollHeight;
     });
 }
+
+function renderBroadcastForm(){
+    const container = document.getElementById("commMessagesContainer");
+    container.innerHTML = `
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:15px;">
+            <h4 style="color:#38bdf8;margin-bottom:12px;font-size:15px;">🔔 সকল শিক্ষার্থীর কাছে সরাসরি নোটিফিকেশন পাঠান</h4>
+            <div class="form-group">
+                <label>নোটিফিকেশনের শিরোনাম (Title):</label>
+                <input type="text" id="broadcastTitle" placeholder="উদাহরণ: নতুন পরীক্ষার রুটিন প্রকাশিত হয়েছে" style="width:100%;padding:10px;background:#0f172a;border:1px solid #475569;color:#fff;border-radius:6px;outline:none;">
+            </div>
+            <div class="form-group" style="margin-top:10px;">
+                <label>বার্তা বা বিবরণ (Message Details):</label>
+                <textarea id="broadcastBody" class="answer-textarea" style="min-height:100px;" placeholder="শিক্ষার্থীদের উদ্দেশ্যে বিস্তারিত নোটিশ লিখুন..."></textarea>
+            </div>
+            <button class="save-answer" style="margin-top:15px;" onclick="sendBroadcastNotification()">🚀 সকল শিক্ষার্থীকে নোটিফিকেশন পাঠান</button>
+        </div>
+    `;
+}
+
+window.sendBroadcastNotification = async function(){
+    const title = document.getElementById("broadcastTitle").value.trim();
+    const message = document.getElementById("broadcastBody").value.trim();
+
+    if(!title || !message){
+        alert("দয়া করে শিরোনাম এবং বার্তা উভয়ই পূরণ করুন।");
+        return;
+    }
+
+    if(!confirm("আপনি কি নিশ্চিত যে সকল শিক্ষার্থীকে এই নোটিফিকেশনটি পাঠাতে চান?")) return;
+
+    try{
+        // Fetch all students/users uids or push to a global notification channel/broadcast node
+        // Let's grab all question submitters or broadcast globally to users node
+        const usersSnap = await get(ref(db, "users"));
+        const studentsSet = new Set();
+
+        if(usersSnap.exists()){
+            Object.keys(usersSnap.val()).forEach(uid => studentsSet.add(uid));
+        }
+
+        // Also collect UIDs from questions database to ensure delivery
+        Object.values(allQuestions).forEach(q => {
+            if(q.studentUid) studentsSet.add(q.studentUid);
+        });
+
+        if(studentsSet.size === 0){
+            // Fallback general broadcast node if individual uids not tracked
+            await push(ref(db, "global_broadcast_notifications"), {
+                title: title,
+                message: message,
+                teacherNo: TEACHER_NO,
+                createdAt: Date.now()
+            });
+        } else {
+            const updates = {};
+            studentsSet.forEach(uid => {
+                const notifRef = push(ref(db, `notifications/${uid}`));
+                updates[notifRef.key] = {
+                    type: "teacher_broadcast",
+                    title: title,
+                    message: message,
+                    teacherNo: TEACHER_NO,
+                    createdAt: Date.now(),
+                    read: false
+                };
+            });
+            // Also save as global notice so it appears in teacher notices
+            await push(ref(db, "community_teacher_notices"), {
+                uid: "teacher_" + TEACHER_NO,
+                senderName: `Teacher (${TEACHER_NO}) [Announcement]`,
+                text: `📢 **${title}**\n\n${message}`,
+                role: 'teacher',
+                timestamp: Date.now(),
+                isPinned: true
+            });
+        }
+
+        alert("✅ সফলভাবে সকল শিক্ষার্থীর কাছে নোটিফিকেশন পাঠানো হয়েছে!");
+        document.getElementById("broadcastTitle").value = "";
+        document.getElementById("broadcastBody").value = "";
+        switchCommTab('teacher');
+
+    }catch(e){
+        alert("নোটিফিকেশন পাঠাতে সমস্যা হয়েছে: " + e.message);
+    }
+};
 
 function renderPinnedBar(){
     const pinnedBar = document.getElementById("pinnedBar");
@@ -1745,9 +1848,7 @@ function subjectName(subject){
 }
 
 function escapeHtml(value){
-    if(value === null || value === undefined){
-        return "";
-    }
+    (value === null || value === undefined) && (value = "");
     return String(value)
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
