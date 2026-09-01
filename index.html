@@ -173,10 +173,13 @@
         .skeleton { background: linear-gradient(90deg, var(--input-bg) 25%, var(--card-hover) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; height: 18px; margin-bottom: 8px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* Leaderboard table styling */
-        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
-        .leaderboard-table th, .leaderboard-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        .leaderboard-table th { color: #38bdf8; font-weight: bold; }
+        /* Advanced Leaderboard Table Styling */
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 5px; }
+        .leaderboard-table th, .leaderboard-table td { padding: 9px 8px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .leaderboard-table th { color: #38bdf8; font-weight: bold; background: var(--input-bg); position: sticky; top: 0; z-index: 2; }
+        .leaderboard-table tr.my-rank-row { background: rgba(56, 189, 248, 0.15); font-weight: bold; border-left: 3px solid #38bdf8; }
+        .user-rank-card { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(2, 132, 199, 0.1)); border: 1px solid #38bdf8; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .user-rank-card .rank-badge { font-size: 18px; font-weight: bold; color: #38bdf8; }
     </style>
 </head>
 <body data-theme="dark">
@@ -285,17 +288,40 @@
       </div>
     </div>
 
-    <!-- লিডারবোর্ড মোডাল -->
+    <!-- উন্নত লিডারবোর্ড মোডাল -->
     <div id="leaderboardModal" class="modal">
-      <div class="modal-content">
+      <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
-            <h3>🏆 সেরা পারফর্মার্স (লিডারবোর্ড)</h3>
+            <h3>🏆 অ্যাডভান্সড লিডারবোর্ড</h3>
             <button class="modal-close-x" onclick="closeLeaderboardModal()">&times;</button>
         </div>
-        <div style="font-size: 13px; color: var(--subtext); margin-bottom: 5px;">সর্বোচ্চ নম্বরপ্রাপ্ত শিক্ষার্থীদের তালিকা:</div>
-        <div id="leaderboardListContainer" style="max-height:320px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:10px;">
+        
+        <!-- লিডারবোর্ড ফিল্টারসমূহ -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;">
+            <select id="leaderboardExamFilter" onchange="renderFilteredLeaderboard()">
+                <option value="ALL">সকল পরীক্ষা (সর্বোচ্চ মোট স্কোর)</option>
+            </select>
+            <select id="leaderboardSubjectFilter" onchange="renderFilteredLeaderboard()">
+                <option value="ALL">সকল বিষয়</option>
+                <option value="physics">পদার্থবিজ্ঞান</option>
+                <option value="chemistry">রসায়ন</option>
+                <option value="biology">জীববিজ্ঞান</option>
+                <option value="math">উচ্চতর গণিত</option>
+            </select>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="leaderboardSearchInput" placeholder="শিক্ষার্থীর নাম দিয়ে খুঁজুন..." oninput="renderFilteredLeaderboard()" style="font-size: 12px; padding: 7px 10px; margin-bottom: 0;">
+        </div>
+
+        <!-- নিজের র‍্যাঙ্ক এবং পারফরম্যান্স সামারি -->
+        <div id="userRankSummaryContainer"></div>
+
+        <!-- লিডারবোর্ড তালিকা -->
+        <div id="leaderboardListContainer" style="max-height:300px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:6px;">
             <div class="skeleton"></div><div class="skeleton"></div>
         </div>
+
         <div class="btn-group" style="margin-top: 15px;">
             <button type="button" class="btn btn-close" onclick="closeLeaderboardModal()" style="flex: 1;">বন্ধ করুন</button>
         </div>
@@ -439,6 +465,7 @@
       let currentUser = null;
       let studentExamDataMap = {};
       let cachedNotices = [];
+      let allRawExamAttempts = null; // সকল পরীক্ষার হিস্ট্রি ক্যাশ রাখার জন্য
 
       // Toast Notification function
       window.showToast = function(message) {
@@ -478,7 +505,7 @@
               paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
           },
           biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"],
               paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
           },
           math: {
@@ -521,7 +548,7 @@
       window.openLeaderboardModal = async function() {
           document.getElementById('leaderboardModal').style.display = 'flex';
           document.getElementById('dropdownMenu').classList.remove('show');
-          await loadLeaderboard();
+          await fetchAndSetupLeaderboard();
       }
       window.closeLeaderboardModal = function() {
           document.getElementById('leaderboardModal').style.display = 'none';
@@ -687,46 +714,165 @@
         } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      async function loadLeaderboard() {
+      /* =========================================================
+         ADVANCED LEADERBOARD SYSTEM (EXAM & SUBJECT FILTERABLE)
+         ========================================================= */
+
+      async function fetchAndSetupLeaderboard() {
         const container = document.getElementById('leaderboardListContainer');
+        const examSelect = document.getElementById('leaderboardExamFilter');
         container.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+        
         try {
           const snapshot = await get(ref(db, 'exam_attempts'));
           if (snapshot.exists()) {
-            const allUsersAttempts = snapshot.val();
-            let leaderboardMap = {};
-
-            for (let uid in allUsersAttempts) {
-              for (let examId in allUsersAttempts[uid]) {
-                const attempt = allUsersAttempts[uid][examId];
-                const studentName = attempt.studentName || 'শিক্ষার্থী';
-                const score = Number(attempt.score) || 0;
-                const total = Number(attempt.total) || 0;
-
-                if (!leaderboardMap[uid] || score > leaderboardMap[uid].score) {
-                  leaderboardMap[uid] = { name: studentName, score: score, total: total };
+            allRawExamAttempts = snapshot.val();
+            
+            // সকল পরীক্ষা সংগ্রহ করে ফিল্টার ড্রপডাউনে যুক্ত করা
+            let examOptionsMap = {};
+            for (let uid in allRawExamAttempts) {
+              for (let examId in allRawExamAttempts[uid]) {
+                const attempt = allRawExamAttempts[uid][examId];
+                const title = attempt.examTitle || 'লাইভ মডেল টেস্ট';
+                if (!examOptionsMap[examId]) {
+                  examOptionsMap[examId] = title;
                 }
               }
             }
 
-            let sortedList = Object.values(leaderboardMap).sort((a, b) => b.score - a.score).slice(0, 10);
-
-            if (sortedList.length > 0) {
-              let tableHTML = `<table class="leaderboard-table"><tr><th>র‍্যাঙ্ক</th><th>নাম</th><th>সর্বোচ্চ স্কোর</th></tr>`;
-              sortedList.forEach((user, index) => {
-                let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
-                tableHTML += `<tr><td>${medal}</td><td>${user.name}</td><td><b>${user.score}/${user.total}</b></td></tr>`;
-              });
-              tableHTML += `</table>`;
-              container.innerHTML = tableHTML;
-            } else {
-              container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">লিডারবোর্ডে কোনো ডেটা নেই।</p>';
+            let selectHTML = '<option value="ALL">সকল পরীক্ষা (সর্বোচ্চ মোট স্কোর)</option>';
+            for (let examId in examOptionsMap) {
+              selectHTML += `<option value="${examId}">${examOptionsMap[examId]}</option>`;
             }
+            examSelect.innerHTML = selectHTML;
+
+            renderFilteredLeaderboard();
           } else {
-            container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">লিডারবোর্ডে কোনো ডেটা নেই।</p>';
+            allRawExamAttempts = null;
+            container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px; padding: 15px;">লিডারবোর্ডে কোনো ডেটা নেই।</p>';
+            document.getElementById('userRankSummaryContainer').innerHTML = '';
           }
         } catch (e) {
-          container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">লোড করতে সমস্যা হয়েছে।</p>';
+          container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px; padding: 15px;">লোড করতে সমস্যা হয়েছে।</p>';
+        }
+      }
+
+      window.renderFilteredLeaderboard = function() {
+        if (!allRawExamAttempts) return;
+
+        const container = document.getElementById('leaderboardListContainer');
+        const userSummaryContainer = document.getElementById('userRankSummaryContainer');
+        const selectedExam = document.getElementById('leaderboardExamFilter').value;
+        const selectedSubject = document.getElementById('leaderboardSubjectFilter').value;
+        const searchQuery = document.getElementById('leaderboardSearchInput').value.trim().toLowerCase();
+
+        let leaderboardMap = {};
+
+        for (let uid in allRawExamAttempts) {
+          for (let examId in allRawExamAttempts[uid]) {
+            const attempt = allRawExamAttempts[uid][examId];
+            
+            // ফিল্টার ১: পরীক্ষাভিত্তিক ফিল্টার
+            if (selectedExam !== 'ALL' && examId !== selectedExam) continue;
+
+            // ফিল্টার ২: বিষয়ভিত্তিক ফিল্টার (যদি পরীক্ষার তথ্যে বিষয় সংজ্ঞায়িত থাকে)
+            if (selectedSubject !== 'ALL') {
+              const examSubject = (attempt.subject || '').toLowerCase();
+              const examTitle = (attempt.examTitle || '').toLowerCase();
+              if (!examSubject.includes(selectedSubject) && !examTitle.includes(selectedSubject)) {
+                continue;
+              }
+            }
+
+            const studentName = attempt.studentName || 'শিক্ষার্থী';
+            const score = Number(attempt.score) || 0;
+            const total = Number(attempt.total) || 0;
+            const submittedAt = attempt.submittedAt || 0;
+
+            if (selectedExam === 'ALL') {
+              // সব পরীক্ষার মোট স্কোর বা সর্বোচ্চ স্কোর গণনার লজিক
+              if (!leaderboardMap[uid]) {
+                leaderboardMap[uid] = { uid: uid, name: studentName, score: score, total: total, submittedAt: submittedAt };
+              } else {
+                leaderboardMap[uid].score += score;
+                leaderboardMap[uid].total += total;
+              }
+            } else {
+              // নির্দিষ্ট পরীক্ষার জন্য প্রতি শিক্ষার্থীর সেরা বা শেষ এটেম্পট
+              if (!leaderboardMap[uid] || score > leaderboardMap[uid].score) {
+                leaderboardMap[uid] = { uid: uid, name: studentName, score: score, total: total, submittedAt: submittedAt };
+              }
+            }
+          }
+        }
+
+        // স্কোরের ভিত্তিতে সাজানো (টাই হলে জমার সময়ের ভিত্তিতে)
+        let sortedList = Object.values(leaderboardMap).sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return a.submittedAt - b.submittedAt;
+        });
+
+        // লগইন করা স্টুডেন্টের র‍্যাঙ্ক হিসাব
+        if (currentUser && sortedList.length > 0) {
+          const myIndex = sortedList.findIndex(item => item.uid === currentUser.uid);
+          if (myIndex !== -1) {
+            const myRankData = sortedList[myIndex];
+            userSummaryContainer.innerHTML = `
+              <div class="user-rank-card">
+                <div>
+                  <div style="font-size:12px; color:var(--subtext);">আপনার র‍্যাঙ্ক (ফিল্টার অনুযায়ী):</div>
+                  <div style="font-weight:bold; font-size:15px; color:var(--text-color);">${myRankData.name}</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="rank-badge">🏆 #${myIndex + 1} / ${sortedList.length}</div>
+                  <div style="font-size:12px; color:#10b981; font-weight:bold;">স্কোর: ${myRankData.score}/${myRankData.total}</div>
+                </div>
+              </div>
+            `;
+          } else {
+            userSummaryContainer.innerHTML = `
+              <div style="background:var(--input-bg); padding:8px 12px; border-radius:6px; margin-bottom:10px; font-size:12px; color:var(--subtext); text-align:center;">
+                এই ফিল্টারে আপনার কোনো পরীক্ষার রেকর্ড পাওয়া যায়নি।
+              </div>`;
+          }
+        } else {
+          userSummaryContainer.innerHTML = '';
+        }
+
+        // সার্চ ফিল্টার প্রয়োগ
+        if (searchQuery) {
+          sortedList = sortedList.filter(user => user.name.toLowerCase().includes(searchQuery));
+        }
+
+        if (sortedList.length > 0) {
+          let tableHTML = `<table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">র‍্যাঙ্ক</th>
+                <th>নাম</th>
+                <th style="text-align:right;">স্কোর</th>
+              </tr>
+            </thead>
+            <tbody>`;
+          
+          sortedList.forEach((user, index) => {
+            let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+            let isMe = currentUser && user.uid === currentUser.uid;
+            let rowClass = isMe ? 'class="my-rank-row"' : '';
+            let nameDisplay = isMe ? `${user.name} <small style="color:#38bdf8;">(আপনি)</small>` : user.name;
+
+            tableHTML += `
+              <tr ${rowClass}>
+                <td style="font-weight:bold;">${medal}</td>
+                <td>${nameDisplay}</td>
+                <td style="text-align:right;"><b style="color:#10b981;">${user.score}</b><small style="color:var(--subtext);">/${user.total}</small></td>
+              </tr>`;
+          });
+
+          tableHTML += `</tbody></table>`;
+          container.innerHTML = tableHTML;
+        } else {
+          container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px; padding: 20px;">কোনো ডেটা পাওয়া যায়নি।</p>';
         }
       }
 
