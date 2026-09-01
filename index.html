@@ -70,18 +70,12 @@
         
         .dropdown-menu { display: none; position: absolute; left: 0; top: 45px; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 8px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; overflow: hidden; }
         
-        /* নোটিফিকেশন ড্রপডাউন পজিশন ফিক্স (যাতে কোনোভাবেই বামে কেটে না যায়) */
+        /* নোটিফিকেশন ড্রপডাউন পজিশন ফিক্স */
         #notificationDropdown {
             width: 280px !important;
-            right: -60px !important;
+            right: 0 !important;
             left: auto !important;
             max-width: 85vw;
-        }
-
-        @media screen and (max-width: 480px) {
-            #notificationDropdown {
-                right: -40px !important;
-            }
         }
 
         .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 15px; color: var(--text-color); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border-color); transition: 0.2s; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
@@ -172,7 +166,7 @@
         .modal-close-x { background: none; border: none; color: var(--subtext); font-size: 24px; cursor: pointer; transition: 0.2s; line-height: 1; }
         .modal-close-x:hover { color: #f43f5e; }
 
-        .history-item { background:var(--modal-bg); padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:0.2s; }
+        .history-item { background:var(--modal-bg); padding:10px 12px; border-radius:6px; margin-bottom:8px; font-size:13px; border:1px solid var(--border-color); display:flex; justify-space-between; align-items:center; cursor:pointer; transition:0.2s; }
         .history-item:hover { border-color:#38bdf8; background:var(--card-hover); }
 
         select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
@@ -444,7 +438,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -574,7 +568,7 @@
           const paper = document.getElementById('filterPaper').value;
           const chapSelect = document.getElementById('filterChapter');
           chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
-          if(sub && paper && chaptersData[sub][paper]) {
+          if(sub && paper && chaptersData[sub] && chaptersData[sub][paper]) {
               chaptersData[sub][paper].forEach((chap) => {
                   chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
               });
@@ -609,7 +603,7 @@
                           } else if (note.contentType === 'image') {
                               contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid var(--border-color);">`;
                           } else {
-                              contentDisplay = `<p style="color:var(--text-color); font-size:13px; margin-top:10px; white-space:pre-wrap; background:var(--input-bg); padding:10px; border-radius:6px;">${note.textContent}</p>`;
+                              contentDisplay = `<p style="color:var(--text-color); font-size:13px; margin-top:10px; white-space:pre-wrap; background:var(--input-bg); padding:10px; border-radius:6px;">${note.textContent || ''}</p>`;
                           }
 
                           html += `
@@ -647,7 +641,16 @@
         document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
       };
 
-      window.handleGoogleSignIn = async () => { await signInWithPopup(auth, googleProvider); toggleAuthModal(false); showToast("সফলভাবে লগইন হয়েছে!"); };
+      window.handleGoogleSignIn = async () => { 
+        try {
+            await signInWithPopup(auth, googleProvider); 
+            toggleAuthModal(false); 
+            showToast("সফলভাবে লগইন হয়েছে!"); 
+        } catch(e) {
+            showToast("লগইন ভুল হয়েছে!");
+        }
+      };
+
       window.handleEmailRegister = async (e) => {
         e.preventDefault();
         try {
@@ -657,6 +660,7 @@
           showToast("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
         } catch(err) { showToast("ত্রুটি: " + err.message); }
       };
+
       window.handleEmailLogin = async (e) => { 
         e.preventDefault(); 
         try {
@@ -680,6 +684,7 @@
 
       async function loadAllExamResultsList() {
         const container = document.getElementById('allExamResultListContainer');
+        if (!currentUser) return;
         try {
           const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
           if (snapshot.exists()) {
@@ -695,7 +700,7 @@
               let dateStr = 'তারিখ নেই';
               if (item.submittedAt) {
                 const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate)) {
+                if (!isNaN(parsedDate.getTime())) {
                   dateStr = parsedDate.toLocaleDateString('bn-BD');
                 }
               }
@@ -762,6 +767,7 @@
       async function loadStudentHistory() {
         const historyContainer = document.getElementById('examHistoryContainer');
         const perfBox = document.getElementById('performanceBox');
+        if (!currentUser) return;
         try {
           const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
           if (snapshot.exists()) {
@@ -781,7 +787,7 @@
               let dateStr = 'তারিখ নেই';
               if (item.submittedAt) {
                 const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate)) {
+                if (!isNaN(parsedDate.getTime())) {
                   dateStr = parsedDate.toLocaleDateString('bn-BD');
                 }
               }
@@ -831,7 +837,7 @@
                       }
                   }
 
-                  const isCorrect = userAnsText === q.correctAnswer;
+                  const isCorrect = String(userAnsText).trim() === String(q.correctAnswer).trim();
                   const statusColor = isCorrect ? '#10b981' : '#ef4444';
 
                   html += `
@@ -861,7 +867,7 @@
               const snapshot = await get(ref(db, 'notices'));
               if (snapshot.exists()) {
                   const data = snapshot.val();
-                  cachedNotices = Object.values(data).sort((a, b) => b.date - a.date);
+                  cachedNotices = Object.values(data).sort((a, b) => (b.date || 0) - (a.date || 0));
                   renderNotices(cachedNotices);
               } else {
                   popupList.innerHTML = '<p style="color:var(--subtext); font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
@@ -879,12 +885,12 @@
           }
           popupList.innerHTML = '';
           notices.forEach(item => {
-              const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
+              const dateStr = item.date ? new Date(item.date).toLocaleDateString('bn-BD') : '';
               let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
               popupList.innerHTML += `
                   <div class="notice-item">
-                      <h4>📌 ${item.title}</h4>
-                      <p>${item.description}</p>
+                      <h4>📌 ${item.title || ''}</h4>
+                      <p>${item.description || ''}</p>
                       ${imgTag}
                       <span class="notice-date">তারিখ: ${dateStr}</span>
                   </div>
@@ -895,7 +901,8 @@
       window.filterNotices = function() {
           const query = document.getElementById('noticeSearchInput').value.toLowerCase();
           const filtered = cachedNotices.filter(item => 
-              item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)
+              (item.title && item.title.toLowerCase().includes(query)) || 
+              (item.description && item.description.toLowerCase().includes(query))
           );
           renderNotices(filtered);
       }
@@ -918,7 +925,6 @@
         } catch(e) {}
       }
 
-      // রিয়েলটাইম নোটিফিকেশন লিসেনার
       function setupNotifications(user) {
           const badge = document.getElementById('notificationBadge');
           const listContainer = document.getElementById('notificationListContainer');
@@ -939,7 +945,7 @@
 
                   for (let id in data) {
                       const item = data[id];
-                      allNotifs.push({ id, ...item, targetType: 'global' });
+                      allNotifs.push({ id, ...item });
                       if (!item.read) unreadCount++;
                   }
 
@@ -957,7 +963,7 @@
                       let readBg = item.read ? 'var(--modal-bg)' : 'var(--card-hover)';
                       let dateStr = item.time ? new Date(item.time).toLocaleDateString('bn-BD') : '';
                       html += `
-                          <div style="background:${readBg}; padding:10px; border-radius:6px; margin-bottom:6px; border:1px solid var(--border-color); font-size:12px; cursor:pointer;" onclick="markSingleAsRead('${item.id}', 'global')">
+                          <div style="background:${readBg}; padding:10px; border-radius:6px; margin-bottom:6px; border:1px solid var(--border-color); font-size:12px; cursor:pointer;" onclick="markSingleAsRead('${item.id}')">
                               <div style="font-weight:bold; color:#38bdf8; margin-bottom:2px;">📌 ${item.title || 'নোটিফিকেশন'}</div>
                               <div style="color:var(--text-color); line-height:1.4;">${item.message || item.description || ''}</div>
                               <div style="color:var(--subtext); font-size:10px; margin-top:4px; text-align:right;">${dateStr}</div>
@@ -972,7 +978,7 @@
           });
       }
 
-      window.markSingleAsRead = async function(id, type) {
+      window.markSingleAsRead = async function(id) {
           if (!currentUser) return;
           try {
               await update(ref(db, `notifications/global/${id}`), { read: true });
@@ -1004,7 +1010,7 @@
         const dropdownAuth = document.getElementById('dropdownAuthAction');
         
         if (user) {
-          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
+          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0) : 'U');
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
           setupNotifications(user);
