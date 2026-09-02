@@ -72,7 +72,7 @@
         .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: var(--card-hover); color: #38bdf8; }
         .dropdown-menu.show { display: block; }
 
-        /* Notification Bell System Styling - Fixed Overflow */
+        /* Notification Bell System Styling */
         .notification-container { position: relative; }
         .notification-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
         .notification-badge { position: absolute; top: -3px; right: -3px; background: #f43f5e; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: bold; display: none; align-items: center; justify-content: center; border: 2px solid var(--nav-bg); }
@@ -142,7 +142,7 @@
             background: linear-gradient(135deg, #7dd3fc, #38bdf8);
         }
 
-        /* ফ্লোটিং সেটিংস বাটন স্টাইল (AI বাটনের ঠিক উপরে) */
+        /* ফ্লোটিং সেটিংস বাটন স্টাইল */
         .floating-settings-btn {
             position: fixed;
             bottom: 82px;
@@ -168,7 +168,6 @@
             color: #38bdf8;
         }
 
-        /* Settings Item Controls */
         .settings-option-card {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
@@ -257,6 +256,11 @@
         .leaderboard-table tr.my-rank-row { background: rgba(56, 189, 248, 0.15); font-weight: bold; border-left: 3px solid #38bdf8; }
         .user-rank-card { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(2, 132, 199, 0.1)); border: 1px solid #38bdf8; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .user-rank-card .rank-badge { font-size: 18px; font-weight: bold; color: #38bdf8; }
+
+        /* Profile Details Table in Profile Modal */
+        .profile-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+        .profile-info-item { background: var(--modal-bg); padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 12px; }
+        .profile-info-item span { font-weight: bold; color: #38bdf8; display: block; margin-bottom: 2px; }
     </style>
 </head>
 <body data-theme="dark">
@@ -272,7 +276,7 @@
         <div class="floating-element" style="top: 40%; left: 5%; animation-duration: 17s; animation-delay: 5s;">⚛️</div>
     </div>
 
-    <!-- ফ্লোটিং সেটিংস বাটন (AI-এর ঠিক উপরে) -->
+    <!-- ফ্লোটিং সেটিংস বাটন -->
     <button class="floating-settings-btn" onclick="openSettingsModal()" title="সেটিংস">⚙️</button>
 
     <!-- ফ্লোটিং AI বাটন -->
@@ -355,7 +359,6 @@
             <button class="modal-close-x" onclick="closeSettingsModal()">&times;</button>
         </div>
         
-        <!-- থিম পরিবর্তন অপশন -->
         <div class="settings-option-card">
             <div>
                 <div style="font-weight: bold; font-size: 14px;">থিম মোড (Theme)</div>
@@ -366,7 +369,6 @@
             </button>
         </div>
 
-        <!-- অতিরিক্ত সাধারণ সেটিংস -->
         <div class="settings-option-card">
             <div>
                 <div style="font-weight: bold; font-size: 14px;">নোটিফিকেশন পপআপ</div>
@@ -417,7 +419,7 @@
       </div>
     </div>
 
-    <!-- উন্নত লিডারবোর্ড মোডাল -->
+    <!-- লিডারবোর্ড মোডাল -->
     <div id="leaderboardModal" class="modal">
       <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
@@ -425,7 +427,6 @@
             <button class="modal-close-x" onclick="closeLeaderboardModal()">&times;</button>
         </div>
         
-        <!-- লিডারবোর্ড ফিল্টারসমূহ -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;">
             <select id="leaderboardExamFilter" onchange="renderFilteredLeaderboard()">
                 <option value="ALL">সকল পরীক্ষা (সর্বোচ্চ মোট স্কোর)</option>
@@ -443,10 +444,8 @@
             <input type="text" id="leaderboardSearchInput" placeholder="শিক্ষার্থীর নাম দিয়ে খুঁজুন..." oninput="renderFilteredLeaderboard()" style="font-size: 12px; padding: 7px 10px; margin-bottom: 0;">
         </div>
 
-        <!-- নিজের র‍্যাঙ্ক এবং পারফরম্যান্স সামারি -->
         <div id="userRankSummaryContainer"></div>
 
-        <!-- লিডারবোর্ড তালিকা -->
         <div id="leaderboardListContainer" style="max-height:300px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:6px;">
             <div class="skeleton"></div><div class="skeleton"></div>
         </div>
@@ -494,6 +493,91 @@
         </div>
     </div>
 
+    <!-- নতুন স্টুডেন্ট প্রোফাইল সেটআপ ফরম (রেজিস্ট্রেশনের পর বাধ্যতামূলক ফরম) -->
+    <div id="studentProfileSetupModal" class="modal">
+      <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-header">
+            <h3>📝 স্টুডেন্ট প্রোফাইল ফরম</h3>
+        </div>
+        <p style="color: #38bdf8; font-size: 13px; margin-bottom: 12px; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 6px;">
+            ⚠️ <b>মনোযোগ দিন:</b> আপনার তথ্যটি একবার পূরণ করার পর আর পরিবর্তন (Edit) করতে পারবেন না। ডাটাবেজে এটি সংরক্ষিত থাকবে।
+        </p>
+        <form id="studentProfileSetupForm" onsubmit="handleSaveStudentProfile(event)">
+            <label>শিক্ষার্থীর পূর্ণ নাম *</label>
+            <input type="text" id="spName" required placeholder="আপনার পূর্ণ নাম লিখুন">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                    <label>পিতার নাম *</label>
+                    <input type="text" id="spFatherName" required placeholder="পিতার নাম">
+                </div>
+                <div>
+                    <label>মাতার নাম *</label>
+                    <input type="text" id="spMotherName" required placeholder="মাতার নাম">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                    <label>শিক্ষার্থীর মোবাইল নম্বর *</label>
+                    <input type="tel" id="spPhone" required placeholder="017XXXXXXXX">
+                </div>
+                <div>
+                    <label>অভিভাবকের মোবাইল নম্বর *</label>
+                    <input type="tel" id="spGuardianPhone" required placeholder="018XXXXXXXX">
+                </div>
+            </div>
+
+            <label>কলেজের নাম *</label>
+            <input type="text" id="spCollege" required placeholder="আপনার কলেজের নাম">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                    <label>SSC পাসের সাল *</label>
+                    <select id="spSscYear" required>
+                        <option value="">সাল সিলেক্ট করুন</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <div>
+                    <label>HSC পাসের সাল *</label>
+                    <select id="spHscYear" required>
+                        <option value="">সাল সিলেক্ট করুন</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                    <label>জন্ম তারিখ *</label>
+                    <input type="date" id="spDob" required>
+                </div>
+                <div>
+                    <label>লিঙ্গ (Gender) *</label>
+                    <select id="spGender" required>
+                        <option value="">সিলেক্ট করুন</option>
+                        <option value="ছাত্র">ছাত্র (Male)</option>
+                        <option value="ছাত্রী">ছাত্রী (Female)</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>বর্তমান ঠিকানা (জেলা ও বিভাগ সহ) *</label>
+            <input type="text" id="spAddress" required placeholder="যেমন: রংপুর, বাংলাদেশ">
+
+            <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px; padding:12px; font-size:15px;">💾 তথ্য সেভ করুন</button>
+        </form>
+      </div>
+    </div>
+
     <footer class="site-footer">
         <div class="footer-logo">GAIVEX<span>.</span></div>
         <div class="footer-tagline">স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span style="color: #38bdf8;">GAIVEX</span> এর সাথে</div>
@@ -539,14 +623,14 @@
       </div>
     </div>
 
-    <!-- প্রোফাইল মোডাল -->
+    <!-- প্রোফাইল মোডাল (স্থায়ী তথ্য প্রদর্শন) -->
     <div id="profileModal" class="modal">
-      <div class="modal-content">
+      <div class="modal-content" style="max-width: 550px;">
         <div class="modal-header">
             <h3>📊 স্টুডেন্ট পোর্টাল ও পারফরম্যান্স</h3>
             <button class="modal-close-x" onclick="toggleProfileModal(false)">&times;</button>
         </div>
-        <div id="profileDetails" style="background:var(--input-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px; font-size:13px;"></div>
+        <div id="profileDetails" style="background:var(--input-bg); padding:12px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px; font-size:13px;"></div>
         <div id="performanceBox" style="margin-bottom: 15px;"></div>
         <h4 style="color:#38bdf8; margin-bottom:10px; font-size:14px;">📜 আগের পরীক্ষার হিস্টোরি (বিস্তারিত দেখতে ক্লিক করুন):</h4>
         <div id="examHistoryContainer" style="max-height:220px; overflow-y:auto; background:var(--input-bg); border-radius:8px; border:1px solid var(--border-color); padding:10px;"></div>
@@ -573,7 +657,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -592,6 +676,7 @@
       const googleProvider = new GoogleAuthProvider();
 
       let currentUser = null;
+      let currentStudentProfile = null;
       let studentExamDataMap = {};
       let cachedNotices = [];
       let allRawExamAttempts = null;
@@ -618,7 +703,7 @@
           document.getElementById('settingsModal').style.display = 'none';
       }
 
-      // Theme toggle functionality (Integrated inside Settings Modal)
+      // Theme toggle functionality
       window.toggleTheme = function() {
           const body = document.body;
           const currentTheme = body.getAttribute('data-theme');
@@ -641,7 +726,6 @@
           }
       }
 
-      // Load saved theme initially
       const savedTheme = localStorage.getItem('gaivex_theme') || 'dark';
       document.body.setAttribute('data-theme', savedTheme);
       updateThemeUI(savedTheme);
@@ -865,11 +949,34 @@
       window.toggleProfileModal = async (show) => {
         if(show) {
           if(!currentUser) { showToast("আগে লগইন করুন!"); toggleAuthModal(true); return; }
-          document.getElementById('profileDetails').innerHTML = `<b>শিক্ষার্থী:</b> ${currentUser.displayName || 'নাম নেই'}<br><b>ইমেইল:</b> ${currentUser.email}`;
+          renderStudentProfileDetails();
           await loadStudentHistory();
         }
         document.getElementById('profileModal').style.display = show ? 'flex' : 'none';
       };
+
+      function renderStudentProfileDetails() {
+          const pContainer = document.getElementById('profileDetails');
+          if (currentStudentProfile) {
+              pContainer.innerHTML = `
+                <div style="color:#38bdf8; font-weight:bold; font-size:15px; margin-bottom:6px;">👤 ${currentStudentProfile.name || currentUser.displayName}</div>
+                <div style="font-size:12px; color:var(--subtext); margin-bottom:8px;">📧 ${currentStudentProfile.email || currentUser.email}</div>
+                
+                <div class="profile-info-grid">
+                    <div class="profile-info-item"><span>পিতার নাম:</span> ${currentStudentProfile.fatherName || 'N/A'}</div>
+                    <div class="profile-info-item"><span>মাতার নাম:</span> ${currentStudentProfile.motherName || 'N/A'}</div>
+                    <div class="profile-info-item"><span>শিক্ষার্থীর মোবাইল:</span> ${currentStudentProfile.phone || 'N/A'}</div>
+                    <div class="profile-info-item"><span>অভিভাবকের মোবাইল:</span> ${currentStudentProfile.guardianPhone || 'N/A'}</div>
+                    <div class="profile-info-item"><span>কলেজের নাম:</span> ${currentStudentProfile.college || 'N/A'}</div>
+                    <div class="profile-info-item"><span>SSC / HSC সাল:</span> ${currentStudentProfile.sscYear || ''} / ${currentStudentProfile.hscYear || ''}</div>
+                    <div class="profile-info-item"><span>জন্ম তারিখ & লিঙ্গ:</span> ${currentStudentProfile.dob || ''} (${currentStudentProfile.gender || ''})</div>
+                    <div class="profile-info-item"><span>ঠিকানা:</span> ${currentStudentProfile.address || 'N/A'}</div>
+                </div>
+              `;
+          } else {
+              pContainer.innerHTML = `<b>শিক্ষার্থী:</b> ${currentUser.displayName || 'নাম নেই'}<br><b>ইমেইল:</b> ${currentUser.email}`;
+          }
+      }
 
       window.switchAuthTab = (tab) => {
         document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
@@ -878,25 +985,86 @@
         document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
       };
 
-      window.handleGoogleSignIn = async () => { await signInWithPopup(auth, googleProvider); toggleAuthModal(false); showToast("সফলভাবে লগইন হয়েছে!"); };
+      window.handleGoogleSignIn = async () => { 
+        try {
+            const res = await signInWithPopup(auth, googleProvider); 
+            toggleAuthModal(false); 
+            showToast("সফলভাবে লগইন হয়েছে!");
+            checkAndPromptStudentProfile(res.user);
+        } catch(e) {
+            showToast("গুগল দিয়ে লগইন ব্যর্থ হয়েছে!");
+        }
+      };
+
       window.handleEmailRegister = async (e) => {
         e.preventDefault();
         try {
+          const nameVal = document.getElementById('regName').value;
           const res = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
-          await updateProfile(res.user, { displayName: document.getElementById('regName').value });
+          await updateProfile(res.user, { displayName: nameVal });
           toggleAuthModal(false);
           showToast("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+          checkAndPromptStudentProfile(res.user, nameVal);
         } catch(err) { showToast("ত্রুটি: " + err.message); }
       };
+
       window.handleEmailLogin = async (e) => { 
         e.preventDefault(); 
         try {
-          await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); 
+          const res = await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); 
           toggleAuthModal(false);
           showToast("সফলভাবে লগইন হয়েছে!");
+          checkAndPromptStudentProfile(res.user);
         } catch(err) { showToast("লগইন ব্যর্থ হয়েছে!"); }
       };
-      
+
+      /* নতুন রেজিস্ট্রেশনকারী শিক্ষার্থীর ডাটাবেজ চেকিং ও ফরম সাবমিশন লজিক */
+      async function checkAndPromptStudentProfile(user, optionalName = '') {
+          if (!user) return;
+          try {
+              const studentRef = ref(db, `students/${user.uid}`);
+              const snapshot = await get(studentRef);
+              if (!snapshot.exists()) {
+                  // প্রোফাইল তথ্য ডাটাবেজে নেই -> ফরম ওপেন করতে হবে
+                  document.getElementById('spName').value = optionalName || user.displayName || '';
+                  document.getElementById('studentProfileSetupModal').style.display = 'flex';
+              } else {
+                  currentStudentProfile = snapshot.val();
+              }
+          } catch(e) { console.error(e); }
+      }
+
+      window.handleSaveStudentProfile = async function(e) {
+          e.preventDefault();
+          if (!currentUser) return;
+
+          const profileData = {
+              uid: currentUser.uid,
+              name: document.getElementById('spName').value,
+              email: currentUser.email,
+              fatherName: document.getElementById('spFatherName').value,
+              motherName: document.getElementById('spMotherName').value,
+              phone: document.getElementById('spPhone').value,
+              guardianPhone: document.getElementById('spGuardianPhone').value,
+              college: document.getElementById('spCollege').value,
+              sscYear: document.getElementById('spSscYear').value,
+              hscYear: document.getElementById('spHscYear').value,
+              dob: document.getElementById('spDob').value,
+              gender: document.getElementById('spGender').value,
+              address: document.getElementById('spAddress').value,
+              registeredAt: new Date().toISOString()
+          };
+
+          try {
+              await set(ref(db, `students/${currentUser.uid}`), profileData);
+              currentStudentProfile = profileData;
+              document.getElementById('studentProfileSetupModal').style.display = 'none';
+              showToast("আপনার সকল তথ্য ডাটাবেজে সফলভাবে সংরক্ষিত হয়েছে!");
+          } catch(err) {
+              showToast("তথ্য সেভ করতে সমস্যা হয়েছে: " + err.message);
+          }
+      };
+
       window.handleForgotPassword = async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
@@ -907,7 +1075,12 @@
         } catch (error) { showToast("ত্রুটি: " + error.message); }
       };
 
-      window.handleLogout = async () => { await signOut(auth); toggleProfileModal(false); showToast("লগআউট করা হয়েছে।"); };
+      window.handleLogout = async () => { 
+        await signOut(auth); 
+        currentStudentProfile = null;
+        toggleProfileModal(false); 
+        showToast("লগআউট করা হয়েছে।"); 
+      };
 
       async function loadAllExamResultsList() {
         const container = document.getElementById('allExamResultListContainer');
@@ -1272,7 +1445,7 @@
         } catch(e) {}
       }
 
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const c = document.getElementById('authNavContainer');
         const dropdownAuth = document.getElementById('dropdownAuthAction');
@@ -1283,7 +1456,19 @@
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
           
           listenToNotifications(user.uid);
+
+          // প্রোফাইল চেক
+          try {
+              const snap = await get(ref(db, `students/${user.uid}`));
+              if(snap.exists()){
+                  currentStudentProfile = snap.val();
+              } else {
+                  checkAndPromptStudentProfile(user);
+              }
+          } catch(e){}
+
         } else {
+          currentStudentProfile = null;
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
           dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
           document.getElementById('notifBody').innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">নোটিফিকেশন দেখতে লগইন করুন</p>';
