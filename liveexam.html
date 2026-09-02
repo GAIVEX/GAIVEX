@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>লাইভ পরীক্ষা - GAIVEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN for Visual Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; user-select: none; }
         
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; }
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
@@ -22,6 +24,11 @@
         .btn-top-submit { background: #10b981; color: white; border: none; padding: 7px 14px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
         .btn-top-submit:hover { background: #059669; }
 
+        /* Font Adjuster & Control Bar */
+        .controls-bar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155; }
+        .font-adjuster { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #94a3b8; }
+        .font-btn { background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
         .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
         .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .question-title { font-size: 16px; font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
@@ -30,13 +37,15 @@
         
         .options-list { display: flex; flex-direction: column; gap: 10px; }
         .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 15px; display: flex; align-items: center; gap: 12px; color: #f8fafc; }
-        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
+        .option-item:hover { border-color: #38bdf8; background: #1e3a8a33; }
         .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
 
         .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; }
         .option-item.locked-option { cursor: not-allowed; opacity: 0.8; }
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
+
+        .time-spent-tag { font-size: 11px; color: #38bdf8; margin-top: 8px; font-style: italic; display: none; }
 
         .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 30px; margin-bottom: 30px; }
         .palette-title { font-size: 16px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -54,8 +63,20 @@
         .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
 
         .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
+        
+        /* Scoreboard & Analytics UI */
         .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
+        
+        .analytics-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px; }
+        .chart-box { width: 100%; max-width: 280px; }
+        
+        /* Leaderboard UI */
+        .leaderboard-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: none; }
+        .leaderboard-title { color: #facc15; font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        .leaderboard-table th, .leaderboard-table td { padding: 10px; border-bottom: 1px solid #334155; }
+        .leaderboard-table th { color: #38bdf8; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
         .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; }
@@ -89,7 +110,33 @@
             <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
         </div>
 
+        <div class="controls-bar">
+            <div class="font-adjuster">
+                <span>ফন্ট সাইজ:</span>
+                <button class="font-btn" onclick="adjustFontSize(-1)">A-</button>
+                <button class="font-btn" onclick="adjustFontSize(1)">A+</button>
+            </div>
+            <div style="font-size: 12px; color: #f43f5e; font-weight: bold;">⚠️ OMR Mode: উত্তর একবার দিলে পরিবর্তন করা যাবে না</div>
+        </div>
+
         <div id="resultSummary" style="display: none;"></div>
+        
+        <div class="leaderboard-box" id="leaderboardSection">
+            <div class="leaderboard-title">🏆 মেধা তালিকা (Top Performers)</div>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>নাম</th>
+                        <th>প্রাপ্ত নম্বর</th>
+                        <th>সময়</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Leaderboard Rows Dynamic Load -->
+                </tbody>
+            </table>
+        </div>
 
         <div class="filter-bar" id="filterBar">
             <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
@@ -147,7 +194,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, set, update, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -169,9 +216,18 @@
       let timeRemaining = 1500; 
       let activeExamKey = "gaivex_exam_default";
       let examTimerKey = "gaivex_timer_default";
+      let draftAnswersKey = "gaivex_draft_answers_default";
       let userSelections = {};
       let bookmarkedQuestions = {};
       let isSubmitted = false;
+      
+      // Time tracking per question
+      let timePerQuestion = {};
+      let currentQuestionIndex = 0;
+      let questionStartTime = Date.now();
+
+      // Anti-Cheat Warning
+      let warningCount = 0;
 
       const defaultExamData = {
         id: "chemical_changes_mcq_50_v1",
@@ -233,8 +289,35 @@
 
       let examData = defaultExamData;
 
+      // Anti-Cheat: Disable Copy/Paste and Right Click
+      document.addEventListener('contextmenu', event => event.preventDefault());
+      document.addEventListener('copy', event => {
+        event.preventDefault();
+        alert("⚠️ পরীক্ষা চলাকালীন কোনো প্রশ্ন বা লেখা কপি করা নিষিদ্ধ!");
+      });
+
+      // Anti-Cheat: Tab Switch Detection
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && !isSubmitted) {
+          warningCount++;
+          alert(`⚠️ সতর্কবার্তা (${warningCount}/3): আপনি পরীক্ষার স্ক্রিন ছেড়ে অন্য ট্যাবে গেছেন! ৩ বার এমন করলে আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে সাবমিট হয়ে যাবে।`);
+          if (warningCount >= 3) {
+            submitExamAction();
+          }
+        }
+      });
+
+      // Font Adjustment
+      let currentFontSize = 16;
+      window.adjustFontSize = function(delta) {
+        currentFontSize += delta;
+        if (currentFontSize < 12) currentFontSize = 12;
+        if (currentFontSize > 22) currentFontSize = 22;
+        document.querySelectorAll('.question-title').forEach(el => el.style.fontSize = `${currentFontSize}px`);
+        document.querySelectorAll('.option-item').forEach(el => el.style.fontSize = `${currentFontSize - 1}px`);
+      };
+
       async function checkAttemptAndLoad() {
-        // --- ১. স্টুডেন্ট ব্লকড (Blocked) কিনা তা চেক করার লজিক ---
         if (currentUser) {
           try {
             let userSnap = await get(ref(db, `users/${currentUser.uid}`));
@@ -263,7 +346,6 @@
           }
         }
 
-        // --- ২. পরীক্ষা সম্পর্কিত ডাটা লোড ---
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
           if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
@@ -281,10 +363,27 @@
         const cleanId = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
         activeExamKey = "gaivex_submitted_" + cleanId;
         examTimerKey = "gaivex_timer_" + cleanId;
+        draftAnswersKey = "gaivex_draft_answers_" + cleanId;
 
+        // Auto-Save Draft Recovery
+        const savedDraft = localStorage.getItem(draftAnswersKey);
+        if (savedDraft) {
+          userSelections = JSON.parse(savedDraft);
+        }
+
+        // Timestamp-Based Accurate Timer Setup
         const totalSeconds = (examData.duration || 25) * 60;
-        const savedTimer = localStorage.getItem(examTimerKey);
-        timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalSeconds;
+        const savedEndTime = localStorage.getItem(examTimerKey);
+        let endTime;
+
+        if (savedEndTime) {
+          endTime = parseInt(savedEndTime, 10);
+        } else {
+          endTime = Date.now() + totalSeconds * 1000;
+          localStorage.setItem(examTimerKey, endTime);
+        }
+
+        timeRemaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
 
         renderQuestions();
         renderPalette();
@@ -293,9 +392,9 @@
         if (savedResult) {
           const resultData = JSON.parse(savedResult);
           isSubmitted = true;
-          showSubmittedResult(resultData.userAnswers, resultData.score);
+          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpentMap || {});
         } else {
-          startTimer();
+          startTimer(endTime);
         }
       }
 
@@ -303,30 +402,47 @@
         const container = document.getElementById('questionsContainer');
         const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
 
-        container.innerHTML = examData.questions.map((q, qIndex) => `
-          <div class="question-card" id="q-box-${qIndex}">
-            <div class="question-header-row">
-              <div class="question-title">${qIndex + 1}. ${q.question}</div>
-              <button type="button" class="bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
-            </div>
-            <div class="options-list" id="options-list-${qIndex}">
-              ${(q.options || []).map((opt, oIndex) => `
-                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
-                  <input type="radio" name="q_${qIndex}" value="${oIndex}" onchange="window.selectOption(${qIndex}, ${oIndex})">
-                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
-                </label>
-              `).join('')}
-            </div>
-            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
-              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
-            </div>
-          </div>
-        `).join('');
+        container.innerHTML = examData.questions.map((q, qIndex) => {
+          const isAnswered = userSelections[qIndex] !== undefined;
+          const selectedVal = userSelections[qIndex];
 
+          return `
+            <div class="question-card" id="q-box-${qIndex}">
+              <div class="question-header-row">
+                <div class="question-title">${qIndex + 1}. ${q.question}</div>
+                <button type="button" class="bookmark-btn ${bookmarkedQuestions[qIndex] ? 'active' : ''}" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
+              </div>
+              <div class="options-list" id="options-list-${qIndex}">
+                ${(q.options || []).map((opt, oIndex) => `
+                  <label class="option-item ${isAnswered ? 'locked-option' : ''} ${isAnswered && selectedVal === oIndex ? 'selected-option' : ''}" id="opt-label-${qIndex}-${oIndex}">
+                    <input type="radio" name="q_${qIndex}" value="${oIndex}" ${isAnswered && selectedVal === oIndex ? 'checked' : ''} ${isAnswered ? 'disabled' : ''} onchange="window.selectOption(${qIndex}, ${oIndex})">
+                    <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
+                  </label>
+                `).join('')}
+              </div>
+              <div class="time-spent-tag" id="time-tag-${qIndex}"></div>
+              <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
+                <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Strict OMR Mode: Once selected, options are immediately LOCKED and cannot be changed
         window.selectOption = function(qIndex, oIndex) {
           if (isSubmitted || userSelections[qIndex] !== undefined) return;
           
+          // Track time spent on previous question
+          const now = Date.now();
+          const elapsed = Math.round((now - questionStartTime) / 1000);
+          timePerQuestion[currentQuestionIndex] = (timePerQuestion[currentQuestionIndex] || 0) + elapsed;
+          currentQuestionIndex = qIndex;
+          questionStartTime = now;
+
           userSelections[qIndex] = oIndex;
+          
+          // Save Draft automatically
+          localStorage.setItem(draftAnswersKey, JSON.stringify(userSelections));
           
           const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
           allLabels.forEach((lbl, idx) => {
@@ -382,23 +498,29 @@
       }
 
       window.scrollToQuestion = function(index) {
+        // Track time spent transitioning
+        const now = Date.now();
+        const elapsed = Math.round((now - questionStartTime) / 1000);
+        timePerQuestion[currentQuestionIndex] = (timePerQuestion[currentQuestionIndex] || 0) + elapsed;
+        currentQuestionIndex = index;
+        questionStartTime = now;
+
         const box = document.getElementById(`q-box-${index}`);
         if(box) {
           box.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       };
 
-      function startTimer() {
+      function startTimer(endTime) {
         updateTimerDisplay();
         timerInterval = setInterval(() => {
-          timeRemaining--;
-          localStorage.setItem(examTimerKey, timeRemaining);
+          timeRemaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
           updateTimerDisplay();
           
           if (timeRemaining <= 0) {
             clearInterval(timerInterval);
             localStorage.removeItem(examTimerKey);
-            alert("সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
+            alert("⏰ সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
             submitExamAction();
           }
         }, 1000);
@@ -436,8 +558,14 @@
       async function submitExamAction() {
         if (isSubmitted) return;
 
+        // Finalize timing for last active question
+        const now = Date.now();
+        const elapsed = Math.round((now - questionStartTime) / 1000);
+        timePerQuestion[currentQuestionIndex] = (timePerQuestion[currentQuestionIndex] || 0) + elapsed;
+
         clearInterval(timerInterval);
         localStorage.removeItem(examTimerKey);
+        localStorage.removeItem(draftAnswersKey);
         isSubmitted = true;
 
         let correctCount = 0;
@@ -461,10 +589,11 @@
 
         localStorage.setItem(activeExamKey, JSON.stringify({
           score: finalScore,
-          userAnswers: userSelections
+          userAnswers: userSelections,
+          timeSpentMap: timePerQuestion
         }));
 
-        showSubmittedResult(userSelections, finalScore);
+        showSubmittedResult(userSelections, finalScore, timePerQuestion);
 
         const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
         const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
@@ -477,30 +606,63 @@
           });
 
           if (currentUser) {
+            const timeTakenSec = ((examData.duration || 25) * 60) - timeRemaining;
+            
+            // Save attempt to user record
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
               examId: examIdClean,
               examTitle: currentExamTitle,
               score: finalScore,
               total: total,
+              timeSpentSeconds: timeTakenSec,
               submittedAt: new Date().toISOString(),
-              questions: examData.questions,
               userAnswers: userSelections
             });
+
+            // Save to Public Leaderboard
+            await set(ref(db, `leaderboards/${examIdClean}/${currentUser.uid}`), {
+              userName: currentUser.displayName || currentUser.email.split('@')[0] || "পরীক্ষার্থী",
+              score: finalScore,
+              timeSpentSeconds: timeTakenSec,
+              submittedAt: new Date().toISOString()
+            });
           }
+
+          loadLeaderboard(examIdClean);
         } catch(err) { console.error("Error saving score:", err); }
       }
 
-      function showSubmittedResult(userAnswers, score) {
+      function showSubmittedResult(userAnswers, score, timeSpentMap) {
         const total = (examData.questions || []).length;
         clearInterval(timerInterval);
         document.getElementById('timerDisplay').innerText = "00:00";
         document.getElementById('filterBar').style.display = 'flex';
 
+        let correctCount = 0;
+        let wrongCount = 0;
+        let skippedCount = 0;
+
         (examData.questions || []).forEach((q, i) => {
           const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
           const correctVal = parseInt(q.correct, 10);
+          
+          if (selected === undefined) {
+            skippedCount++;
+          } else if (selected === correctVal) {
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
+
+          // Show time spent tag per question
+          const timeTag = document.getElementById(`time-tag-${i}`);
+          if(timeTag && timeSpentMap[i]) {
+            timeTag.style.display = 'block';
+            timeTag.innerText = `⏱️ এই প্রশ্নে ব্যয় করেছেন: ${timeSpentMap[i]} সেকেন্ড`;
+          }
 
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
@@ -527,12 +689,80 @@
           <div class="score-board">
             <h2>পরীক্ষার ফলাফল</h2>
             <p class="already-submitted-msg">⚠️ আপনি ইতিপূর্বে এই পরীক্ষাটি জমা দিয়েছেন!</p>
-            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total} (প্রতি ভুল উত্তরে ০.২৫ কাটা হয়েছে)</p>
-            <p style="color: #94a3b8; font-size: 14px;">নিচে প্রতিটি প্রশ্নের সঠিক উত্তর ও ব্যাখ্যা ফিল্টার করে দেখতে পারেন।</p>
+            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total}</p>
+            
+            <div class="analytics-container">
+              <div class="chart-box">
+                <canvas id="resultChart"></canvas>
+              </div>
+              <div style="text-align: left; font-size: 14px; color: #cbd5e1; line-height: 1.8;">
+                <p>✅ সঠিক উত্তর: <b style="color: #10b981;">${correctCount}টি</b></p>
+                <p>❌ ভুল উত্তর: <b style="color: #f43f5e;">${wrongCount}টি</b> (কাটা গেছে ${(wrongCount * 0.25).toFixed(2)})</p>
+                <p>⚪ স্কিপড: <b style="color: #94a3b8;">${skippedCount}টি</b></p>
+              </div>
+            </div>
           </div>
         `;
 
+        // Render Chart
+        renderResultChart(correctCount, wrongCount, skippedCount);
+
+        const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
+        loadLeaderboard(examIdClean);
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function renderResultChart(correct, wrong, skipped) {
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['সঠিক', 'ভুল', 'স্কিপড'],
+            datasets: [{
+              data: [correct, wrong, skipped],
+              backgroundColor: ['#10b981', '#f43f5e', '#64748b'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#f8fafc' } }
+            }
+          }
+        });
+      }
+
+      async function loadLeaderboard(examId) {
+        const boardSection = document.getElementById('leaderboardSection');
+        const boardBody = document.getElementById('leaderboardBody');
+
+        try {
+          const boardRef = query(ref(db, `leaderboards/${examId}`), orderByChild('score'), limitToLast(10));
+          const snap = await get(boardRef);
+
+          if (snap.exists()) {
+            let list = [];
+            snap.forEach(child => {
+              list.push(child.val());
+            });
+            list.reverse(); // Highest score first
+
+            boardBody.innerHTML = list.map((item, idx) => `
+              <tr>
+                <td style="font-weight: bold; color: ${idx === 0 ? '#facc15' : '#f8fafc'}">#${idx + 1}</td>
+                <td>${item.userName}</td>
+                <td style="color: #10b981; font-weight: bold;">${item.score}</td>
+                <td style="color: #94a3b8;">${Math.floor(item.timeSpentSeconds / 60)}ম ${item.timeSpentSeconds % 60}সে</td>
+              </tr>
+            `).join('');
+
+            boardSection.style.display = 'block';
+          }
+        } catch(e) {
+          console.error("Leaderboard load failed:", e);
+        }
       }
 
       window.filterQuestions = function(type) {
