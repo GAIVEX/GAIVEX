@@ -234,6 +234,36 @@
       let examData = defaultExamData;
 
       async function checkAttemptAndLoad() {
+        // --- ১. স্টুডেন্ট ব্লকড (Blocked) কিনা তা চেক করার লজিক ---
+        if (currentUser) {
+          try {
+            let userSnap = await get(ref(db, `users/${currentUser.uid}`));
+            if (!userSnap.exists()) {
+              userSnap = await get(ref(db, `students/${currentUser.uid}`));
+            }
+
+            if (userSnap.exists()) {
+              const userData = userSnap.val();
+              if (userData.status === 'blocked') {
+                document.getElementById('questionsContainer').innerHTML = `
+                  <div style="text-align: center; padding: 40px 20px; background: #1e293b; border-radius: 12px; border: 1px solid #f43f5e; margin-top: 20px;">
+                    <h2 style="color: #f43f5e; margin-bottom: 10px;">❌ পরীক্ষা দেওয়া সম্ভব নয়!</h2>
+                    <p style="color: #cbd5e1; font-size: 16px;">আপনার পরীক্ষা দেওয়ার এক্সেস বর্তমানে বন্ধ (Blocked) আছে। বিস্তারিত জানতে কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
+                  </div>
+                `;
+                document.getElementById('examTitle').innerText = "অ্যাক্সেস ব্লকড";
+                document.getElementById('topSubmitBtn').style.display = 'none';
+                document.getElementById('paletteSection').style.display = 'none';
+                alert("❌ আপনার পরীক্ষা দেওয়ার এক্সেস বন্ধ (Blocked) রয়েছে!");
+                return; // স্টুডেন্ট ব্লক থাকলে পরীক্ষা লোড বন্ধ করে দেওয়া হচ্ছে
+              }
+            }
+          } catch(err) {
+            console.error("Error checking student status:", err);
+          }
+        }
+
+        // --- ২. পরীক্ষা সম্পর্কিত ডাটা লোড ---
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
           if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
@@ -536,9 +566,10 @@
 
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
+        // ইউজার স্টেট জানার পরে এক্সেস চেক ও লোড কল করা হলো
+        checkAttemptAndLoad();
       });
 
-      checkAttemptAndLoad();
     </script>
 </body>
 </html>
