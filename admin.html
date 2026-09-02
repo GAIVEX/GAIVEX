@@ -38,6 +38,10 @@
         .mode-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
         
         .notice-card-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* স্টুডেন্ট লিস্টের নতুন স্টাইল */
+        .student-item { background: #0f172a; border: 1px solid #334155; padding: 12px 15px; border-radius: 8px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .student-item:hover { border-color: #38bdf8; background: #132238; }
     </style>
 </head>
 <body>
@@ -155,17 +159,21 @@
             </div>
         </div>
 
-        <!-- স্টুডেন্ট ম্যানেজমেন্ট সেকশন -->
+        <!-- স্টুডেন্ট ম্যানেজমেন্ট সেকশন (আপডেট করা হয়েছে) -->
         <div id="studentSection" style="display: none;">
-            <h3 style="color: #38bdf8; margin-bottom: 15px;">🔍 স্টুডেন্ট সার্চ ও ইনফরমেশন চেঞ্জ</h3>
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">👨‍🎓 সকল স্টুডেন্ট লিস্ট ও ফিল্টার</h3>
+            
             <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
-                <label>স্টুডেন্টের ইমেইল দিয়ে খোঁজ করুন:</label>
-                <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <input type="email" id="searchStudentEmail" placeholder="student@gmail.com..." style="margin-top: 0;">
-                    <button type="button" onclick="searchStudentByEmail()" style="background: #38bdf8; color: #0f172a; border: none; padding: 0 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">খুঁজুন</button>
-                </div>
+                <label style="margin-top:0;">ইমেইল বা নাম দিয়ে ফিল্টার করুন:</label>
+                <input type="text" id="searchStudentEmail" placeholder="ইমেইল বা নাম দিয়ে খুঁজুন..." oninput="filterStudentList()" style="margin-top: 5px;">
             </div>
 
+            <!-- ফিল্টার করা স্টুডেন্টদের তালিকা -->
+            <div id="studentListContainer" style="margin-top: 15px; max-height: 250px; overflow-y: auto;">
+                <p style="color: #94a3b8; font-size: 13px;">স্টুডেন্টদের তথ্য লোড হচ্ছে...</p>
+            </div>
+
+            <!-- স্টুডেন্ট এডিট ফরম -->
             <div id="studentDetailsBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 20px;">
                 <h4 style="color: #10b981; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px;">স্টুডেন্টের বিস্তারিত তথ্য ও এডিট অপশন</h4>
                 <input type="hidden" id="studentKey">
@@ -266,6 +274,7 @@
       const CORRECT_ADMIN_NUM = "GAIVEXScholars70160";
       const CORRECT_SECRET_PASS = "GAIVEXScholars#@70160tamim";
       let currentMode = 'live';
+      let globalAllStudents = {}; // স্টুডেন্ট লিস্ট গ্লোবালি হোল্ড করার জন্য
 
       const chaptersData = {
           physics: {
@@ -376,6 +385,7 @@
           loadAdminNotes();
         } else if (mode === 'student') {
           studentSec.style.display = 'block';
+          fetchAllStudents(); // সকল স্টুডেন্ট লোড করা
         } else if (mode === 'chapter') {
           chapBox.style.display = 'block';
           document.getElementById('titleLabel').style.display = 'none';
@@ -388,58 +398,93 @@
         }
       };
 
-      // স্টুডেন্ট সার্চ ও ম্যানেজমেন্ট ফিচার
-      window.searchStudentByEmail = async function() {
-        const emailInput = document.getElementById('searchStudentEmail').value.trim().toLowerCase();
-        const msgBox = document.getElementById('studentSearchMsg');
-        const detailsBox = document.getElementById('studentDetailsBox');
-
-        msgBox.style.display = 'none';
-        detailsBox.style.display = 'none';
-
-        if (!emailInput) {
-            alert("অনুগ্রহ করে একটি ইমেইল অ্যাড্রেস লিখুন!");
-            return;
-        }
+      // --- নতুন স্টুডেন্ট ম্যানেজমেন্ট লজিক ---
+      async function fetchAllStudents() {
+        const container = document.getElementById('studentListContainer');
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">স্টুডেন্টদের তথ্য লোড হচ্ছে...</p>';
+        document.getElementById('studentDetailsBox').style.display = 'none';
 
         try {
-            const usersRef = ref(db, 'users');
-            const snapshot = await get(usersRef);
-
-            if (snapshot.exists()) {
-                const users = snapshot.val();
-                let foundKey = null;
-                let foundUser = null;
-
-                for (let key in users) {
-                    if (users[key].email && users[key].email.toLowerCase() === emailInput) {
-                        foundKey = key;
-                        foundUser = users[key];
-                        break;
-                    }
-                }
-
-                if (foundUser) {
-                    document.getElementById('studentKey').value = foundKey;
-                    document.getElementById('studentName').value = foundUser.name || foundUser.displayName || '';
-                    document.getElementById('studentDisplayEmail').value = foundUser.email || '';
-                    document.getElementById('studentPhone').value = foundUser.phone || foundUser.phoneNumber || '';
-                    document.getElementById('studentRoll').value = foundUser.roll || foundUser.studentId || '';
-                    document.getElementById('studentInstitute').value = foundUser.institute || foundUser.college || '';
-                    document.getElementById('studentAccess').value = foundUser.status || 'active';
-
-                    detailsBox.style.display = 'block';
-                } else {
-                    msgBox.innerText = "❌ এই ইমেইল দিয়ে কোনো স্টুডেন্ট খুঁজে পাওয়া যায়নি!";
-                    msgBox.style.display = 'block';
-                }
-            } else {
-                msgBox.innerText = "❌ ডেটাবেসে কোনো স্টুডেন্ট এর ডাটা নেই!";
-                msgBox.style.display = 'block';
-            }
+          const snapshot = await get(ref(db, 'users'));
+          if (snapshot.exists()) {
+            globalAllStudents = snapshot.val();
+            renderStudentList(globalAllStudents);
+          } else {
+            container.innerHTML = '<p style="color: #f43f5e; font-size: 13px;">কোনো স্টুডেন্ট পাওয়া যায়নি!</p>';
+          }
         } catch (e) {
-            alert("ত্রুটি ঘটেছে: " + e.message);
+          container.innerHTML = '<p style="color: #f43f5e; font-size: 13px;">ডাটা লোড করতে ত্রুটি: ' + e.message + '</p>';
         }
+      }
+
+      function renderStudentList(studentsObj) {
+        const container = document.getElementById('studentListContainer');
+        container.innerHTML = '';
+
+        const keys = Object.keys(studentsObj);
+        if (keys.length === 0) {
+          container.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">কোনো স্টুডেন্ট ডাটা মিলেনি!</p>';
+          return;
+        }
+
+        keys.forEach(key => {
+          const st = studentsObj[key];
+          const name = st.name || st.displayName || 'নাম দেওয়া নেই';
+          const email = st.email || 'ইমেইল নেই';
+          const status = st.status === 'blocked' ? '🔴 Blocked' : '🟢 Active';
+
+          const item = document.createElement('div');
+          item.className = 'student-item';
+          item.onclick = () => selectStudent(key);
+          item.innerHTML = `
+            <div>
+              <strong style="color: #38bdf8; font-size: 15px;">${name}</strong>
+              <div style="font-size: 12px; color: #cbd5e1;">📧 ${email}</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 12px; font-weight: bold; margin-right: 10px;">${status}</span>
+              <button style="background: #38bdf8; color: #0f172a; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold;">এডিট / বিস্তারিত</button>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      window.filterStudentList = function() {
+        const query = document.getElementById('searchStudentEmail').value.trim().toLowerCase();
+        if (!query) {
+          renderStudentList(globalAllStudents);
+          return;
+        }
+
+        const filtered = {};
+        for (let key in globalAllStudents) {
+          const st = globalAllStudents[key];
+          const email = (st.email || '').toLowerCase();
+          const name = (st.name || st.displayName || '').toLowerCase();
+          
+          if (email.includes(query) || name.includes(query)) {
+            filtered[key] = st;
+          }
+        }
+        renderStudentList(filtered);
+      };
+
+      window.selectStudent = function(key) {
+        const st = globalAllStudents[key];
+        if (!st) return;
+
+        document.getElementById('studentKey').value = key;
+        document.getElementById('studentName').value = st.name || st.displayName || '';
+        document.getElementById('studentDisplayEmail').value = st.email || '';
+        document.getElementById('studentPhone').value = st.phone || st.phoneNumber || '';
+        document.getElementById('studentRoll').value = st.roll || st.studentId || '';
+        document.getElementById('studentInstitute').value = st.institute || st.college || '';
+        document.getElementById('studentAccess').value = st.status || 'active';
+
+        const detailsBox = document.getElementById('studentDetailsBox');
+        detailsBox.style.display = 'block';
+        detailsBox.scrollIntoView({ behavior: 'smooth' });
       };
 
       window.updateStudentData = async function() {
@@ -457,6 +502,7 @@
         try {
             await update(ref(db, `users/${key}`), updatedData);
             alert("✅ স্টুডেন্টের তথ্য সফলভাবে আপডেট করা হয়েছে!");
+            fetchAllStudents(); // তালিকা রিফ্রেশ
         } catch (e) {
             alert("আপডেট করতে সমস্যা হয়েছে: " + e.message);
         }
@@ -471,7 +517,7 @@
                 await remove(ref(db, `users/${key}`));
                 alert("✅ স্টুডেন্টের তথ্য মুছে ফেলা হয়েছে!");
                 document.getElementById('studentDetailsBox').style.display = 'none';
-                document.getElementById('searchStudentEmail').value = '';
+                fetchAllStudents(); // তালিকা রিফ্রেশ
             } catch (e) {
                 alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
             }
