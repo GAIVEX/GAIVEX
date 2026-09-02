@@ -78,6 +78,7 @@
             <button class="mode-btn" id="btnChapterMode" onclick="switchMode('chapter')">📚 বিষয়ভিত্তিক এক্সাম</button>
             <button class="mode-btn" id="btnNoticeMode" onclick="switchMode('notice')">📢 নোটিশ বোর্ড</button>
             <button class="mode-btn" id="btnNotesMode" onclick="switchMode('notes')">📖 অধ্যায়ভিত্তিক নোটস</button>
+            <button class="mode-btn" id="btnStudentMode" onclick="switchMode('student')">👨‍🎓 স্টুডেন্ট ম্যানেজমেন্ট</button>
         </div>
 
         <!-- নোটিশ বোর্ড সেকশন -->
@@ -154,6 +155,50 @@
             </div>
         </div>
 
+        <!-- স্টুডেন্ট ম্যানেজমেন্ট সেকশন -->
+        <div id="studentSection" style="display: none;">
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">🔍 স্টুডেন্ট সার্চ ও ইনফরমেশন চেঞ্জ</h3>
+            <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+                <label>স্টুডেন্টের ইমেইল দিয়ে খোঁজ করুন:</label>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <input type="email" id="searchStudentEmail" placeholder="student@gmail.com..." style="margin-top: 0;">
+                    <button type="button" onclick="searchStudentByEmail()" style="background: #38bdf8; color: #0f172a; border: none; padding: 0 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">খুঁজুন</button>
+                </div>
+            </div>
+
+            <div id="studentDetailsBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 20px;">
+                <h4 style="color: #10b981; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px;">স্টুডেন্টের বিস্তারিত তথ্য ও এডিট অপশন</h4>
+                <input type="hidden" id="studentKey">
+                
+                <label>নাম (Name):</label>
+                <input type="text" id="studentName">
+
+                <label>ইমেইল (Email - অপশন পরিবর্তনযোগ্য নয়):</label>
+                <input type="email" id="studentDisplayEmail" readonly style="opacity: 0.7; cursor: not-allowed;">
+
+                <label>ফোন নম্বর (Phone Number):</label>
+                <input type="text" id="studentPhone">
+
+                <label>রোল/আইডি (Roll / Student ID):</label>
+                <input type="text" id="studentRoll">
+
+                <label>কলেজ / প্রতিষ্ঠান (Institution):</label>
+                <input type="text" id="studentInstitute">
+
+                <label>পরীক্ষা এক্সেস স্ট্যাটাস (Exam Access):</label>
+                <select id="studentAccess">
+                    <option value="active">Active (পরীক্ষা দিতে পারবে)</option>
+                    <option value="blocked">Blocked (পরীক্ষা বন্ধ)</option>
+                </select>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn-submit" onclick="updateStudentData()" style="margin-top: 0; flex: 2;">তথ্য আপডেট করুন 💾</button>
+                    <button type="button" class="btn-clear" onclick="deleteStudentData()" style="flex: 1;">ডিলিট স্টুডেন্ট 🗑️</button>
+                </div>
+            </div>
+            <div id="studentSearchMsg" style="color: #f43f5e; font-size: 14px; margin-top: 15px; display: none;"></div>
+        </div>
+
         <div id="chapterSelectionBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 20px;">
             <label>বিষয় নির্বাচন করুন:</label>
             <select id="admSubject" onchange="updatePaperOptions()">
@@ -202,7 +247,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getDatabase, ref, set, get, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, set, get, remove, push, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -308,17 +353,20 @@
         document.getElementById('btnChapterMode').classList.toggle('active', mode === 'chapter');
         document.getElementById('btnNoticeMode').classList.toggle('active', mode === 'notice');
         document.getElementById('btnNotesMode').classList.toggle('active', mode === 'notes');
+        document.getElementById('btnStudentMode').classList.toggle('active', mode === 'student');
         
         const chapBox = document.getElementById('chapterSelectionBox');
         const examForm = document.getElementById('examFormContent');
         const noticeSec = document.getElementById('noticeSection');
         const notesSec = document.getElementById('notesSection');
+        const studentSec = document.getElementById('studentSection');
 
         // Hide all first
         chapBox.style.display = 'none';
         examForm.style.display = 'none';
         noticeSec.style.display = 'none';
         notesSec.style.display = 'none';
+        studentSec.style.display = 'none';
 
         if (mode === 'notice') {
           noticeSec.style.display = 'block';
@@ -326,6 +374,8 @@
         } else if (mode === 'notes') {
           notesSec.style.display = 'block';
           loadAdminNotes();
+        } else if (mode === 'student') {
+          studentSec.style.display = 'block';
         } else if (mode === 'chapter') {
           chapBox.style.display = 'block';
           document.getElementById('titleLabel').style.display = 'none';
@@ -335,6 +385,96 @@
           document.getElementById('examTitle').style.display = 'block';
           examForm.style.display = 'block';
           loadExistingData();
+        }
+      };
+
+      // স্টুডেন্ট সার্চ ও ম্যানেজমেন্ট ফিচার
+      window.searchStudentByEmail = async function() {
+        const emailInput = document.getElementById('searchStudentEmail').value.trim().toLowerCase();
+        const msgBox = document.getElementById('studentSearchMsg');
+        const detailsBox = document.getElementById('studentDetailsBox');
+
+        msgBox.style.display = 'none';
+        detailsBox.style.display = 'none';
+
+        if (!emailInput) {
+            alert("অনুগ্রহ করে একটি ইমেইল অ্যাড্রেস লিখুন!");
+            return;
+        }
+
+        try {
+            const usersRef = ref(db, 'users');
+            const snapshot = await get(usersRef);
+
+            if (snapshot.exists()) {
+                const users = snapshot.val();
+                let foundKey = null;
+                let foundUser = null;
+
+                for (let key in users) {
+                    if (users[key].email && users[key].email.toLowerCase() === emailInput) {
+                        foundKey = key;
+                        foundUser = users[key];
+                        break;
+                    }
+                }
+
+                if (foundUser) {
+                    document.getElementById('studentKey').value = foundKey;
+                    document.getElementById('studentName').value = foundUser.name || foundUser.displayName || '';
+                    document.getElementById('studentDisplayEmail').value = foundUser.email || '';
+                    document.getElementById('studentPhone').value = foundUser.phone || foundUser.phoneNumber || '';
+                    document.getElementById('studentRoll').value = foundUser.roll || foundUser.studentId || '';
+                    document.getElementById('studentInstitute').value = foundUser.institute || foundUser.college || '';
+                    document.getElementById('studentAccess').value = foundUser.status || 'active';
+
+                    detailsBox.style.display = 'block';
+                } else {
+                    msgBox.innerText = "❌ এই ইমেইল দিয়ে কোনো স্টুডেন্ট খুঁজে পাওয়া যায়নি!";
+                    msgBox.style.display = 'block';
+                }
+            } else {
+                msgBox.innerText = "❌ ডেটাবেসে কোনো স্টুডেন্ট এর ডাটা নেই!";
+                msgBox.style.display = 'block';
+            }
+        } catch (e) {
+            alert("ত্রুটি ঘটেছে: " + e.message);
+        }
+      };
+
+      window.updateStudentData = async function() {
+        const key = document.getElementById('studentKey').value;
+        if (!key) return;
+
+        const updatedData = {
+            name: document.getElementById('studentName').value.trim(),
+            phone: document.getElementById('studentPhone').value.trim(),
+            roll: document.getElementById('studentRoll').value.trim(),
+            institute: document.getElementById('studentInstitute').value.trim(),
+            status: document.getElementById('studentAccess').value
+        };
+
+        try {
+            await update(ref(db, `users/${key}`), updatedData);
+            alert("✅ স্টুডেন্টের তথ্য সফলভাবে আপডেট করা হয়েছে!");
+        } catch (e) {
+            alert("আপডেট করতে সমস্যা হয়েছে: " + e.message);
+        }
+      };
+
+      window.deleteStudentData = async function() {
+        const key = document.getElementById('studentKey').value;
+        if (!key) return;
+
+        if (confirm("⚠️ আপনি কি নিশ্চিত যে এই স্টুডেন্টের সম্পূর্ণ ডাটা মুছে ফেলতে চান?")) {
+            try {
+                await remove(ref(db, `users/${key}`));
+                alert("✅ স্টুডেন্টের তথ্য মুছে ফেলা হয়েছে!");
+                document.getElementById('studentDetailsBox').style.display = 'none';
+                document.getElementById('searchStudentEmail').value = '';
+            } catch (e) {
+                alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
+            }
         }
       };
 
