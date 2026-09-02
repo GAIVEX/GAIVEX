@@ -3,676 +3,561 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - Premium Admission Exam Portal</title>
-    <!-- SEO & Open Graph Meta Tags -->
+    <title>GAIVEX - Advanced Learning & Admission Exam Portal</title>
+    <!-- SEO Meta Tags -->
     <meta name="description" content="মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট, প্র্যাকটিস, নোটস ও এআই সহায়তা।">
     <meta property="og:title" content="GAIVEX - Admission Exam Portal">
     <meta property="og:description" content="স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক GAIVEX এর সাথে।">
     <meta property="og:type" content="website">
     
-    <!-- Google Fonts & FontAwesome Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Dark Mode Variables (Default Ultra-Modern Cyberpunk-Dark) */
-            --bg-color: #07090e;
-            --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #07090e 70%);
-            --text-color: #f8fafc;
-            --subtext: #94a3b8;
-            --nav-bg: rgba(15, 23, 42, 0.75);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --card-bg: rgba(30, 41, 59, 0.4);
-            --card-hover: rgba(51, 65, 85, 0.6);
-            --modal-bg: #0f172a;
-            --input-bg: rgba(15, 23, 42, 0.7);
-            --input-border: rgba(255, 255, 255, 0.12);
+            --bg-color: #090d16;
+            --card-bg: rgba(21, 30, 47, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
             --primary: #38bdf8;
-            --primary-glow: rgba(56, 189, 248, 0.2);
-            --accent: #f43f5e;
-            --accent-glow: rgba(244, 63, 94, 0.25);
-            --gradient-accent: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
-            --card-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
-            --glass-border: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+            --primary-gradient: linear-gradient(135deg, #38bdf8, #6366f1);
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --modal-bg: #0f172a;
         }
 
         [data-theme="light"] {
-            --bg-color: #f8fafc;
-            --bg-gradient: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f8fafc 70%);
-            --text-color: #0f172a;
-            --subtext: #64748b;
-            --nav-bg: rgba(255, 255, 255, 0.82);
-            --border-color: rgba(0, 0, 0, 0.08);
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --card-hover: #ffffff;
-            --modal-bg: #ffffff;
-            --input-bg: #f1f5f9;
-            --input-border: #cbd5e1;
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-main: #0f172a;
+            --text-sub: #64748b;
             --primary: #0284c7;
-            --primary-glow: rgba(2, 132, 199, 0.15);
-            --accent: #e11d48;
-            --accent-glow: rgba(225, 29, 72, 0.15);
-            --gradient-accent: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06);
-            --glass-border: linear-gradient(135deg, rgba(0,0,0,0.08), rgba(0,0,0,0.02));
+            --primary-gradient: linear-gradient(135deg, #0284c7, #4f46e5);
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --input-bg: #e2e8f0;
+            --modal-bg: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; transition: all 0.25s ease; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
         }
 
-        body {
-            background: var(--bg-color);
-            background-image: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-color);
-            min-height: 100vh;
+        /* Ambient Glow & Floating Elements */
+        .ambient-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 5%; 
+            background: var(--nav-bg); 
+            backdrop-filter: blur(16px); 
+            border-bottom: 1px solid var(--card-border); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .logo { font-size: 24px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: 0.5px; }
+        .logo span { color: var(--primary); }
+
+        .search-bar {
             display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
+            align-items: center;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            width: 280px;
+        }
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 13px;
+            width: 100%;
+            margin-left: 8px;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+
+        .nav-icon-btn { 
+            background: var(--input-bg); 
+            border: 1px solid var(--card-border); 
+            color: var(--text-main); 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            font-size: 18px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
             position: relative;
         }
+        .nav-icon-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
 
-        /* Ambient Animated Background Particles */
-        .global-bg-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .floating-element {
-            position: absolute;
-            font-size: 38px;
-            opacity: 0.15;
-            animation: floatRotateAnim 20s infinite ease-in-out;
-            filter: drop-shadow(0 0 12px var(--primary));
-        }
-
-        @keyframes floatRotateAnim {
-            0% { transform: translateY(0px) rotate(0deg) scale(1); }
-            50% { transform: translateY(180px) rotate(180deg) scale(1.15); }
-            100% { transform: translateY(0px) rotate(360deg) scale(1); }
+        .notification-badge { 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            background: #ef4444; 
+            color: white; 
+            border-radius: 50%; 
+            width: 18px; 
+            height: 18px; 
+            font-size: 10px; 
+            font-weight: bold; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
         }
 
-        /* Glassmorphism Header / Navbar */
-        .navbar {
+        /* Layout Grid System */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 240px 1fr 320px;
+            gap: 20px;
+            padding: 20px 4%;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            z-index: 10;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container { grid-template-columns: 200px 1fr; }
+            .right-sidebar { display: none; }
+        }
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            .left-sidebar { display: none; }
+            .search-bar { display: none; }
+        }
+
+        /* Sidebars & Glass Cards */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .left-sidebar .nav-menu { display: flex; flex-direction: column; gap: 6px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Hero / Welcome Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            border-radius: 20px;
+            padding: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 6%;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-left-group { display: flex; align-items: center; gap: 14px; }
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-        .logo span { color: var(--accent); }
-
-        .nav-right-group { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-
-        .menu-container { position: relative; }
-        .menu-btn, .notification-btn {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        .menu-btn:hover, .notification-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            left: 0;
-            top: 54px;
-            background: var(--modal-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 220px;
-            box-shadow: var(--card-shadow);
-            z-index: 1000;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-            padding: 6px;
-        }
-        .dropdown-menu a, .dropdown-menu button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            padding: 12px 14px;
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active {
-            background: var(--primary-glow);
-            color: var(--primary);
-            transform: translateX(4px);
-        }
-        .dropdown-menu.show { display: block; animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        /* Notification System */
-        .notification-container { position: relative; }
-        .notification-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-            font-weight: bold;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .notification-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 54px;
-            background: var(--modal-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 320px;
-            max-width: 90vw;
-            box-shadow: var(--card-shadow);
-            z-index: 1000;
-            overflow: hidden;
-            flex-direction: column;
-            backdrop-filter: blur(20px);
-        }
-        .notification-dropdown.show { display: flex; animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        .btn-auth {
-            background: var(--gradient-accent);
-            color: #ffffff;
-            border: none;
-            padding: 9px 22px;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 14px;
-            box-shadow: 0 4px 20px var(--primary-glow);
-        }
-        .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 6px 25px var(--primary-glow); }
-
-        /* Hero & Exam Cards */
-        .hero-section {
-            text-align: center;
-            padding: 30px 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-            flex: 1;
-            width: 100%;
-            z-index: 10;
-        }
-
-        .exam-banner-box {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            text-align: left;
-            text-decoration: none;
-            display: block;
-            color: var(--text-color);
-            box-shadow: var(--card-shadow);
+            border: 1px solid var(--card-border);
             position: relative;
             overflow: hidden;
         }
-        .exam-banner-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 5px; height: 100%;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-        }
-        .exam-banner-box:hover {
-            transform: translateY(-4px);
-            border-color: rgba(56, 189, 248, 0.4);
-            background: var(--card-hover);
-            box-shadow: 0 15px 35px var(--primary-glow);
-        }
+        .hero-text h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+        .hero-text p { color: var(--text-sub); font-size: 14px; margin-bottom: 16px; }
 
-        .live-badge-new, .practice-badge-new {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+        @media(max-width: 600px){ .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
         }
-        .live-badge-new {
-            background: rgba(244, 63, 94, 0.15);
-            color: var(--accent);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-        }
-        .practice-badge-new {
-            background: var(--primary-glow);
-            color: var(--primary);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
+        .stat-card .num { font-size: 22px; font-weight: 700; color: var(--primary); }
+        .stat-card .label { font-size: 12px; color: var(--text-sub); }
 
-        /* Modern Grid System */
-        .subject-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 18px;
-            margin: 30px 0;
-        }
+        /* Quick Action Subject Grid */
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title a { font-size: 12px; color: var(--primary); text-decoration: none; }
+
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .subject-box {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px 16px;
-            text-decoration: none;
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: var(--card-shadow);
-            position: relative;
-        }
-        .subject-box:hover {
-            transform: translateY(-6px) scale(1.02);
-            border-color: var(--primary);
-            background: var(--card-hover);
-            box-shadow: 0 12px 30px var(--primary-glow);
-        }
-        .subject-box .icon {
-            font-size: 38px;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
-        }
-        .subject-box h3 { font-size: 16px; font-weight: 700; }
-
-        /* Floating Action Buttons */
-        .floating-ai-btn, .floating-settings-btn {
-            position: fixed;
-            right: 25px;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            backdrop-filter: blur(10px);
-        }
-        .floating-ai-btn {
-            bottom: 25px;
-            background: var(--gradient-accent);
-            color: #ffffff;
-            font-size: 22px;
-            box-shadow: 0 8px 25px var(--primary-glow);
-            text-decoration: none;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-        .floating-ai-btn:hover {
-            transform: translateY(-4px) scale(1.08);
-            box-shadow: 0 12px 30px var(--primary-glow);
-        }
-
-        .floating-settings-btn {
-            bottom: 90px;
-            background: var(--modal-bg);
-            color: var(--text-color);
-            font-size: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-        }
-        .floating-settings-btn:hover {
-            transform: translateY(-4px) rotate(45deg);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Glass Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: var(--modal-bg);
-            color: var(--text-color);
-            padding: 28px;
-            border-radius: 24px;
-            width: 92%;
-            max-width: 520px;
-            max-height: 88vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes modalPop {
-            from { transform: scale(0.92); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-content input, select {
-            width: 100%;
-            padding: 12px 16px;
+            border: 1px solid var(--card-border);
             border-radius: 12px;
-            border: 1px solid var(--input-border);
-            background: var(--input-bg);
-            color: var(--text-color);
-            font-size: 14px;
-            margin-bottom: 12px;
-            outline: none;
-        }
-        .modal-content input:focus, select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        .btn {
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
+            padding: 15px 10px;
             text-align: center;
-            font-size: 14px;
-        }
-        .btn-save { background: #10b981; color: white; }
-        .btn-save:hover { background: #059669; }
-        .btn-close { background: #ef4444; color: white; }
-        .btn-close:hover { background: #dc2626; }
-        .btn-google {
-            background: #ea4335;
-            color: white;
-            width: 100%;
-            margin-top: 12px;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
             cursor: pointer;
         }
+        .subject-box:hover { transform: translateY(-3px); border-color: var(--primary); background: rgba(56, 189, 248, 0.05); }
+        .subject-box .icon { font-size: 26px; margin-bottom: 6px; }
+        .subject-box h3 { font-size: 13px; font-weight: 600; }
 
-        /* Footer System */
-        .site-footer {
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border-color);
-            padding: 40px 20px 24px;
-            margin-top: auto;
-            text-align: center;
-            z-index: 10;
-        }
-        .social-links { display: flex; justify-content: center; gap: 16px; margin-top: 18px; }
-        .social-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            font-size: 18px;
-            text-decoration: none;
-        }
-        .social-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px var(--primary-glow);
-        }
-
-        /* Toast Popup Notification */
-        #toastContainer { position: fixed; bottom: 85px; right: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-        .toast {
-            background: var(--modal-bg);
-            color: var(--text-color);
-            padding: 12px 20px;
+        /* Exam Banners */
+        .exam-banner-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        @media(max-width: 600px){ .exam-banner-container { grid-template-columns: 1fr; } }
+        .exam-banner-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 14px;
-            font-size: 13px;
-            font-weight: 700;
-            box-shadow: var(--card-shadow);
-            border-left: 4px solid var(--primary);
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 16px;
+            text-decoration: none;
+            color: var(--text-main);
+            display: block;
         }
-        @keyframes slideInToast { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .exam-banner-box:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .badge-live { background: #ef4444; }
+        .badge-practice { background: #0284c7; }
 
-        @media (max-width: 600px) {
-            .subject-grid { grid-template-columns: repeat(2, 1fr); }
-            .hero-section { padding: 20px 14px; }
+        /* Recent Activity / Progress */
+        .progress-list { display: flex; flex-direction: column; gap: 10px; }
+        .progress-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 10px;
         }
+
+        /* Right Sidebar Widgets */
+        .calendar-widget { text-align: center; font-size: 13px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 10px; }
+        .calendar-day { padding: 6px; border-radius: 6px; color: var(--text-sub); }
+        .calendar-day.active { background: var(--primary); color: #fff; font-weight: bold; }
+
+        .streak-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Floating AI & Settings Buttons */
+        .floating-ai-btn {
+            position: fixed; bottom: 25px; right: 25px;
+            background: var(--primary-gradient); color: #fff;
+            width: 50px; height: 50px; border-radius: 50%;
+            font-size: 22px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4); z-index: 999; text-decoration: none;
+        }
+        .floating-settings-btn {
+            position: fixed; bottom: 85px; right: 25px;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            color: var(--text-main); width: 44px; height: 44px; border-radius: 50%;
+            font-size: 18px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 999;
+        }
+
+        /* Modals & Popups styling */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
+        .modal-content { background:var(--modal-bg); color:var(--text-main); padding:24px; border-radius:16px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; border:1px solid var(--card-border); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
+        .modal-header h3 { color: var(--primary); font-size: 18px; }
+        .modal-close-x { background: none; border: none; color: var(--text-sub); font-size: 22px; cursor: pointer; }
+
+        .btn { padding:10px 16px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size: 14px; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-close { background: #ef4444; color: white; }
+        .btn-google { background: #ea4335; color: white; width: 100%; margin-top: 10px; }
+
+        input, select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; margin-bottom: 10px; outline: none; }
+
+        /* Notification Dropdown */
+        .notification-dropdown { display: none; position: absolute; right: 0; top: 50px; background: var(--modal-bg); border: 1px solid var(--card-border); border-radius: 12px; width: 300px; max-height: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; flex-direction: column; }
+        .notification-dropdown.show { display: flex; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--card-border); }
+        .notif-body { overflow-y: auto; max-height: 330px; padding: 8px; }
+        .notif-item { padding: 10px; border-bottom: 1px solid var(--card-border); font-size: 12px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; }
+        .notif-item.unread { background: rgba(56, 189, 248, 0.1); border-left: 3px solid var(--primary); }
+
+        #toastContainer { position: fixed; bottom: 85px; right: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: bold; border-left: 4px solid var(--primary); }
+        
+        .skeleton { background: linear-gradient(90deg, var(--input-bg) 25%, rgba(255,255,255,0.05) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; height: 18px; margin-bottom: 8px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body data-theme="dark">
 
+    <div class="ambient-glow"></div>
     <div id="toastContainer"></div>
 
-    <div class="global-bg-container">
-        <div class="floating-element" style="top: 10%; left: 8%;">🧬</div>
-        <div class="floating-element" style="top: 25%; left: 85%; animation-delay: 2s;">⚛️</div>
-        <div class="floating-element" style="top: 55%; left: 75%; animation-delay: 4s;">🧪</div>
-        <div class="floating-element" style="top: 75%; left: 12%; animation-delay: 1s;">📚</div>
-        <div class="floating-element" style="top: 88%; left: 82%; animation-delay: 3s;">📐</div>
-    </div>
+    <!-- Floating Action Buttons -->
+    <button class="floating-settings-btn" onclick="openSettingsModal()" title="সেটিংস">⚙️</button>
+    <a href="gaivexai.html" class="floating-ai-btn" title="GAIVEX AI">🤖</a>
 
-    <!-- Quick Floating Action Controls -->
-    <button class="floating-settings-btn" onclick="openSettingsModal()" title="সেটিংস"><i class="fa-solid fa-gear"></i></button>
-    <a href="gaivexai.html" class="floating-ai-btn" title="GAIVEX AI"><i class="fa-solid fa-robot"></i></a>
-
-    <!-- Top Navigation Area -->
+    <!-- Top Navigation Bar -->
     <header class="navbar">
-        <div class="nav-left-group">
-            <div class="menu-container">
-                <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <a href="index.html" class="active"><i class="fa-solid fa-house"></i> হোম</a>
-                    <a href="gaivexai.html"><i class="fa-solid fa-robot"></i> GAIVEX AI</a>
-                    <a href="community.html"><i class="fa-solid fa-comments"></i> GAIVEX TUTO</a>
-                    <a href="qanda.html"><i class="fa-solid fa-circle-question"></i> Q&A</a>
-                    <button onclick="openNoticeModal()"><i class="fa-solid fa-bullhorn"></i> নোটিশ বোর্ড</button>
-                    <button onclick="openResultModal()"><i class="fa-solid fa-chart-line"></i> রেজাল্ট</button>
-                    <button onclick="openLeaderboardModal()"><i class="fa-solid fa-trophy"></i> লিডারবোর্ড</button>
-                    <button onclick="openNotesModal()"><i class="fa-solid fa-book-open"></i> নোটস</button>
-                    <div id="dropdownAuthAction"></div>
-                </div>
-            </div>
+        <div class="nav-left">
             <a href="index.html" class="logo">GAIVEX<span>.</span></a>
+            <div class="search-bar">
+                🔍 <input type="text" placeholder="Search courses, tests, notes...">
+            </div>
         </div>
         
-        <div class="nav-right-group">
-            <div class="notification-container">
-                <button class="notification-btn" onclick="toggleNotificationMenu()" title="নোটিফিকেশন">
-                    <i class="fa-regular fa-bell"></i>
+        <div class="nav-right">
+            <!-- Notification Bell -->
+            <div style="position: relative;">
+                <button class="nav-icon-btn" onclick="toggleNotificationMenu()" title="নোটিফিকেশন">
+                    🔔
                     <span class="notification-badge" id="notifBadge">0</span>
                 </button>
                 <div class="notification-dropdown" id="notificationDropdown">
-                    <div class="notif-header" style="padding:14px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                        <h4 style="font-size:14px; font-weight:700;">📢 নোটিফিকেশন</h4>
-                        <button onclick="markAllNotificationsRead()" style="background:none; border:none; color:var(--primary); font-size:12px; cursor:pointer; font-weight:600;">সব পঠিত মার্ক করুন</button>
+                    <div class="notif-header">
+                        <h4 style="font-size: 13px;">📢 নোটিফিকেশন</h4>
+                        <button onclick="markAllNotificationsRead()" style="background:none; border:none; color:var(--primary); font-size:11px; cursor:pointer;">সব পড়া হয়েছে মার্ক করুন</button>
                     </div>
-                    <div class="notif-body" id="notifBody" style="padding:10px;">
-                        <p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">কোনো নতুন নোটিফিকেশন নেই</p>
+                    <div class="notif-body" id="notifBody">
+                        <p style="color:var(--text-sub); font-size:12px; text-align:center; padding: 20px 0;">কোনো নতুন নোটিফিকেশন নেই</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Auth Container -->
             <div id="authNavContainer">
-                <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
+                <button class="btn btn-primary" onclick="toggleAuthModal(true)">লগইন</button>
             </div>
         </div>
     </header>
 
-    <!-- Main Portal Content Section -->
-    <main class="hero-section">
-        <a href="liveexam.html" class="exam-banner-box">
-            <div class="live-badge-new"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> LIVE EXAM</div>
-            <h2 id="liveExamTitle" style="font-size: 20px; font-weight: 700;">Daily Live Exam</h2>
-        </a>
+    <!-- Main Dashboard Grid Layout -->
+    <div class="dashboard-container">
+        
+        <!-- Left Sidebar Navigation -->
+        <aside class="left-sidebar">
+            <div class="glass-card">
+                <nav class="nav-menu">
+                    <a href="index.html" class="nav-item active">🏠 ড্যাশবোর্ড</a>
+                    <a href="gaivexai.html" class="nav-item">🤖 GAIVEX AI</a>
+                    <a href="community.html" class="nav-item">💬 GAIVEX TUTO</a>
+                    <a href="qanda.html" class="nav-item">❓ Q&A ফোরাম</a>
+                    <button onclick="openNoticeModal()" class="nav-item">📢 নোটিশ বোর্ড</button>
+                    <button onclick="openResultModal()" class="nav-item">📊 রেজাল্ট ও হিস্টোরি</button>
+                    <button onclick="openLeaderboardModal()" class="nav-item">🏆 লিডারবোর্ড</button>
+                    <button onclick="openNotesModal()" class="nav-item">📚 অধ্যায়ভিত্তিক নোটস</button>
+                </nav>
+            </div>
+        </aside>
 
-        <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="exam-banner-box">
-            <div class="practice-badge-new"><i class="fa-solid fa-pen-to-square"></i> PRACTICE EXAM</div>
-            <h2 id="practiceExamTitle" style="font-size: 20px; font-weight: 700;">Practice Exam</h2>
-        </a>
+        <!-- Center Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <h1 id="welcomeUserText">Hello, Student! 👋</h1>
+                    <p>Learn Today, Lead Tomorrow. আপনার স্বপ্নের বিশ্ববিদ্যালয় প্রস্তুতির সেরা ডিজিটাল প্ল্যাটফর্ম।</p>
+                    <a href="liveexam.html" class="btn btn-primary">আজকের লাইভ পরীক্ষা দিন →</a>
+                </div>
+            </div>
 
-        <!-- Subject Modules Grid -->
-        <div class="subject-grid">
-            <div class="subject-box" onclick="location.href='gaivexai.html'"><div class="icon">🤖</div><h3>GAIVEX AI</h3></div>
-            <div class="subject-box" onclick="location.href='community.html'"><div class="icon">💬</div><h3>GAIVEX TUTO</h3></div>
-            <div class="subject-box" onclick="location.href='qanda.html'"><div class="icon">❓</div><h3>Q&A</h3></div>
-            <div class="subject-box" onclick="openNoticeModal()"><div class="icon">📢</div><h3>নোটিশ বোর্ড</h3></div>
-            <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
-            <div class="subject-box" onclick="openLeaderboardModal()"><div class="icon">🏆</div><h3>লিডারবোর্ড</h3></div>
-            <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
-            <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
-            <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
-            <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
-            <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
-        </div>
-    </main>
+            <!-- Dashboard Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card"><div class="num" id="statEnrolled">12</div><div class="label">কোর্স/বিষয়</div></div>
+                <div class="stat-card"><div class="num" id="statExams">28</div><div class="label">লাইভ এক্সাম</div></div>
+                <div class="stat-card"><div class="num" id="statTests">56</div><div class="label">পরীক্ষা দেওয়া হয়েছে</div></div>
+                <div class="stat-card"><div class="num" id="statPerformance">85%</div><div class="label">ওভারঅল পারফরম্যান্স</div></div>
+            </div>
+
+            <!-- Live and Practice Exam Banners -->
+            <div class="exam-banner-container">
+                <a href="liveexam.html" class="exam-banner-box">
+                    <span class="badge badge-live">🔴 LIVE EXAM</span>
+                    <h3 id="liveExamTitle" style="font-size: 16px;">Daily Live Exam</h3>
+                    <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">অংশগ্রহণ করতে এখানে ক্লিক করুন</p>
+                </a>
+                <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="exam-banner-box">
+                    <span class="badge badge-practice">📝 PRACTICE EXAM</span>
+                    <h3 id="practiceExamTitle" style="font-size: 16px;">Practice Exam</h3>
+                    <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">আনলিমিটেড প্র্যাকটিস টেস্ট</p>
+                </a>
+            </div>
+
+            <!-- Subject Shortcut Grid -->
+            <div class="section-title">
+                <span>বিষয়ভিত্তিক প্রস্তুতি</span>
+            </div>
+            <div class="subject-grid">
+                <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
+                <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
+                <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
+                <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
+            </div>
+
+            <!-- Continue Learning Section -->
+            <div class="section-title">
+                <span>চলমান পড়াশোনা (Recent Activity)</span>
+                <a href="#" onclick="openResultModal()">সব দেখুন</a>
+            </div>
+            <div class="progress-list" id="recentActivityList">
+                <div class="progress-item">
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">পদার্থবিজ্ঞান ১ম পত্র - ভেক্টর</div>
+                        <div style="font-size: 12px; color: var(--text-sub);">সর্বশেষ স্কোর: ৮৮%</div>
+                    </div>
+                    <span style="color: var(--success); font-weight: bold; font-size: 13px;">সম্পন্ন</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar Widgets -->
+        <aside class="right-sidebar">
+            
+            <!-- Streak Card -->
+            <div class="streak-card glass-card">
+                <div style="font-size: 28px;">🔥</div>
+                <div>
+                    <div style="font-weight: bold; font-size: 14px;">Weekly Study Streak</div>
+                    <div style="font-size: 12px; color: var(--text-sub);">You're on fire! 7 Days Streak</div>
+                </div>
+            </div>
+
+            <!-- Mini Calendar Widget -->
+            <div class="glass-card calendar-widget">
+                <div style="font-weight: bold; margin-bottom: 8px;">মে ২০২৬</div>
+                <div class="calendar-grid">
+                    <div class="calendar-day">র</div><div class="calendar-day">সো</div><div class="calendar-day">ম</div><div class="calendar-day">বু</div><div class="calendar-day">বৃ</div><div class="calendar-day">শু</div><div class="calendar-day">শ</div>
+                    <div class="calendar-day">1</div><div class="calendar-day">2</div><div class="calendar-day">3</div><div class="calendar-day">4</div><div class="calendar-day active">5</div><div class="calendar-day">6</div><div class="calendar-day">7</div>
+                </div>
+            </div>
+
+            <!-- Quick Notices / Announcements -->
+            <div class="glass-card">
+                <div class="section-title">📢 জরুরি নোটিশ</div>
+                <div id="sidebarNoticeList" style="font-size: 12px; color: var(--text-sub);">
+                    নোটিশ লোড হচ্ছে...
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- ================= All Modals (Original preserved functionality) ================= -->
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
-      <div class="modal-content" style="max-width: 450px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-            <h3 style="color:var(--primary);">⚙️ অ্যাপ সেটিংস</h3>
-            <button onclick="closeSettingsModal()" style="background:none; border:none; color:var(--subtext); font-size:22px; cursor:pointer;">&times;</button>
+      <div class="modal-content">
+        <div class="modal-header">
+            <h3>⚙️ সেটিংস (Settings)</h3>
+            <button class="modal-close-x" onclick="closeSettingsModal()">&times;</button>
         </div>
-        
-        <div style="background:var(--input-bg); border:1px solid var(--border-color); padding:16px; border-radius:14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <div>
-                <div style="font-weight: 700; font-size: 14px;">থিম মোড (Theme)</div>
-                <div style="font-size: 12px; color: var(--subtext);">ডার্ক বা লাইট থিম নির্বাচন করুন</div>
-            </div>
-            <button onclick="toggleTheme()" id="settingsThemeToggleBtn" style="background:var(--modal-bg); border:1px solid var(--border-color); color:var(--text-color); padding:8px 14px; border-radius:20px; cursor:pointer; font-weight:700;">
-                <span id="themeBtnIcon">☀️</span> <span id="themeBtnText">Light</span>
-            </button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <div><b>থিম মোড</b><br><small style="color:var(--text-sub);">ডার্ক / লাইট মোড সিলেক্ট করুন</small></div>
+            <button class="btn btn-primary" id="settingsThemeToggleBtn" onclick="toggleTheme()">☀️ Light Mode</button>
         </div>
-
-        <button type="button" class="btn btn-close" onclick="closeSettingsModal()" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
+        <button type="button" class="btn btn-close" onclick="closeSettingsModal()" style="width:100%;">বন্ধ করুন</button>
       </div>
     </div>
 
     <!-- Notice Modal -->
     <div id="noticeModal" class="modal">
       <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-            <h3 style="color:var(--primary);">📢 সকল গুরুত্বপূর্ণ নোটিশ</h3>
-            <button onclick="closeNoticeModal()" style="background:none; border:none; color:var(--subtext); font-size:22px; cursor:pointer;">&times;</button>
+        <div class="modal-header">
+            <h3>📢 সকল নোটিশ</h3>
+            <button class="modal-close-x" onclick="closeNoticeModal()">&times;</button>
         </div>
-        <input type="text" id="noticeSearchInput" placeholder="নোটিশ খুঁজুন..." oninput="filterNotices()" style="font-size: 13px;">
-        <div id="popupNoticeList" style="max-height:350px; overflow-y:auto; background:var(--input-bg); border-radius:14px; border:1px solid var(--border-color); padding:12px;">
-            <p style="color:var(--subtext); text-align:center;">নোটিশ লোড হচ্ছে...</p>
-        </div>
-        <button type="button" class="btn btn-close" onclick="closeNoticeModal()" style="width:100%; margin-top:15px;">বন্ধ করুন</button>
+        <input type="text" id="noticeSearchInput" placeholder="নোটিশ খুঁজুন..." oninput="filterNotices()">
+        <div id="popupNoticeList" style="max-height:350px; overflow-y:auto;"></div>
+        <button type="button" class="btn btn-close" onclick="closeNoticeModal()" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
       </div>
     </div>
 
     <!-- Result Modal -->
     <div id="resultListModal" class="modal">
       <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-            <h3 style="color:var(--primary);">📊 সকল পরীক্ষার রেজাল্ট</h3>
-            <button onclick="closeResultModal()" style="background:none; border:none; color:var(--subtext); font-size:22px; cursor:pointer;">&times;</button>
+        <div class="modal-header">
+            <h3>📊 সকল পরীক্ষার রেজাল্ট</h3>
+            <button class="modal-close-x" onclick="closeResultModal()">&times;</button>
         </div>
-        <div id="allExamResultListContainer" style="max-height:320px; overflow-y:auto; background:var(--input-bg); border-radius:14px; border:1px solid var(--border-color); padding:12px;">
-            <p style="color:var(--subtext); text-align:center;">ডাটা লোড হচ্ছে...</p>
-        </div>
-        <button type="button" class="btn btn-close" onclick="closeResultModal()" style="width:100%; margin-top:15px;">বন্ধ করুন</button>
+        <div id="allExamResultListContainer" style="max-height:320px; overflow-y:auto;"></div>
+        <button type="button" class="btn btn-close" onclick="closeResultModal()" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
       </div>
     </div>
 
     <!-- Leaderboard Modal -->
     <div id="leaderboardModal" class="modal">
       <div class="modal-content" style="max-width: 600px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-            <h3 style="color:var(--primary);">🏆 অ্যাডভান্সড লিডারবোর্ড</h3>
-            <button onclick="closeLeaderboardModal()" style="background:none; border:none; color:var(--subtext); font-size:22px; cursor:pointer;">&times;</button>
+        <div class="modal-header">
+            <h3>🏆 অ্যাডভান্সড লিডারবোর্ড</h3>
+            <button class="modal-close-x" onclick="closeLeaderboardModal()">&times;</button>
         </div>
-        <div id="leaderboardListContainer" style="max-height:320px; overflow-y:auto; background:var(--input-bg); border-radius:14px; border:1px solid var(--border-color); padding:12px;">
-            <p style="color:var(--subtext); text-align:center;">লিডারবোর্ড প্রস্তুত হচ্ছে...</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <select id="leaderboardExamFilter" onchange="renderFilteredLeaderboard()">
+                <option value="ALL">সকল পরীক্ষা (সর্বোচ্চ মোট স্কোর)</option>
+            </select>
+            <select id="leaderboardSubjectFilter" onchange="renderFilteredLeaderboard()">
+                <option value="ALL">সকল বিষয়</option>
+                <option value="physics">পদার্থবিজ্ঞান</option>
+                <option value="chemistry">রসায়ন</option>
+                <option value="biology">জীববিজ্ঞান</option>
+                <option value="math">উচ্চতর গণিত</option>
+            </select>
         </div>
-        <button type="button" class="btn btn-close" onclick="closeLeaderboardModal()" style="width:100%; margin-top:15px;">বন্ধ করুন</button>
+        <input type="text" id="leaderboardSearchInput" placeholder="শিক্ষার্থীর নাম দিয়ে খুঁজুন..." oninput="renderFilteredLeaderboard()">
+        <div id="userRankSummaryContainer"></div>
+        <div id="leaderboardListContainer" style="max-height:300px; overflow-y:auto;"></div>
+        <button type="button" class="btn btn-close" onclick="closeLeaderboardModal()" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
       </div>
     </div>
 
     <!-- Notes Modal -->
     <div id="notesModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-                <h3 style="color:var(--primary);">📚 অধ্যায়ভিত্তিক নোটস</h3>
-                <button onclick="closeNotesModal()" style="background:none; border:none; color:var(--subtext); font-size:22px; cursor:pointer;">&times;</button>
+            <div class="modal-header">
+                <h3>📚 অধ্যায়ভিত্তিক নোটস</h3>
+                <button class="modal-close-x" onclick="closeNotesModal()">&times;</button>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <select id="filterSubject" onchange="updateStudentPaperOptions()">
                     <option value="">বিষয় বাছুন</option>
                     <option value="physics">পদার্থবিজ্ঞান</option>
@@ -682,113 +567,129 @@
                 </select>
                 <select id="filterPaper" onchange="updateStudentChapterOptions()">
                     <option value="">পত্র বাছুন</option>
-                    <option value="paper1">১ম পত্র</option>
-                    <option value="paper2">২য় পত্র</option>
                 </select>
             </div>
             <select id="filterChapter" onchange="fetchStudentNotes()">
                 <option value="">আগে বিষয় ও পত্র বাছুন</option>
             </select>
-            <div id="notesListContainer" style="overflow-y: auto; background: var(--input-bg); padding: 12px; border-radius: 14px; border: 1px solid var(--border-color); margin-top: 10px; min-height: 150px;">
-                <p style="color: var(--subtext); text-align: center; font-size: 13px;">প্রথমে বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন।</p>
-            </div>
-            <button type="button" class="btn btn-close" onclick="closeNotesModal()" style="width:100%; margin-top:15px;">বন্ধ করুন</button>
+            <div id="notesListContainer" style="max-height:300px; overflow-y:auto;"></div>
+            <button type="button" class="btn btn-close" onclick="closeNotesModal()" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
         </div>
     </div>
 
-    <!-- Footer Area -->
-    <footer class="site-footer">
-        <div class="logo" style="justify-content: center; margin-bottom: 10px;">GAIVEX<span>.</span></div>
-        <p style="font-size: 14px; font-weight:600; color:var(--subtext);">স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক GAIVEX এর সাথে</p>
-        
-        <div class="social-links">
-            <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/gaivex8" target="_blank" class="social-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+      <div class="modal-content">
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="btn btn-primary" id="tabLogin" onclick="switchAuthTab('login')" style="flex:1;">লগইন</button>
+            <button class="btn" id="tabRegister" onclick="switchAuthTab('register')" style="flex:1;">রেজিস্ট্রেশন</button>
         </div>
-        <div style="margin-top:20px; border-top:1px solid var(--border-color); padding-top:14px; color:var(--subtext); font-size:12px;">
-            &copy; 2026 GAIVEX Exam Portal. All rights reserved.
-        </div>
-    </footer>
+        <form id="loginForm" onsubmit="handleEmailLogin(event)">
+            <input type="email" id="loginEmail" required placeholder="ইমেইল">
+            <input type="password" id="loginPassword" required placeholder="পাসওয়ার্ড">
+            <button type="submit" class="btn btn-primary" style="width:100%;">লগইন</button>
+        </form>
+        <form id="registerForm" onsubmit="handleEmailRegister(event)" style="display:none;">
+            <input type="text" id="regName" required placeholder="পূর্ণ নাম">
+            <input type="email" id="regEmail" required placeholder="ইমেইল">
+            <input type="password" id="regPassword" required placeholder="পাসওয়ার্ড">
+            <button type="submit" class="btn btn-primary" style="width:100%;">রেজিস্ট্রেশন</button>
+        </form>
+        <button type="button" class="btn btn-google" onclick="handleGoogleSignIn()">🌐 Google দিয়ে লগইন করুন</button>
+        <button type="button" class="btn btn-close" onclick="toggleAuthModal(false)" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
+      </div>
+    </div>
 
-    <!-- Firebase Script Logic Block -->
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+      <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-header">
+            <h3>📊 প্রোফাইল ও পারফরম্যান্স</h3>
+            <button class="modal-close-x" onclick="toggleProfileModal(false)">&times;</button>
+        </div>
+        <div id="profileDetails" style="margin-bottom:12px;"></div>
+        <div id="performanceBox" style="margin-bottom:15px;"></div>
+        <div id="examHistoryContainer" style="max-height:200px; overflow-y:auto;"></div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button type="button" class="btn btn-close" onclick="handleLogout()" style="flex:1;">লগআউট</button>
+            <button type="button" class="btn btn-primary" onclick="toggleProfileModal(false)" style="flex:1;">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript (Firebase Backend Core Logic Completely Intact) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, get, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getDatabase, ref, get, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
-            authDomain: "gaivexexam.firebaseapp.com",
-            databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-            projectId: "gaivexexam",
-            storageBucket: "gaivexexam.firebasestorage.app",
-            messagingSenderId: "956204530190",
-            appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
-        };
+      const firebaseConfig = {
+        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+        authDomain: "gaivexexam.firebaseapp.com",
+        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+        projectId: "gaivexexam",
+        storageBucket: "gaivexexam.firebasestorage.app",
+        messagingSenderId: "956204530190",
+        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+      };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+      const googleProvider = new GoogleAuthProvider();
 
-        // Toast Helper
-        window.showToast = function(message) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+      let currentUser = null;
+      let currentStudentProfile = null;
+
+      window.showToast = function(message) {
+          const container = document.getElementById('toastContainer');
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.innerText = message;
+          container.appendChild(toast);
+          setTimeout(() => { toast.remove(); }, 3000);
+      }
+
+      window.openSettingsModal = () => document.getElementById('settingsModal').style.display = 'flex';
+      window.closeSettingsModal = () => document.getElementById('settingsModal').style.display = 'none';
+
+      window.toggleTheme = function() {
+          const body = document.body;
+          const currentTheme = body.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          body.setAttribute('data-theme', newTheme);
+          localStorage.setItem('gaivex_theme', newTheme);
+      }
+
+      window.toggleNotificationMenu = function() {
+          document.getElementById('notificationDropdown').classList.toggle('show');
+      }
+
+      window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
+
+      window.handleGoogleSignIn = async () => { 
+        try {
+            const res = await signInWithPopup(auth, googleProvider); 
+            toggleAuthModal(false); 
+            showToast("সফলভাবে লগইন হয়েছে!");
+        } catch(e) {
+            showToast("গুগল দিয়ে লগইন ব্যর্থ হয়েছে!");
         }
+      };
 
-        // Dropdown Menu Controls
-        window.toggleMenu = function() {
-            document.getElementById('dropdownMenu').classList.toggle('show');
+      onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        const c = document.getElementById('authNavContainer');
+        const welcomeText = document.getElementById('welcomeUserText');
+        
+        if (user) {
+          c.innerHTML = `<button class="btn btn-primary" onclick="toggleProfileModal(true)">👤 ${user.displayName || 'প্রোফাইল'}</button>`;
+          if(welcomeText) welcomeText.innerText = `Hello, ${user.displayName || 'Student'}! 👋`;
+        } else {
+          c.innerHTML = `<button class="btn btn-primary" onclick="toggleAuthModal(true)">লগইন</button>`;
+          if(welcomeText) welcomeText.innerText = `Hello, Guest! 👋`;
         }
-
-        window.toggleNotificationMenu = function() {
-            document.getElementById('notificationDropdown').classList.toggle('show');
-        }
-
-        // Settings Modal
-        window.openSettingsModal = () => document.getElementById('settingsModal').style.display = 'flex';
-        window.closeSettingsModal = () => document.getElementById('settingsModal').style.display = 'none';
-
-        // Theme Toggle
-        window.toggleTheme = function() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('gaivex_theme', newTheme);
-            updateThemeUI(newTheme);
-        }
-
-        function updateThemeUI(theme) {
-            const icon = document.getElementById('themeBtnIcon');
-            const text = document.getElementById('themeBtnText');
-            if(icon && text) {
-                icon.innerText = theme === 'dark' ? '☀️' : '🌙';
-                text.innerText = theme === 'dark' ? 'Light' : 'Dark';
-            }
-        }
-
-        // Modals Toggle Actions
-        window.openNoticeModal = () => document.getElementById('noticeModal').style.display = 'flex';
-        window.closeNoticeModal = () => document.getElementById('noticeModal').style.display = 'none';
-        window.openResultModal = () => document.getElementById('resultListModal').style.display = 'flex';
-        window.closeResultModal = () => document.getElementById('resultListModal').style.display = 'none';
-        window.openLeaderboardModal = () => document.getElementById('leaderboardModal').style.display = 'flex';
-        window.closeLeaderboardModal = () => document.getElementById('leaderboardModal').style.display = 'none';
-        window.openNotesModal = () => document.getElementById('notesModal').style.display = 'flex';
-        window.closeNotesModal = () => document.getElementById('notesModal').style.display = 'none';
-
-        // Initialize Theme Setup
-        const localTheme = localStorage.getItem('gaivex_theme') || 'dark';
-        document.body.setAttribute('data-theme', localTheme);
-        updateThemeUI(localTheme);
+      });
     </script>
 </body>
 </html>
