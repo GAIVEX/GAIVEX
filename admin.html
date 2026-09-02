@@ -81,6 +81,7 @@
             <button class="mode-btn" id="btnStudentMode" onclick="switchMode('student')">👨‍🎓 স্টুডেন্ট ম্যানেজমেন্ট</button>
         </div>
 
+        <!-- Notice Section -->
         <div id="noticeSection" style="display: none;">
             <h3 style="color: #38bdf8; margin-bottom: 15px;">নতুন নোটিশ প্রকাশ করুন</h3>
             <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
@@ -102,6 +103,7 @@
             </div>
         </div>
 
+        <!-- Notes Section -->
         <div id="notesSection" style="display: none;">
             <h3 style="color: #38bdf8; margin-bottom: 15px;">নতুন নোট আপলোড করুন</h3>
             <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
@@ -153,6 +155,7 @@
             </div>
         </div>
 
+        <!-- Student Management Section (Full Details) -->
         <div id="studentSection" style="display: none;">
             <h3 style="color: #38bdf8; margin-bottom: 15px;">👨‍🎓 সকল স্টুডেন্ট লিস্ট ও ফিল্টার</h3>
             
@@ -165,24 +168,68 @@
                 <p style="color: #94a3b8; font-size: 13px;">স্টুডেন্টদের তথ্য লোড হচ্ছে...</p>
             </div>
 
-            <div id="studentDetailsBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 20px;">
-                <h4 style="color: #10b981; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px;">স্টুডেন্টের বিস্তারিত তথ্য ও এডিট অপশন</h4>
+            <div id="studentDetailsBox" style="display: none; background: #0f172a; padding: 20px; border-radius: 8px; border: 1px solid #334155; margin-top: 20px;">
+                <h4 style="color: #10b981; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 8px;">স্টুডেন্টের সম্পূর্ণ তথ্য ও এডিট অপশন</h4>
                 <input type="hidden" id="studentKey">
                 
-                <label>নাম (Name):</label>
+                <label>শিক্ষার্থীর পূর্ণ নাম:</label>
                 <input type="text" id="studentName">
 
                 <label>ইমেইল (Email):</label>
                 <input type="email" id="studentDisplayEmail" readonly style="opacity: 0.7; cursor: not-allowed;">
 
-                <label>ফোন নম্বর (Phone Number):</label>
-                <input type="text" id="studentPhone">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>পিতার নাম:</label>
+                        <input type="text" id="studentFatherName">
+                    </div>
+                    <div>
+                        <label>মাতার নাম:</label>
+                        <input type="text" id="studentMotherName">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>শিক্ষার্থীর মোবাইল নম্বর:</label>
+                        <input type="text" id="studentPhone">
+                    </div>
+                    <div>
+                        <label>অভিভাবকের মোবাইল নম্বর:</label>
+                        <input type="text" id="studentGuardianPhone">
+                    </div>
+                </div>
+
+                <label>কলেজের নাম / প্রতিষ্ঠান:</label>
+                <input type="text" id="studentInstitute">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>SSC পাসের সাল:</label>
+                        <input type="text" id="studentSscYear">
+                    </div>
+                    <div>
+                        <label>HSC পাসের সাল:</label>
+                        <input type="text" id="studentHscYear">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>জন্ম তারিখ:</label>
+                        <input type="text" id="studentDob">
+                    </div>
+                    <div>
+                        <label>লিঙ্গ (Gender):</label>
+                        <input type="text" id="studentGender">
+                    </div>
+                </div>
+
+                <label>বর্তমান ঠিকানা (জেলা ও বিভাগ সহ):</label>
+                <textarea id="studentAddress" rows="2"></textarea>
 
                 <label>রোল/আইডি (Roll / Student ID):</label>
                 <input type="text" id="studentRoll">
-
-                <label>কলেজ / প্রতিষ্ঠান (Institution):</label>
-                <input type="text" id="studentInstitute">
 
                 <label>পরীক্ষা এক্সেস স্ট্যাটাস (Exam Access):</label>
                 <select id="studentAccess">
@@ -195,9 +242,9 @@
                     <button type="button" class="btn-clear" onclick="deleteStudentData()" style="flex: 1;">ডিলিট স্টুডেন্ট 🗑️</button>
                 </div>
             </div>
-            <div id="studentSearchMsg" style="color: #f43f5e; font-size: 14px; margin-top: 15px; display: none;"></div>
         </div>
 
+        <!-- Chapter Selection Box -->
         <div id="chapterSelectionBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 20px;">
             <label>বিষয় নির্বাচন করুন:</label>
             <select id="admSubject" onchange="updatePaperOptions()">
@@ -221,6 +268,7 @@
 
         <div id="loadingText" style="color: #38bdf8; text-align: center; margin: 15px 0; display: none;">ডাটাবেস থেকে ডেটা লোড হচ্ছে...</div>
 
+        <!-- Exam Form Content -->
         <div id="examFormContent">
             <label id="titleLabel">পরীক্ষার শিরোনাম (Exam Title):</label>
             <input type="text" id="examTitle" placeholder="যেমন: প্রাণীর পরিচিতি — ৩০টি MCQ">
@@ -265,6 +313,7 @@
       const CORRECT_SECRET_PASS = "GAIVEXScholars#@70160tamim";
       let currentMode = 'live';
       let globalAllStudents = {};
+      let activeStudentPath = 'users';
 
       const chaptersData = {
           physics: {
@@ -387,17 +436,19 @@
         }
       };
 
-      // --- আপডেট করা স্টুডেন্ট ফেচ লজিক (Multiple path support) ---
+      // --- Student Data Fetching ---
       async function fetchAllStudents() {
         const container = document.getElementById('studentListContainer');
         container.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">স্টুডেন্টদের তথ্য লোড হচ্ছে...</p>';
         document.getElementById('studentDetailsBox').style.display = 'none';
 
         try {
-          // 'users' এবং বিকল্প 'students' পাথ চেক করা হচ্ছে
           let snapshot = await get(ref(db, 'users'));
+          activeStudentPath = 'users';
+
           if (!snapshot.exists()) {
              snapshot = await get(ref(db, 'students'));
+             activeStudentPath = 'students';
           }
 
           if (snapshot.exists()) {
@@ -423,7 +474,6 @@
 
         keys.forEach(key => {
           const st = studentsObj[key];
-          // একাধিক সম্ভাব্য কী চেক করা হচ্ছে
           const name = st.name || st.displayName || st.fullName || st.studentName || 'নাম দেওয়া নেই';
           const email = st.email || st.userEmail || 'ইমেইল নেই';
           const status = st.status === 'blocked' ? '🔴 Blocked' : '🟢 Active';
@@ -472,9 +522,18 @@
         document.getElementById('studentKey').value = key;
         document.getElementById('studentName').value = st.name || st.displayName || st.fullName || st.studentName || '';
         document.getElementById('studentDisplayEmail').value = st.email || st.userEmail || '';
+        
+        document.getElementById('studentFatherName').value = st.fatherName || st.father_name || '';
+        document.getElementById('studentMotherName').value = st.motherName || st.mother_name || '';
         document.getElementById('studentPhone').value = st.phone || st.phoneNumber || st.mobile || '';
-        document.getElementById('studentRoll').value = st.roll || st.studentId || st.rollNo || '';
+        document.getElementById('studentGuardianPhone').value = st.guardianPhone || st.guardian_phone || st.guardianMobile || '';
         document.getElementById('studentInstitute').value = st.institute || st.college || st.school || '';
+        document.getElementById('studentSscYear').value = st.sscYear || st.ssc_year || st.ssc || '';
+        document.getElementById('studentHscYear').value = st.hscYear || st.hsc_year || st.hsc || '';
+        document.getElementById('studentDob').value = st.dob || st.birthDate || st.dateOfBirth || '';
+        document.getElementById('studentGender').value = st.gender || st.sex || '';
+        document.getElementById('studentAddress').value = st.address || st.presentAddress || '';
+        document.getElementById('studentRoll').value = st.roll || st.studentId || st.rollNo || '';
         document.getElementById('studentAccess').value = st.status || 'active';
 
         const detailsBox = document.getElementById('studentDetailsBox');
@@ -488,15 +547,23 @@
 
         const updatedData = {
             name: document.getElementById('studentName').value.trim(),
+            fatherName: document.getElementById('studentFatherName').value.trim(),
+            motherName: document.getElementById('studentMotherName').value.trim(),
             phone: document.getElementById('studentPhone').value.trim(),
-            roll: document.getElementById('studentRoll').value.trim(),
+            guardianPhone: document.getElementById('studentGuardianPhone').value.trim(),
             institute: document.getElementById('studentInstitute').value.trim(),
+            sscYear: document.getElementById('studentSscYear').value.trim(),
+            hscYear: document.getElementById('studentHscYear').value.trim(),
+            dob: document.getElementById('studentDob').value.trim(),
+            gender: document.getElementById('studentGender').value.trim(),
+            address: document.getElementById('studentAddress').value.trim(),
+            roll: document.getElementById('studentRoll').value.trim(),
             status: document.getElementById('studentAccess').value
         };
 
         try {
-            await update(ref(db, `users/${key}`), updatedData);
-            alert("✅ স্টুডেন্টের তথ্য সফলভাবে আপডেট করা হয়েছে!");
+            await update(ref(db, `${activeStudentPath}/${key}`), updatedData);
+            alert("✅ স্টুডেন্টের সকল তথ্য সফলভাবে আপডেট করা হয়েছে!");
             fetchAllStudents();
         } catch (e) {
             alert("আপডেট করতে সমস্যা হয়েছে: " + e.message);
@@ -509,7 +576,7 @@
 
         if (confirm("⚠️ আপনি কি নিশ্চিত যে এই স্টুডেন্টের সম্পূর্ণ ডাটা মুছে ফেলতে চান?")) {
             try {
-                await remove(ref(db, `users/${key}`));
+                await remove(ref(db, `${activeStudentPath}/${key}`));
                 alert("✅ স্টুডেন্টের তথ্য মুছে ফেলা হয়েছে!");
                 document.getElementById('studentDetailsBox').style.display = 'none';
                 fetchAllStudents();
@@ -519,6 +586,7 @@
         }
       };
 
+      // --- Notices Management ---
       window.publishNotice = async function() {
           const title = document.getElementById('noticeTitle').value.trim();
           const description = document.getElementById('noticeDesc').value.trim();
@@ -586,6 +654,7 @@
           }
       };
 
+      // --- Notes Management ---
       window.updateNotePaperOptions = function() {
           const sub = document.getElementById('noteSubject').value;
           const paperSelect = document.getElementById('notePaper');
@@ -712,6 +781,7 @@
           }
       };
 
+      // --- Exam System Functions ---
       window.updatePaperOptions = function() {
         const sub = document.getElementById('admSubject').value;
         const paperSelect = document.getElementById('admPaper');
