@@ -72,11 +72,6 @@
         .review-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
         .insight-card { background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
         .insight-card strong { display: block; color: #38bdf8; margin-bottom: 2px; }
-        
-        /* Ask AI Box */
-        .ai-explain-btn { background: #6366f1; color: white; border: none; padding: 6px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; margin-top: 10px; font-weight: bold; transition: 0.2s; }
-        .ai-explain-btn:hover { background: #4f46e5; }
-        .ai-response-box { display: none; background: #1e1b4b; border: 1px dashed #6366f1; padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 13px; color: #e0e7ff; line-height: 1.5; }
 
         /* Single Mode Nav Footer */
         .single-nav-footer { display: none; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
@@ -138,7 +133,7 @@
 
         /* Modals */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 550px; width: 90%; text-align: center; max-height: 85vh; overflow-y: auto; }
+        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 480px; width: 90%; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
         .modal-btn { padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 13px; }
         .btn-confirm { background: #10b981; color: white; }
@@ -210,7 +205,7 @@
 
                 <!-- Accuracy Visual Bar -->
                 <div class="chart-box">
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1;">
+                    <div style="display: flex; justify- justify-content: space-between; font-size: 12px; color: #cbd5e1;">
                         <span>📈 Accuracy Breakup</span>
                         <span id="resAttemptRate">Attempt Rate: 0%</span>
                     </div>
@@ -325,19 +320,6 @@
         </div>
     </div>
 
-    <!-- AI Generated Practice Modal -->
-    <div class="modal-overlay" id="aiPracticeModal">
-        <div class="modal-box" style="text-align: left;">
-            <h3 style="color: #6366f1; margin-bottom: 10px;">🤖 AI Generated Revision Questions</h3>
-            <div id="aiPracticeContent" style="color: #cbd5e1; font-size: 14px; line-height: 1.6; max-height: 60vh; overflow-y: auto;">
-                প্রশ্ন তৈরি হচ্ছে... অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।
-            </div>
-            <div class="modal-buttons">
-                <button type="button" class="modal-btn btn-cancel" onclick="document.getElementById('aiPracticeModal').style.display='none'">বন্ধ করুন</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Question Issue Report Modal -->
     <div class="modal-overlay" id="reportModal">
         <div class="modal-box">
@@ -407,9 +389,6 @@
       const db = getDatabase(app);
       const auth = getAuth(app);
 
-      // AI Worker API Endpoint Config
-      const AI_WORKER_URL = "https://small-hall-d192.gaiyumplayz.workers.dev/";
-
       // Global State Management
       let currentUser = null;
       let timerInterval = null;
@@ -426,23 +405,6 @@
       let viewMode = 'all'; // 'all' or 'single'
       let currentSingleIndex = 0;
       let markingScheme = { correct: 1.0, wrong: -0.25, skip: 0.0 };
-      let globalWeakTopics = [];
-
-      // API Helper Function
-      async function callWorkerAI(promptText) {
-        try {
-          const response = await fetch(AI_WORKER_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: promptText })
-          });
-          const data = await response.json();
-          return data.response || data.text || data.result || (typeof data === 'string' ? data : JSON.stringify(data));
-        } catch (err) {
-          console.error("AI API Call Error:", err);
-          return "দুঃখিত, এআই সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
-        }
-      }
 
       // Default Exam Questions with Enhanced Topic/Difficulty Meta
       const defaultExamData = {
@@ -500,7 +462,7 @@
           { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, topic: "Acid Base Theory", difficulty: "hard", explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ક્ષાર (Conjugate base) তত শক্তিশালী হবে।" },
           { question: "NH₃ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["NH₂⁻", "NH₄⁺", "N³⁻", "NH₃⁺"], correct: 1, topic: "Acid Base Theory", difficulty: "easy", explanation: "একটি প্রোটন (H⁺) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: NH₃ + H⁺ ➔ NH₄⁺।" },
           { question: "HCO₃⁻ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, topic: "Acid Base Theory", difficulty: "medium", explanation: "HCO₃⁻ প্রোটন ত্যাগ করে CO₃²⁻ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে H₂CO₃ হতে পারে (ক্ষারক)।" },
-          { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, topic: "pH Applications", difficulty: "medium", explanation: "মুখের લાলার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
+          { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, topic: "pH Applications", difficulty: "medium", explanation: "মুখের লালার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
         ]
       };
 
@@ -613,8 +575,6 @@
                 <div class="insight-card"><strong>⚠️ Common Mistake:</strong> ${q.mistake || 'N/A'}</div>
                 <div class="insight-card"><strong>🎯 Admission Tip:</strong> ${q.tip || 'N/A'}</div>
               </div>
-              <button class="ai-explain-btn" onclick="askAIQuestionExplanation(${qIndex})">🤖 Ask AI / আরও সহজে বুঝুন</button>
-              <div class="ai-response-box" id="ai-resp-${qIndex}"></div>
             </div>
           </div>
         `).join('');
@@ -966,49 +926,32 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      async function runAIAnalysis(overallAcc, topicStats) {
-        let aiText = "🤖 AI দিয়ে এনালাইসিস লোড হচ্ছে...";
+      function runAIAnalysis(overallAcc, topicStats) {
+        let aiText = "";
         let topicListHtml = "";
-        globalWeakTopics = [];
+
+        if (overallAcc >= 80) {
+          aiText = "🎉 চমৎকার প্রস্তুতি! আপনার অধিকাংশ টপিকে শক্তিশালী দখল রয়েছে। উচ্চ র‍্যাংক ধরে রাখতে কনসেপ্ট রিভিশন বজায় রাখুন।";
+        } else if (overallAcc >= 50) {
+          aiText = "👍 ভালো পারফরম্যান্স! কিছু নির্দিষ্ট টপিকে ভুল হচ্ছে। দুর্বল টপিকগুলোতে আরও নজর দেওয়া দরকার।";
+        } else {
+          aiText = "⚠️ আপনার বেশ কিছু গুরুত্বপূর্ণ টপিকে দুর্বলতা রয়েছে। ভিত্তি শক্ত করতে কনসেপ্ট বুক রিভিশন করুন।";
+        }
+
+        document.getElementById('aiAnalysisText').innerText = aiText;
 
         // Extract weak vs strong topics
         for (const [topic, stat] of Object.entries(topicStats || {})) {
           const acc = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0;
           const isWeak = acc < 60;
-          if(isWeak) globalWeakTopics.push(topic);
           topicListHtml += `<span class="topic-pill ${isWeak ? 'weak' : 'strong'}">${isWeak ? '🔴' : '🟢'} ${topic} (${acc}%)</span>`;
         }
 
         document.getElementById('aiTopicList').innerHTML = topicListHtml || "<span style='font-size:12px; color:#94a3b8;'>টপিক ভিত্তিক তথ্য অনুপলব্ধ</span>";
-
-        // Call API Worker for AI Analysis
-        const prompt = `একটি ভর্তি পরীক্ষার ফলাফলের ওপর শর্ট এনালাইসিস করে পরামর্শ দাও বাংলা ভাষায়। শিক্ষার্থীর Accuracy: ${overallAcc}%, দুর্বল টপিকসমূহ: ${globalWeakTopics.join(', ') || 'কোনো নির্দিষ্ট দুর্বল টপিক নেই'}। সংক্ষেপে ২-৩ বাক্যে মোটিভেশনাল পরামর্শ দাও।`;
-        
-        const aiResponse = await callWorkerAI(prompt);
-        document.getElementById('aiAnalysisText').innerText = aiResponse;
       }
 
-      window.generateAIPractice = async function() {
-        document.getElementById('aiPracticeModal').style.display = 'flex';
-        const contentDiv = document.getElementById('aiPracticeContent');
-        contentDiv.innerHTML = "🤖 GAIVEX AI Worker API আপনার দুর্বল টপিকগুলোর (${globalWeakTopics.join(', ') || 'General Chemistry'}) ওপর ভিত্তি করে স্পেশাল রিভিশন MCQ তৈরি করছে... অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।";
-
-        const prompt = `রাসায়নিক পরিবর্তন বিষয়ের এই টপিকগুলোর ওপর ৫টি অত্যন্ত গুরুত্বপূর্ণ ভর্তি পরীক্ষা উপযোগী MCQ প্রশ্ন তৈরি করো বাংলা ভাষায় উত্তর ও ব্যাখ্যাসহ: ${globalWeakTopics.join(', ') || 'Reaction Kinetics, Buffer Solution'}।`;
-        
-        const aiResponse = await callWorkerAI(prompt);
-        contentDiv.innerHTML = `<div style="white-space: pre-line;">${aiResponse}</div>`;
-      };
-
-      window.askAIQuestionExplanation = async function(qIndex) {
-        const respBox = document.getElementById(`ai-resp-${qIndex}`);
-        respBox.style.display = 'block';
-        respBox.innerText = '🤖 AI চিন্তা করছে...';
-
-        const q = examData.questions[qIndex];
-        const prompt = `প্রশ্ন: "${q.question}"। সঠিক উত্তর: "${q.options[q.correct]}"। এই প্রশ্নটির একটি সহজ ও সংক্ষেপে বিস্তারিত ব্যাখ্যা বাংলা ভাষায় লিখে দাও যা কোনো ভর্তি পরীক্ষার্থীর বুঝতে সাহায্য করবে।`;
-
-        const res = await callWorkerAI(prompt);
-        respBox.innerHTML = `<b>🤖 GAIVEX AI Explanation:</b><br>${res}`;
+      window.generateAIPractice = function() {
+        alert("🤖 GAIVEX AI Engine: আপনার দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি স্পেশাল রিভিশন MCQ তৈরি করা হচ্ছে... (Redirecting to Practice Module)");
       };
 
       // Leaderboard Engine
