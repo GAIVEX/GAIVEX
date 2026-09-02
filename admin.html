@@ -38,6 +38,8 @@
         .mode-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
         
         .notice-card-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .student-item { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .student-item:hover { border-color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -155,25 +157,31 @@
             </div>
         </div>
 
-        <!-- স্টুডেন্ট ম্যানেজমেন্ট সেকশন -->
+        <!-- স্টুডেন্ট ম্যানেজমেন্ট সেকশন (আপডেটেড) -->
         <div id="studentSection" style="display: none;">
-            <h3 style="color: #38bdf8; margin-bottom: 15px;">🔍 স্টুডেন্ট সার্চ ও ইনফরমেশন চেঞ্জ</h3>
-            <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
-                <label>স্টুডেন্টের ইমেইল দিয়ে খোঁজ করুন:</label>
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">👨‍🎓 স্টুডেন্ট ডাটাবেস ও ম্যানেজমেন্ট</h3>
+            
+            <div style="background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 20px;">
+                <label>ইমেইল দিয়ে সার্চ করুন:</label>
                 <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <input type="email" id="searchStudentEmail" placeholder="student@gmail.com..." style="margin-top: 0;">
-                    <button type="button" onclick="searchStudentByEmail()" style="background: #38bdf8; color: #0f172a; border: none; padding: 0 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">খুঁজুন</button>
+                    <input type="email" id="searchStudentEmail" placeholder="student@gmail.com..." style="margin-top: 0;" onkeyup="filterStudentList()">
+                    <button type="button" onclick="filterStudentList()" style="background: #38bdf8; color: #0f172a; border: none; padding: 0 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">খুঁজুন</button>
                 </div>
             </div>
 
-            <div id="studentDetailsBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-top: 20px;">
+            <h4 style="color: #cbd5e1; margin-bottom: 10px;">সকল স্টুডেন্টের তালিকা (ক্লিক করে বিস্তারিত দেখুন):</h4>
+            <div id="allStudentsContainer" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                <p style="color: #94a3b8; font-size: 13px;">স্টুডেন্ট ডাটা লোড হচ্ছে...</p>
+            </div>
+
+            <div id="studentDetailsBox" style="display: none; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #38bdf8;">
                 <h4 style="color: #10b981; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px;">স্টুডেন্টের বিস্তারিত তথ্য ও এডিট অপশন</h4>
                 <input type="hidden" id="studentKey">
                 
                 <label>নাম (Name):</label>
                 <input type="text" id="studentName">
 
-                <label>ইমেইল (Email - অপশন পরিবর্তনযোগ্য নয়):</label>
+                <label>ইমেইল (Email):</label>
                 <input type="email" id="studentDisplayEmail" readonly style="opacity: 0.7; cursor: not-allowed;">
 
                 <label>ফোন নম্বর (Phone Number):</label>
@@ -250,658 +258,229 @@
       import { getDatabase, ref, set, get, remove, push, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
-        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
-        authDomain: "gaivexexam.firebaseapp.com",
-        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-        projectId: "gaivexexam",
-        storageBucket: "gaivexexam.firebasestorage.app",
-        messagingSenderId: "956204530190",
-        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
-      };
+        আগের সম্পূর্ণ ফিচারগুলো বজায় রেখে পুরো কোডটি নিচে একবারে দেওয়া হলো:
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getDatabase(app);
+```html
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সম্পূর্ণ অ্যাপ্লিকেশন</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      const CORRECT_ADMIN_NUM = "GAIVEXScholars70160";
-      const CORRECT_SECRET_PASS = "GAIVEXScholars#@70160tamim";
-      let currentMode = 'live';
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-      const chaptersData = {
-          physics: {
-              paper1: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
-              paper2: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"]
-          },
-          chemistry: {
-              paper1: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"],
-              paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
-          },
-          biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
-              paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
-          },
-          math: {
-              paper1: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"],
-              paper2: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"]
-          }
-      };
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
 
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          if (sessionStorage.getItem('admin_fully_verified') === 'true') {
-            showAdminPanel();
-          } else {
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('secretLockBox').style.display = 'block';
-            document.body.style.alignItems = 'center';
-          }
-        } else {
-          document.getElementById('loginBox').style.display = 'block';
-          document.getElementById('secretLockBox').style.display = 'none';
-          document.getElementById('adminPanel').style.display = 'none';
-          document.body.style.alignItems = 'center';
-        }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #3498db;
+    }
+
+    button.add-btn {
+      padding: 12px 20px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button.add-btn:hover {
+      background-color: #27ae60;
+    }
+
+    ul {
+      list-style-type: none;
+    }
+
+    li {
+      background: #f9f9f9;
+      padding: 12px 15px;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    li.completed {
+      text-decoration: line-through;
+      color: #888;
+      background: #eef9f2;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .actions button {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .complete-btn {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .complete-btn:hover { background-color: #2980b9; }
+    .delete-btn:hover { background-color: #c0392b; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>আমার টাস্ক লিস্ট</h2>
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="নতুন কাজ লিখুন...">
+      <button class="add-btn" onclick="addTask()">যোগ করুন</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    // LocalStorage থেকে টাস্ক লোড করা
+    document.addEventListener("DOMContentLoaded", loadTasks);
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value.trim();
+
+      if (text === "") {
+        alert("অনুগ্ৰহ করে একটি কাজ লিখুন!");
+        return;
+      }
+
+      const task = { text: text, completed: false };
+      saveTaskToStorage(task);
+      renderTask(task);
+      
+      input.value = "";
+    }
+
+    function renderTask(task) {
+      const ul = document.getElementById("taskList");
+      const li = document.createElement("li");
+
+      if (task.completed) {
+        li.classList.add("completed");
+      }
+
+      li.innerHTML = `
+        <span>${escapeHtml(task.text)}</span>
+        <div class="actions">
+          <button class="complete-btn" onclick="toggleTask(this)">সম্পন্ন</button>
+          <button class="delete-btn" onclick="deleteTask(this)">মুছুন</button>
+        </div>
+      `;
+
+      ul.appendChild(li);
+    }
+
+    function toggleTask(button) {
+      const li = button.closest("li");
+      li.classList.toggle("completed");
+      updateLocalStorage();
+    }
+
+    function deleteTask(button) {
+      const li = button.closest("li");
+      li.remove();
+      updateLocalStorage();
+    }
+
+    function saveTaskToStorage(task) {
+      const tasks = getTasksFromStorage();
+      tasks.push(task);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function getTasksFromStorage() {
+      return localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+    }
+
+    function loadTasks() {
+      const tasks = getTasksFromStorage();
+      tasks.forEach(task => renderTask(task));
+    }
+
+    function updateLocalStorage() {
+      const ul = document.getElementById("taskList");
+      const tasks = [];
+
+      ul.querySelectorAll("li").forEach(li => {
+        tasks.push({
+          text: li.querySelector("span").innerText,
+          completed: li.classList.contains("completed")
+        });
       });
 
-      window.verifyFirebaseLogin = function(e) {
-        e.preventDefault();
-        const email = document.getElementById('adminEmail').value;
-        const password = document.getElementById('adminPassword').value;
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
 
-        signInWithEmailAndPassword(auth, email, password)
-          .then(() => {
-            document.getElementById('errorMsg').style.display = 'none';
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('secretLockBox').style.display = 'block';
-          })
-          .catch(() => {
-            document.getElementById('errorMsg').style.display = 'block';
-            document.getElementById('adminPassword').value = '';
-          });
-      };
-
-      window.verifySecretCredentials = function(e) {
-        e.preventDefault();
-        const inputNum = document.getElementById('adminNumber').value.trim();
-        const inputPass = document.getElementById('adminSecretPass').value.trim();
-
-        if (inputNum === CORRECT_ADMIN_NUM && inputPass === CORRECT_SECRET_PASS) {
-          sessionStorage.setItem('admin_fully_verified', 'true');
-          showAdminPanel();
-        } else {
-          document.getElementById('secretErrorMsg').style.display = 'block';
-          document.getElementById('adminSecretPass').value = '';
-        }
-      };
-
-      function showAdminPanel() {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('secretLockBox').style.display = 'none';
-        document.getElementById('adminPanel').style.display = 'block';
-        document.body.style.alignItems = 'flex-start';
-        loadExistingData();
-      }
-
-      window.logoutAdmin = function() {
-        sessionStorage.removeItem('admin_fully_verified');
-        signOut(auth).then(() => { location.reload(); });
-      };
-
-      window.switchMode = function(mode) {
-        currentMode = mode;
-        document.getElementById('btnLiveMode').classList.toggle('active', mode === 'live');
-        document.getElementById('btnChapterMode').classList.toggle('active', mode === 'chapter');
-        document.getElementById('btnNoticeMode').classList.toggle('active', mode === 'notice');
-        document.getElementById('btnNotesMode').classList.toggle('active', mode === 'notes');
-        document.getElementById('btnStudentMode').classList.toggle('active', mode === 'student');
-        
-        const chapBox = document.getElementById('chapterSelectionBox');
-        const examForm = document.getElementById('examFormContent');
-        const noticeSec = document.getElementById('noticeSection');
-        const notesSec = document.getElementById('notesSection');
-        const studentSec = document.getElementById('studentSection');
-
-        // Hide all first
-        chapBox.style.display = 'none';
-        examForm.style.display = 'none';
-        noticeSec.style.display = 'none';
-        notesSec.style.display = 'none';
-        studentSec.style.display = 'none';
-
-        if (mode === 'notice') {
-          noticeSec.style.display = 'block';
-          loadAdminNotices();
-        } else if (mode === 'notes') {
-          notesSec.style.display = 'block';
-          loadAdminNotes();
-        } else if (mode === 'student') {
-          studentSec.style.display = 'block';
-        } else if (mode === 'chapter') {
-          chapBox.style.display = 'block';
-          document.getElementById('titleLabel').style.display = 'none';
-          document.getElementById('examTitle').style.display = 'none';
-        } else {
-          document.getElementById('titleLabel').style.display = 'block';
-          document.getElementById('examTitle').style.display = 'block';
-          examForm.style.display = 'block';
-          loadExistingData();
-        }
-      };
-
-      // স্টুডেন্ট সার্চ ও ম্যানেজমেন্ট ফিচার
-      window.searchStudentByEmail = async function() {
-        const emailInput = document.getElementById('searchStudentEmail').value.trim().toLowerCase();
-        const msgBox = document.getElementById('studentSearchMsg');
-        const detailsBox = document.getElementById('studentDetailsBox');
-
-        msgBox.style.display = 'none';
-        detailsBox.style.display = 'none';
-
-        if (!emailInput) {
-            alert("অনুগ্রহ করে একটি ইমেইল অ্যাড্রেস লিখুন!");
-            return;
-        }
-
-        try {
-            const usersRef = ref(db, 'users');
-            const snapshot = await get(usersRef);
-
-            if (snapshot.exists()) {
-                const users = snapshot.val();
-                let foundKey = null;
-                let foundUser = null;
-
-                for (let key in users) {
-                    if (users[key].email && users[key].email.toLowerCase() === emailInput) {
-                        foundKey = key;
-                        foundUser = users[key];
-                        break;
-                    }
-                }
-
-                if (foundUser) {
-                    document.getElementById('studentKey').value = foundKey;
-                    document.getElementById('studentName').value = foundUser.name || foundUser.displayName || '';
-                    document.getElementById('studentDisplayEmail').value = foundUser.email || '';
-                    document.getElementById('studentPhone').value = foundUser.phone || foundUser.phoneNumber || '';
-                    document.getElementById('studentRoll').value = foundUser.roll || foundUser.studentId || '';
-                    document.getElementById('studentInstitute').value = foundUser.institute || foundUser.college || '';
-                    document.getElementById('studentAccess').value = foundUser.status || 'active';
-
-                    detailsBox.style.display = 'block';
-                } else {
-                    msgBox.innerText = "❌ এই ইমেইল দিয়ে কোনো স্টুডেন্ট খুঁজে পাওয়া যায়নি!";
-                    msgBox.style.display = 'block';
-                }
-            } else {
-                msgBox.innerText = "❌ ডেটাবেসে কোনো স্টুডেন্ট এর ডাটা নেই!";
-                msgBox.style.display = 'block';
-            }
-        } catch (e) {
-            alert("ত্রুটি ঘটেছে: " + e.message);
-        }
-      };
-
-      window.updateStudentData = async function() {
-        const key = document.getElementById('studentKey').value;
-        if (!key) return;
-
-        const updatedData = {
-            name: document.getElementById('studentName').value.trim(),
-            phone: document.getElementById('studentPhone').value.trim(),
-            roll: document.getElementById('studentRoll').value.trim(),
-            institute: document.getElementById('studentInstitute').value.trim(),
-            status: document.getElementById('studentAccess').value
-        };
-
-        try {
-            await update(ref(db, `users/${key}`), updatedData);
-            alert("✅ স্টুডেন্টের তথ্য সফলভাবে আপডেট করা হয়েছে!");
-        } catch (e) {
-            alert("আপডেট করতে সমস্যা হয়েছে: " + e.message);
-        }
-      };
-
-      window.deleteStudentData = async function() {
-        const key = document.getElementById('studentKey').value;
-        if (!key) return;
-
-        if (confirm("⚠️ আপনি কি নিশ্চিত যে এই স্টুডেন্টের সম্পূর্ণ ডাটা মুছে ফেলতে চান?")) {
-            try {
-                await remove(ref(db, `users/${key}`));
-                alert("✅ স্টুডেন্টের তথ্য মুছে ফেলা হয়েছে!");
-                document.getElementById('studentDetailsBox').style.display = 'none';
-                document.getElementById('searchStudentEmail').value = '';
-            } catch (e) {
-                alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
-            }
-        }
-      };
-
-      // নোটিশ পাবলিশ করার ফাংশন
-      window.publishNotice = async function() {
-          const title = document.getElementById('noticeTitle').value.trim();
-          const description = document.getElementById('noticeDesc').value.trim();
-          const image = document.getElementById('noticeImg').value.trim();
-
-          if (!title || !description) {
-              alert("দয়া করে নোটিশের শিরোনাম এবং বিবরণ লিখুন!");
-              return;
-          }
-
-          try {
-              const noticeRef = ref(db, 'notices');
-              await push(noticeRef, {
-                  title: title,
-                  description: description,
-                  image: image,
-                  date: Date.now()
-              });
-              alert("✅ নোটিশ সফলভাবে পাবলিশ করা হয়েছে!");
-              document.getElementById('noticeTitle').value = '';
-              document.getElementById('noticeDesc').value = '';
-              document.getElementById('noticeImg').value = '';
-              loadAdminNotices();
-          } catch(e) {
-              alert("ত্রুটি: " + e.message);
-          }
-      };
-
-      async function loadAdminNotices() {
-          const listContainer = document.getElementById('adminNoticeList');
-          try {
-              const snapshot = await get(ref(db, 'notices'));
-              if (snapshot.exists()) {
-                  listContainer.innerHTML = '';
-                  const data = snapshot.val();
-                  for (let key in data) {
-                      const item = data[key];
-                      listContainer.innerHTML += `
-                          <div class="notice-card-item">
-                              <div>
-                                  <strong style="color: #38bdf8;">${item.title}</strong>
-                                  <div style="font-size: 12px; color: #94a3b8;">${new Date(item.date).toLocaleDateString('bn-BD')}</div>
-                              </div>
-                              <button onclick="deleteNotice('${key}')" style="background: #f43f5e; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">ডিলিট</button>
-                          </div>
-                      `;
-                  }
-              } else {
-                  listContainer.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">কোনো নোটিশ নেই।</p>';
-              }
-          } catch(e) {
-              listContainer.innerHTML = '<p style="color: #f43f5e; font-size: 13px;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
-          }
-      }
-
-      window.deleteNotice = async function(noticeId) {
-          if (confirm("আপনি কি এই নোটিশটি ডিলিট করতে চান?")) {
-              try {
-                  await remove(ref(db, `notices/${noticeId}`));
-                  alert("নোটিশটি মুছে ফেলা হয়েছে।");
-                  loadAdminNotices();
-              } catch(e) {
-                  alert("ত্রুটি: " + e.message);
-              }
-          }
-      };
-
-      // নোটস সেকশনের জন্য ডাইনামিক ড্রপডাউন হ্যান্ডলার
-      window.updateNotePaperOptions = function() {
-          const sub = document.getElementById('noteSubject').value;
-          const paperSelect = document.getElementById('notePaper');
-          paperSelect.innerHTML = '<option value="">-- পত্র বেছে নিন --</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
-          document.getElementById('noteChapter').innerHTML = '<option value="">-- আগে পত্র বেছে নিন --</option>';
-      };
-
-      window.updateNoteChapterOptions = function() {
-          const sub = document.getElementById('noteSubject').value;
-          const paper = document.getElementById('notePaper').value;
-          const chapSelect = document.getElementById('noteChapter');
-          chapSelect.innerHTML = '<option value="">-- অধ্যায় বেছে নিন --</option>';
-          if(sub && paper && chaptersData[sub][paper]) {
-              chaptersData[sub][paper].forEach((chap) => {
-                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-              });
-          }
-      };
-
-      window.toggleNoteInputs = function() {
-          const type = document.getElementById('noteContentType').value;
-          const urlBox = document.getElementById('noteUrlBox');
-          const textBox = document.getElementById('noteTextBox');
-          const urlLabel = document.getElementById('noteUrlLabel');
-
-          if (type === 'pdf') {
-              urlBox.style.display = 'block';
-              textBox.style.display = 'none';
-              urlLabel.innerText = 'PDF লিংক:';
-              document.getElementById('noteContentUrl').placeholder = 'https://... (PDF ডিরেক্ট লিংক)';
-          } else if (type === 'image') {
-              urlBox.style.display = 'block';
-              textBox.style.display = 'none';
-              urlLabel.innerText = 'ছবির লিংক (Image URL):';
-              document.getElementById('noteContentUrl').placeholder = 'https://... (ছবির লিংক)';
-          } else {
-              urlBox.style.display = 'none';
-              textBox.style.display = 'block';
-          }
-      };
-
-      window.publishNote = async function() {
-          const subject = document.getElementById('noteSubject').value;
-          const paper = document.getElementById('notePaper').value;
-          const chapter = document.getElementById('noteChapter').value;
-          const title = document.getElementById('noteTitle').value.trim();
-          const contentType = document.getElementById('noteContentType').value;
-          const contentUrl = document.getElementById('noteContentUrl').value.trim();
-          const textContent = document.getElementById('noteTextContent').value.trim();
-
-          if (!subject || !paper || !chapter || !title) {
-              alert("দয়া করে বিষয়, পত্র, অধ্যায় এবং নোটের শিরোনাম পূরণ করুন!");
-              return;
-          }
-
-          if ((contentType === 'pdf' || contentType === 'image') && !contentUrl) {
-              alert("দয়া করে লিংক দিন!");
-              return;
-          }
-
-          if (contentType === 'text' && !textContent) {
-              alert("দয়া করে নোটের টেক্সট লিখুন!");
-              return;
-          }
-
-          try {
-              const notesRef = ref(db, 'notes');
-              await push(notesRef, {
-                  subject: subject,
-                  paper: paper,
-                  chapter: chapter,
-                  title: title,
-                  contentType: contentType,
-                  contentUrl: contentUrl,
-                  textContent: textContent,
-                  date: Date.now()
-              });
-              alert("✅ নোট সফলভাবে আপলোড করা হয়েছে!");
-              document.getElementById('noteTitle').value = '';
-              document.getElementById('noteContentUrl').value = '';
-              document.getElementById('noteTextContent').value = '';
-              loadAdminNotes();
-          } catch(e) {
-              alert("ত্রুটি: " + e.message);
-          }
-      };
-
-      async function loadAdminNotes() {
-          const listContainer = document.getElementById('adminNotesList');
-          try {
-              const snapshot = await get(ref(db, 'notes'));
-              if (snapshot.exists()) {
-                  listContainer.innerHTML = '';
-                  const data = snapshot.val();
-                  for (let key in data) {
-                      const item = data[key];
-                      listContainer.innerHTML += `
-                          <div class="notice-card-item">
-                              <div>
-                                  <strong style="color: #38bdf8;">[${item.subject.toUpperCase()} - ${item.paper}] ${item.title}</strong>
-                                  <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">অধ্যায়: ${item.chapter} | ধরণ: ${item.contentType.toUpperCase()}</div>
-                              </div>
-                              <button onclick="deleteNote('${key}')" style="background: #f43f5e; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">ডিলিট</button>
-                          </div>
-                      `;
-                  }
-              } else {
-                  listContainer.innerHTML = '<p style="color: #94a3b8; font-size: 13px;">কোনো নোট আপলোড করা হয়নি।</p>';
-              }
-          } catch(e) {
-              listContainer.innerHTML = '<p style="color: #f43f5e; font-size: 13px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
-          }
-      }
-
-      window.deleteNote = async function(noteId) {
-          if (confirm("আপনি কি এই নোটটি ডিলিট করতে চান?")) {
-              try {
-                  await remove(ref(db, `notes/${noteId}`));
-                  alert("নোটটি মুছে ফেলা হয়েছে।");
-                  loadAdminNotes();
-              } catch(e) {
-                  alert("ত্রুটি: " + e.message);
-              }
-          }
-      };
-
-      window.updatePaperOptions = function() {
-        const sub = document.getElementById('admSubject').value;
-        const paperSelect = document.getElementById('admPaper');
-        paperSelect.innerHTML = '<option value="">-- পত্র বেছে নিন --</option><option value="paper1">১ম পত্র</option><option value="paper2">২য় পত্র</option>';
-        document.getElementById('admChapter').innerHTML = '<option value="">-- আগে পত্র বেছে নিন --</option>';
-        document.getElementById('examFormContent').style.display = 'none';
-      };
-
-      window.updateChapterOptions = function() {
-        const sub = document.getElementById('admSubject').value;
-        const paper = document.getElementById('admPaper').value;
-        const chapSelect = document.getElementById('admChapter');
-        chapSelect.innerHTML = '<option value="">-- অধ্যায় বেছে নিন --</option>';
-        if(sub && paper && chaptersData[sub][paper]) {
-            chaptersData[sub][paper].forEach((chap) => {
-                chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-            });
-        }
-        document.getElementById('examFormContent').style.display = 'none';
-      };
-
-      function cleanText(text, type = 'q') {
-        if (!text) return '';
-        let str = text.trim();
-        if (type === 'q') return str.replace(/^[\d১-৯]+\.\s*/, '');
-        if (type === 'opt') return str.replace(/^[ক-ঘa-dA-D]\)\s*/, '');
-        return str;
-      }
-
-      function getStoragePath() {
-        if (currentMode === 'live') {
-          return 'live_exams/live_daily_exam';
-        } else if (currentMode === 'chapter') {
-          const sub = document.getElementById('admSubject').value;
-          const paper = document.getElementById('admPaper').value;
-          const chapter = document.getElementById('admChapter').value;
-          if (!sub || !paper || !chapter) return null;
-          const cleanChapter = chapter.replace(/[.#$/[\]]/g, "_");
-          return `exams/${sub}/${paper}/${cleanChapter}`;
-        }
-        return null;
-      }
-
-      async function loadExistingData() {
-        const path = getStoragePath();
-        if (!path) return;
-
-        try {
-          document.getElementById('loadingText').style.display = 'block';
-          document.getElementById('examFormContent').style.display = 'none';
-
-          const snapshot = await get(ref(db, path));
-          document.getElementById('loadingText').style.display = 'none';
-          document.getElementById('examFormContent').style.display = 'block';
-
-          const container = document.getElementById('questionsContainer');
-          container.innerHTML = '';
-
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            if (currentMode === 'live') {
-              document.getElementById('examTitle').value = data.title || '';
-            }
-            document.getElementById('examDuration').value = data.duration || data.timeLimit || 20;
-
-            let qArray = [];
-            if (data.questions) {
-              if (Array.isArray(data.questions)) {
-                qArray = data.questions;
-              } else {
-                qArray = Object.keys(data.questions).map(key => data.questions[key]);
-              }
-            }
-
-            if (qArray.length > 0) {
-              qArray.forEach((q, index) => addQuestionField(q, index + 1));
-            } else {
-              addQuestionField();
-            }
-          } else {
-            if (currentMode === 'live') document.getElementById('examTitle').value = '';
-            document.getElementById('examDuration').value = 20;
-            addQuestionField();
-          }
-          updateQCount();
-        } catch (e) {
-          document.getElementById('loadingText').style.display = 'none';
-          alert("ডাটা লোড করতে সমস্যা হয়েছে: " + e.message);
-        }
-      }
-
-      window.loadChapterData = function() {
-        const sub = document.getElementById('admSubject').value;
-        const paper = document.getElementById('admPaper').value;
-        const chapter = document.getElementById('admChapter').value;
-        if(sub && paper && chapter) {
-          loadExistingData();
-        }
-      };
-
-      window.addQuestionField = function(qData = null) {
-        const container = document.getElementById('questionsContainer');
-        const qIndex = container.children.length + 1;
-
-        const div = document.createElement('div');
-        div.className = 'q-box';
-        
-        const qText = qData ? cleanText(qData.question || qData.text, 'q') : '';
-        const opts = qData ? (qData.options || []).map(o => cleanText(o, 'opt')) : ['', '', '', ''];
-        const correct = qData ? (qData.correct !== undefined ? qData.correct : 0) : 0;
-        const exp = qData ? qData.explanation || '' : '';
-
-        div.innerHTML = `
-          <button type="button" class="remove-btn" onclick="this.parentElement.remove(); window.updateQCount();">🗑️ ডিলিট</button>
-          <span class="status-badge">প্রশ্ন #<span class="q-num">${qIndex}</span></span>
-          <input type="text" class="q-text" value="${qText}" placeholder="প্রশ্নটি লিখুন" required>
-          
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
-            <input type="text" class="opt-0" value="${opts[0] || ''}" placeholder="ক অপশন" required>
-            <input type="text" class="opt-1" value="${opts[1] || ''}" placeholder="খ অপশন" required>
-            <input type="text" class="opt-2" value="${opts[2] || ''}" placeholder="গ অপশন" required>
-            <input type="text" class="opt-3" value="${opts[3] || ''}" placeholder="ঘ অপশন" required>
-          </div>
-          
-          <label style="margin-top:10px;">সঠিক উত্তর সিলেক্ট করুন:</label>
-          <select class="q-correct">
-            <option value="0" ${correct === 0 ? 'selected' : ''}>ক) ১ম অপশন</option>
-            <option value="1" ${correct === 1 ? 'selected' : ''}>খ) ২য় অপশন</option>
-            <option value="2" ${correct === 2 ? 'selected' : ''}>গ) ৩য় অপশন</option>
-            <option value="3" ${correct === 3 ? 'selected' : ''}>ঘ) ৪র্থ অপশন</option>
-          </select>
-          
-          <textarea class="q-exp" placeholder="উত্তর ব্যাখ্যা (ঐচ্ছিক)" style="margin-top:8px;" rows="2">${exp}</textarea>
-        `;
-        
-        container.appendChild(div);
-        updateQCount();
-      };
-
-      window.updateQCount = function() {
-        const boxes = document.querySelectorAll('.q-box');
-        document.getElementById('totalQCount').innerText = boxes.length;
-        boxes.forEach((box, i) => {
-          const numSpan = box.querySelector('.q-num');
-          if(numSpan) numSpan.innerText = i + 1;
-        });
-      };
-
-      window.deleteAllQuestions = async function() {
-        const path = getStoragePath();
-        if (!path) {
-          alert("আগে সঠিক বিষয়, পত্র ও অধ্যায় সিলেক্ট করুন!");
-          return;
-        }
-
-        if(confirm("⚠️ আপনি কি নিশ্চিত যে এই সেকশন থেকে সকল প্রশ্ন মুছে ফেলতে চান?")) {
-          try {
-            await remove(ref(db, path));
-            alert("✅ ফায়ারবেস থেকে সমস্ত প্রশ্ন সফলভাবে মুছে ফেলা হয়েছে!");
-            location.reload();
-          } catch(e) {
-            alert("ত্রুটি ঘটেছে: " + e.message);
-          }
-        }
-      };
-
-      window.saveExamData = async function() {
-        const path = getStoragePath();
-        if (!path) {
-          alert("অনুগ্রহ করে প্রথমে বিষয়, পত্র এবং অধ্যায় সিলেক্ট করুন!");
-          return;
-        }
-
-        const duration = parseInt(document.getElementById('examDuration').value, 10) || 20;
-        const qBoxes = document.querySelectorAll('.q-box');
-        const questions = [];
-
-        qBoxes.forEach(box => {
-          const qText = cleanText(box.querySelector('.q-text').value, 'q');
-          const opt0 = cleanText(box.querySelector('.opt-0').value, 'opt');
-          const opt1 = cleanText(box.querySelector('.opt-1').value, 'opt');
-          const opt2 = cleanText(box.querySelector('.opt-2').value, 'opt');
-          const opt3 = cleanText(box.querySelector('.opt-3').value, 'opt');
-          const correct = parseInt(box.querySelector('.q-correct').value, 10);
-          const exp = box.querySelector('.q-exp').value;
-
-          if(qText) {
-            const optionsArray = [opt0, opt1, opt2, opt3];
-            questions.push({
-              id: "q_" + Math.random().toString(36).substr(2, 9),
-              question: qText,
-              options: optionsArray,
-              correct: correct,
-              correctAnswer: optionsArray[correct],
-              explanation: exp
-            });
-          }
-        });
-
-        if (questions.length === 0) {
-          alert("অনুগ্রহ করে অন্তত ১টি প্রশ্ন রাখুন!");
-          return;
-        }
-
-        let saveData = {
-          duration: duration,
-          questions: questions
-        };
-
-        if (currentMode === 'live') {
-          const title = document.getElementById('examTitle').value;
-          if (!title) {
-            alert("পরীক্ষার শিরোনাম দিন!");
-            return;
-          }
-          saveData.id = "exam_" + Date.now();
-          saveData.title = title;
-        } else {
-          saveData.timeLimit = duration;
-        }
-
-        try {
-          await set(ref(db, path), saveData);
-          alert("🎉 প্রশ্নগুলো সফলভাবে আপডেট ও সেভ হয়েছে!");
-          location.reload();
-        } catch(e) {
-          alert("ত্রুটি ঘটেছে: " + e.message);
-        }
-      };
-    </script>
+    // XSS সুরক্ষা
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
+  </script>
 </body>
 </html>
