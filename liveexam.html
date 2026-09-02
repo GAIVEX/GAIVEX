@@ -280,7 +280,7 @@
           { question: "স্পর্শ প্রণালীতে সালফিউরিক এসিড (H₂SO₄) তৈরিতে ব্যবহৃত আধুনিক প্রভাবক কোনটি?", options: ["Pt (প্লাটিনাম)", "V₂O₅ (ভ্যানাডিয়াম পেন্টঅক্সাইড)", "Fe₂O₃", "MnO₂"], correct: 1, explanation: "পূর্বে প্লাটাইনাবৃত অ্যাসবেস্টস ব্যবহার হলেও বর্তমানে সস্তা ও বিষমুক্ত V₂O₅ ব্যবহৃত হয়।" },
           { question: "নিচের কোনটি ঋণাত্মক প্রভাবক (Negative Catalyst) হিসেবে কাজ করে?", options: ["MnO₂", "গ্লিসারিন / ফসফরিক এসিড", "Pt", "Fe"], correct: 1, explanation: "গ্লিসারিন বা অ্যালকোহল H₂O₂ এর বিয়োজন হার কমিয়ে দেয়, যা ঋণাত্মক প্রভাবক।" },
           { question: "অটো-ক্যাটালিস্ট (Auto-catalyst) এর উদাহরণ কোনটি?", options: ["KMnO₄ দ্বারা অক্সালিক এসিডের জারণে উৎপন্ন Mn²⁺ আয়ন", "H₂O₂ বিয়োজনে MnO₂", "এস্টার আদ্রবিশ্লেষণে এসিড", "উভয় ক ও গ"], correct: 3, explanation: "বিক্রিয়ায় উৎপন্ন Mn²⁺ অথবা উৎপন্ন এসিড স্বয়ং প্রভাবক হিসেবে কাজ করায় এরা স্ব-প্রভাবক।" },
-          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ક્ષાર (Conjugate base) তত শক্তিশালী হবে।" },
+          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ક્ષার (Conjugate base) তত শক্তিশালী হবে।" },
           { question: "NH₃ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["NH₂⁻", "NH₄⁺", "N³⁻", "NH₃⁺"], correct: 1, explanation: "একটি প্রোটন (H⁺) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: NH₃ + H⁺ ➔ NH₄⁺।" },
           { question: "HCO₃⁻ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, explanation: "HCO₃⁻ প্রোটন ত্যাগ করে CO₃²⁻ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে H₂CO₃ হতে পারে (ক্ষারক)।" },
           { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, explanation: "মুখের লালার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
@@ -352,6 +352,8 @@
             examData = snapshot.val();
           } else {
             examData = defaultExamData;
+            // অটোমেটিক ডাটাবেজে প্রশ্ন আপলোড করে দেওয়া যাতে পরবর্তীতে সমস্যার সৃষ্টি না হয়
+            set(ref(db, 'live_exams/live_daily_exam'), defaultExamData);
           }
         } catch(e) {
           console.log("Database fetch fallback: Loading default questions.");
@@ -599,16 +601,19 @@
         const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
 
         try {
+          // ১. গ্লোবাল বা সেন্ট্রাল ক্যাটাগরিতে পরীক্ষার ইনফো ও পুরো প্রশ্ন সেভ নিশ্চিত করা
           await update(ref(db, `exam_categories/${examIdClean}`), {
             id: examIdClean,
             title: currentExamTitle,
             lastSubmittedAt: new Date().toISOString()
           });
 
+          await set(ref(db, `live_exams/${examIdClean}`), examData);
+
           if (currentUser) {
             const timeTakenSec = ((examData.duration || 25) * 60) - timeRemaining;
             
-            // Save attempt to user record
+            // ২. স্টুডেন্টের নিজের প্রোফাইলে উত্তরের পাশাপাশি পুরো প্রশ্নের স্ন্যাপশট সেভ করা
             await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
               examId: examIdClean,
               examTitle: currentExamTitle,
@@ -616,10 +621,11 @@
               total: total,
               timeSpentSeconds: timeTakenSec,
               submittedAt: new Date().toISOString(),
-              userAnswers: userSelections
+              userAnswers: userSelections,
+              questions: examData.questions // <--- প্রশ্ন এবং ব্যাখ্যাসহ ব্যাকআপ সেভ করা হলো
             });
 
-            // Save to Public Leaderboard
+            // ৩. পাবলিক লিডারবোর্ডে তথ্য পাঠানো
             await set(ref(db, `leaderboards/${examIdClean}/${currentUser.uid}`), {
               userName: currentUser.displayName || currentUser.email.split('@')[0] || "পরীক্ষার্থী",
               score: finalScore,
