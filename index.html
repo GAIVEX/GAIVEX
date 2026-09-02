@@ -54,7 +54,7 @@
             100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
         }
 
-        .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn { position: relative; z-index: 10; }
+        .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn, .floating-settings-btn { position: relative; z-index: 10; }
 
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: var(--nav-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-color); gap: 10px; position: sticky; top: 0; z-index: 100; }
         
@@ -63,8 +63,6 @@
         .logo span { color: #f43f5e; }
         
         .nav-right-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-
-        .theme-toggle-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         .menu-container { position: relative; }
         .menu-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -122,23 +120,80 @@
             right: 25px;
             background: linear-gradient(135deg, #38bdf8, #0284c7);
             color: #0f172a;
-            padding: 10px 18px;
-            border-radius: 50px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 20px;
             box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             text-decoration: none;
             z-index: 999;
             transition: 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .floating-ai-btn:hover {
-            transform: translateY(-4px) scale(1.05);
+            transform: translateY(-4px) scale(1.08);
             box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
             background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+        }
+
+        /* ফ্লোটিং সেটিংস বাটন স্টাইল (AI বাটনের ঠিক উপরে) */
+        .floating-settings-btn {
+            position: fixed;
+            bottom: 82px;
+            right: 25px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            z-index: 999;
+            transition: 0.3s ease;
+        }
+        .floating-settings-btn:hover {
+            transform: translateY(-4px) rotate(45deg);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+
+        /* Settings Item Controls */
+        .settings-option-card {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .theme-select-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .theme-select-btn:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
         }
 
         .notice-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
@@ -215,9 +270,11 @@
         <div class="floating-element" style="top: 40%; left: 5%; animation-duration: 17s; animation-delay: 5s;">⚛️</div>
     </div>
 
-    <a href="gaivexai.html" class="floating-ai-btn">
-        <span style="font-size: 18px;">🤖</span>
-    </a>
+    <!-- ফ্লোটিং সেটিংস বাটন (AI-এর ঠিক উপরে) -->
+    <button class="floating-settings-btn" onclick="openSettingsModal()" title="সেটিংস">⚙️</button>
+
+    <!-- ফ্লোটিং AI বাটন -->
+    <a href="gaivexai.html" class="floating-ai-btn" title="GAIVEX AI">🤖</a>
 
     <header class="navbar">
         <div class="nav-left-group">
@@ -256,7 +313,6 @@
                 </div>
             </div>
 
-            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="থিম পরিবর্তন করুন">☀️</button>
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
             </div>
@@ -288,6 +344,40 @@
             <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
     </main>
+
+    <!-- সেটিংস পপআপ মোডাল -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3>⚙️ অ্যাপ সেটিংস (Settings)</h3>
+            <button class="modal-close-x" onclick="closeSettingsModal()">&times;</button>
+        </div>
+        
+        <!-- থিম পরিবর্তন অপশন -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">থিম মোড (Theme)</div>
+                <div style="font-size: 12px; color: var(--subtext);">ডার্ক বা লাইট থিম নির্বাচন করুন</div>
+            </div>
+            <button class="theme-select-btn" id="settingsThemeToggleBtn" onclick="toggleTheme()">
+                <span id="themeBtnIcon">☀️</span> <span id="themeBtnText">Light</span>
+            </button>
+        </div>
+
+        <!-- অতিরিক্ত সাধারণ সেটিংস -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">নোটিফিকেশন পপআপ</div>
+                <div style="font-size: 12px; color: var(--subtext);">গুরুত্বপূর্ণ নোটিফিকেশন প্রদর্শন</div>
+            </div>
+            <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer; margin-bottom: 0;">
+        </div>
+
+        <div class="btn-group" style="margin-top: 15px;">
+            <button type="button" class="btn btn-close" onclick="closeSettingsModal()" style="flex: 1;">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
 
     <!-- নোটিশ বোর্ড মোডাল -->
     <div id="noticeModal" class="modal">
@@ -518,20 +608,41 @@
           }, 3000);
       }
 
-      // Theme toggle functionality
+      // Settings Modal Control Functions
+      window.openSettingsModal = function() {
+          document.getElementById('settingsModal').style.display = 'flex';
+      }
+      window.closeSettingsModal = function() {
+          document.getElementById('settingsModal').style.display = 'none';
+      }
+
+      // Theme toggle functionality (Integrated inside Settings Modal)
       window.toggleTheme = function() {
           const body = document.body;
           const currentTheme = body.getAttribute('data-theme');
           const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
           body.setAttribute('data-theme', newTheme);
-          document.getElementById('themeToggleBtn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
+          
+          updateThemeUI(newTheme);
           localStorage.setItem('gaivex_theme', newTheme);
       }
 
-      // Load saved theme
+      function updateThemeUI(theme) {
+          const iconEl = document.getElementById('themeBtnIcon');
+          const textEl = document.getElementById('themeBtnText');
+          if (theme === 'dark') {
+              iconEl.innerText = '☀️';
+              textEl.innerText = 'Light Mode';
+          } else {
+              iconEl.innerText = '🌙';
+              textEl.innerText = 'Dark Mode';
+          }
+      }
+
+      // Load saved theme initially
       const savedTheme = localStorage.getItem('gaivex_theme') || 'dark';
       document.body.setAttribute('data-theme', savedTheme);
-      document.getElementById('themeToggleBtn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+      updateThemeUI(savedTheme);
 
       const chaptersData = {
           physics: {
@@ -834,10 +945,6 @@
         } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
       }
 
-      /* =========================================================
-         FIXED ADVANCED LEADERBOARD SYSTEM (AUTO NAME FETCHING)
-         ========================================================= */
-
       async function fetchAndSetupLeaderboard() {
         const container = document.getElementById('leaderboardListContainer');
         const examSelect = document.getElementById('leaderboardExamFilter');
@@ -901,7 +1008,6 @@
               }
             }
 
-            // --- নাম নির্ধারণের উন্নত লজিক (Name Auto-Detection) ---
             let studentName = attempt.studentName;
             
             if (!studentName || studentName === 'শিক্ষার্থী') {
@@ -1174,7 +1280,6 @@
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
           
-          // Listen to realtime notifications for logged-in user
           listenToNotifications(user.uid);
         } else {
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
