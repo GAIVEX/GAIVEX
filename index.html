@@ -74,6 +74,26 @@
         .dropdown-menu a:hover, .dropdown-menu button:hover, .dropdown-menu a.active { background: var(--card-hover); color: #38bdf8; }
         .dropdown-menu.show { display: block; }
 
+        /* Notification Bell System Styling */
+        .notification-container { position: relative; }
+        .notification-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
+        .notification-badge { position: absolute; top: -3px; right: -3px; background: #f43f5e; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: bold; display: none; align-items: center; justify-content: center; border: 2px solid var(--nav-bg); }
+        .notification-dropdown { display: none; position: absolute; right: 0; top: 45px; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 12px; width: 300px; max-height: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 1000; overflow: hidden; flex-direction: column; }
+        .notification-dropdown.show { display: flex; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border-color); background: var(--input-bg); }
+        .notif-header h4 { font-size: 14px; color: var(--text-color); font-weight: bold; }
+        .notif-header button { background: none; border: none; color: #38bdf8; font-size: 11px; cursor: pointer; font-weight: 600; }
+        .notif-header button:hover { text-decoration: underline; }
+        .notif-body { overflow-y: auto; max-height: 330px; padding: 5px; }
+        .notif-item { padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-size: 13px; text-decoration: none; color: var(--text-color); display: flex; gap: 10px; border-radius: 6px; margin-bottom: 4px; transition: 0.2s; cursor: pointer; }
+        .notif-item:hover { background: var(--card-hover); }
+        .notif-item.unread { background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; }
+        .notif-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+        .notif-content { flex: 1; }
+        .notif-title { font-weight: bold; font-size: 13px; color: #38bdf8; margin-bottom: 2px; }
+        .notif-text { font-size: 12px; color: var(--text-color); margin-bottom: 4px; line-height: 1.3; word-break: break-word; }
+        .notif-time { font-size: 10px; color: var(--subtext); }
+
         #authNavContainer { display: flex; gap: 8px; align-items: center; }
         .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn-auth:hover { background: #7dd3fc; }
@@ -219,6 +239,23 @@
         </div>
         
         <div class="nav-right-group">
+            <!-- Header Notification Bell System -->
+            <div class="notification-container">
+                <button class="notification-btn" onclick="toggleNotificationMenu()" title="নোটিফিকেশন">
+                    🔔
+                    <span class="notification-badge" id="notifBadge">0</span>
+                </button>
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="notif-header">
+                        <h4>📢 নোটিফিকেশন</h4>
+                        <button onclick="markAllNotificationsRead()">সবগুলো পঠিত মার্ক করুন</button>
+                    </div>
+                    <div class="notif-body" id="notifBody">
+                        <p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">কোনো নতুন নোটিফিকেশন নেই</p>
+                    </div>
+                </div>
+            </div>
+
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="থিম পরিবর্তন করুন">☀️</button>
             <div id="authNavContainer">
                 <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
@@ -444,7 +481,7 @@
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -466,6 +503,7 @@
       let studentExamDataMap = {};
       let cachedNotices = [];
       let allRawExamAttempts = null;
+      let userNotifications = {};
 
       // Toast Notification function
       window.showToast = function(message) {
@@ -516,6 +554,84 @@
 
       window.toggleMenu = function() {
           document.getElementById('dropdownMenu').classList.toggle('show');
+          document.getElementById('notificationDropdown').classList.remove('show');
+      }
+
+      /* Notification System Functions */
+      window.toggleNotificationMenu = function() {
+          const dropdown = document.getElementById('notificationDropdown');
+          dropdown.classList.toggle('show');
+          document.getElementById('dropdownMenu').classList.remove('show');
+      }
+
+      function listenToNotifications(userId) {
+          const notifRef = ref(db, `notifications/${userId}`);
+          onValue(notifRef, (snapshot) => {
+              const notifBody = document.getElementById('notifBody');
+              const notifBadge = document.getElementById('notifBadge');
+              
+              if (snapshot.exists()) {
+                  userNotifications = snapshot.val();
+                  let unreadCount = 0;
+                  let html = '';
+
+                  const sortedKeys = Object.keys(userNotifications).sort((a,b) => (userNotifications[b].timestamp || 0) - (userNotifications[a].timestamp || 0));
+
+                  sortedKeys.forEach(key => {
+                      const item = userNotifications[key];
+                      if (!item.read) unreadCount++;
+
+                      let timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'}) : '';
+                      let icon = item.type === 'qanda' ? '❓' : item.type === 'reply' ? '💬' : '📢';
+                      let targetUrl = item.link || 'qanda.html';
+
+                      html += `
+                          <div class="notif-item ${item.read ? '' : 'unread'}" onclick="handleNotifClick('${key}', '${targetUrl}')">
+                              <div class="notif-icon">${icon}</div>
+                              <div class="notif-content">
+                                  <div class="notif-title">${item.title || 'নতুন আপডেট'}</div>
+                                  <div class="notif-text">${item.message || ''}</div>
+                                  <div class="notif-time">${timeStr}</div>
+                              </div>
+                          </div>
+                      `;
+                  });
+
+                  notifBody.innerHTML = html;
+                  if (unreadCount > 0) {
+                      notifBadge.style.display = 'flex';
+                      notifBadge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+                  } else {
+                      notifBadge.style.display = 'none';
+                  }
+              } else {
+                  notifBody.innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">কোনো নোটিফিকেশন নেই</p>';
+                  notifBadge.style.display = 'none';
+              }
+          });
+      }
+
+      window.handleNotifClick = async function(notifId, targetUrl) {
+          if (currentUser && userNotifications[notifId] && !userNotifications[notifId].read) {
+              try {
+                  await update(ref(db, `notifications/${currentUser.uid}/${notifId}`), { read: true });
+              } catch(e){}
+          }
+          window.location.href = targetUrl;
+      }
+
+      window.markAllNotificationsRead = async function() {
+          if (!currentUser || !userNotifications) return;
+          let updates = {};
+          for (let key in userNotifications) {
+              if (!userNotifications[key].read) {
+                  updates[`notifications/${currentUser.uid}/${key}/read`] = true;
+              }
+          }
+          if (Object.keys(updates).length > 0) {
+              await update(ref(db), updates);
+              showToast("সকল নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করা হয়েছে।");
+          }
       }
 
       window.onclick = function(event) {
@@ -524,6 +640,10 @@
               for (let i = 0; i < dropdowns.length; i++) {
                   dropdowns[i].classList.remove('show');
               }
+          }
+          if (!event.target.matches('.notification-btn') && !event.target.closest('.notification-btn') && !event.target.closest('.notification-dropdown')) {
+              const notifDropdown = document.getElementById("notificationDropdown");
+              if (notifDropdown) notifDropdown.classList.remove('show');
           }
       }
 
@@ -784,7 +904,6 @@
             // --- নাম নির্ধারণের উন্নত লজিক (Name Auto-Detection) ---
             let studentName = attempt.studentName;
             
-            // যদি নাম 'শিক্ষার্থী' বা ফাঁকা থাকে, তখন Firebase Auth বা Email থেকে নাম বের করবে
             if (!studentName || studentName === 'শিক্ষার্থী') {
               if (currentUser && uid === currentUser.uid) {
                 studentName = currentUser.displayName || currentUser.email.split('@')[0];
@@ -807,7 +926,6 @@
               } else {
                 leaderboardMap[uid].score += score;
                 leaderboardMap[uid].total += total;
-                // নাম না থাকলে অন্য এটেম্পট থেকে আপডেট নেওয়া
                 if(leaderboardMap[uid].name.startsWith('শিক্ষার্থী (')) {
                   leaderboardMap[uid].name = studentName;
                 }
@@ -1055,9 +1173,14 @@
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
           dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
+          
+          // Listen to realtime notifications for logged-in user
+          listenToNotifications(user.uid);
         } else {
           c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
           dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
+          document.getElementById('notifBody').innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">নোটিফিকেশন দেখতে লগইন করুন</p>';
+          document.getElementById('notifBadge').style.display = 'none';
         }
       });
 
