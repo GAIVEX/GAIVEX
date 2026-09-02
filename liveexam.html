@@ -3,41 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লাইভ পরীক্ষা - GAIVEX</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js CDN for Visual Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>লাইভ পরীক্ষা — GAIVEX Smart Exam System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; user-select: none; }
         
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; }
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
         .logo span { color: #f43f5e; }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .user-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; background: #0f172a; padding: 4px 10px; border-radius: 20px; border: 1px solid #334155; }
+        .user-avatar { width: 22px; height: 22px; border-radius: 50%; background: #38bdf8; color: #0f172a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; }
 
-        .container { max-width: 850px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
         
-        .timer-header { position: sticky; top: 10px; z-index: 100; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; flex-wrap: nowrap; }
+        /* Timer Header */
+        .timer-header { position: sticky; top: 60px; z-index: 900; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; flex-wrap: nowrap; }
         .timer-info { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-        #examTitle { font-size: 13px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        #examTitle { font-size: 14px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; font-weight: 600; }
         .timer-box { font-size: 16px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #f43f5e; white-space: nowrap; }
-        .btn-top-submit { background: #10b981; color: white; border: none; padding: 7px 14px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
+        .btn-top-submit { background: #10b981; color: white; border: none; padding: 8px 16px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
         .btn-top-submit:hover { background: #059669; }
 
-        /* Font Adjuster & Control Bar */
-        .controls-bar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155; }
-        .font-adjuster { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #94a3b8; }
-        .font-btn { background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-
-        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
-        .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .question-title { font-size: 16px; font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
-        .bookmark-btn { background: none; border: none; cursor: pointer; font-size: 20px; color: #64748b; transition: 0.2s; padding: 0 5px; }
-        .bookmark-btn.active { color: #facc15; }
+        /* Banner Warnings */
+        .warning-toast { display: none; background: #f59e0b; color: #0f172a; padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-align: center; }
         
-        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        /* Control Toolbar */
+        .exam-toolbar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .mode-toggle { display: flex; gap: 8px; }
+        .tool-btn { background: #0f172a; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .tool-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        
+        /* Question Search & Quick Jump */
+        .search-box { display: flex; gap: 6px; }
+        .search-box input { background: #0f172a; border: 1px solid #475569; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; width: 80px; text-align: center; }
+
+        /* Question Cards */
+        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
+        .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
+        .question-title { font-size: 16px; font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
+        .question-meta { display: flex; gap: 6px; margin-bottom: 10px; }
+        .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #0f172a; border: 1px solid #334155; color: #94a3b8; }
+        .tag.hard { border-color: #f43f5e; color: #f43f5e; }
+        .tag.medium { border-color: #facc15; color: #facc15; }
+        .tag.easy { border-color: #10b981; color: #10b981; }
+
+        .action-btns { display: flex; gap: 6px; }
+        .action-icon-btn { background: #0f172a; border: 1px solid #334155; cursor: pointer; font-size: 16px; color: #64748b; transition: 0.2s; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .action-icon-btn.bookmark-btn.active { color: #facc15; border-color: #facc15; }
+        .action-icon-btn.review-btn.active { color: #a855f7; border-color: #a855f7; }
+        .action-icon-btn:hover { background: #334155; }
+        
+        /* Options */
+        .options-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 15px; display: flex; align-items: center; gap: 12px; color: #f8fafc; }
-        .option-item:hover { border-color: #38bdf8; background: #1e3a8a33; }
+        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
         .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
 
         .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; }
@@ -45,63 +67,119 @@
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
 
-        .time-spent-tag { font-size: 11px; color: #38bdf8; margin-top: 8px; font-style: italic; display: none; }
+        /* Review Details Cards */
+        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 14px; margin-top: 15px; border-radius: 0 8px 8px 0; font-size: 14px; color: #cbd5e1; line-height: 1.6; }
+        .review-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+        .insight-card { background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
+        .insight-card strong { display: block; color: #38bdf8; margin-bottom: 2px; }
 
-        .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 30px; margin-bottom: 30px; }
-        .palette-title { font-size: 16px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; padding: 4px; }
-        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        /* Single Mode Nav Footer */
+        .single-nav-footer { display: none; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
+        .nav-btn { background: #38bdf8; color: #0f172a; border: none; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; }
+        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Palette Section */
+        .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 25px; margin-bottom: 30px; }
+        .palette-title { font-size: 15px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; max-height: 220px; overflow-y: auto; padding: 4px; }
+        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; position: relative; }
+        .palette-btn.active-current { ring: 2px solid #38bdf8; border-color: #38bdf8; font-size: 15px; }
         .palette-btn.answered { background: #1e3a8a; border-color: #38bdf8; color: #fff; }
-        .palette-btn.bookmarked { background: #ca8a04; border-color: #facc15; color: #fff; }
+        .palette-btn.bookmarked { background: #854d0e; border-color: #facc15; color: #fff; }
+        .palette-btn.review { background: #581c87; border-color: #a855f7; color: #fff; }
 
         .palette-legend { display: flex; gap: 15px; font-size: 12px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 12px; margin-top: 15px; flex-wrap: wrap; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-box { width: 12px; height: 12px; border-radius: 3px; }
 
-        .filter-bar { display: none; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .filter-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
+        /* Result Dashboard */
+        .result-dashboard { display: none; margin-bottom: 30px; }
+        .dash-header { background: #1e293b; border: 1px solid #38bdf8; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
+        .stat-card { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; text-align: center; }
+        .stat-card .num { font-size: 20px; font-weight: bold; color: #38bdf8; }
+        .stat-card .lbl { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+        /* Accuracy Chart Bar */
+        .chart-box { background: #0f172a; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #334155; }
+        .progress-bar-wrap { height: 16px; background: #334155; border-radius: 10px; overflow: hidden; display: flex; margin-top: 8px; }
+        .prog-seg { height: 100%; transition: width 0.5s ease; }
+        .prog-correct { background: #10b981; }
+        .prog-wrong { background: #f43f5e; }
+        .prog-skip { background: #64748b; }
+
+        /* AI Analysis Section */
+        .ai-box { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #6366f1; border-radius: 12px; padding: 20px; margin-top: 20px; position: relative; }
+        .ai-badge { position: absolute; top: 12px; right: 15px; background: #6366f1; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+        .topic-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .topic-pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .topic-pill.weak { background: rgba(244, 63, 94, 0.2); border: 1px solid #f43f5e; color: #f43f5e; }
+        .topic-pill.strong { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
+
+        /* Leaderboard & Tabs */
+        .tab-bar { display: flex; gap: 10px; border-bottom: 1px solid #334155; margin-bottom: 15px; }
+        .tab-btn { background: none; border: none; color: #94a3b8; padding: 10px 15px; font-weight: bold; cursor: pointer; font-size: 14px; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #38bdf8; border-color: #38bdf8; }
+
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        .leaderboard-table th, .leaderboard-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; }
+        .leaderboard-table th { background: #0f172a; color: #38bdf8; }
+        .leaderboard-table tr.my-rank { background: rgba(56, 189, 248, 0.15); font-weight: bold; }
+
+        /* Filters */
+        .filter-bar { display: none; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s; }
         .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
 
-        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
-        
-        /* Scoreboard & Analytics UI */
-        .score-board { background: #1e293b; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-        .already-submitted-msg { color: #f43f5e; font-size: 14px; margin-top: 5px; font-weight: bold; }
-        
-        .analytics-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px; }
-        .chart-box { width: 100%; max-width: 280px; }
-        
-        /* Leaderboard UI */
-        .leaderboard-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: none; }
-        .leaderboard-title { color: #facc15; font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center; }
-        .leaderboard-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        .leaderboard-table th, .leaderboard-table td { padding: 10px; border-bottom: 1px solid #334155; }
-        .leaderboard-table th { color: #38bdf8; }
-
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; }
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 480px; width: 90%; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-        .modal-btn { padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; }
+        .modal-btn { padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 13px; }
         .btn-confirm { background: #10b981; color: white; }
         .btn-cancel { background: #475569; color: white; }
 
+        /* Certificate Print Styles */
+        .certificate-card { background: #fff; color: #000; padding: 30px; border: 10px double #1e3a8a; border-radius: 8px; text-align: center; display: none; }
+        .certificate-card h1 { color: #1e3a8a; font-size: 28px; margin-bottom: 5px; }
+        .certificate-card h3 { color: #d97706; font-size: 18px; margin-bottom: 20px; }
+
+        /* Footer */
         .site-footer { background: #1e293b; border-top: 1px solid #334155; padding: 25px 20px 20px; margin-top: auto; text-align: center; }
         .footer-logo { font-size: 20px; font-weight: 700; color: #38bdf8; }
         .footer-logo span { color: #f43f5e; }
         .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 10px; }
-        .social-btn { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
+        .social-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
         .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .social-btn svg { width: 22px; height: 22px; }
+        .social-btn svg { width: 18px; height: 18px; }
+
+        @media (max-width: 640px) {
+          .timer-header { flex-wrap: wrap; }
+          #examTitle { max-width: 140px; }
+          .exam-toolbar { flex-direction: column; align-items: stretch; }
+          .search-box { justify-content: space-between; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Header / Navbar -->
     <header class="navbar">
         <a href="index.html" class="logo">GAIVEX<span>.</span></a>
-        <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 14px;">🏠 হোম</a>
+        <div class="nav-right">
+            <div class="user-badge" id="userProfileBadge">
+                <div class="user-avatar" id="uAvatar">S</div>
+                <span id="uName">Student</span>
+            </div>
+            <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 13px;">🏠 হোম</a>
+        </div>
     </header>
 
     <div class="container">
+        <!-- Anti-cheat / System Warning Toast -->
+        <div class="warning-toast" id="warningToast">⚠️ সতর্কতা: ট্যাব পরিবর্তন বা উইন্ডো মিনিমাইজ করলে পরীক্ষা বাতিল হতে পারে!</div>
+
+        <!-- Sticky Timer Bar -->
         <div class="timer-header">
             <div class="timer-info">
                 <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
@@ -110,71 +188,170 @@
             <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
         </div>
 
-        <div class="controls-bar">
-            <div class="font-adjuster">
-                <span>ফন্ট সাইজ:</span>
-                <button class="font-btn" onclick="adjustFontSize(-1)">A-</button>
-                <button class="font-btn" onclick="adjustFontSize(1)">A+</button>
+        <!-- Result Dashboard (Hidden during exam) -->
+        <div class="result-dashboard" id="resultDashboard">
+            <div class="dash-header">
+                <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড</h2>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Chemical Changes — Live Exam Result</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="num" id="resScore">0.00</div><div class="lbl">মোট নম্বর</div></div>
+                    <div class="stat-card"><div class="num" id="resAccuracy">0%</div><div class="lbl">Accuracy</div></div>
+                    <div class="stat-card"><div class="num" id="resCorrect" style="color: #10b981;">0</div><div class="lbl">সঠিক ( Correct )</div></div>
+                    <div class="stat-card"><div class="num" id="resWrong" style="color: #f43f5e;">0</div><div class="lbl">ভুল ( Wrong )</div></div>
+                    <div class="stat-card"><div class="num" id="resSkipped" style="color: #64748b;">0</div><div class="lbl">স্কিপড ( Skipped )</div></div>
+                    <div class="stat-card"><div class="num" id="resTime">0m 0s</div><div class="lbl">সময় ব্যয়</div></div>
+                </div>
+
+                <!-- Accuracy Visual Bar -->
+                <div class="chart-box">
+                    <div style="display: flex; justify- justify-content: space-between; font-size: 12px; color: #cbd5e1;">
+                        <span>📈 Accuracy Breakup</span>
+                        <span id="resAttemptRate">Attempt Rate: 0%</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="prog-seg prog-correct" id="barCorrect" style="width: 0%;"></div>
+                        <div class="prog-seg prog-wrong" id="barWrong" style="width: 0%;"></div>
+                        <div class="prog-seg prog-skip" id="barSkip" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- GAIVEX AI Weakness Analysis -->
+                <div class="ai-box">
+                    <span class="ai-badge">GAIVEX AI 🧠</span>
+                    <h4 style="color: #cbd5e1; margin-bottom: 6px;">🤖 AI Performance & Weakness Analysis</h4>
+                    <p style="color: #94a3b8; font-size: 13px;" id="aiAnalysisText">বিশ্লেষণ প্রস্তুত করা হচ্ছে...</p>
+                    
+                    <div style="margin-top: 12px;">
+                        <span style="font-size: 12px; color: #64748b; font-weight: bold;">টপিক পারফরম্যান্স:</span>
+                        <div class="topic-list" id="aiTopicList"></div>
+                    </div>
+
+                    <button class="tool-btn" style="margin-top: 15px; background: #6366f1; color: white; border: none;" onclick="generateAIPractice()">⚡ দুর্বল টপিকের ওপর ২০টি AI রিভিশন এমসিকিউ পান</button>
+                </div>
+
+                <!-- Action Toolbar for Results -->
+                <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button class="tool-btn" onclick="toggleTabs('leaderboard')">🏆 Live Leaderboard দেখুন</button>
+                    <button class="tool-btn" onclick="toggleTabs('history')">📈 Performance History</button>
+                    <button class="tool-btn" onclick="printCertificate()">📜 Download Certificate</button>
+                </div>
             </div>
-            <div style="font-size: 12px; color: #f43f5e; font-weight: bold;">⚠️ OMR Mode: উত্তর একবার দিলে পরিবর্তন করা যাবে না</div>
+
+            <!-- Dynamic Tab Content -->
+            <div id="tabLeaderboard" style="display: none; background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
+                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">🏆 আজকের Live Ranking</h3>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr><th>Rank</th><th>Student Name</th><th>Score</th><th>Time</th></tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr><td colspan="4" style="text-align:center; color:#64748b;">লোড হচ্ছে...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="tabHistory" style="display: none; background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
+                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">📊 আপনার গত পরীক্ষার পারফরম্যান্স ট্র্যাকার</h3>
+                <div id="historyList" style="font-size: 13px; color: #cbd5e1;"></div>
+            </div>
         </div>
 
-        <div id="resultSummary" style="display: none;"></div>
-        
-        <div class="leaderboard-box" id="leaderboardSection">
-            <div class="leaderboard-title">🏆 মেধা তালিকা (Top Performers)</div>
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>নাম</th>
-                        <th>প্রাপ্ত নম্বর</th>
-                        <th>সময়</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- Leaderboard Rows Dynamic Load -->
-                </tbody>
-            </table>
+        <!-- Exam Controls & Navigation Toolbar -->
+        <div class="exam-toolbar" id="examToolbar">
+            <div class="mode-toggle">
+                <button type="button" class="tool-btn active" id="btnModeAll" onclick="switchViewMode('all')">📄 All Questions Mode</button>
+                <button type="button" class="tool-btn" id="btnModeSingle" onclick="switchViewMode('single')">📱 One Question Mode</button>
+            </div>
+            <div class="search-box">
+                <input type="number" id="jumpQInput" placeholder="Q. No" min="1">
+                <button type="button" class="tool-btn" onclick="jumpToQuestion()">Go 🚀</button>
+                <button type="button" class="tool-btn" onclick="goToNextUnanswered()" style="background:#0284c7; border-color:#0284c7; color:#fff;">বাকি প্রশ্নে যান ➔</button>
+            </div>
         </div>
 
+        <!-- Filter Bar (Post-Exam) -->
         <div class="filter-bar" id="filterBar">
             <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
             <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
             <button class="filter-btn" onclick="filterQuestions('wrong')">ভুল উত্তর</button>
             <button class="filter-btn" onclick="filterQuestions('skipped')">স্কিপড</button>
-            <button class="filter-btn" onclick="filterQuestions('bookmarked')">বুকমার্কড</button>
+            <button class="filter-btn" onclick="filterQuestions('bookmarked')">বুকমার্কড ⭐</button>
+            <button class="filter-btn" onclick="filterQuestions('review')">Review 🔖</button>
         </div>
 
+        <!-- Form & Container -->
         <form id="examForm" onsubmit="event.preventDefault();">
             <div id="questionsContainer"></div>
         </form>
 
+        <!-- Single Question Navigation Buttons -->
+        <div class="single-nav-footer" id="singleNavFooter">
+            <button type="button" class="nav-btn" id="prevQBtn" onclick="navigateSingle(-1)">← Previous</button>
+            <span id="singleProgress" style="font-size: 13px; font-weight: bold; color: #38bdf8;">Question 1 / 50</span>
+            <button type="button" class="nav-btn" id="nextQBtn" onclick="navigateSingle(1)">Next →</button>
+        </div>
+
+        <!-- Advanced 4-Status Question Palette -->
         <div class="palette-section" id="paletteSection">
             <div class="palette-title">
-                <span>প্রশ্ন প্যালেট (নেভিগেশন)</span>
+                <span>প্রশ্ন প্যালেট (Smart Navigation)</span>
                 <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
             <div class="palette-legend">
-                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> উত্তর দেওয়া</div>
-                <div class="legend-item"><div class="legend-box" style="background:#ca8a04;"></div> বুকমার্ক</div>
-                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> বাকি</div>
+                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> 🟦 Answered</div>
+                <div class="legend-item"><div class="legend-box" style="background:#854d0e;"></div> 🟨 Bookmarked</div>
+                <div class="legend-item"><div class="legend-box" style="background:#581c87;"></div> 🟪 Review</div>
+                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> ⬜ Unanswered</div>
             </div>
         </div>
     </div>
 
+    <!-- Submit Confirmation Modal -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-box">
             <h3 style="color: #38bdf8; margin-bottom: 10px;">Are you sure you want to submit?</h3>
-            <p id="modalStatsText" style="color: #cbd5e1; font-size: 15px; line-height: 1.5;"></p>
+            <p id="modalStatsText" style="color: #cbd5e1; font-size: 15px; line-height: 1.6;"></p>
             <div class="modal-buttons">
                 <button type="button" class="modal-btn btn-cancel" onclick="closeConfirmModal()">ফিরে যান</button>
-                <button type="button" class="modal-btn btn-confirm" onclick="confirmAndSubmit()">Yes, Submit</button>
+                <button type="button" class="modal-btn btn-confirm" onclick="confirmAndSubmit()">Yes, Submit 🚀</button>
             </div>
         </div>
     </div>
 
+    <!-- Question Issue Report Modal -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal-box">
+            <h3 style="color: #f43f5e; margin-bottom: 10px;">🚩 প্রশ্ন রিপোর্ট করুন</h3>
+            <input type="hidden" id="reportQIndex">
+            <select id="reportReason" style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; margin-bottom: 10px;">
+                <option value="Wrong Answer">❌ ভুল উত্তর (Wrong Answer)</option>
+                <option value="Question Error">⚠️ প্রশ্নে ভুল (Question Error)</option>
+                <option value="Explanation Error">📖 ব্যাখ্যা ভুল (Explanation Error)</option>
+                <option value="Typo">📝 বানানে ভুল (Typo)</option>
+            </select>
+            <textarea id="reportDetails" placeholder="বিস্তারিত লিখুন (ঐচ্ছিক)..." style="width:100%; height:70px; background:#0f172a; border:1px solid #475569; color:#fff; padding:8px; border-radius:6px; font-size:12px;"></textarea>
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn btn-cancel" onclick="closeReportModal()">বাতিল</button>
+                <button type="button" class="modal-btn btn-confirm" onclick="submitQuestionReport()">জমা দিন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printable Certificate Template (Hidden) -->
+    <div id="certificateContainer" class="certificate-card">
+        <h1>GAIVEX Digital Certificate</h1>
+        <h3>Certificate of Participation & Performance</h3>
+        <p>This is awarded to</p>
+        <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Student Name</h2>
+        <p>for completing the live examination <b><span id="certExam">Chemical Changes</span></b></p>
+        <br>
+        <p>Score Obtained: <b><span id="certScore">00</span></b> | Accuracy: <b><span id="certAcc">00%</span></b></p>
+        <p>Date: <span id="certDate">02/09/2026</span></p>
+    </div>
+
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-logo">GAIVEX<span>.</span></div>
         <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
@@ -192,9 +369,10 @@
         <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
     </footer>
 
+    <!-- Firebase Modular SDK Integration -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set, update, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+      import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -211,152 +389,123 @@
       const db = getDatabase(app);
       const auth = getAuth(app);
 
+      // Global State Management
       let currentUser = null;
       let timerInterval = null;
-      let timeRemaining = 1500; 
+      let totalDurationSeconds = 1500;
+      let timeRemaining = 1500;
+      let startTimeStamp = Date.now();
       let activeExamKey = "gaivex_exam_default";
       let examTimerKey = "gaivex_timer_default";
-      let draftAnswersKey = "gaivex_draft_answers_default";
+      let autoSaveKey = "gaivex_autosave_answers";
       let userSelections = {};
       let bookmarkedQuestions = {};
+      let reviewQuestions = {};
       let isSubmitted = false;
-      
-      // Time tracking per question
-      let timePerQuestion = {};
-      let currentQuestionIndex = 0;
-      let questionStartTime = Date.now();
+      let viewMode = 'all'; // 'all' or 'single'
+      let currentSingleIndex = 0;
+      let markingScheme = { correct: 1.0, wrong: -0.25, skip: 0.0 };
 
-      // Anti-Cheat Warning
-      let warningCount = 0;
-
+      // Default Exam Questions with Enhanced Topic/Difficulty Meta
       const defaultExamData = {
-        id: "chemical_changes_mcq_50_v1",
+        id: "chemical_changes_mcq_50_v2",
         title: "🧪 রাসায়নিক পরিবর্তন (Chemical Changes) — ৫০টি গুরুত্বপূর্ণ MCQ",
         duration: 25,
+        marking: { correct: 1, wrong: 0.25 },
         questions: [
-          { question: "বিক্রিয়ার হার (Rate of Reaction) এর একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "mol L s⁻¹", "L mol⁻¹ s⁻¹", "mol L⁻² s⁻¹"], correct: 0, explanation: "বিক্রিয়ার হার = ঘনমাত্রার পরিবর্তন / সময় = (mol/L) / s = mol L⁻¹ s⁻¹।" },
-          { question: "শূন্য ক্রম (Zero order) বিক্রিয়ার বেগ ধ্রুবকের (k) একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, explanation: "শূন্য ক্রম বিক্রিয়ার ক্ষেত্রে Rate = k[A]⁰ = k। সুতরাং k এর একক বিক্রিয়ার হারের এককই (mol L⁻¹ s⁻¹)।" },
-          { question: "প্রথম ক্রম (First order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, explanation: "প্রথম ক্রম বিক্রিয়ায় Rate = k[A] ⟹ k = Rate/[A] = (mol L⁻¹ s⁻¹)/(mol L⁻¹) = s⁻¹।" },
-          { question: "দ্বিতীয় ক্রম (Second order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 2, explanation: "সাধারণ বিক্রিয়ার একক: (mol L⁻¹)^(1-n) s⁻¹। n=2 বসালে পাওয়া যায় L mol⁻¹ s⁻¹।" },
-          { question: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু (t_1/2) এর সাথে প্রারম্ভিক ঘনমাত্রার সম্পর্ক কী?", options: ["সরাসরি সমানুপাতিক", "ব্যস্তানুপাতিক", "ঘনমাত্রার ওপর নির্ভর করে না", "ঘনমাত্রার বর্গের সমানুপাতিক"], correct: 2, explanation: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু t_1/2 = 0.693 / k, যা প্রারম্ভিক ঘনমাত্রার (a) ওপর সম্পূর্ণ স্বাধীন।" },
-          { question: "তাপমাত্রার সাথে বিক্রিয়ার হার ধ্রুবক (k) এর সম্পর্ক নির্দেশকারী সমীকরণ কোনটি?", options: ["আর্হেনিয়াস সমীকরণ", "ভ্যান্ট হফ সমীকরণ", "অস্টওয়াল্ড সমীকরণ", "এনথালপি সমীকরণ"], correct: 0, explanation: "আর্হেনিয়াস সমীকরণ k = A e^(-Ea/RT) তাপমাত্রার সাথে k এর সম্পর্ক দেখায়।" },
-          { question: "আর্হেনিয়াস সমীকরণ অনুযায়ী ln(k) বনাম 1/T লেখচিত্রের ঢাল (Slope) কত?", options: ["Ea/R", "-Ea/R", "-Ea/(2.303 R)", "Ea"], correct: 1, explanation: "ln(k) = ln(A) - (Ea/R)(1/T)। এটি y = c + mx সমীকরণ মেনে চলে, যেখানে ঢাল m = -Ea/R।" },
-          { question: "সাধারণত প্রতি ১০°C তাপমাত্রা বৃদ্ধির জন্য বিক্রিয়ার হার কত গুণ বৃদ্ধি পায়?", options: ["১-২ গুণ", "২-৩ গুণ", "৪-৫ গুণ", "১০ গুণ"], correct: 1, explanation: "তাপমাত্রা গুণাঙ্ক μ = k_(t+10) / k_t ≈ 2 থেকে 3।" },
-          { question: "অনুঘটক বা প্রভাবক (Catalyst) বিক্রিয়ার হার কীভাবে বৃদ্ধি করে?", options: ["সক্রিয়ণ শক্তি বৃদ্ধি করে", "সক্রিয়ণ শক্তি হ্রাস করে", "বিক্রিয়া তাপ হ্রাস করে", "সাম্যধ্রুবক বৃদ্ধি করে"], correct: 1, explanation: "প্রভাবক বিক্রিয়াকে একটি বিকল্প কম শক্তিযুক্ত পথ প্রদান করে, ফলে সক্রিয়ণ শক্তি (Ea) হ্রাস পায় ও হার বাড়ে।" },
-          { question: "রাসায়নিক সাম্যাবস্থায় Kc এবং Kp এর মধ্যকার সম্পর্ক সমীকরণ কোনটি?", options: ["Kp = Kc (RT)^Δn", "Kc = Kp (RT)^Δn", "Kp = Kc RT", "Kp = Kc (RT)^(-Δn)"], correct: 0, explanation: "আদর্শ গ্যাস সমীকরণ প্রয়োগে পাওয়া যায় Kp = Kc (RT)^Δn।" },
-          { question: "কোন বিক্রিয়াটির ক্ষেত্রে Kp = Kc হবে?", options: ["N₂ + 3H₂ ⇌ 2NH₃", "PCl₅ ⇌ PCl₃ + Cl₂", "H₂ + I₂ ⇌ 2HI", "2SO₂ + O₂ ⇌ 2SO₃"], correct: 2, explanation: "H₂ + I₂ ⇌ 2HI বিক্রিয়ায় Δn = 2 - (1+1) = 0। ফলে Kp = Kc (RT)⁰ = Kc।" },
-          { question: "PCl₅(g) ⇌ PCl₃(g) + Cl₂(g) বিক্রিয়ার জন্য Δn এর মান কত?", options: ["0", "+1", "-1", "+2"], correct: 1, explanation: "Δn = উৎপাদের গ্যাসীয় মোলসংখ্যা - বিক্রিয়কের গ্যাসীয় মোলসংখ্যা = (1 + 1) - 1 = +1।" },
-          { question: "N₂(g) + 3H₂(g) ⇌ 2NH₃(g) বিক্রিয়াটিতে চাপ বৃদ্ধি করলে সাম্যাবস্থা কোন দিকে সরে যাবে?", options: ["বাম দিকে (পশ্চাৎমুখী)", "ডান দিকে (সম্মুখমুখী)", "কোনো পরিবর্তন হবে না", "বিক্রিয়া বন্ধ হবে"], correct: 1, explanation: "লা-শাতেলিয়ার নীতি অনুসারে চাপ বাড়ালে সাম্যাবস্থা বেশি মোল সংখ্যার দিক থেকে কম মোল সংখ্যার দিকে (৪ মোল ➔ ২ মোল অর্থাৎ ডান দিকে) সরবে।" },
-          { question: "কোনটির ওপর সাম্যধ্রুবকের (Kc / Kp) মান নির্ভর করে?", options: ["ঘনমাত্রা", "চাপ", "তাপমাত্রা", "প্রভাবক"], correct: 2, explanation: "সাম্যধ্রুবক (Kc বা Kp) কেবল তাপমাত্রার পরিবর্তনের ওপর নির্ভর করে; ঘনমাত্রা, চাপ বা প্রভাবকে পরিবর্তিত হয় না।" },
-          { question: "তাপউৎপাদী (Exothermic) বিক্রিয়ার ক্ষেত্রে তাপমাত্রা বৃদ্ধি করলে সাম্যধ্রুবক (K) এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "একই থাকে", "শূন্য হয়"], correct: 1, explanation: "ভ্যান্ট হফ সমীকরণ অনুযায়ী তাপউৎপাদী বিক্রিয়ায় (ΔH < 0) তাপমাত্রা বাড়ালে সাম্যধ্রুবকের মান হ্রাস পায়।" },
-          { question: "বিশুদ্ধ পানির অটো-আয়োনাইজেশন ধ্রুবক (Kw) ২৫°C তাপমাত্রায় কত?", options: ["1.0 × 10⁻⁷ M²", "1.0 × 10⁻¹⁴ M²", "1.0 × 10⁻¹⁰ M²", "1.0 × 10¹⁴ M²"], correct: 1, explanation: "২৫°C-এ পানির আয়নিক গুণফল Kw = [H⁺][OH⁻] = (10⁻⁷)(10⁻⁷) = 1.0 × 10⁻¹⁴ M²।" },
-          { question: "২৫°C তাপমাত্রায় বিশুদ্ধ পানির pH এর মান কত?", options: ["0", "7.0", "14.0", "1.0"], correct: 1, explanation: "বিশুদ্ধ পানিতে [H⁺] = 10⁻⁷ M, সুতরাং pH = -log(10⁻⁷) = 7.0 (নিরপেক্ষ)।" },
-          { question: "তাপমাত্রা বৃদ্ধি করলে বিশুদ্ধ পানির pH এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "অপরিবর্তিত থাকে", "১৪ হয়"], correct: 1, explanation: "তাপমাত্রা বাড়লে পানির স্বতঃস্ফূর্ত বিয়োজন বাড়ে, ফলে [H⁺] বাড়ে এবং pH-এর মান ৭ এর নিচে নেমে আসে (তবে পানি নিরপেক্ষই থাকে)।" },
-          { question: "0.005 M H₂SO₄ দ্রবণের pH কত?", options: ["2.0", "1.0", "2.3", "3.0"], correct: 0, explanation: "H₂SO₄ তীব্র দ্বিক্ষারকীয় এসিড। [H⁺] = 2 × 0.005 = 0.01 M = 10⁻² M। pH = -log(10⁻²) = 2.0।" },
-          { question: "0.01 M NaOH দ্রবণের pH কত?", options: ["2", "12", "7", "10"], correct: 1, explanation: "[OH⁻] = 0.01 M = 10⁻² M ⟹ pOH = 2 ⟹ pH = 14 - pOH = 14 - 2 = 12।" },
-          { question: "অ্যাসিডিক বা অম্লীয় বাফার দ্রবণ তৈরির জন্য কোনটি ব্যবহৃত হয়?", options: ["তীব্র এসিড ও মৃদু ক্ষার", "মৃদু এসিড ও তার লবণ", "তীব্র এসিড ও তার লবণ", "মৃদু ক্ষার ও তার লবণ"], correct: 1, explanation: "অম্লীয় বাফার দ্রবণ মৃদু অম্ল (যেমন CH₃COOH) এবং শক্তিশালী ক্ষারের সাথে তৈরি অম্লের লবণ (যেমন CH₃COONa) দিয়ে তৈরি হয়।" },
-          { question: "ক্ষারীয বাফার দ্রবণের pH গণনার জন্য কোন সমীকরণটি ব্যবহৃত হয়?", options: ["pH = pKa + log([Salt]/[Acid])", "pOH = pKb + log([Salt]/[Base])", "pH = pKb + log([Base]/[Salt])", "pH = 14 + pKa"], correct: 1, explanation: "হ্যান্ডারসন-হ্যাসেলবালখ সমীকরণ অনুসারে ক্ষারীয় বাফারের ক্ষেত্রে pOH = pKb + log([Salt]/[Base])।" },
-          { question: "মানুষের রক্তের pH এর স্বাভাবিক পরিসীমা (Range) কত?", options: ["6.5 - 7.0", "7.35 - 7.45", "7.8 - 8.2", "8.5 - 9.0"], correct: 1, explanation: "মানুষের রক্তের স্বাভাবিক pH হলো ৭.৩৫ থেকে ৭.৪৫ (গড় ৭.৪)।" },
-          { question: "মানুষের রক্তে প্রধান বাফার সিস্টেম কোনটি?", options: ["ফসফেট বাফার", "প্রোটিন বাফার", "বাইকার্বোনেট বাফার (H₂CO₃ / HCO₃⁻)", "অ্যাসিটেট বাফার"], correct: 2, explanation: "রক্তের প্রধান প্রাইমারি বাফার হলো কার্বনিক এসিড-বাইকার্বোনেট বাফার সিস্টেম।" },
-          { question: "রক্তের pH ৭.৩৫ এর নিচে নেমে গেলে সেই অবস্থাকে কী বলে?", options: ["অ্যালকালোসিস (Alkalosis)", "এসিডোসিস (Acidosis)", "বাফারিং", "নিউট্রালাইজেশন"], correct: 1, explanation: "রক্তের pH ৭.৩৫ এর নিচে নামলে এসিডোসিস এবং ৭.৪৫ এর উপরে উঠলে অ্যালকালোসিস বলে।" },
-          { question: "পানির স্থায়ী খড়তার (Permanent Hardness) জন্য দায়ী কোন লবণগুলো?", options: ["Ca ও Mg এর বাইকার্বোনেট", "Ca ও Mg এর ক্লোরাইড ও সালফেট", "Na ও K এর কার্বোনেট", "Fe ও Mn এর হাইড্রোক্সাইড"], correct: 1, explanation: "CaCl₂, MgCl₂, CaSO₄, MgSO₄ দ্রবীভূত থাকলে পানির স্থায়ী খড়তা সৃষ্টি হয়।" },
-          { question: "অস্থায়ী খড়তা দূর করার সবচেয়ে সহজ পদ্ধতি কোনটি?", options: ["ফুটানো (Boiling)", "পারমুটিট প্রণালী", "আয়ন বিনিময় পদ্ধতি", "ক্লোরিনেশন"], correct: 0, explanation: "পানি ফুটালে দ্রবণীয় বাইকার্বোনেট লবণগুলো অদ্রবণীয় কার্বনেটে পরিণত হয়ে থিতিয়ে পড়ে।" },
-          { question: "বিওডি (BOD - Biochemical Oxygen Demand) দ্বারা কী পরিমাপ করা হয়?", options: ["পানির অম্লতা", "পানিতে দ্রবীভূত জৈব দূষকের পরিমাণ", "পানির খড়তা", "হেভি মেটালের পরিমাণ"], correct: 1, explanation: "জৈব পচনশীল পদার্থকে অনুজীব দ্বারা ভাঙতে যে পরিমাণ O₂ লাগে তাকে BOD বলে।" },
-          { question: "পানীয় জলের জন্য BOD এর মান অনুমেয় সীমা কত ধরা হয় (WHO অনুযায়ী)?", options: ["1 - 2 ppm", "10 ppm", "100 ppm", "0 ppm"], correct: 0, explanation: "পানযোগ্য বিশুদ্ধ পানির BOD এর মান সাধারণতঃ 1 - 2 mg/L বা ppm হয়।" },
-          { question: "COD (Chemical Oxygen Demand) এর মান সর্বদা BOD অপেক্ষা কেমন হয়?", options: ["কম হয়", "সমান হয়", "বেশি হয়", "অর্ধেক হয়"], correct: 2, explanation: "COD তে জৈব পচনশীল ও অপচনশীল উভয় বস্তুর জারণ ঘটে, তাই COD > BOD।" },
-          { question: "পানীয় জলে আর্সেনিকের (As) বিশ্ব স্বাস্থ্য সংস্থা (WHO) অনুমোদিত সর্বোচ্চ সীমা কত?", options: ["0.01 mg/L", "0.05 mg/L", "0.1 mg/L", "1.0 mg/L"], correct: 0, explanation: "WHO নির্দেশিত নিরাপদ সীমা 0.01 mg/L (তবে বাংলাদেশের মানদণ্ড 0.05 mg/L)।" },
-          { question: "পানির দ্রবীভূত অক্সিজেন (DO - Dissolved Oxygen) এর ন্যূনতম মান কত হওয়া উচিত?", options: ["1 ppm", "2 ppm", "4 - 6 ppm", "10 - 12 ppm"], correct: 2, explanation: "জলজ জীবের বেঁচে থাকার জন্য পানিতে দ্রবীভূত অক্সিজেনের মান কমপক্ষে 4 - 6 ppm থাকা প্রয়োজন।" },
-          { question: "কোনো প্রক্রিয়ায় সিস্টেমে তাপের কোনো আদান-প্রদান ঘটে না, তাকে কী বলে?", options: ["সমোষ্ণ প্রক্রিয়া (Isothermal)", "রুদ্ধতাপীয় প্রক্রিয়া (Adiabatic)", "সমচাপীয় প্রক্রিয়া", "সমআয়তন প্রক্রিয়া"], correct: 1, explanation: "রুদ্ধতাপীয় (Adiabatic) প্রক্রিয়ায় সিস্টেম ও পরিবেশের মধ্যে তাপের আদান-প্রদান dQ = 0 হয়।" },
-          { question: "হেসের তাপ সমষ্টির সূত্র (Hess's Law) তাপগতিবিদ্যার কোন সূত্রের ওপর প্রতিষ্ঠিত?", options: ["প্রথম সূত্র (শক্তি সংরক্ষণশীলতা)", "দ্বিতীয় সূত্র", "তৃতীয় সূত্র", "শূন্যতম সূত্র"], correct: 0, explanation: "হেসের সূত্রটি মূলত শক্তির নিত্যতা বা সংরক্ষণশীলতা নীতির প্রয়োগ।" },
-          { question: "তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ (Heat of Neutralization) এর মান কত?", options: ["-57.34 kJ mol⁻¹", "-13.7 kJ mol⁻¹", "+57.34 kJ mol⁻¹", "-68.3 kJ mol⁻¹"], correct: 0, explanation: "সব তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ ধ্রুবক এবং এর মান -57.34 kJ mol⁻¹ (বা -13.7 kcal mol⁻¹)।" },
-          { question: "HF ও NaOH এর প্রশমন তাপের মান -57.34 kJ mol⁻¹ অপেক্ষা বেশি (-68.6 kJ mol⁻¹) হওয়ার কারণ—", options: ["HF তীব্র এসিড", "F⁻ আয়নের উচ্চ হাইড্রেশন শক্তি", "NaOH দুর্বল ক্ষার", "HF এর বিয়োজন এনথালপি বেশি"], correct: 1, explanation: "ক্ষুদ্র আকারের F⁻ আয়নের হাইড্রেশন শক্তি অত্যন্ত বেশি থাকায় নির্গত তাপের মান স্বাভাবিকের চেয়ে বেশি হয়।" },
-          { question: "CH₃COOH ও NaOH এর প্রশমন তাপ -57.34 kJ mol⁻¹ অপেক্ষা কম (-55.2 kJ mol⁻¹) কেন?", options: ["CH₃COOH সম্পূর্ণ বিয়োজিত হয় না (বিয়োজন তাপে কিছু শক্তি ব্যয় হয়)", "সোডিয়াম অ্যাসিটেট লবণ তৈরি হয়", "বিক্রিয়াটি শ্লথ", "পানি উৎপন্ন হয় না"], correct: 0, explanation: "দুর্বল এসিড (CH₃COOH) কে পূর্ণ বিয়োজিত করতে কিছু শক্তি শোষিত হয়, ফলে নিট নির্গত তাপ কমে যায়।" },
-          { question: "স্বতঃস্ফূর্ত (Spontaneous) পরিবর্তনের জন্য গিবস মুক্ত শক্তির পরিবর্তন (ΔG) কেমন হবে?", options: ["ধনাত্মক (ΔG > 0)", "ঋণাত্মক (ΔG < 0)", "শূন্য (ΔG = 0)", "অসীম"], correct: 1, explanation: "যেকোনো স্বতঃস্ফূর্ত বা স্বমেধিত প্রক্রিয়ায় ΔG সর্বদা ঋণাত্মক (ΔG < 0) হতে হয়।" },
-          { question: "সাম্যাবাস্থায় গিবস মুক্ত শক্তির পরিবর্তন (ΔG) এর মান কত?", options: ["ΔG < 0", "ΔG > 0", "ΔG = 0", "ΔG = ΔH"], correct: 2, explanation: "বিক্রিয়া সাম্যাবস্থায় উপনীত হলে মুক্ত শক্তির কোনো নিট পরিবর্তন হয় না, অর্থাৎ ΔG = 0।" },
-          { question: "একটি এনডোথার্মিক (তাপহারী) বিক্রিয়ার জন্য enthalpy পরিবর্তন (ΔH) কেমন হয়?", options: ["ΔH < 0 (ঋণাত্মক)", "ΔH > 0 (ধনাত্মক)", "ΔH = 0", "ΔH = ∞"], correct: 1, explanation: "তাপহারী বিক্রিয়ায় সিস্টেম তাপ শোষণ করে, ফলে ΔH ধনাত্মক (+) হয়।" },
-          { question: "বিক্রিয়া এনথালপি ΔH, এন্ট্রপি ΔS এবং পরম তাপমাত্রা T এর সম্পর্কযুক্ত গিবস সমীকরণ কোনটি?", options: ["ΔG = ΔH - TΔS", "ΔG = ΔH + TΔS", "ΔH = ΔG - TΔS", "ΔS = ΔH / ΔG"], correct: 0, explanation: "গিবস-হেলমহোল্টজ সমীকরণ: ΔG = ΔH - TΔS।" },
-          { question: "কোনো কেলাসিত বিশুদ্ধ পদার্থের পরম শূন্য তাপমাত্রায় (0 K) এন্ট্রপির (Entropy) মান কত?", options: ["সর্বোচ্চ", "শূন্য (0)", "ঋণাত্মক", "অসীম"], correct: 1, explanation: "তাপগতিবিদ্যার ৩য় সূত্র অনুসারে পরম শূন্য তাপমাত্রায় বিশুদ্ধ ক্লাসের এন্ট্রপি শূন্য।" },
-          { question: "হেবার প্রণালীতে অ্যামোনিয়া (NH₃) শিল্প উৎপাদনে ব্যবহৃত অনুঘটক (Catalyst) কোনটি?", options: ["V₂O₅", "সূক্ষ্ম চূর্ণিত Fe (আয়রন)", "Pt (প্লাটিনাম)", "Ni (নিকেল)"], correct: 1, explanation: "হেবার প্রণালীতে আয়রন চূর্ণ (Fe) প্রভাবক এবং মোলিবেডনাম (Mo) প্রভাবক সহায়কের কাজ করে।" },
-          { question: "স্পর্শ প্রণালীতে সালফিউরিক এসিড (H₂SO₄) তৈরিতে ব্যবহৃত আধুনিক প্রভাবক কোনটি?", options: ["Pt (প্লাটিনাম)", "V₂O₅ (ভ্যানাডিয়াম পেন্টঅক্সাইড)", "Fe₂O₃", "MnO₂"], correct: 1, explanation: "পূর্বে প্লাটাইনাবৃত অ্যাসবেস্টস ব্যবহার হলেও বর্তমানে সস্তা ও বিষমুক্ত V₂O₅ ব্যবহৃত হয়।" },
-          { question: "নিচের কোনটি ঋণাত্মক প্রভাবক (Negative Catalyst) হিসেবে কাজ করে?", options: ["MnO₂", "গ্লিসারিন / ফসফরিক এসিড", "Pt", "Fe"], correct: 1, explanation: "গ্লিসারিন বা অ্যালকোহল H₂O₂ এর বিয়োজন হার কমিয়ে দেয়, যা ঋণাত্মক প্রভাবক।" },
-          { question: "অটো-ক্যাটালিস্ট (Auto-catalyst) এর উদাহরণ কোনটি?", options: ["KMnO₄ দ্বারা অক্সালিক এসিডের জারণে উৎপন্ন Mn²⁺ আয়ন", "H₂O₂ বিয়োজনে MnO₂", "এস্টার আদ্রবিশ্লেষণে এসিড", "উভয় ক ও গ"], correct: 3, explanation: "বিক্রিয়ায় উৎপন্ন Mn²⁺ অথবা উৎপন্ন এসিড স্বয়ং প্রভাবক হিসেবে কাজ করায় এরা স্ব-প্রভাবক।" },
-          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ક્ષার (Conjugate base) তত শক্তিশালী হবে।" },
-          { question: "NH₃ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["NH₂⁻", "NH₄⁺", "N³⁻", "NH₃⁺"], correct: 1, explanation: "একটি প্রোটন (H⁺) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: NH₃ + H⁺ ➔ NH₄⁺।" },
-          { question: "HCO₃⁻ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, explanation: "HCO₃⁻ প্রোটন ত্যাগ করে CO₃²⁻ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে H₂CO₃ হতে পারে (ক্ষারক)।" },
-          { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, explanation: "মুখের লালার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
+          { question: "বিক্রিয়ার হার (Rate of Reaction) এর একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "mol L s⁻¹", "L mol⁻¹ s⁻¹", "mol L⁻² s⁻¹"], correct: 0, topic: "Reaction Kinetics", difficulty: "easy", explanation: "বিক্রিয়ার হার = ঘনমাত্রার পরিবর্তন / সময় = (mol/L) / s = mol L⁻¹ s⁻¹।", concept: "Rate of Reaction", shortcut: "Concentration / Time", mistake: "s-1 বাদ দিয়ে হিসাব করা", tip: "একক সরাসরি মুখস্থ রাখুন।" },
+          { question: "শূন্য ক্রম (Zero order) বিক্রিয়ার বেগ ধ্রুবকের (k) একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, topic: "Reaction Order", difficulty: "easy", explanation: "শূন্য ক্রম বিক্রিয়ার ক্ষেত্রে Rate = k[A]⁰ = k। সুতরাং k এর একক বিক্রিয়ার হারের এককই (mol L⁻¹ s⁻¹)।" },
+          { question: "প্রথম ক্রম (First order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, topic: "Reaction Order", difficulty: "easy", explanation: "প্রথম ক্রম বিক্রিয়ায় Rate = k[A] ⟹ k = Rate/[A] = (mol L⁻¹ s⁻¹)/(mol L⁻¹) = s⁻¹।" },
+          { question: "দ্বিতীয় ক্রম (Second order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 2, topic: "Reaction Order", difficulty: "medium", explanation: "সাধারণ বিক্রিয়ার একক: (mol L⁻¹)^(1-n) s⁻¹। n=2 বসালে পাওয়া যায় L mol⁻¹ s⁻¹।" },
+          { question: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু (t_1/2) এর সাথে প্রারম্ভিক ঘনমাত্রার সম্পর্ক কী?", options: ["সরাসরি সমানুপাতিক", "ব্যস্তানুপাতিক", "ঘনমাত্রার ওপর নির্ভর করে না", "ঘনমাত্রার বর্গের সমানুপাতিক"], correct: 2, topic: "Half Life", difficulty: "medium", explanation: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু t_1/2 = 0.693 / k, যা প্রারম্ভিক ঘনমাত্রার (a) ওপর সম্পূর্ণ স্বাধীন।" },
+          { question: "তাপমাত্রার সাথে বিক্রিয়ার হার ধ্রুবক (k) এর সম্পর্ক নির্দেশকারী সমীকরণ কোনটি?", options: ["আর্হেনিয়াস সমীকরণ", "ভ্যান্ট হফ সমীকরণ", "অস্টওয়াল্ড সমীকরণ", "এনথালপি সমীকরণ"], correct: 0, topic: "Arrhenius Equation", difficulty: "easy", explanation: "আর্হেনিয়াস সমীকরণ k = A e^(-Ea/RT) তাপমাত্রার সাথে k এর সম্পর্ক দেখায়।" },
+          { question: "আর্হেনিয়াস সমীকরণ অনুযায়ী ln(k) বনাম 1/T লেখচিত্রের ঢাল (Slope) কত?", options: ["Ea/R", "-Ea/R", "-Ea/(2.303 R)", "Ea"], correct: 1, topic: "Arrhenius Equation", difficulty: "hard", explanation: "ln(k) = ln(A) - (Ea/R)(1/T)। এটি y = c + mx সমীকরণ মেনে চলে, যেখানে ঢাল m = -Ea/R।" },
+          { question: "সাধারণত প্রতি ১০°C তাপমাত্রা বৃদ্ধির জন্য বিক্রিয়ার হার কত গুণ বৃদ্ধি পায়?", options: ["১-২ গুণ", "২-৩ গুণ", "৪-৫ গুণ", "১০ গুণ"], correct: 1, topic: "Temperature Coefficient", difficulty: "easy", explanation: "তাপমাত্রা গুণাঙ্ক μ = k_(t+10) / k_t ≈ 2 থেকে 3।" },
+          { question: "অনুঘটক বা প্রভাবক (Catalyst) বিক্রিয়ার হার কীভাবে বৃদ্ধি করে?", options: ["সক্রিয়ণ শক্তি বৃদ্ধি করে", "সক্রিয়ণ শক্তি হ্রাস করে", "বিক্রিয়া তাপ হ্রাস করে", "সাম্যধ্রুবক বৃদ্ধি করে"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "প্রভাবক বিক্রিয়াকে একটি বিকল্প কম শক্তিযুক্ত পথ প্রদান করে, ফলে সক্রিয়ণ শক্তি (Ea) হ্রাস পায় ও হার বাড়ে।" },
+          { question: "রাসায়নিক সাম্যাবস্থায় Kc এবং Kp এর মধ্যকার সম্পর্ক সমীকরণ কোনটি?", options: ["Kp = Kc (RT)^Δn", "Kc = Kp (RT)^Δn", "Kp = Kc RT", "Kp = Kc (RT)^(-Δn)"], correct: 0, topic: "Chemical Equilibrium", difficulty: "medium", explanation: "আদর্শ গ্যাস সমীকরণ প্রয়োগে পাওয়া যায় Kp = Kc (RT)^Δn।" },
+          { question: "কোন বিক্রিয়াটির ক্ষেত্রে Kp = Kc হবে?", options: ["N₂ + 3H₂ ⇌ 2NH₃", "PCl₅ ⇌ PCl₃ + Cl₂", "H₂ + I₂ ⇌ 2HI", "2SO₂ + O₂ ⇌ 2SO₃"], correct: 2, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "H₂ + I₂ ⇌ 2HI বিক্রিয়ায় Δn = 2 - (1+1) = 0। ফলে Kp = Kc (RT)⁰ = Kc।" },
+          { question: "PCl₅(g) ⇌ PCl₃(g) + Cl₂(g) বিক্রিয়ার জন্য Δn এর মান কত?", options: ["0", "+1", "-1", "+2"], correct: 1, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "Δn = উৎপাদের গ্যাসীয় মোলসংখ্যা - বিক্রিয়কের গ্যাসীয় মোলসংখ্যা = (1 + 1) - 1 = +1।" },
+          { question: "N₂(g) + 3H₂(g) ⇌ 2NH₃(g) বিক্রিয়াটিতে চাপ বৃদ্ধি করলে সাম্যাবস্থা কোন দিকে সরে যাবে?", options: ["বাম দিকে (পশ্চাৎমুখী)", "ডান দিকে (সম্মুখমুখী)", "কোনো পরিবর্তন হবে না", "বিক্রিয়া বন্ধ হবে"], correct: 1, topic: "Le Chatelier Principle", difficulty: "medium", explanation: "লা-শাতেলিয়ার নীতি অনুসারে চাপ বাড়ালে সাম্যাবস্থা বেশি মোল সংখ্যার দিক থেকে কম মোল সংখ্যার দিকে (৪ মোল ➔ ২ মোল অর্থাৎ ডান দিকে) সরবে।" },
+          { question: "কোনটির ওপর সাম্যধ্রুবকের (Kc / Kp) মান নির্ভর করে?", options: ["ঘনমাত্রা", "চাপ", "তাপমাত্রা", "প্রভাবক"], correct: 2, topic: "Equilibrium Constant", difficulty: "easy", explanation: "সাম্যধ্রুবক (Kc বা Kp) কেবল তাপমাত্রার পরিবর্তনের ওপর নির্ভর করে; ঘনমাত্রা, চাপ বা প্রভাবকে পরিবর্তিত হয় না।" },
+          { question: "তাপউৎপাদী (Exothermic) বিক্রিয়ার ক্ষেত্রে তাপমাত্রা বৃদ্ধি করলে সাম্যধ্রুবক (K) এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "একই থাকে", "শূন্য হয়"], correct: 1, topic: "van 't Hoff Equation", difficulty: "medium", explanation: "ভ্যান্ট হফ সমীকরণ অনুযায়ী তাপউৎপাদী বিক্রিয়ায় (ΔH < 0) তাপমাত্রা বাড়ালে সাম্যধ্রুবকের মান হ্রাস পায়।" },
+          { question: "বিশুদ্ধ পানির অটো-আয়োনাইজেশন ধ্রুবক (Kw) ২৫°C তাপমাত্রায় কত?", options: ["1.0 × 10⁻⁷ M²", "1.0 × 10⁻¹⁴ M²", "1.0 × 10⁻¹⁰ M²", "1.0 × 10¹⁴ M²"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "২৫°C-এ পানির আয়নিক গুণফল Kw = [H⁺][OH⁻] = (10⁻⁷)(10⁻⁷) = 1.0 × 10⁻¹⁴ M²।" },
+          { question: "২৫°C তাপমাত্রায় বিশুদ্ধ পানির pH এর মান কত?", options: ["0", "7.0", "14.0", "1.0"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "বিশুদ্ধ পানিতে [H⁺] = 10⁻⁷ M, সুতরাং pH = -log(10⁻⁷) = 7.0 (নিরপেক্ষ)।" },
+          { question: "তাপমাত্রা বৃদ্ধি করলে বিশুদ্ধ পানির pH এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "অপরিবর্তিত থাকে", "১৪ হয়"], correct: 1, topic: "pH & Water", difficulty: "hard", explanation: "তাপমাত্রা বাড়লে পানির স্বতঃস্ফূর্ত বিয়োজন বাড়ে, ফলে [H⁺] বাড়ে এবং pH-এর মান ৭ এর নিচে নেমে আসে (তবে পানি নিরপেক্ষই থাকে)।" },
+          { question: "0.005 M H₂SO₄ দ্রবণের pH কত?", options: ["2.0", "1.0", "2.3", "3.0"], correct: 0, topic: "pH Calculation", difficulty: "hard", explanation: "H₂SO₄ তীব্র দ্বিক্ষারকীয় এসিড। [H⁺] = 2 × 0.005 = 0.01 M = 10⁻² M। pH = -log(10⁻²) = 2.0।" },
+          { question: "0.01 M NaOH দ্রবণের pH কত?", options: ["2", "12", "7", "10"], correct: 1, topic: "pH Calculation", difficulty: "medium", explanation: "[OH⁻] = 0.01 M = 10⁻² M ⟹ pOH = 2 ⟹ pH = 14 - pOH = 14 - 2 = 12।" },
+          { question: "অ্যাসিডিক বা অম্লীয় বাফার দ্রবণ তৈরির জন্য কোনটি ব্যবহৃত হয়?", options: ["তীব্র এসিড ও মৃদু ক্ষার", "মৃদু এসিড ও তার লবণ", "তীব্র এসিড ও তার লবণ", "মৃদু ক্ষার ও তার লবণ"], correct: 1, topic: "Buffer Solution", difficulty: "easy", explanation: "অম্লীয় বাফার দ্রবণ মৃদু অম্ল (যেমন CH₃COOH) এবং শক্তিশালী ক্ষারের সাথে তৈরি অম্লের লবণ (যেমন CH₃COONa) দিয়ে তৈরি হয়।" },
+          { question: "ক্ষারীয বাফার দ্রবণের pH গণনার জন্য কোন সমীকরণটি ব্যবহৃত হয়?", options: ["pH = pKa + log([Salt]/[Acid])", "pOH = pKb + log([Salt]/[Base])", "pH = pKb + log([Base]/[Salt])", "pH = 14 + pKa"], correct: 1, topic: "Buffer Solution", difficulty: "medium", explanation: "হ্যান্ডারসন-হ্যাসেলবালখ সমীকরণ অনুসারে ক্ষারীয় বাফারের ক্ষেত্রে pOH = pKb + log([Salt]/[Base])।" },
+          { question: "মানুষের রক্তের pH এর স্বাভাবিক পরিসীমা (Range) কত?", options: ["6.5 - 7.0", "7.35 - 7.45", "7.8 - 8.2", "8.5 - 9.0"], correct: 1, topic: "Blood Buffer", difficulty: "easy", explanation: "মানুষের রক্তের স্বাভাবিক pH হলো ৭.৩৫ থেকে ৭.৪৫ (গড় ৭.৪)।" },
+          { question: "মানুষের রক্তে প্রধান বাফার সিস্টেম কোনটি?", options: ["ফসফেট বাফার", "প্রোটিন বাফার", "বাইকার্বোনেট বাফার (H₂CO₃ / HCO₃⁻)", "অ্যাসিটেট বাফার"], correct: 2, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের প্রধান প্রাইমারি বাফার হলো কার্বনিক এসিড-বাইকার্বোনেট বাফার সিস্টেম।" },
+          { question: "রক্তের pH ৭.৩৫ এর নিচে নেমে গেলে সেই অবস্থাকে কী বলে?", options: ["অ্যালকালোসিস (Alkalosis)", "এসিডোসিস (Acidosis)", "বাফারিং", "নিউট্রালাইজেশন"], correct: 1, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের pH ৭.৩৫ এর নিচে নামলে এসিডোসিস এবং ৭.৪৫ এর উপরে উঠলে অ্যালকালোসিস বলে।" },
+          { question: "পানির স্থায়ী খড়তার (Permanent Hardness) জন্য দায়ী কোন লবণগুলো?", options: ["Ca ও Mg এর বাইকার্বোনেট", "Ca ও Mg এর ক্লোরাইড ও সালফেট", "Na ও K এর কার্বোনেট", "Fe ও Mn এর হাইড্রোক্সাইড"], correct: 1, topic: "Water Hardness", difficulty: "medium", explanation: "CaCl₂, MgCl₂, CaSO₄, MgSO₄ দ্রবীভূত থাকলে পানির স্থায়ী খড়তা সৃষ্টি হয়।" },
+          { question: "অস্থায়ী খড়তা দূর করার সবচেয়ে সহজ পদ্ধতি কোনটি?", options: ["ফুটানো (Boiling)", "পারমুটিট প্রণালী", "আয়ন বিনিময় পদ্ধতি", "ক্লোরিনেশন"], correct: 0, topic: "Water Hardness", difficulty: "easy", explanation: "পানি ফুটালে দ্রবণীয় বাইকার্বোনেট লবণগুলো অদ্রবণীয় কার্বনেটে পরিণত হয়ে থিতিয়ে পড়ে।" },
+          { question: "বিওডি (BOD - Biochemical Oxygen Demand) দ্বারা কী পরিমাপ করা হয়?", options: ["পানির অম্লতা", "পানিতে দ্রবীভূত জৈব দূষকের পরিমাণ", "পানির খড়তা", "হেভি মেটালের পরিমাণ"], correct: 1, topic: "Environmental Water", difficulty: "easy", explanation: "জৈব পচনশীল পদার্থকে অনুজীব দ্বারা ভাঙতে যে পরিমাণ O₂ লাগে তাকে BOD বলে।" },
+          { question: "পানীয় জলের জন্য BOD এর মান অনুমেয় সীমা কত ধরা হয় (WHO অনুযায়ী)?", options: ["1 - 2 ppm", "10 ppm", "100 ppm", "0 ppm"], correct: 0, topic: "Environmental Water", difficulty: "medium", explanation: "পানযোগ্য বিশুদ্ধ পানির BOD এর মান সাধারণতঃ 1 - 2 mg/L বা ppm হয়।" },
+          { question: "COD (Chemical Oxygen Demand) এর মান সর্বদা BOD অপেক্ষা কেমন হয়?", options: ["কম হয়", "সমান হয়", "বেশি হয়", "অর্ধেক হয়"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "COD তে জৈব পচনশীল ও অপচনশীল উভয় বস্তুর জারণ ঘটে, তাই COD > BOD।" },
+          { question: "পানীয় জলে আর্সেনিকের (As) বিশ্ব স্বাস্থ্য সংস্থা (WHO) অনুমোদিত সর্বোচ্চ সীমা কত?", options: ["0.01 mg/L", "0.05 mg/L", "0.1 mg/L", "1.0 mg/L"], correct: 0, topic: "Environmental Water", difficulty: "medium", explanation: "WHO নির্দেশিত নিরাপদ সীমা 0.01 mg/L (তবে বাংলাদেশের মানদণ্ড 0.05 mg/L)।" },
+          { question: "পানির দ্রবীভূত অক্সিজেন (DO - Dissolved Oxygen) এর ন্যূনতম মান কত হওয়া উচিত?", options: ["1 ppm", "2 ppm", "4 - 6 ppm", "10 - 12 ppm"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "জলজ জীবের বেঁচে থাকার জন্য পানিতে দ্রবীভূত অক্সিজেনের মান কমপক্ষে 4 - 6 ppm থাকা প্রয়োজন।" },
+          { question: "কোনো প্রক্রিয়ায় সিস্টেমে তাপের কোনো আদান-প্রদান ঘটে না, তাকে কী বলে?", options: ["সমোষ্ণ প্রক্রিয়া (Isothermal)", "রুদ্ধতাপীয় প্রক্রিয়া (Adiabatic)", "সমচাপীয় প্রক্রিয়া", "সমআয়তন প্রক্রিয়া"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "রুদ্ধতাপীয় (Adiabatic) প্রক্রিয়ায় সিস্টেম ও পরিবেশের মধ্যে তাপের আদান-প্রদান dQ = 0 হয়।" },
+          { question: "হেসের তাপ সমষ্টির সূত্র (Hess's Law) তাপগতিবিদ্যার কোন সূত্রের ওপর প্রতিষ্ঠিত?", options: ["প্রথম সূত্র (শক্তি সংরক্ষণশীলতা)", "দ্বিতীয় সূত্র", "তৃতীয় সূত্র", "শূন্যতম সূত্র"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "হেসের সূত্রটি মূলত শক্তির নিত্যতা বা সংরক্ষণশীলতা নীতির প্রয়োগ।" },
+          { question: "তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ (Heat of Neutralization) এর মান কত?", options: ["-57.34 kJ mol⁻¹", "-13.7 kJ mol⁻¹", "+57.34 kJ mol⁻¹", "-68.3 kJ mol⁻¹"], correct: 0, topic: "Thermochemistry", difficulty: "easy", explanation: "সব তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ ধ্রুবক এবং এর মান -57.34 kJ mol⁻¹ (বা -13.7 kcal mol⁻¹)।" },
+          { question: "HF ও NaOH এর প্রশমন তাপের মান -57.34 kJ mol⁻¹ অপেক্ষা বেশি (-68.6 kJ mol⁻¹) হওয়ার কারণ—", options: ["HF তীব্র এসিড", "F⁻ আয়নের উচ্চ হাইড্রেশন শক্তি", "NaOH দুর্বল ক্ষার", "HF এর বিয়োজন এনথালপি বেশি"], correct: 1, topic: "Thermochemistry", difficulty: "hard", explanation: "ক্ষুদ্র আকারের F⁻ আয়নের হাইড্রেশন শক্তি অত্যন্ত বেশি থাকায় নির্গত তাপের মান স্বাভাবিকের চেয়ে বেশি হয়।" },
+          { question: "CH₃COOH ও NaOH এর প্রশমন তাপ -57.34 kJ mol⁻¹ অপেক্ষা কম (-55.2 kJ mol⁻¹) কেন?", options: ["CH₃COOH সম্পূর্ণ বিয়োজিত হয় না (বিয়োজন তাপে কিছু শক্তি ব্যয় হয়)", "সোডিয়াম অ্যাসিটেট লবণ তৈরি হয়", "বিক্রিয়াটি শ্লথ", "পানি উৎপন্ন হয় না"], correct: 0, topic: "Thermochemistry", difficulty: "medium", explanation: "দুর্বল এসিড (CH₃COOH) কে পূর্ণ বিয়োজিত করতে কিছু শক্তি শোষিত হয়, ফলে নিট নির্গত তাপ কমে যায়।" },
+          { question: "স্বতঃস্ফূর্ত (Spontaneous) পরিবর্তনের জন্য গিবস মুক্ত শক্তির পরিবর্তন (ΔG) কেমন হবে?", options: ["ধনাত্মক (ΔG > 0)", "ঋণাত্মক (ΔG < 0)", "শূন্য (ΔG = 0)", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "medium", explanation: "যেকোনো স্বতঃস্ফূর্ত বা স্বমেধিত প্রক্রিয়ায় ΔG সর্বদা ঋণাত্মক (ΔG < 0) হতে হয়।" },
+          { question: "সাম্যাবাস্থায় গিবস মুক্ত শক্তির পরিবর্তন (ΔG) এর মান কত?", options: ["ΔG < 0", "ΔG > 0", "ΔG = 0", "ΔG = ΔH"], correct: 2, topic: "Thermodynamics", difficulty: "easy", explanation: "বিক্রিয়া সাম্যাবস্থায় উপনীত হলে মুক্ত শক্তির কোনো নিট পরিবর্তন হয় না, অর্থাৎ ΔG = 0।" },
+          { question: "একটি এনডোথার্মিক (তাপহারী) বিক্রিয়ার জন্য enthalpy পরিবর্তন (ΔH) কেমন হয়?", options: ["ΔH < 0 (ঋণাত্মক)", "ΔH > 0 (ধনাত্মক)", "ΔH = 0", "ΔH = ∞"], correct: 1, topic: "Thermochemistry", difficulty: "easy", explanation: "তাপহারী বিক্রিয়ায় সিস্টেম তাপ শোষণ করে, ফলে ΔH ধনাত্মক (+) হয়।" },
+          { question: "বিক্রিয়া এনথালপি ΔH, এন্ট্রপি ΔS এবং পরম তাপমাত্রা T এর সম্পর্কযুক্ত গিবস সমীকরণ কোনটি?", options: ["ΔG = ΔH - TΔS", "ΔG = ΔH + TΔS", "ΔH = ΔG - TΔS", "ΔS = ΔH / ΔG"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "গিবস-হেলমহোল্টজ সমীকরণ: ΔG = ΔH - TΔS।" },
+          { question: "কোনো কেলাসিত বিশুদ্ধ পদার্থের পরম শূন্য তাপমাত্রায় (0 K) এন্ট্রপির (Entropy) মান কত?", options: ["সর্বোচ্চ", "শূন্য (0)", "ঋণাত্মক", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "তাপগতিবিদ্যার ৩য় সূত্র অনুসারে পরম শূন্য তাপমাত্রায় বিশুদ্ধ ক্লাসের এন্ট্রপি শূন্য।" },
+          { question: "হেবার প্রণালীতে অ্যামোনিয়া (NH₃) শিল্প উৎপাদনে ব্যবহৃত অনুঘটক (Catalyst) কোনটি?", options: ["V₂O₅", "সূক্ষ্ম চূর্ণিত Fe (আয়রন)", "Pt (প্লাটিনাম)", "Ni (নিকেল)"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "হেবার প্রণালীতে আয়রন চূর্ণ (Fe) প্রভাবক এবং মোলিবেডনাম (Mo) প্রভাবক সহায়কের কাজ করে।" },
+          { question: "স্পর্শ প্রণালীতে সালফিউরিক এসিড (H₂SO₄) তৈরিতে ব্যবহৃত আধুনিক প্রভাবক কোনটি?", options: ["Pt (প্লাটিনাম)", "V₂O₅ (ভ্যানাডিয়াম পেন্টঅক্সাইড)", "Fe₂O₃", "MnO₂"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "পূর্বে প্লাটাইনাবৃত অ্যাসবেস্টস ব্যবহার হলেও বর্তমানে সস্তা ও বিষমুক্ত V₂O₅ ব্যবহৃত হয়।" },
+          { question: "নিচের কোনটি ঋণাত্মক প্রভাবক (Negative Catalyst) হিসেবে কাজ করে?", options: ["MnO₂", "গ্লিসারিন / ফসফরিক এসিড", "Pt", "Fe"], correct: 1, topic: "Catalysis", difficulty: "medium", explanation: "গ্লিসারিন বা অ্যালকোহল H₂O₂ এর বিয়োজন হার কমিয়ে দেয়, যা ঋণাত্মক প্রভাবক।" },
+          { question: "অটো-ক্যাটালিস্ট (Auto-catalyst) এর উদাহরণ কোনটি?", options: ["KMnO₄ দ্বারা অক্সালিক এসিডের জারণে উৎপন্ন Mn²⁺ আয়ন", "H₂O₂ বিয়োজনে MnO₂", "এস্টার আদ্রবিশ্লেষণে এসিড", "উভয় ক ও গ"], correct: 3, topic: "Catalysis", difficulty: "hard", explanation: "বিক্রিয়ায় উৎপন্ন Mn²⁺ অথবা উৎপন্ন এসিড স্বয়ং প্রভাবক হিসেবে কাজ করায় এরা স্ব-প্রভাবক।" },
+          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, topic: "Acid Base Theory", difficulty: "hard", explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ક્ષાર (Conjugate base) তত শক্তিশালী হবে।" },
+          { question: "NH₃ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["NH₂⁻", "NH₄⁺", "N³⁻", "NH₃⁺"], correct: 1, topic: "Acid Base Theory", difficulty: "easy", explanation: "একটি প্রোটন (H⁺) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: NH₃ + H⁺ ➔ NH₄⁺।" },
+          { question: "HCO₃⁻ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, topic: "Acid Base Theory", difficulty: "medium", explanation: "HCO₃⁻ প্রোটন ত্যাগ করে CO₃²⁻ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে H₂CO₃ হতে পারে (ক্ষারক)।" },
+          { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, topic: "pH Applications", difficulty: "medium", explanation: "মুখের লালার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
         ]
       };
 
       let examData = defaultExamData;
 
-      // Anti-Cheat: Disable Copy/Paste and Right Click
-      document.addEventListener('contextmenu', event => event.preventDefault());
-      document.addEventListener('copy', event => {
-        event.preventDefault();
-        alert("⚠️ পরীক্ষা চলাকালীন কোনো প্রশ্ন বা লেখা কপি করা নিষিদ্ধ!");
-      });
-
-      // Anti-Cheat: Tab Switch Detection
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden && !isSubmitted) {
-          warningCount++;
-          alert(`⚠️ সতর্কবার্তা (${warningCount}/3): আপনি পরীক্ষার স্ক্রিন ছেড়ে অন্য ট্যাবে গেছেন! ৩ বার এমন করলে আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে সাবমিট হয়ে যাবে।`);
-          if (warningCount >= 3) {
-            submitExamAction();
-          }
-        }
-      });
-
-      // Font Adjustment
-      let currentFontSize = 16;
-      window.adjustFontSize = function(delta) {
-        currentFontSize += delta;
-        if (currentFontSize < 12) currentFontSize = 12;
-        if (currentFontSize > 22) currentFontSize = 22;
-        document.querySelectorAll('.question-title').forEach(el => el.style.fontSize = `${currentFontSize}px`);
-        document.querySelectorAll('.option-item').forEach(el => el.style.fontSize = `${currentFontSize - 1}px`);
-      };
-
+      // --- Init Function ---
       async function checkAttemptAndLoad() {
         if (currentUser) {
           try {
             let userSnap = await get(ref(db, `users/${currentUser.uid}`));
-            if (!userSnap.exists()) {
-              userSnap = await get(ref(db, `students/${currentUser.uid}`));
-            }
+            if (!userSnap.exists()) userSnap = await get(ref(db, `students/${currentUser.uid}`));
 
             if (userSnap.exists()) {
               const userData = userSnap.val();
+              document.getElementById('uName').innerText = userData.name || "Student";
+              document.getElementById('uAvatar').innerText = (userData.name || "S").charAt(0).toUpperCase();
+
               if (userData.status === 'blocked') {
                 document.getElementById('questionsContainer').innerHTML = `
                   <div style="text-align: center; padding: 40px 20px; background: #1e293b; border-radius: 12px; border: 1px solid #f43f5e; margin-top: 20px;">
                     <h2 style="color: #f43f5e; margin-bottom: 10px;">❌ পরীক্ষা দেওয়া সম্ভব নয়!</h2>
-                    <p style="color: #cbd5e1; font-size: 16px;">আপনার পরীক্ষা দেওয়ার এক্সেস বর্তমানে বন্ধ (Blocked) আছে। বিস্তারিত জানতে কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
+                    <p style="color: #cbd5e1; font-size: 16px;">আপনার অ্যাকাউন্ট ব্লক করা রয়েছে। কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
                   </div>
                 `;
                 document.getElementById('examTitle').innerText = "অ্যাক্সেস ব্লকড";
                 document.getElementById('topSubmitBtn').style.display = 'none';
                 document.getElementById('paletteSection').style.display = 'none';
-                alert("❌ আপনার পরীক্ষা দেওয়ার এক্সেস বন্ধ (Blocked) রয়েছে!");
+                document.getElementById('examToolbar').style.display = 'none';
                 return;
               }
             }
-          } catch(err) {
-            console.error("Error checking student status:", err);
-          }
+          } catch(err) { console.error("Error checking user:", err); }
         }
 
+        // Fetch Live Exam Metadata
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
           if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
             examData = snapshot.val();
           } else {
             examData = defaultExamData;
-            // অটোমেটিক ডাটাবেজে প্রশ্ন আপলোড করে দেওয়া যাতে পরবর্তীতে সমস্যার সৃষ্টি না হয়
-            set(ref(db, 'live_exams/live_daily_exam'), defaultExamData);
           }
         } catch(e) {
-          console.log("Database fetch fallback: Loading default questions.");
           examData = defaultExamData;
         }
 
@@ -365,27 +514,17 @@
         const cleanId = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
         activeExamKey = "gaivex_submitted_" + cleanId;
         examTimerKey = "gaivex_timer_" + cleanId;
-        draftAnswersKey = "gaivex_draft_answers_" + cleanId;
+        autoSaveKey = "gaivex_autosave_" + cleanId;
 
-        // Auto-Save Draft Recovery
-        const savedDraft = localStorage.getItem(draftAnswersKey);
-        if (savedDraft) {
-          userSelections = JSON.parse(savedDraft);
+        // Offline Answer Recovery Cache
+        const localAutoSave = localStorage.getItem(autoSaveKey);
+        if (localAutoSave) {
+          try { userSelections = JSON.parse(localAutoSave); } catch(e){}
         }
 
-        // Timestamp-Based Accurate Timer Setup
-        const totalSeconds = (examData.duration || 25) * 60;
-        const savedEndTime = localStorage.getItem(examTimerKey);
-        let endTime;
-
-        if (savedEndTime) {
-          endTime = parseInt(savedEndTime, 10);
-        } else {
-          endTime = Date.now() + totalSeconds * 1000;
-          localStorage.setItem(examTimerKey, endTime);
-        }
-
-        timeRemaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        totalDurationSeconds = (examData.duration || 25) * 60;
+        const savedTimer = localStorage.getItem(examTimerKey);
+        timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalDurationSeconds;
 
         renderQuestions();
         renderPalette();
@@ -394,66 +533,70 @@
         if (savedResult) {
           const resultData = JSON.parse(savedResult);
           isSubmitted = true;
-          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpentMap || {});
+          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpent || 0);
         } else {
-          startTimer(endTime);
+          startTimer();
+          setupAntiCheat();
         }
       }
 
+      // --- Rendering Engine ---
       function renderQuestions() {
         const container = document.getElementById('questionsContainer');
         const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
 
-        container.innerHTML = examData.questions.map((q, qIndex) => {
-          const isAnswered = userSelections[qIndex] !== undefined;
-          const selectedVal = userSelections[qIndex];
-
-          return `
-            <div class="question-card" id="q-box-${qIndex}">
-              <div class="question-header-row">
-                <div class="question-title">${qIndex + 1}. ${q.question}</div>
-                <button type="button" class="bookmark-btn ${bookmarkedQuestions[qIndex] ? 'active' : ''}" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
-              </div>
-              <div class="options-list" id="options-list-${qIndex}">
-                ${(q.options || []).map((opt, oIndex) => `
-                  <label class="option-item ${isAnswered ? 'locked-option' : ''} ${isAnswered && selectedVal === oIndex ? 'selected-option' : ''}" id="opt-label-${qIndex}-${oIndex}">
-                    <input type="radio" name="q_${qIndex}" value="${oIndex}" ${isAnswered && selectedVal === oIndex ? 'checked' : ''} ${isAnswered ? 'disabled' : ''} onchange="window.selectOption(${qIndex}, ${oIndex})">
-                    <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
-                  </label>
-                `).join('')}
-              </div>
-              <div class="time-spent-tag" id="time-tag-${qIndex}"></div>
-              <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
-                <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+        container.innerHTML = examData.questions.map((q, qIndex) => `
+          <div class="question-card" id="q-box-${qIndex}">
+            <div class="question-meta">
+              <span class="tag ${q.difficulty || 'medium'}">${(q.difficulty || 'medium').toUpperCase()}</span>
+              <span class="tag">${q.topic || 'General'}</span>
+            </div>
+            <div class="question-header-row">
+              <div class="question-title">${qIndex + 1}. ${q.question}</div>
+              <div class="action-btns">
+                <button type="button" class="action-icon-btn bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
+                <button type="button" class="action-icon-btn review-btn" id="review-${qIndex}" onclick="window.toggleReview(${qIndex})" title="Mark for Review">🔖</button>
+                ${isSubmitted ? `<button type="button" class="action-icon-btn" onclick="openReportModal(${qIndex})" title="রিপোর্ট করুন">🚩</button>` : ''}
               </div>
             </div>
-          `;
-        }).join('');
+            <div class="options-list" id="options-list-${qIndex}">
+              ${(q.options || []).map((opt, oIndex) => `
+                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
+                  <input type="radio" name="q_${qIndex}" value="${oIndex}" ${userSelections[qIndex] === oIndex ? 'checked' : ''} onchange="window.selectOption(${qIndex}, ${oIndex})">
+                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
+              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+              <div class="review-insights">
+                <div class="insight-card"><strong>📖 Concept:</strong> ${q.concept || 'N/A'}</div>
+                <div class="insight-card"><strong>💡 Shortcut:</strong> ${q.shortcut || 'N/A'}</div>
+                <div class="insight-card"><strong>⚠️ Common Mistake:</strong> ${q.mistake || 'N/A'}</div>
+                <div class="insight-card"><strong>🎯 Admission Tip:</strong> ${q.tip || 'N/A'}</div>
+              </div>
+            </div>
+          </div>
+        `).join('');
 
-        // Strict OMR Mode: Once selected, options are immediately LOCKED and cannot be changed
         window.selectOption = function(qIndex, oIndex) {
-          if (isSubmitted || userSelections[qIndex] !== undefined) return;
+          if (isSubmitted) return;
           
-          // Track time spent on previous question
-          const now = Date.now();
-          const elapsed = Math.round((now - questionStartTime) / 1000);
-          timePerQuestion[currentQuestionIndex] = (timePerQuestion[currentQuestionIndex] || 0) + elapsed;
-          currentQuestionIndex = qIndex;
-          questionStartTime = now;
-
           userSelections[qIndex] = oIndex;
+          localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
           
-          // Save Draft automatically
-          localStorage.setItem(draftAnswersKey, JSON.stringify(userSelections));
-          
+          // Auto sync to Firebase Cloud Session
+          if (currentUser) {
+            update(ref(db, `exam_sessions/${currentUser.uid}/${examData.id || 'exam'}`), {
+              answers: userSelections,
+              lastUpdated: Date.now()
+            }).catch(()=>{});
+          }
+
           const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
           allLabels.forEach((lbl, idx) => {
-            const input = lbl.querySelector('input');
-            if(input) input.disabled = true;
-            lbl.classList.add('locked-option');
-            if(idx === oIndex) {
-              lbl.classList.add('selected-option');
-            }
+            lbl.classList.remove('selected-option');
+            if(idx === oIndex) lbl.classList.add('selected-option');
           });
 
           updatePalette();
@@ -462,11 +605,16 @@
         window.toggleBookmark = function(qIndex) {
           bookmarkedQuestions[qIndex] = !bookmarkedQuestions[qIndex];
           const btn = document.getElementById(`bookmark-${qIndex}`);
-          if(bookmarkedQuestions[qIndex]) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
+          if(bookmarkedQuestions[qIndex]) btn.classList.add('active');
+          else btn.classList.remove('active');
+          updatePalette();
+        };
+
+        window.toggleReview = function(qIndex) {
+          reviewQuestions[qIndex] = !reviewQuestions[qIndex];
+          const btn = document.getElementById(`review-${qIndex}`);
+          if(reviewQuestions[qIndex]) btn.classList.add('active');
+          else btn.classList.remove('active');
           updatePalette();
         };
       }
@@ -486,11 +634,14 @@
           if (!btn) return;
 
           btn.className = "palette-btn";
+          if (i === currentSingleIndex && viewMode === 'single') btn.classList.add('active-current');
+          
           if (userSelections[i] !== undefined) {
             answeredCount++;
             btn.classList.add('answered');
-          }
-          if (bookmarkedQuestions[i]) {
+          } else if (reviewQuestions[i]) {
+            btn.classList.add('review');
+          } else if (bookmarkedQuestions[i]) {
             btn.classList.add('bookmarked');
           }
         });
@@ -499,30 +650,86 @@
         document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
       }
 
+      // --- Navigation Controls ---
       window.scrollToQuestion = function(index) {
-        // Track time spent transitioning
-        const now = Date.now();
-        const elapsed = Math.round((now - questionStartTime) / 1000);
-        timePerQuestion[currentQuestionIndex] = (timePerQuestion[currentQuestionIndex] || 0) + elapsed;
-        currentQuestionIndex = index;
-        questionStartTime = now;
+        currentSingleIndex = index;
+        if (viewMode === 'single') {
+          examData.questions.forEach((_, i) => {
+            const box = document.getElementById(`q-box-${i}`);
+            if (box) box.style.display = i === index ? 'block' : 'none';
+          });
+          updateSingleNavFooter();
+        } else {
+          const box = document.getElementById(`q-box-${index}`);
+          if(box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        updatePalette();
+      };
 
-        const box = document.getElementById(`q-box-${index}`);
-        if(box) {
-          box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      window.switchViewMode = function(mode) {
+        viewMode = mode;
+        document.getElementById('btnModeAll').classList.toggle('active', mode === 'all');
+        document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
+        document.getElementById('singleNavFooter').style.display = mode === 'single' ? 'flex' : 'none';
+
+        if (mode === 'single') {
+          scrollToQuestion(currentSingleIndex);
+        } else {
+          examData.questions.forEach((_, i) => {
+            const box = document.getElementById(`q-box-${i}`);
+            if (box) box.style.display = 'block';
+          });
         }
       };
 
-      function startTimer(endTime) {
+      function updateSingleNavFooter() {
+        const total = examData.questions.length;
+        document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ${total}`;
+        document.getElementById('prevQBtn').disabled = currentSingleIndex === 0;
+        document.getElementById('nextQBtn').disabled = currentSingleIndex === total - 1;
+      }
+
+      window.navigateSingle = function(dir) {
+        const nextIdx = currentSingleIndex + dir;
+        if (nextIdx >= 0 && nextIdx < examData.questions.length) {
+          scrollToQuestion(nextIdx);
+        }
+      };
+
+      window.jumpToQuestion = function() {
+        const val = parseInt(document.getElementById('jumpQInput').value, 10);
+        if (val && val >= 1 && val <= examData.questions.length) {
+          scrollToQuestion(val - 1);
+        }
+      };
+
+      window.goToNextUnanswered = function() {
+        for (let i = 0; i < examData.questions.length; i++) {
+          if (userSelections[i] === undefined) {
+            scrollToQuestion(i);
+            return;
+          }
+        }
+        alert("🎉 সব প্রশ্ন ইতোমধ্যে উত্তর দেওয়া হয়ে গেছে!");
+      };
+
+      // --- Timer & Anti-Cheat ---
+      function startTimer() {
         updateTimerDisplay();
         timerInterval = setInterval(() => {
-          timeRemaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+          timeRemaining--;
+          localStorage.setItem(examTimerKey, timeRemaining);
           updateTimerDisplay();
-          
+
+          // Smart Warning System
+          if (timeRemaining === 600) showToastWarning("⚠️ আপনার পরীক্ষার আর ১০ মিনিট বাকি!");
+          if (timeRemaining === 300) showToastWarning("🔥 দ্রুত বাকি প্রশ্নগুলো সম্পন্ন করুন (৫ মিনিট বাকি)!");
+          if (timeRemaining === 60) showToastWarning("🚨 মাত্র ১ মিনিট বাকি!");
+
           if (timeRemaining <= 0) {
             clearInterval(timerInterval);
             localStorage.removeItem(examTimerKey);
-            alert("⏰ সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
+            alert("⏱️ সময় শেষ! পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
             submitExamAction();
           }
         }, 1000);
@@ -534,6 +741,31 @@
         document.getElementById('timerDisplay').innerText = `${m}:${s}`;
       }
 
+      function showToastWarning(msg) {
+        const toast = document.getElementById('warningToast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 5000);
+      }
+
+      function setupAntiCheat() {
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden && !isSubmitted) {
+            showToastWarning("⚠️ Tab Switch Detected! Cheating deterrence active.");
+          }
+        });
+      }
+
+      // Keyboard Shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (isSubmitted) return;
+        if (e.key === 'ArrowRight') navigateSingle(1);
+        if (e.key === 'ArrowLeft') navigateSingle(-1);
+        if (e.key.toLowerCase() === 'm') toggleReview(currentSingleIndex);
+        if (e.key.toLowerCase() === 'b') toggleBookmark(currentSingleIndex);
+      });
+
+      // --- Submission & Evaluation ---
       window.openConfirmModal = function() {
         if (isSubmitted) return;
         const total = examData.questions.length;
@@ -560,115 +792,120 @@
       async function submitExamAction() {
         if (isSubmitted) return;
 
-        // Finalize timing for last active question
-        const now = Date.now();
-        const elapsed = Math.round((now - questionStartTime) / 1000);
-        timePerQuestion[currentQuestionIndex] = (timePerQuestion[currentQuestionIndex] || 0) + elapsed;
-
         clearInterval(timerInterval);
         localStorage.removeItem(examTimerKey);
-        localStorage.removeItem(draftAnswersKey);
         isSubmitted = true;
 
+        const timeSpent = totalDurationSeconds - Math.max(0, timeRemaining);
         let correctCount = 0;
         let wrongCount = 0;
-        const total = (examData.questions || []).length;
+        const total = examData.questions.length;
 
-        (examData.questions || []).forEach((q, i) => {
+        // Topic-wise metrics
+        let topicStats = {};
+
+        examData.questions.forEach((q, i) => {
           const selected = userSelections[i];
           const correctVal = parseInt(q.correct, 10);
+          const topicName = q.topic || 'General';
+
+          if (!topicStats[topicName]) topicStats[topicName] = { correct: 0, total: 0 };
+          topicStats[topicName].total++;
+
           if (selected !== undefined) {
             if (selected === correctVal) {
               correctCount++;
+              topicStats[topicName].correct++;
             } else {
               wrongCount++;
             }
           }
         });
 
-        let finalScore = correctCount - (wrongCount * 0.25);
+        const wrongMark = examData.marking ? examData.marking.wrong : 0.25;
+        let finalScore = correctCount - (wrongCount * wrongMark);
         if (finalScore < 0) finalScore = 0;
 
         localStorage.setItem(activeExamKey, JSON.stringify({
           score: finalScore,
           userAnswers: userSelections,
-          timeSpentMap: timePerQuestion
+          timeSpent: timeSpent
         }));
 
-        showSubmittedResult(userSelections, finalScore, timePerQuestion);
+        showSubmittedResult(userSelections, finalScore, timeSpent, topicStats);
 
         const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
         const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
 
         try {
-          // ১. গ্লোবাল বা সেন্ট্রাল ক্যাটাগরিতে পরীক্ষার ইনফো ও পুরো প্রশ্ন সেভ নিশ্চিত করা
-          await update(ref(db, `exam_categories/${examIdClean}`), {
-            id: examIdClean,
-            title: currentExamTitle,
-            lastSubmittedAt: new Date().toISOString()
-          });
-
-          await set(ref(db, `live_exams/${examIdClean}`), examData);
-
+          // Push attempt to Firebase
           if (currentUser) {
-            const timeTakenSec = ((examData.duration || 25) * 60) - timeRemaining;
-            
-            // ২. স্টুডেন্টের নিজের প্রোফাইলে উত্তরের পাশাপাশি পুরো প্রশ্নের স্ন্যাপশট সেভ করা
-            await set(ref(db, `exam_attempts/${currentUser.uid}/${Date.now()}`), {
+            const attemptRef = push(ref(db, `exam_attempts/${currentUser.uid}`));
+            await set(attemptRef, {
               examId: examIdClean,
               examTitle: currentExamTitle,
               score: finalScore,
               total: total,
-              timeSpentSeconds: timeTakenSec,
+              timeSpent: timeSpent,
               submittedAt: new Date().toISOString(),
-              userAnswers: userSelections,
-              questions: examData.questions // <--- প্রশ্ন এবং ব্যাখ্যাসহ ব্যাকআপ সেভ করা হলো
+              userAnswers: userSelections
             });
 
-            // ৩. পাবলিক লিডারবোর্ডে তথ্য পাঠানো
-            await set(ref(db, `leaderboards/${examIdClean}/${currentUser.uid}`), {
-              userName: currentUser.displayName || currentUser.email.split('@')[0] || "পরীক্ষার্থী",
+            // Update Leaderboard Node
+            await set(ref(db, `leaderboard/${examIdClean}/${currentUser.uid}`), {
+              name: document.getElementById('uName').innerText || "Student",
               score: finalScore,
-              timeSpentSeconds: timeTakenSec,
-              submittedAt: new Date().toISOString()
+              timeSpent: timeSpent,
+              updatedAt: Date.now()
             });
           }
+        } catch(err) { console.error("Score Save Error:", err); }
 
-          loadLeaderboard(examIdClean);
-        } catch(err) { console.error("Error saving score:", err); }
+        loadLiveLeaderboard(examIdClean);
       }
 
-      function showSubmittedResult(userAnswers, score, timeSpentMap) {
-        const total = (examData.questions || []).length;
-        clearInterval(timerInterval);
+      // --- Dashboard & Review Display ---
+      function showSubmittedResult(userAnswers, score, timeSpent, topicStats) {
+        const total = examData.questions.length;
+        const skipped = total - Object.keys(userAnswers).length;
+        const correct = Math.round((score + (total - skipped - score)/(1 + (examData.marking?.wrong||0.25))));
+        const wrong = total - skipped - correct;
+        const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0;
+        const attemptRate = Math.round(((total - skipped) / total) * 100);
+
+        // Header Metrics Update
+        document.getElementById('resultDashboard').style.display = 'block';
+        document.getElementById('resScore').innerText = score.toFixed(2);
+        document.getElementById('resAccuracy').innerText = accuracy + '%';
+        document.getElementById('resCorrect').innerText = correct;
+        document.getElementById('resWrong').innerText = wrong;
+        document.getElementById('resSkipped').innerText = skipped;
+        
+        const m = Math.floor(timeSpent / 60);
+        const s = timeSpent % 60;
+        document.getElementById('resTime').innerText = `${m}m ${s}s`;
+        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${attemptRate}%`;
+
+        // Progress Bar
+        document.getElementById('barCorrect').style.width = `${(correct/total)*100}%`;
+        document.getElementById('barWrong').style.width = `${(wrong/total)*100}%`;
+        document.getElementById('barSkip').style.width = `${(skipped/total)*100}%`;
+
+        // AI Weakness Analysis Engine
+        runAIAnalysis(accuracy, topicStats);
+
+        // Render Review Inputs
         document.getElementById('timerDisplay').innerText = "00:00";
         document.getElementById('filterBar').style.display = 'flex';
+        document.getElementById('topSubmitBtn').style.display = 'none';
 
-        let correctCount = 0;
-        let wrongCount = 0;
-        let skippedCount = 0;
+        switchViewMode('all');
 
-        (examData.questions || []).forEach((q, i) => {
+        examData.questions.forEach((q, i) => {
           const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
           const correctVal = parseInt(q.correct, 10);
-          
-          if (selected === undefined) {
-            skippedCount++;
-          } else if (selected === correctVal) {
-            correctCount++;
-          } else {
-            wrongCount++;
-          }
-
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
-
-          // Show time spent tag per question
-          const timeTag = document.getElementById(`time-tag-${i}`);
-          if(timeTag && timeSpentMap[i]) {
-            timeTag.style.display = 'block';
-            timeTag.innerText = `⏱️ এই প্রশ্নে ব্যয় করেছেন: ${timeSpentMap[i]} সেকেন্ড`;
-          }
 
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
@@ -686,91 +923,72 @@
           });
         });
 
-        const topSubmitBtn = document.getElementById('topSubmitBtn');
-        if(topSubmitBtn) topSubmitBtn.style.display = 'none';
-
-        const resDiv = document.getElementById('resultSummary');
-        resDiv.style.display = 'block';
-        resDiv.innerHTML = `
-          <div class="score-board">
-            <h2>পরীক্ষার ফলাফল</h2>
-            <p class="already-submitted-msg">⚠️ আপনি ইতিপূর্বে এই পরীক্ষাটি জমা দিয়েছেন!</p>
-            <p style="font-size: 24px; color: #10b981; font-weight: bold; margin: 10px 0;">আপনার প্রাপ্ত নম্বর: ${score} / ${total}</p>
-            
-            <div class="analytics-container">
-              <div class="chart-box">
-                <canvas id="resultChart"></canvas>
-              </div>
-              <div style="text-align: left; font-size: 14px; color: #cbd5e1; line-height: 1.8;">
-                <p>✅ সঠিক উত্তর: <b style="color: #10b981;">${correctCount}টি</b></p>
-                <p>❌ ভুল উত্তর: <b style="color: #f43f5e;">${wrongCount}টি</b> (কাটা গেছে ${(wrongCount * 0.25).toFixed(2)})</p>
-                <p>⚪ স্কিপড: <b style="color: #94a3b8;">${skippedCount}টি</b></p>
-              </div>
-            </div>
-          </div>
-        `;
-
-        // Render Chart
-        renderResultChart(correctCount, wrongCount, skippedCount);
-
-        const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
-        loadLeaderboard(examIdClean);
-
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      function renderResultChart(correct, wrong, skipped) {
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: ['সঠিক', 'ভুল', 'স্কিপড'],
-            datasets: [{
-              data: [correct, wrong, skipped],
-              backgroundColor: ['#10b981', '#f43f5e', '#64748b'],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: { position: 'bottom', labels: { color: '#f8fafc' } }
-            }
-          }
-        });
+      function runAIAnalysis(overallAcc, topicStats) {
+        let aiText = "";
+        let topicListHtml = "";
+
+        if (overallAcc >= 80) {
+          aiText = "🎉 চমৎকার প্রস্তুতি! আপনার অধিকাংশ টপিকে শক্তিশালী দখল রয়েছে। উচ্চ র‍্যাংক ধরে রাখতে কনসেপ্ট রিভিশন বজায় রাখুন।";
+        } else if (overallAcc >= 50) {
+          aiText = "👍 ভালো পারফরম্যান্স! কিছু নির্দিষ্ট টপিকে ভুল হচ্ছে। দুর্বল টপিকগুলোতে আরও নজর দেওয়া দরকার।";
+        } else {
+          aiText = "⚠️ আপনার বেশ কিছু গুরুত্বপূর্ণ টপিকে দুর্বলতা রয়েছে। ভিত্তি শক্ত করতে কনসেপ্ট বুক রিভিশন করুন।";
+        }
+
+        document.getElementById('aiAnalysisText').innerText = aiText;
+
+        // Extract weak vs strong topics
+        for (const [topic, stat] of Object.entries(topicStats || {})) {
+          const acc = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0;
+          const isWeak = acc < 60;
+          topicListHtml += `<span class="topic-pill ${isWeak ? 'weak' : 'strong'}">${isWeak ? '🔴' : '🟢'} ${topic} (${acc}%)</span>`;
+        }
+
+        document.getElementById('aiTopicList').innerHTML = topicListHtml || "<span style='font-size:12px; color:#94a3b8;'>টপিক ভিত্তিক তথ্য অনুপলব্ধ</span>";
       }
 
-      async function loadLeaderboard(examId) {
-        const boardSection = document.getElementById('leaderboardSection');
-        const boardBody = document.getElementById('leaderboardBody');
+      window.generateAIPractice = function() {
+        alert("🤖 GAIVEX AI Engine: আপনার দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি স্পেশাল রিভিশন MCQ তৈরি করা হচ্ছে... (Redirecting to Practice Module)");
+      };
 
+      // Leaderboard Engine
+      async function loadLiveLeaderboard(examIdClean) {
+        const tbody = document.getElementById('leaderboardBody');
         try {
-          const boardRef = query(ref(db, `leaderboards/${examId}`), orderByChild('score'), limitToLast(10));
-          const snap = await get(boardRef);
-
+          const snap = await get(ref(db, `leaderboard/${examIdClean}`));
           if (snap.exists()) {
-            let list = [];
-            snap.forEach(child => {
-              list.push(child.val());
-            });
-            list.reverse(); // Highest score first
+            let list = Object.values(snap.val());
+            list.sort((a, b) => b.score - a.score || a.timeSpent - b.timeSpent);
 
-            boardBody.innerHTML = list.map((item, idx) => `
-              <tr>
-                <td style="font-weight: bold; color: ${idx === 0 ? '#facc15' : '#f8fafc'}">#${idx + 1}</td>
-                <td>${item.userName}</td>
-                <td style="color: #10b981; font-weight: bold;">${item.score}</td>
-                <td style="color: #94a3b8;">${Math.floor(item.timeSpentSeconds / 60)}ম ${item.timeSpentSeconds % 60}সে</td>
-              </tr>
-            `).join('');
-
-            boardSection.style.display = 'block';
+            tbody.innerHTML = list.slice(0, 15).map((item, index) => {
+              const isMe = currentUser && item.name === (document.getElementById('uName').innerText);
+              return `
+                <tr class="${isMe ? 'my-rank' : ''}">
+                  <td>${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '#' + (index + 1)}</td>
+                  <td>${item.name}</td>
+                  <td style="color:#10b981; font-weight:bold;">${item.score.toFixed(2)}</td>
+                  <td>${Math.floor(item.timeSpent/60)}m ${item.timeSpent%60}s</td>
+                </tr>
+              `;
+            }).join('');
+          } else {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">এখনো কোনো লিডারবোর্ড ডাটা নেই।</td></tr>`;
           }
         } catch(e) {
-          console.error("Leaderboard load failed:", e);
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f43f5e;">লিডারবোর্ড লোড করতে সমস্যা হয়েছে।</td></tr>`;
         }
       }
 
+      // Tab Switchers
+      window.toggleTabs = function(tab) {
+        document.getElementById('tabLeaderboard').style.display = tab === 'leaderboard' ? 'block' : 'none';
+        document.getElementById('tabHistory').style.display = tab === 'history' ? 'block' : 'none';
+      };
+
+      // Filter Questions
       window.filterQuestions = function(type) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
@@ -781,22 +999,60 @@
           const correctVal = parseInt(q.correct, 10);
           
           let show = false;
-          if (type === 'all') {
-            show = true;
-          } else if (type === 'correct' && selected === correctVal) {
-            show = true;
-          } else if (type === 'wrong' && selected !== undefined && selected !== correctVal) {
-            show = true;
-          } else if (type === 'skipped' && selected === undefined) {
-            show = true;
-          } else if (type === 'bookmarked' && bookmarkedQuestions[i]) {
-            show = true;
-          }
+          if (type === 'all') show = true;
+          else if (type === 'correct' && selected === correctVal) show = true;
+          else if (type === 'wrong' && selected !== undefined && selected !== correctVal) show = true;
+          else if (type === 'skipped' && selected === undefined) show = true;
+          else if (type === 'bookmarked' && bookmarkedQuestions[i]) show = true;
+          else if (type === 'review' && reviewQuestions[i]) show = true;
 
           card.style.display = show ? 'block' : 'none';
         });
       };
 
+      // Question Report Modal
+      window.openReportModal = function(qIndex) {
+        document.getElementById('reportQIndex').value = qIndex;
+        document.getElementById('reportModal').style.display = 'flex';
+      };
+      window.closeReportModal = function() { document.getElementById('reportModal').style.display = 'none'; };
+      
+      window.submitQuestionReport = async function() {
+        const idx = document.getElementById('reportQIndex').value;
+        const reason = document.getElementById('reportReason').value;
+        const details = document.getElementById('reportDetails').value;
+
+        try {
+          await push(ref(db, 'question_reports'), {
+            examId: examData.id,
+            questionIndex: idx,
+            reason: reason,
+            details: details,
+            reportedBy: currentUser ? currentUser.uid : 'anonymous',
+            timestamp: Date.now()
+          });
+          alert("✅ আপনার রিপোর্ট জমা নেওয়া হয়েছে। ধন্যবাদ!");
+          closeReportModal();
+        } catch(e) { alert("❌ রিপোর্ট জমা দেওয়া যায়নি।"); }
+      };
+
+      // Printable Digital Certificate
+      window.printCertificate = function() {
+        document.getElementById('certName').innerText = document.getElementById('uName').innerText || "Student";
+        document.getElementById('certExam').innerText = examData.title;
+        document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
+        document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
+        document.getElementById('certDate').innerText = new Date().toLocaleDateString('bn-BD');
+
+        const certWin = window.open('', '', 'width=800,height=600');
+        certWin.document.write('<html><head><title>Certificate</title></head><body>');
+        certWin.document.write(document.getElementById('certificateContainer').innerHTML);
+        certWin.document.write('</body></html>');
+        certWin.document.close();
+        certWin.print();
+      };
+
+      // Auth Observer & Boot
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         checkAttemptAndLoad();
