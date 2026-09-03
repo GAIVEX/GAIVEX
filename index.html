@@ -28,6 +28,7 @@
             --subtext: #94a3b8;
             --accent-color: #38bdf8;
             --bottom-nav-bg: rgba(15, 23, 42, 0.95);
+            --base-font-size: 16px;
         }
         [data-theme="light"] {
             --bg-color: #f8fafc;
@@ -53,8 +54,14 @@
             overflow-x: hidden; 
             position: relative; 
             padding-bottom: 70px; /* Space for Bottom Navigation */
+            font-size: var(--base-font-size);
         }
         
+        /* Font size modifier classes */
+        body.font-small { --base-font-size: 14px; }
+        body.font-medium { --base-font-size: 16px; }
+        body.font-large { --base-font-size: 18px; }
+
         /* ব্যাকগ্রাউন্ড অ্যানিমেশন */
         .global-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .floating-element { position: absolute; font-size: 45px; opacity: 0.12; animation: floatRotateAnim 15s infinite linear; }
@@ -69,7 +76,7 @@
 
         .navbar, .hero-section, .site-footer, .modal, .floating-ai-btn, .floating-settings-btn { position: relative; z-index: 10; }
 
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); sticky; top: 0; z-index: 100; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         
         .nav-left-group { display: flex; align-items: center; gap: 12px; }
         .logo { font-size: 24px; font-weight: 800; color: #38bdf8; text-decoration: none; letter-spacing: 0.5px; }
@@ -239,6 +246,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
         .theme-select-btn {
             background: var(--card-bg);
@@ -289,7 +297,9 @@
         .btn-start { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #0f172a; border: none; font-size: 16px; transition: 0.3s; }
         .btn-start:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
         .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; padding: 10px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
-        
+        .btn-danger { background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+        .btn-action { background:#0284c7; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; text-decoration:none; display:inline-block; }
+
         .tab-menu { display:flex; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
         .tab-btn { flex:1; padding: 8px; background: none; border: none; color: var(--subtext); font-weight: bold; cursor: pointer; }
         .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
@@ -333,7 +343,7 @@
         .profile-info-item span { font-weight: bold; color: #38bdf8; display: block; margin-bottom: 2px; }
     </style>
 </head>
-<body data-theme="dark">
+<body data-theme="dark" class="font-medium">
 
     <div id="toastContainer"></div>
 
@@ -491,30 +501,84 @@
       </div>
     </div>
 
-    <!-- সেটিংস মোডাল -->
+    <!-- সেটিংস মোডাল (আপডেটেড ও সম্পূর্ণ ফাংশন যুক্ত) -->
     <div id="settingsModal" class="modal">
-      <div class="modal-content" style="max-width: 450px;">
+      <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header">
             <h3>⚙️ অ্যাপ সেটিংস (Settings)</h3>
             <button class="modal-close-x" onclick="closeSettingsModal()">&times;</button>
         </div>
         
+        <!-- Theme Setting -->
         <div class="settings-option-card">
             <div>
                 <div style="font-weight: bold; font-size: 14px;">থিম মোড (Theme)</div>
                 <div style="font-size: 12px; color: var(--subtext);">ডার্ক বা লাইট থিম নির্বাচন করুন</div>
             </div>
             <button class="theme-select-btn" id="settingsThemeToggleBtn" onclick="toggleTheme()">
-                <span id="themeBtnIcon">☀️</span> <span id="themeBtnText">Light</span>
+                <span id="themeBtnIcon">☀️</span> <span id="themeBtnText">Light Mode</span>
             </button>
         </div>
 
+        <!-- Font Size Setting -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">ফন্ট সাইজ (Font Size)</div>
+                <div style="font-size: 12px; color: var(--subtext);">পড়ার সুবিধার জন্য টেক্সট সাইজ সামঞ্জস্য করুন</div>
+            </div>
+            <select id="fontSizeSelect" onchange="changeFontSize(this.value)" style="width: auto; margin-bottom: 0; padding: 6px 10px;">
+                <option value="small">ছোট</option>
+                <option value="medium" selected>মাঝারি</option>
+                <option value="large">বড়</option>
+            </select>
+        </div>
+
+        <!-- Notification Popups -->
         <div class="settings-option-card">
             <div>
                 <div style="font-weight: bold; font-size: 14px;">নোটিফিকেশন পপআপ</div>
-                <div style="font-size: 12px; color: var(--subtext);">গুরুত্বপূর্ণ নোটিফিকেশন প্রদর্শন</div>
+                <div style="font-size: 12px; color: var(--subtext);">গুরুত্বপূর্ণ আপডেট ও নোটিশ প্রদর্শন</div>
             </div>
-            <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer; margin-bottom: 0;">
+            <input type="checkbox" id="notifToggle" checked onchange="toggleNotificationSetting(this.checked)" style="width: 18px; height: 18px; cursor: pointer; margin-bottom: 0;">
+        </div>
+
+        <!-- Timer Alert Sound -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">পরীক্ষার টাইমার সতর্কতা শব্দ</div>
+                <div style="font-size: 12px; color: var(--subtext);">সময় শেষ হওয়ার পূর্বে রিমাইন্ডার সাউন্ড</div>
+            </div>
+            <input type="checkbox" id="timerSoundToggle" checked onchange="toggleTimerSoundSetting(this.checked)" style="width: 18px; height: 18px; cursor: pointer; margin-bottom: 0;">
+        </div>
+
+        <!-- Submission Confirmation -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">পরীক্ষা সাবমিট নিশ্চিতকরণ</div>
+                <div style="font-size: 12px; color: var(--subtext);">ভুলবশত জমা দেয়া এড়াতে সাবমিট পপআপ পপ-আপ করা</div>
+            </div>
+            <input type="checkbox" id="submitConfirmToggle" checked onchange="toggleSubmitConfirmSetting(this.checked)" style="width: 18px; height: 18px; cursor: pointer; margin-bottom: 0;">
+        </div>
+
+        <!-- Clear Cache -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">ক্যাশ মেমোরি রিসেট</div>
+                <div style="font-size: 12px; color: var(--subtext);">অ্যাপ স্লো মনে হলে লোকাল ডাটা রিসেট করুন</div>
+            </div>
+            <button class="btn-danger" onclick="clearAppCache()">ক্লিয়ার করুন</button>
+        </div>
+
+        <!-- App Updates & Admin Contact -->
+        <div class="settings-option-card">
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">সহায়তা ও আপডেট</div>
+                <div style="font-size: 12px; color: var(--subtext);">যেকোনো সমস্যায় ইমেইল করুন অথবা আপডেট দেখুন</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+                <button class="btn-action" onclick="checkAppUpdate()">আপডেট</button>
+                <a href="mailto:gaiyumtamim@gmail.com" class="btn-action" style="background:#10b981;">📧 যোগাযোগ</a>
+            </div>
         </div>
 
         <div class="btn-group" style="margin-top: 15px;">
@@ -722,6 +786,7 @@
         <div class="footer-logo">GAIVEX<span>.</span></div>
         <div class="footer-tagline">স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক <span style="color: #38bdf8;">GAIVEX</span> এর সাথে</div>
         <div class="footer-subtagline">মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট ও সমাধান।</div>
+        <div style="font-size: 13px; color: var(--subtext); margin-bottom: 10px;">জরুরী যোগাযোগ: <a href="mailto:gaiyumtamim@gmail.com" style="color: #38bdf8; text-decoration: none;">gaiyumtamim@gmail.com</a></div>
         
         <div class="social-links">
             <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
@@ -890,9 +955,74 @@
           }
       }
 
-      const savedTheme = localStorage.getItem('gaivex_theme') || 'dark';
-      document.body.setAttribute('data-theme', savedTheme);
-      updateThemeUI(savedTheme);
+      // Font Size Setting
+      window.changeFontSize = function(size) {
+          document.body.className = document.body.className.replace(/\bfont-\S+/g, '');
+          document.body.classList.add(`font-${size}`);
+          localStorage.setItem('gaivex_fontsize', size);
+          showToast(`ফন্ট সাইজ পরিবর্তন করে ${size === 'small' ? 'ছোট' : size === 'large' ? 'বড়' : 'মাঝারি'} করা হয়েছে।`);
+      }
+
+      // Notification Setting Toggle
+      window.toggleNotificationSetting = function(enabled) {
+          localStorage.setItem('gaivex_notif_enabled', enabled);
+          showToast(`নোটিফিকেশন পপআপ ${enabled ? 'চালু' : 'বন্ধ'} করা হয়েছে।`);
+      }
+
+      // Timer Sound Toggle
+      window.toggleTimerSoundSetting = function(enabled) {
+          localStorage.setItem('gaivex_timer_sound', enabled);
+          showToast(`টাইমার সতর্কবার্তা শব্দ ${enabled ? 'চালু' : 'বন্ধ'} করা হয়েছে।`);
+      }
+
+      // Submit Confirm Toggle
+      window.toggleSubmitConfirmSetting = function(enabled) {
+          localStorage.setItem('gaivex_submit_confirm', enabled);
+          showToast(`সাবমিট নিশ্চিতকরণ পপআপ ${enabled ? 'চালু' : 'বন্ধ'} করা হয়েছে।`);
+      }
+
+      // Clear App Cache Function
+      window.clearAppCache = function() {
+          if(confirm("আপনি কি লোকাল অ্যাপ ডাটা ও ক্যাশ ক্লিয়ার করতে চান?")) {
+              localStorage.clear();
+              showToast("লোকাল ক্যাশ মেমোরি রিসেট করা হয়েছে!");
+              setTimeout(() => location.reload(), 1000);
+          }
+      }
+
+      // Check App Update
+      window.checkAppUpdate = function() {
+          showToast("আপনি সাম্প্রতিকতম সংস্করণ (v2.0) ব্যবহার করছেন।");
+      }
+
+      // Load Settings Preferences
+      function loadSettingsPreferences() {
+          const savedTheme = localStorage.getItem('gaivex_theme') || 'dark';
+          document.body.setAttribute('data-theme', savedTheme);
+          updateThemeUI(savedTheme);
+
+          const savedFontSize = localStorage.getItem('gaivex_fontsize') || 'medium';
+          document.body.classList.add(`font-${savedFontSize}`);
+          const fontSelect = document.getElementById('fontSizeSelect');
+          if(fontSelect) fontSelect.value = savedFontSize;
+
+          const savedNotif = localStorage.getItem('gaivex_notif_enabled');
+          if(savedNotif !== null) {
+              document.getElementById('notifToggle').checked = (savedNotif === 'true');
+          }
+
+          const savedTimer = localStorage.getItem('gaivex_timer_sound');
+          if(savedTimer !== null) {
+              document.getElementById('timerSoundToggle').checked = (savedTimer === 'true');
+          }
+
+          const savedSubmit = localStorage.getItem('gaivex_submit_confirm');
+          if(savedSubmit !== null) {
+              document.getElementById('submitConfirmToggle').checked = (savedSubmit === 'true');
+          }
+      }
+
+      loadSettingsPreferences();
 
       const chaptersData = {
           physics: {
