@@ -415,12 +415,29 @@
             <div class="subject-box" onclick="openResultModal()"><div class="icon">📊</div><h3>রেজাল্ট</h3></div>
             <div class="subject-box" onclick="openLeaderboardModal()"><div class="icon">🏆</div><h3>লিডারবোর্ড</h3></div>
             <div class="subject-box" onclick="openNotesModal()"><div class="icon">📚</div><h3>নোটস</h3></div>
+            <!-- সকল বিষয় একত্রিত বক্স -->
+            <div class="subject-box" onclick="openSubjectsModal()"><div class="icon">📖</div><h3>বিষয়সমূহ</h3></div>
+        </div>
+    </main>
+
+    <!-- বিষয়সমূহ পপআপ মোডাল -->
+    <div id="subjectsModal" class="modal">
+      <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3>📖 বিষয়সমূহ নির্বাচন করুন</h3>
+            <button class="modal-close-x" onclick="closeSubjectsModal()">&times;</button>
+        </div>
+        <div class="subject-grid" style="margin-top: 10px;">
             <div class="subject-box" onclick="location.href='physics.html'"><div class="icon">⚛️</div><h3>পদার্থবিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='chemistry.html'"><div class="icon">🧪</div><h3>রসায়ন</h3></div>
             <div class="subject-box" onclick="location.href='biology.html'"><div class="icon">🧬</div><h3>জীববিজ্ঞান</h3></div>
             <div class="subject-box" onclick="location.href='math.html'"><div class="icon">📐</div><h3>উচ্চতর গণিত</h3></div>
         </div>
-    </main>
+        <div class="btn-group" style="margin-top: 15px;">
+            <button type="button" class="btn btn-close" onclick="closeSubjectsModal()" style="flex: 1;">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ==================== BOTTOM NAVIGATION BAR ==================== -->
     <nav class="bottom-nav">
@@ -460,7 +477,7 @@
         </div>
 
         <ul class="instruction-list">
-            <li><span>১.</span> পরীক্ষায় প্রতিটি প্রশ্নের জন্য নির্দিষ্ট সময় বরাদ্দ রয়েছে। নির্ধারিত সময়ের পূর্বেই আপনার উত্তরসমূহ সাবমিট করুন।</li>
+            <li><span>১.</span> পরীক্ষায় প্রতিটি প্রশ্নের জন্য নির্দিষ্ট সময় বরাদ্দ রয়েছে। নির্ধারিত সময়ের পূর্বেই আপনার উত্তরসমূহ সাবমিট করুন।</li>
             <li><span>২.</span> পরীক্ষা শুরু হওয়ার পর ব্যাক (Back) বা পেজ রিফ্রেশ (Refresh) করা থেকে বিরত থাকুন, অন্যথায় পরীক্ষা বাতিল হতে পারে।</li>
             <li><span>৩.</span> কোনো ভুল উত্তর নির্বাচন করলে প্রতিটি ভুলের জন্য নেগেটিভ মার্কিং কাটা হতে পারে (পরীক্ষার নিয়ম অনুযায়ী)।</li>
             <li><span>৪.</span> সাবমিট করার পর আপনার প্রাপ্ত নম্বর, ভুল উত্তর ও লিডারবোর্ডে আপনার অবস্থান দেখতে পাবেন।</li>
@@ -831,6 +848,15 @@
 
       window.startLiveExamNow = function() {
           window.location.href = 'liveexam.html';
+      }
+
+      // Subjects Modal Functions
+      window.openSubjectsModal = function() {
+          document.getElementById('subjectsModal').style.display = 'flex';
+      }
+
+      window.closeSubjectsModal = function() {
+          document.getElementById('subjectsModal').style.display = 'none';
       }
 
       // Settings Modal Control Functions
