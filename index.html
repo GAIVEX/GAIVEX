@@ -173,7 +173,7 @@
         .subject-box:hover { transform: translateY(-4px); border-color: #38bdf8; background: var(--card-hover); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2); }
         .subject-box .icon { font-size: 34px; margin-bottom: 8px; }
 
-        .exam-banner-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 16px; text-align: left; transition: all 0.3s ease; text-decoration: none; display: block; color: var(--text-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .exam-banner-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 16px; text-align: left; transition: all 0.3s ease; text-decoration: none; display: block; color: var(--text-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); cursor: pointer; }
         .exam-banner-box:hover { transform: translateY(-3px); border-color: #38bdf8; background: var(--card-hover); }
         
         .live-badge-new { display: inline-flex; align-items: center; gap: 6px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(244, 63, 94, 0.4); }
@@ -286,6 +286,8 @@
         .btn { padding:10px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; flex:1; text-align: center; font-size: 14px; text-decoration: none; }
         .btn-save { background:#10b981; color:white; }
         .btn-close { background:#ef4444; color:white; }
+        .btn-start { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #0f172a; border: none; font-size: 16px; transition: 0.3s; }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
         .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; padding: 10px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
         
         .tab-menu { display:flex; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
@@ -302,6 +304,11 @@
 
         select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 10px; }
         select:focus { border-color: #38bdf8; }
+
+        /* Instructions Styling */
+        .instruction-list { list-style: none; margin: 15px 0; text-align: left; }
+        .instruction-list li { font-size: 13px; color: var(--text-color); margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+        .instruction-list li span { color: #38bdf8; font-weight: bold; }
 
         /* Toast Notification System */
         #toastContainer { position: fixed; bottom: 85px; right: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
@@ -389,10 +396,11 @@
     </header>
 
     <main class="hero-section">
-        <a href="liveexam.html" class="exam-banner-box">
+        <!-- Live Exam Box Trigger (Will open Instruction Modal) -->
+        <div class="exam-banner-box" onclick="openLiveExamInstructionModal()">
             <div class="live-badge-new">🔴 LIVE EXAM</div>
             <h2 id="liveExamTitle" style="font-size: 18px; font-weight: 600;">Daily Live Exam</h2>
-        </a>
+        </div>
 
         <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="exam-banner-box">
             <div class="practice-badge-new">📝 PRACTICE EXAM</div>
@@ -420,7 +428,7 @@
             <span class="icon">🏠</span>
             <span>হোম</span>
         </a>
-        <a href="liveexam.html" class="nav-item">
+        <a href="#" onclick="openLiveExamInstructionModal()" class="nav-item">
             <span class="icon">📝</span>
             <span>লাইভ এক্সাম</span>
         </a>
@@ -437,6 +445,34 @@
             <span>প্রোফাইল</span>
         </a>
     </nav>
+
+    <!-- লাইভ এক্সাম ইন্সট্রাকশন মোডাল -->
+    <div id="liveExamInstructionModal" class="modal">
+      <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h3>📝 পরীক্ষা সম্পর্কিত নির্দেশাবলী</h3>
+            <button class="modal-close-x" onclick="closeLiveExamInstructionModal()">&times;</button>
+        </div>
+        
+        <div style="background: var(--input-bg); padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 12px; text-align: left;">
+            <div style="font-size: 11px; color: #f43f5e; font-weight: bold; text-transform: uppercase;">🔴 লাইভ পরীক্ষা:</div>
+            <h2 id="modalExamTitleDisplay" style="font-size: 17px; color: #38bdf8; margin-top: 2px;">Daily Live Exam</h2>
+        </div>
+
+        <ul class="instruction-list">
+            <li><span>১.</span> পরীক্ষায় প্রতিটি প্রশ্নের জন্য নির্দিষ্ট সময় বরাদ্দ রয়েছে। নির্ধারিত সময়ের পূর্বেই আপনার উত্তরসমূহ সাবমিট করুন।</li>
+            <li><span>২.</span> পরীক্ষা শুরু হওয়ার পর ব্যাক (Back) বা পেজ রিফ্রেশ (Refresh) করা থেকে বিরত থাকুন, অন্যথায় পরীক্ষা বাতিল হতে পারে।</li>
+            <li><span>৩.</span> কোনো ভুল উত্তর নির্বাচন করলে প্রতিটি ভুলের জন্য নেগেটিভ মার্কিং কাটা হতে পারে (পরীক্ষার নিয়ম অনুযায়ী)।</li>
+            <li><span>৪.</span> সাবমিট করার পর আপনার প্রাপ্ত নম্বর, ভুল উত্তর ও লিডারবোর্ডে আপনার অবস্থান দেখতে পাবেন।</li>
+            <li><span>৫.</span> আপনার ইন্টারনেট সংযোগটি সচল আছে কি না তা নিশ্চিত হয়ে নিয়ে পরীক্ষা শুরু করুন।</li>
+        </ul>
+
+        <div class="btn-group" style="margin-top: 20px;">
+            <button type="button" class="btn btn-close" onclick="closeLiveExamInstructionModal()">বন্ধ করুন</button>
+            <button type="button" class="btn btn-start" onclick="startLiveExamNow()">Start Exam (পরীক্ষা শুরু করুন)</button>
+        </div>
+      </div>
+    </div>
 
     <!-- সেটিংস মোডাল -->
     <div id="settingsModal" class="modal">
@@ -780,6 +816,21 @@
               toast.style.opacity = '0';
               setTimeout(() => toast.remove(), 300);
           }, 3000);
+      }
+
+      // Live Exam Instruction Modal Functions
+      window.openLiveExamInstructionModal = function() {
+          const examTitle = document.getElementById('liveExamTitle').innerText;
+          document.getElementById('modalExamTitleDisplay').innerText = examTitle;
+          document.getElementById('liveExamInstructionModal').style.display = 'flex';
+      }
+
+      window.closeLiveExamInstructionModal = function() {
+          document.getElementById('liveExamInstructionModal').style.display = 'none';
+      }
+
+      window.startLiveExamNow = function() {
+          window.location.href = 'liveexam.html';
       }
 
       // Settings Modal Control Functions
