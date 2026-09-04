@@ -501,7 +501,7 @@
       </div>
     </div>
 
-    <!-- সেটিংস মোডাল (আপডেটেড ও সম্পূর্ণ ফাংশন যুক্ত) -->
+    <!-- সেটিংস মোডাল -->
     <div id="settingsModal" class="modal">
       <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header">
@@ -1034,7 +1034,7 @@
               paper2: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"]
           },
           biology: {
-              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"],
+              paper1: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: জীবের পরিবেশ ও বিস্তার"],
               paper2: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"]
           },
           math: {
@@ -1182,158 +1182,167 @@
           const sub = document.getElementById('filterSubject').value;
           const paper = document.getElementById('filterPaper').value;
           const chapSelect = document.getElementById('filterChapter');
-          chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>';
-          if(sub && paper && chaptersData[sub][paper]) {
-              chaptersData[sub][paper].forEach((chap) => {
-                  chapSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
-              });
+
+          if (sub && paper && chaptersData[sub] && chaptersData[sub][paper]) {
+              chapSelect.innerHTML = '<option value="">অধ্যায় বাছুন</option>' + 
+                  chaptersData[sub][paper].map(c => `<option value="${c}">${c}</option>`).join('');
+          } else {
+              chapSelect.innerHTML = '<option value="">আগে বিষয় ও পত্র বাছুন</option>';
           }
       };
 
       window.fetchStudentNotes = async function() {
-          const subject = document.getElementById('filterSubject').value;
+          const sub = document.getElementById('filterSubject').value;
           const paper = document.getElementById('filterPaper').value;
-          const chapter = document.getElementById('filterChapter').value;
+          const chap = document.getElementById('filterChapter').value;
           const container = document.getElementById('notesListContainer');
 
-          if (!subject || !paper || !chapter) {
-              container.innerHTML = '<p style="color: var(--subtext); text-align: center; font-size: 13px; margin-top: 20px;">দয়া করে সবগুলো অপশন সিলেক্ট করুন।</p>';
-              return;
-          }
+          if (!sub || !paper || !chap) return;
 
           container.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
 
           try {
-              const snapshot = await get(ref(db, 'notes'));
+              const notesRef = ref(db, 'notes');
+              const snapshot = await get(notesRef);
               if (snapshot.exists()) {
-                  const data = snapshot.val();
-                  let html = '';
-                  
-                  for (let id in data) {
-                      let note = data[id];
-                      if (note.subject === subject && note.paper === paper && note.chapter === chapter) {
-                          let contentDisplay = '';
-                          if (note.contentType === 'pdf') {
-                              contentDisplay = `<a href="${note.contentUrl}" target="_blank" style="display:inline-block; margin-top:10px; background:#0284c7; color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:bold;">📄 পিডিএফ ফাইল দেখুন / ডাউনলোড করুন</a>`;
-                          } else if (note.contentType === 'image') {
-                              contentDisplay = `<img src="${note.contentUrl}" alt="Note Image" style="max-width:100%; border-radius:6px; margin-top:10px; border:1px solid var(--border-color);">`;
-                          } else {
-                              contentDisplay = `<p style="color:var(--text-color); font-size:13px; margin-top:10px; white-space:pre-wrap; background:var(--input-bg); padding:10px; border-radius:6px;">${note.textContent}</p>`;
-                          }
+                  const notesData = snapshot.val();
+                  const matchedNotes = [];
 
-                          html += `
-                              <div style="background:var(--modal-bg); padding:15px; border-radius:8px; margin-bottom:12px; border:1px solid var(--border-color);">
-                                  <h4 style="color:#38bdf8; font-size:15px; margin-bottom:4px;">📌 ${note.title}</h4>
-                                  ${contentDisplay}
-                              </div>
-                          `;
+                  Object.keys(notesData).forEach(key => {
+                      const note = notesData[key];
+                      if (note.subject === sub && note.paper === paper && note.chapter === chap) {
+                          matchedNotes.push(note);
                       }
+                  });
+
+                  if (matchedNotes.length > 0) {
+                      container.innerHTML = matchedNotes.map(n => `
+                          <div class="notice-item" style="margin-bottom: 8px; padding: 10px;">
+                              <h4 style="font-size: 14px; color: #38bdf8;">📌 ${n.title}</h4>
+                              <p style="font-size: 12px; margin-top: 4px;">${n.content || ''}</p>
+                              ${n.fileUrl ? `<a href="${n.fileUrl}" target="_blank" class="btn-action" style="margin-top: 6px;">📄 নোট দেখুন / ডাউনলোড</a>` : ''}
+                          </div>
+                      `).join('');
+                  } else {
+                      container.innerHTML = '<p style="color: var(--subtext); text-align: center; font-size: 13px; margin-top: 20px;">এই অধ্যায়ের জন্য কোনো নোট পাওয়া যায়নি।</p>';
                   }
-                  container.innerHTML = html !== '' ? html : '<p style="color:var(--subtext); text-align:center; font-size:13px; margin-top: 20px;">এই অধ্যায়ে কোনো নোট আপলোড করা হয়নি।</p>';
               } else {
-                  container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:13px; margin-top: 20px;">কোনো নোট পাওয়া যায়নি।</p>';
+                  container.innerHTML = '<p style="color: var(--subtext); text-align: center; font-size: 13px; margin-top: 20px;">কোনো নোট পাওয়া যায়নি।</p>';
               }
-          } catch(e) {
-              container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:13px; margin-top: 20px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
+          } catch (e) {
+              container.innerHTML = '<p style="color: #f43f5e; text-align: center; font-size: 13px;">নোট লোড করতে সমস্যা হয়েছে।</p>';
           }
-      }
-
-      window.toggleAuthModal = (show) => document.getElementById('authModal').style.display = show ? 'flex' : 'none';
-      
-      window.toggleProfileModal = async (show) => {
-        if(show) {
-          if(!currentUser) { showToast("আগে লগইন করুন!"); toggleAuthModal(true); return; }
-          renderStudentProfileDetails();
-          await loadStudentHistory();
-        }
-        document.getElementById('profileModal').style.display = show ? 'flex' : 'none';
       };
 
-      function renderStudentProfileDetails() {
-          const pContainer = document.getElementById('profileDetails');
-          if (currentStudentProfile) {
-              pContainer.innerHTML = `
-                <div style="color:#38bdf8; font-weight:bold; font-size:15px; margin-bottom:6px;">👤 ${currentStudentProfile.name || currentUser.displayName}</div>
-                <div style="font-size:12px; color:var(--subtext); margin-bottom:8px;">📧 ${currentStudentProfile.email || currentUser.email}</div>
-                
-                <div class="profile-info-grid">
-                    <div class="profile-info-item"><span>পিতার নাম:</span> ${currentStudentProfile.fatherName || 'N/A'}</div>
-                    <div class="profile-info-item"><span>মাতার নাম:</span> ${currentStudentProfile.motherName || 'N/A'}</div>
-                    <div class="profile-info-item"><span>শিক্ষার্থীর মোবাইল:</span> ${currentStudentProfile.phone || 'N/A'}</div>
-                    <div class="profile-info-item"><span>অভিভাবকের মোবাইল:</span> ${currentStudentProfile.guardianPhone || 'N/A'}</div>
-                    <div class="profile-info-item"><span>কলেজের নাম:</span> ${currentStudentProfile.college || 'N/A'}</div>
-                    <div class="profile-info-item"><span>SSC / HSC সাল:</span> ${currentStudentProfile.sscYear || ''} / ${currentStudentProfile.hscYear || ''}</div>
-                    <div class="profile-info-item"><span>জন্ম তারিখ & লিঙ্গ:</span> ${currentStudentProfile.dob || ''} (${currentStudentProfile.gender || ''})</div>
-                    <div class="profile-info-item"><span>ঠিকানা:</span> ${currentStudentProfile.address || 'N/A'}</div>
-                </div>
-              `;
+      // AUTH UI CONTROLS
+      window.toggleAuthModal = function(show) {
+          document.getElementById('authModal').style.display = show ? 'flex' : 'none';
+      }
+
+      window.switchAuthTab = function(tab) {
+          if (tab === 'login') {
+              document.getElementById('loginForm').style.display = 'block';
+              document.getElementById('registerForm').style.display = 'none';
+              document.getElementById('tabLogin').classList.add('active');
+              document.getElementById('tabRegister').classList.remove('active');
           } else {
-              pContainer.innerHTML = `<b>শিক্ষার্থী:</b> ${currentUser.displayName || 'নাম নেই'}<br><b>ইমেইল:</b> ${currentUser.email}`;
+              document.getElementById('loginForm').style.display = 'none';
+              document.getElementById('registerForm').style.display = 'block';
+              document.getElementById('tabLogin').classList.remove('active');
+              document.getElementById('tabRegister').classList.add('active');
           }
       }
 
-      window.switchAuthTab = (tab) => {
-        document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-        document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
-        document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-        document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
-      };
+      window.toggleProfileModal = function(show) {
+          if(show && !currentUser) {
+              toggleAuthModal(true);
+              return;
+          }
+          document.getElementById('profileModal').style.display = show ? 'flex' : 'none';
+      }
 
-      window.handleGoogleSignIn = async () => { 
-        try {
-            const res = await signInWithPopup(auth, googleProvider); 
-            toggleAuthModal(false); 
-            showToast("সফলভাবে লগইন হয়েছে!");
-            checkAndPromptStudentProfile(res.user);
-        } catch(e) {
-            showToast("গুগল দিয়ে লগইন ব্যর্থ হয়েছে!");
-        }
-      };
-
-      window.handleEmailRegister = async (e) => {
-        e.preventDefault();
-        try {
-          const nameVal = document.getElementById('regName').value;
-          const res = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
-          await updateProfile(res.user, { displayName: nameVal });
-          toggleAuthModal(false);
-          showToast("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
-          checkAndPromptStudentProfile(res.user, nameVal);
-        } catch(err) { showToast("ত্রুটি: " + err.message); }
-      };
-
-      window.handleEmailLogin = async (e) => { 
-        e.preventDefault(); 
-        try {
-          const res = await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); 
-          toggleAuthModal(false);
-          showToast("সফলভাবে লগইন হয়েছে!");
-          checkAndPromptStudentProfile(res.user);
-        } catch(err) { showToast("লগইন ব্যর্থ হয়েছে!"); }
-      };
-
-      async function checkAndPromptStudentProfile(user, optionalName = '') {
-          if (!user) return;
+      // LOGIN / REGISTER HANDLERS
+      window.handleEmailLogin = async function(e) {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value;
+          const pass = document.getElementById('loginPassword').value;
           try {
-              const studentRef = ref(db, `students/${user.uid}`);
-              const snapshot = await get(studentRef);
-              if (!snapshot.exists()) {
-                  document.getElementById('spName').value = optionalName || user.displayName || '';
-                  document.getElementById('studentProfileSetupModal').style.display = 'flex';
-              } else {
-                  currentStudentProfile = snapshot.val();
-              }
-          } catch(e) { console.error(e); }
+              await signInWithEmailAndPassword(auth, email, pass);
+              showToast("সফলভাবে লগইন হয়েছে!");
+              toggleAuthModal(false);
+          } catch(err) {
+              alert("লগইন ব্যর্থ: " + err.message);
+          }
+      }
+
+      window.handleEmailRegister = async function(e) {
+          e.preventDefault();
+          const name = document.getElementById('regName').value;
+          const email = document.getElementById('regEmail').value;
+          const pass = document.getElementById('regPassword').value;
+          try {
+              const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+              await updateProfile(userCred.user, { displayName: name });
+              showToast("রেজিস্ট্রেশন সফল হয়েছে!");
+              toggleAuthModal(false);
+          } catch(err) {
+              alert("রেজিস্ট্রেশন ব্যর্থ: " + err.message);
+          }
+      }
+
+      window.handleGoogleSignIn = async function() {
+          try {
+              await signInWithPopup(auth, googleProvider);
+              showToast("Google অ্যাকাউন্ট দিয়ে সফলভাবে লগইন হয়েছে!");
+              toggleAuthModal(false);
+          } catch(err) {
+              alert("Google লগইন সমস্যা: " + err.message);
+          }
+      }
+
+      window.handleForgotPassword = async function(e) {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value;
+          if(!email) {
+              alert("পাসওয়ার্ড রিকভারির জন্য ইমেইল প্রদান করুন।");
+              return;
+          }
+          try {
+              await sendPasswordResetEmail(auth, email);
+              showToast("আপনার ইমেইলে পাসওয়ার্ড রিকভারি লিংক পাঠানো হয়েছে।");
+          } catch(err) {
+              alert("ইমেইল পাঠাতে ব্যর্থ: " + err.message);
+          }
+      }
+
+      window.handleLogout = async function() {
+          await signOut(auth);
+          showToast("লগআউট করা হয়েছে!");
+          toggleProfileModal(false);
+          location.reload();
+      }
+
+      // STUDENT PROFILE DATABASE SYNC
+      async function checkAndSyncStudentProfile(user) {
+          const profileRef = ref(db, `studentProfiles/${user.uid}`);
+          const snapshot = await get(profileRef);
+          if (snapshot.exists()) {
+              currentStudentProfile = snapshot.val();
+              renderUserProfileUI(user, currentStudentProfile);
+          } else {
+              document.getElementById('spName').value = user.displayName || '';
+              document.getElementById('studentProfileSetupModal').style.display = 'flex';
+          }
       }
 
       window.handleSaveStudentProfile = async function(e) {
           e.preventDefault();
-          if (!currentUser) return;
+          if(!currentUser) return;
 
           const profileData = {
               uid: currentUser.uid,
-              name: document.getElementById('spName').value,
               email: currentUser.email,
+              name: document.getElementById('spName').value,
               fatherName: document.getElementById('spFatherName').value,
               motherName: document.getElementById('spMotherName').value,
               phone: document.getElementById('spPhone').value,
@@ -1344,432 +1353,423 @@
               dob: document.getElementById('spDob').value,
               gender: document.getElementById('spGender').value,
               address: document.getElementById('spAddress').value,
-              registeredAt: new Date().toISOString()
+              createdAt: new Date().toISOString()
           };
 
           try {
-              await set(ref(db, `students/${currentUser.uid}`), profileData);
+              await set(ref(db, `studentProfiles/${currentUser.uid}`), profileData);
               currentStudentProfile = profileData;
               document.getElementById('studentProfileSetupModal').style.display = 'none';
-              showToast("আপনার সকল তথ্য ডাটাবেজে সফলভাবে সংরক্ষিত হয়েছে!");
+              showToast("আপনার প্রোফাইল তথ্য সফলভাবে সংরক্ষিত হয়েছে!");
+              renderUserProfileUI(currentUser, profileData);
           } catch(err) {
-              showToast("তথ্য সেভ করতে সমস্যা হয়েছে: " + err.message);
+              alert("তথ্য সংরক্ষণ করতে সমস্যা হয়েছে: " + err.message);
           }
-      };
+      }
 
-      window.handleForgotPassword = async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        if (!email) { showToast("দয়া করে প্রথমে আপনার ইমেইল বক্সটি পূরণ করুন!"); return; }
-        try {
-          await sendPasswordResetEmail(auth, email);
-          showToast("পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে।");
-        } catch (error) { showToast("ত্রুটি: " + error.message); }
-      };
+      function renderUserProfileUI(user, profile) {
+          const authNav = document.getElementById('authNavContainer');
+          const dropdownAuth = document.getElementById('dropdownAuthAction');
+          
+          const avatarHtml = user.photoURL ? 
+              `<div class="user-avatar"><img src="${user.photoURL}" alt="avatar"></div>` :
+              `<div class="user-avatar">${(profile?.name || user.displayName || 'S')[0].toUpperCase()}</div>`;
+          
+          authNav.innerHTML = `
+              <div class="user-profile-btn" onclick="toggleProfileModal(true)">
+                  ${avatarHtml}
+                  <span style="font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${profile?.name || user.displayName || 'Profile'}</span>
+              </div>
+          `;
 
-      window.handleLogout = async () => { 
-        await signOut(auth); 
-        currentStudentProfile = null;
-        toggleProfileModal(false); 
-        showToast("লগআউট করা হয়েছে।"); 
-      };
+          dropdownAuth.innerHTML = `
+              <button onclick="toggleProfileModal(true)">👤 স্টুডেন্ট প্রোফাইল</button>
+              <button onclick="handleLogout()" style="color:#f43f5e;">🚪 লগআউট</button>
+          `;
+
+          // Profile modal details
+          const profileDetailsContainer = document.getElementById('profileDetails');
+          profileDetailsContainer.innerHTML = `
+              <div style="font-weight:bold; font-size:15px; color:#38bdf8; margin-bottom:6px;">👤 ${profile?.name || user.displayName || 'শিক্ষার্থী'}</div>
+              <div style="color:var(--subtext); font-size:12px; margin-bottom:8px;">📧 ${user.email}</div>
+              
+              <div class="profile-info-grid">
+                  <div class="profile-info-item"><span>কলেজ:</span> ${profile?.college || 'N/A'}</div>
+                  <div class="profile-info-item"><span>ফোন:</span> ${profile?.phone || 'N/A'}</div>
+                  <div class="profile-info-item"><span>পিতার নাম:</span> ${profile?.fatherName || 'N/A'}</div>
+                  <div class="profile-info-item"><span>মাতার নাম:</span> ${profile?.motherName || 'N/A'}</div>
+                  <div class="profile-info-item"><span>অভিভাবক ফোন:</span> ${profile?.guardianPhone || 'N/A'}</div>
+                  <div class="profile-info-item"><span>HSC সাল:</span> ${profile?.hscYear || 'N/A'}</div>
+                  <div class="profile-info-item"><span>জন্ম তারিখ:</span> ${profile?.dob || 'N/A'}</div>
+                  <div class="profile-info-item"><span>ঠিকানা:</span> ${profile?.address || 'N/A'}</div>
+              </div>
+          `;
+
+          loadUserExamHistory(user.uid);
+      }
+
+      // USER EXAM HISTORY & RESULTS
+      async function loadUserExamHistory(userId) {
+          const historyContainer = document.getElementById('examHistoryContainer');
+          const perfBox = document.getElementById('performanceBox');
+          historyContainer.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+
+          try {
+              const attemptsRef = ref(db, 'examAttempts');
+              const snapshot = await get(attemptsRef);
+              if (snapshot.exists()) {
+                  const attempts = snapshot.val();
+                  let myAttempts = [];
+                  let totalExams = 0;
+                  let totalScore = 0;
+
+                  Object.keys(attempts).forEach(examId => {
+                      if (attempts[examId][userId]) {
+                          const userAttempt = attempts[examId][userId];
+                          myAttempts.push({
+                              examId: examId,
+                              ...userAttempt
+                          });
+                          totalExams++;
+                          totalScore += parseFloat(userAttempt.score || 0);
+                      }
+                  });
+
+                  if (myAttempts.length > 0) {
+                      perfBox.innerHTML = `
+                          <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; text-align: center;">
+                              <div><div style="font-size:11px; color:var(--subtext);">মোট পরীক্ষা</div><div style="font-size:16px; font-weight:bold; color:#38bdf8;">${totalExams}</div></div>
+                              <div><div style="font-size:11px; color:var(--subtext);">মোট প্রাপ্ত পয়েন্ট</div><div style="font-size:16px; font-weight:bold; color:#10b981;">${totalScore.toFixed(2)}</div></div>
+                              <div><div style="font-size:11px; color:var(--subtext);">গড় স্কোর</div><div style="font-size:16px; font-weight:bold; color:#f43f5e;">${(totalScore/totalExams).toFixed(2)}</div></div>
+                          </div>
+                      `;
+
+                      historyContainer.innerHTML = myAttempts.map(item => `
+                          <div class="history-item" onclick="viewExamReview('${item.examId}')">
+                              <div>
+                                  <div style="font-weight:bold; color:#38bdf8;">${item.examTitle || item.examId}</div>
+                                  <div style="font-size:11px; color:var(--subtext);">তারিখ: ${item.submittedAt ? new Date(item.submittedAt).toLocaleDateString('bn-BD') : 'N/A'}</div>
+                              </div>
+                              <div style="text-align:right;">
+                                  <div style="font-weight:bold; color:#10b981;">স্কোর: ${item.score}</div>
+                                  <div style="font-size:10px; color:#38bdf8;">বিস্তারিত দেখুন ➔</div>
+                              </div>
+                          </div>
+                      `).join('');
+                  } else {
+                      perfBox.innerHTML = '';
+                      historyContainer.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px; padding:15px;">আপনি এখনো কোনো পরীক্ষায় অংশগ্রহণ করেননি।</p>';
+                  }
+              } else {
+                  perfBox.innerHTML = '';
+                  historyContainer.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px; padding:15px;">কোনো পরীক্ষার হিস্টোরি পাওয়া যায়নি।</p>';
+              }
+          } catch(e) {
+              historyContainer.innerHTML = '<p style="color:#f43f5e; text-align:center; font-size:12px;">ডাটা লোড করতে সমস্যা হয়েছে।</p>';
+          }
+      }
 
       async function loadAllExamResultsList() {
-        const container = document.getElementById('allExamResultListContainer');
-        try {
-          const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            studentExamDataMap = data;
-            let listHTML = '';
+          const container = document.getElementById('allExamResultListContainer');
+          container.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
 
-            for (let id in data) {
-              const item = data[id];
-              const score = Number(item.score) || 0;
-              const total = Number(item.total) || 0;
-
-              let dateStr = 'তারিখ নেই';
-              if (item.submittedAt) {
-                const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate)) {
-                  dateStr = parsedDate.toLocaleDateString('bn-BD');
-                }
-              }
-
-              listHTML += `
-                <div class="history-item" onclick="closeResultModal(); openExamReview('${id}')">
-                  <div>
-                    <div style="color:#38bdf8; font-weight:bold;">📌 ${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:var(--subtext); font-size:11px;">${dateStr} (সমাধান দেখতে ক্লিক করুন)</div>
-                  </div>
-                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
-                </div>`;
-            }
-            container.innerHTML = listHTML;
-          } else {
-            container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">কোনো পরীক্ষার রেজাল্ট পাওয়া যায়নি।</p>';
-          }
-        } catch(e) { container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px;">ত্রুটি ঘটেছে</p>'; }
-      }
-
-      async function fetchAndSetupLeaderboard() {
-        const container = document.getElementById('leaderboardListContainer');
-        const examSelect = document.getElementById('leaderboardExamFilter');
-        container.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
-        
-        try {
-          const snapshot = await get(ref(db, 'exam_attempts'));
-          if (snapshot.exists()) {
-            allRawExamAttempts = snapshot.val();
-            
-            let examOptionsMap = {};
-            for (let uid in allRawExamAttempts) {
-              for (let examId in allRawExamAttempts[uid]) {
-                const attempt = allRawExamAttempts[uid][examId];
-                const title = attempt.examTitle || 'লাইভ মডেল টেস্ট';
-                if (!examOptionsMap[examId]) {
-                  examOptionsMap[examId] = title;
-                }
-              }
-            }
-
-            let selectHTML = '<option value="ALL">সকল পরীক্ষা (সর্বোচ্চ মোট স্কোর)</option>';
-            for (let examId in examOptionsMap) {
-              selectHTML += `<option value="${examId}">${examOptionsMap[examId]}</option>`;
-            }
-            examSelect.innerHTML = selectHTML;
-
-            renderFilteredLeaderboard();
-          } else {
-            allRawExamAttempts = null;
-            container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px; padding: 15px;">লিডারবোর্ডে কোনো ডেটা নেই।</p>';
-            document.getElementById('userRankSummaryContainer').innerHTML = '';
-          }
-        } catch (e) {
-          container.innerHTML = '<p style="color:#ef4444; text-align:center; font-size:12px; padding: 15px;">লোড করতে সমস্যা হয়েছে।</p>';
-        }
-      }
-
-      window.renderFilteredLeaderboard = function() {
-        if (!allRawExamAttempts) return;
-
-        const container = document.getElementById('leaderboardListContainer');
-        const userSummaryContainer = document.getElementById('userRankSummaryContainer');
-        const selectedExam = document.getElementById('leaderboardExamFilter').value;
-        const selectedSubject = document.getElementById('leaderboardSubjectFilter').value;
-        const searchQuery = document.getElementById('leaderboardSearchInput').value.trim().toLowerCase();
-
-        let leaderboardMap = {};
-
-        for (let uid in allRawExamAttempts) {
-          for (let examId in allRawExamAttempts[uid]) {
-            const attempt = allRawExamAttempts[uid][examId];
-            
-            if (selectedExam !== 'ALL' && examId !== selectedExam) continue;
-
-            if (selectedSubject !== 'ALL') {
-              const examSubject = (attempt.subject || '').toLowerCase();
-              const examTitle = (attempt.examTitle || '').toLowerCase();
-              if (!examSubject.includes(selectedSubject) && !examTitle.includes(selectedSubject)) {
-                continue;
-              }
-            }
-
-            let studentName = attempt.studentName;
-            
-            if (!studentName || studentName === 'শিক্ষার্থী') {
-              if (currentUser && uid === currentUser.uid) {
-                studentName = currentUser.displayName || currentUser.email.split('@')[0];
-              } else if (attempt.userEmail) {
-                studentName = attempt.userEmail.split('@')[0];
-              } else if (attempt.userName) {
-                studentName = attempt.userName;
+          try {
+              const examsRef = ref(db, 'exams');
+              const snapshot = await get(examsRef);
+              if(snapshot.exists()) {
+                  const exams = snapshot.val();
+                  let html = '';
+                  Object.keys(exams).forEach(examId => {
+                      const exam = exams[examId];
+                      html += `
+                          <div class="history-item" onclick="viewExamReview('${examId}')">
+                              <div>
+                                  <div style="font-weight:bold; color:#38bdf8;">${exam.title || examId}</div>
+                                  <div style="font-size:11px; color:var(--subtext);">বিষয়: ${exam.subject || 'সাধারন'} | মোট প্রশ্ন: ${exam.questions ? Object.keys(exam.questions).length : 0}</div>
+                              </div>
+                              <button class="btn-action">রেজাল্ট ও সলিউশন ➔</button>
+                          </div>
+                      `;
+                  });
+                  container.innerHTML = html || '<p style="color:var(--subtext); text-align:center;">কোনো পরীক্ষা প্রকাশিত হয়নি</p>';
               } else {
-                studentName = 'শিক্ষার্থী (' + uid.substring(0, 4) + ')';
+                  container.innerHTML = '<p style="color:var(--subtext); text-align:center;">কোনো পরীক্ষা প্রকাশিত হয়নি</p>';
               }
-            }
-
-            const score = Number(attempt.score) || 0;
-            const total = Number(attempt.total) || 0;
-            const submittedAt = attempt.submittedAt || 0;
-
-            if (selectedExam === 'ALL') {
-              if (!leaderboardMap[uid]) {
-                leaderboardMap[uid] = { uid: uid, name: studentName, score: score, total: total, submittedAt: submittedAt };
-              } else {
-                leaderboardMap[uid].score += score;
-                leaderboardMap[uid].total += total;
-                if(leaderboardMap[uid].name.startsWith('শিক্ষার্থী (')) {
-                  leaderboardMap[uid].name = studentName;
-                }
-              }
-            } else {
-              if (!leaderboardMap[uid] || score > leaderboardMap[uid].score) {
-                leaderboardMap[uid] = { uid: uid, name: studentName, score: score, total: total, submittedAt: submittedAt };
-              }
-            }
+          } catch(e) {
+              container.innerHTML = '<p style="color:#f43f5e; text-align:center;">ডাটা আনবে ব্যর্থ হয়েছে</p>';
           }
-        }
-
-        let sortedList = Object.values(leaderboardMap).sort((a, b) => {
-          if (b.score !== a.score) return b.score - a.score;
-          return a.submittedAt - b.submittedAt;
-        });
-
-        if (currentUser && sortedList.length > 0) {
-          const myIndex = sortedList.findIndex(item => item.uid === currentUser.uid);
-          if (myIndex !== -1) {
-            const myRankData = sortedList[myIndex];
-            userSummaryContainer.innerHTML = `
-              <div class="user-rank-card">
-                <div>
-                  <div style="font-size:12px; color:var(--subtext);">আপনার র‍্যাঙ্ক (ফিল্টার অনুযায়ী):</div>
-                  <div style="font-weight:bold; font-size:15px; color:var(--text-color);">${myRankData.name}</div>
-                </div>
-                <div style="text-align:right;">
-                  <div class="rank-badge">🏆 #${myIndex + 1} / ${sortedList.length}</div>
-                  <div style="font-size:12px; color:#10b981; font-weight:bold;">স্কোর: ${myRankData.score}/${myRankData.total}</div>
-                </div>
-              </div>
-            `;
-          } else {
-            userSummaryContainer.innerHTML = `
-              <div style="background:var(--input-bg); padding:8px 12px; border-radius:6px; margin-bottom:10px; font-size:12px; color:var(--subtext); text-align:center;">
-                এই ফিল্টারে আপনার কোনো পরীক্ষার রেকর্ড পাওয়া যায়নি।
-              </div>`;
-          }
-        } else {
-          userSummaryContainer.innerHTML = '';
-        }
-
-        if (searchQuery) {
-          sortedList = sortedList.filter(user => user.name.toLowerCase().includes(searchQuery));
-        }
-
-        if (sortedList.length > 0) {
-          let tableHTML = `<table class="leaderboard-table">
-            <thead>
-              <tr>
-                <th style="width: 50px;">র‍্যাঙ্ক</th>
-                <th>নাম</th>
-                <th style="text-align:right;">স্কোর</th>
-              </tr>
-            </thead>
-            <tbody>`;
-          
-          sortedList.forEach((user, index) => {
-            let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
-            let isMe = currentUser && user.uid === currentUser.uid;
-            let rowClass = isMe ? 'class="my-rank-row"' : '';
-            let nameDisplay = isMe ? `${user.name} <small style="color:#38bdf8;">(আপনি)</small>` : user.name;
-
-            tableHTML += `
-              <tr ${rowClass}>
-                <td style="font-weight:bold;">${medal}</td>
-                <td>${nameDisplay}</td>
-                <td style="text-align:right;"><b style="color:#10b981;">${user.score}</b><small style="color:var(--subtext);">/${user.total}</small></td>
-              </tr>`;
-          });
-
-          tableHTML += `</tbody></table>`;
-          container.innerHTML = tableHTML;
-        } else {
-          container.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px; padding: 20px;">কোনো ডেটা পাওয়া যায়নি।</p>';
-        }
       }
 
-      async function loadStudentHistory() {
-        const historyContainer = document.getElementById('examHistoryContainer');
-        const perfBox = document.getElementById('performanceBox');
-        try {
-          const snapshot = await get(ref(db, `exam_attempts/${currentUser.uid}`));
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            studentExamDataMap = data;
-            let totalExams = 0, totalScore = 0, totalPossible = 0, historyHTML = '';
+      window.viewExamReview = async function(examId) {
+          document.getElementById('resultListModal').style.display = 'none';
+          document.getElementById('profileModal').style.display = 'none';
+          
+          const modal = document.getElementById('examReviewModal');
+          const title = document.getElementById('reviewExamTitle');
+          const body = document.getElementById('examReviewBody');
+          
+          modal.style.display = 'flex';
+          title.innerText = "পরীক্ষার সলিউশন ও বিশ্লেষণ";
+          body.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
 
-            for (let id in data) {
-              const item = data[id];
-              const score = Number(item.score) || 0;
-              const total = Number(item.total) || 0;
+          try {
+              const examSnap = await get(ref(db, `exams/${examId}`));
+              const attemptSnap = await get(ref(db, `examAttempts/${examId}/${currentUser.uid}`));
 
-              totalExams++; 
-              totalScore += score; 
-              totalPossible += total;
-
-              let dateStr = 'তারিখ নেই';
-              if (item.submittedAt) {
-                const parsedDate = new Date(item.submittedAt);
-                if (!isNaN(parsedDate)) {
-                  dateStr = parsedDate.toLocaleDateString('bn-BD');
-                }
+              if (!examSnap.exists()) {
+                  body.innerHTML = '<p style="color:#f43f5e; text-align:center;">পরীক্ষার প্রশ্নমালা পাওয়া যায়নি।</p>';
+                  return;
               }
 
-              historyHTML += `
-                <div class="history-item" onclick="toggleProfileModal(false); openExamReview('${id}')">
-                  <div>
-                    <div style="color:#38bdf8; font-weight:bold;">${item.examTitle || 'লাইভ মডেল টেস্ট'}</div>
-                    <div style="color:var(--subtext); font-size:11px;">${dateStr} (বিস্তারিত দেখতে ক্লিক করুন)</div>
-                  </div>
-                  <div style="color:#10b981; font-weight:bold; font-size:15px;">${score}/${total}</div>
-                </div>`;
-            }
-            const accuracy = totalPossible > 0 ? ((totalScore / totalPossible) * 100).toFixed(1) : 0;
-            perfBox.innerHTML = `
-              <div style="background:var(--input-bg); padding:10px; border-radius:8px; border:1px solid #38bdf8; display:flex; justify-content:space-around; text-align:center;">
-                <div><b style="font-size:16px;">${totalExams}</b><br><small style="color:var(--subtext);">মোট পরীক্ষা</small></div>
-                <div><b style="font-size:16px; color:#10b981;">${accuracy}%</b><br><small style="color:var(--subtext);">এক্যুরেসি</small></div>
-                <div><b style="font-size:16px; color:#38bdf8;">${totalScore}/${totalPossible}</b><br><small style="color:var(--subtext);">মোট নম্বর</small></div>
-              </div>`;
-            historyContainer.innerHTML = historyHTML;
-          } else {
-            perfBox.innerHTML = '';
-            historyContainer.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:12px;">কোনো ইতিহাস পাওয়া যায়নি।</p>';
-          }
-        } catch(e) { historyContainer.innerHTML = '<p style="color:#ef4444;">ত্রুটি ঘটেছে</p>'; }
-      }
+              const exam = examSnap.val();
+              const attempt = attemptSnap.exists() ? attemptSnap.val() : null;
+              const userAnswers = attempt?.answers || {};
 
-      window.openExamReview = function(examId) {
-          const exam = studentExamDataMap[examId];
-          if (!exam) return;
+              title.innerText = `${exam.title || examId} - সলিউশন`;
 
-          document.getElementById('reviewExamTitle').innerText = exam.examTitle || 'পরীক্ষার বিস্তারিত সমাধান';
-          const reviewBody = document.getElementById('examReviewBody');
-          
-          if (exam.questions && Array.isArray(exam.questions)) {
               let html = '';
-              exam.questions.forEach((q, index) => {
-                  const userAnsRaw = exam.userAnswers ? exam.userAnswers[index] : null;
-                  
-                  let userAnsText = 'উত্তর দেননি';
-                  if (userAnsRaw !== null && userAnsRaw !== undefined) {
-                      if (typeof userAnsRaw === 'number' && q.options && q.options[userAnsRaw] !== undefined) {
-                          userAnsText = q.options[userAnsRaw];
-                      } else {
-                          userAnsText = userAnsRaw;
-                      }
-                  }
-
-                  const isCorrect = userAnsText === q.correctAnswer;
-                  const statusColor = isCorrect ? '#10b981' : '#ef4444';
-
+              if (attempt) {
                   html += `
-                    <div style="background:var(--modal-bg); padding:12px; border-radius:8px; margin-bottom:10px; border-left: 4px solid ${statusColor}; border: 1px solid var(--border-color);">
-                        <div style="font-weight:bold; margin-bottom:6px;">প্রশ্ন ${index + 1}: ${q.question || q.title || ''}</div>
-                        <div style="font-size:12px; color:var(--subtext); margin-bottom:4px;">আপনার উত্তর: <span style="color:${statusColor}; font-weight:bold;">${userAnsText}</span></div>
-                        <div style="font-size:12px; color:#38bdf8; margin-bottom:4px;">সঠিক উত্তর: <b>${q.correctAnswer}</b></div>
-                        <div style="font-size:12px; color:var(--text-color); background:var(--input-bg); padding:6px; border-radius:4px; margin-top:6px;"><b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
-                    </div>
+                      <div style="background:rgba(56, 189, 248, 0.1); border:1px solid #38bdf8; padding:10px; border-radius:8px; margin-bottom:12px; font-size:13px;">
+                          <div><b>আপনার প্রাপ্ত নম্বর:</b> <span style="color:#10b981; font-weight:bold;">${attempt.score}</span></div>
+                          <div><b>সঠিক উত্তর:</b> ${attempt.correctCount || 0} | <b>ভুল উত্তর:</b> ${attempt.wrongCount || 0}</div>
+                      </div>
                   `;
-              });
-              reviewBody.innerHTML = html;
-          } else {
-              reviewBody.innerHTML = '<p style="color:var(--subtext); text-align:center; font-size:13px; padding:20px;">এই পরীক্ষার বিস্তারিত প্রশ্ন বা ব্যাখ্যা ডেটাবেজে সংরক্ষণ করা হয়নি।</p>';
-          }
+              }
 
-          document.getElementById('examReviewModal').style.display = 'flex';
+              if (exam.questions) {
+                  let qIndex = 1;
+                  Object.keys(exam.questions).forEach(qKey => {
+                      const q = exam.questions[qKey];
+                      const userAns = userAnswers[qKey];
+                      const isCorrect = userAns === q.correctOption;
+
+                      html += `
+                          <div style="background:var(--card-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px; font-size:13px;">
+                              <div style="font-weight:bold; margin-bottom:6px;">${qIndex++}. ${q.questionText}</div>
+                              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; font-size:12px; margin-bottom:6px;">
+                                  <div style="${q.correctOption==='A'?'color:#10b981; font-weight:bold;':userAns==='A'?'color:#f43f5e;':''}">A) ${q.optionA}</div>
+                                  <div style="${q.correctOption==='B'?'color:#10b981; font-weight:bold;':userAns==='B'?'color:#f43f5e;':''}">B) ${q.optionB}</div>
+                                  <div style="${q.correctOption==='C'?'color:#10b981; font-weight:bold;':userAns==='C'?'color:#f43f5e;':''}">C) ${q.optionC}</div>
+                                  <div style="${q.correctOption==='D'?'color:#10b981; font-weight:bold;':userAns==='D'?'color:#f43f5e;':''}">D) ${q.optionD}</div>
+                              </div>
+                              <div style="font-size:11px; padding:4px 8px; border-radius:4px; background:var(--input-bg);">
+                                  <b>সঠিক উত্তর:</b> <span style="color:#10b981;">${q.correctOption}</span> | 
+                                  <b>আপনার উত্তর:</b> <span style="color:${isCorrect?'#10b981':'#f43f5e'}">${userAns || 'উত্তর দেননি'}</span>
+                              </div>
+                              ${q.explanation ? `<div style="font-size:11px; color:var(--subtext); margin-top:4px;">💡 <b>ব্যাখ্যা:</b> ${q.explanation}</div>` : ''}
+                          </div>
+                      `;
+                  });
+              }
+
+              body.innerHTML = html;
+          } catch(e) {
+              body.innerHTML = '<p style="color:#f43f5e; text-align:center;">সলিউশন লোড করতে ব্যর্থ হয়েছে।</p>';
+          }
       }
 
       window.closeExamReviewModal = function() {
           document.getElementById('examReviewModal').style.display = 'none';
       }
 
-      async function loadNotices() {
-          const popupList = document.getElementById('popupNoticeList');
+      // LEADERBOARD SYSTEM
+      async function fetchAndSetupLeaderboard() {
+          const examFilter = document.getElementById('leaderboardExamFilter');
+          const listContainer = document.getElementById('leaderboardListContainer');
+
           try {
-              const snapshot = await get(ref(db, 'notices'));
-              if (snapshot.exists()) {
-                  const data = snapshot.val();
-                  cachedNotices = Object.values(data).sort((a, b) => b.date - a.date);
-                  renderNotices(cachedNotices);
-              } else {
-                  popupList.innerHTML = '<p style="color:var(--subtext); font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
+              const attemptsRef = ref(db, 'examAttempts');
+              const examsRef = ref(db, 'exams');
+              
+              const [attemptsSnap, examsSnap] = await Promise.all([get(attemptsRef), get(examsRef)]);
+
+              if (examsSnap.exists()) {
+                  const exams = examsSnap.val();
+                  let optionsHtml = '<option value="ALL">সকল পরীক্ষা (সর্বোচ্চ মোট স্কোর)</option>';
+                  Object.keys(exams).forEach(id => {
+                      optionsHtml += `<option value="${id}">${exams[id].title || id}</option>`;
+                  });
+                  examFilter.innerHTML = optionsHtml;
               }
-          } catch (e) {
-              popupList.innerHTML = '<p style="color:#f43f5e; font-size:13px; text-align:center;">নোটিশ লোড করতে সমস্যা হয়েছে।</p>';
+
+              if (attemptsSnap.exists()) {
+                  allRawExamAttempts = attemptsSnap.val();
+                  renderFilteredLeaderboard();
+              } else {
+                  listContainer.innerHTML = '<p style="color:var(--subtext); text-align:center; padding:15px;">লিডারবোর্ডের জন্য কোনো ডাটা পাওয়া যায়নি।</p>';
+              }
+          } catch(e) {
+              listContainer.innerHTML = '<p style="color:#f43f5e; text-align:center;">ডাটা লোড করতে ব্যর্থ হয়েছে।</p>';
           }
       }
 
-      function renderNotices(notices) {
-          const popupList = document.getElementById('popupNoticeList');
-          if (notices.length === 0) {
-              popupList.innerHTML = '<p style="color:var(--subtext); font-size:13px; text-align:center;">কোনো নোটিশ পাওয়া যায়নি।</p>';
-              return;
+      window.renderFilteredLeaderboard = function() {
+          if (!allRawExamAttempts) return;
+
+          const examVal = document.getElementById('leaderboardExamFilter').value;
+          const searchVal = document.getElementById('leaderboardSearchInput').value.toLowerCase().trim();
+          const container = document.getElementById('leaderboardListContainer');
+          const summaryContainer = document.getElementById('userRankSummaryContainer');
+
+          let scoresMap = {}; // userId -> { name, totalScore, examsCount }
+
+          Object.keys(allRawExamAttempts).forEach(examId => {
+              if (examVal !== 'ALL' && examId !== examVal) return;
+
+              const examUsers = allRawExamAttempts[examId];
+              Object.keys(examUsers).forEach(uId => {
+                  const attempt = examUsers[uId];
+                  const uName = attempt.userName || 'শিক্ষার্থী';
+                  const score = parseFloat(attempt.score || 0);
+
+                  if (!scoresMap[uId]) {
+                      scoresMap[uId] = { uid: uId, name: uName, score: 0, count: 0 };
+                  }
+                  scoresMap[uId].score += score;
+                  scoresMap[uId].count += 1;
+              });
+          });
+
+          let leaderboardArray = Object.values(scoresMap);
+          leaderboardArray.sort((a, b) => b.score - a.score);
+
+          if (searchVal) {
+              leaderboardArray = leaderboardArray.filter(item => item.name.toLowerCase().includes(searchVal));
           }
-          popupList.innerHTML = '';
-          notices.forEach(item => {
-              const dateStr = new Date(item.date).toLocaleDateString('bn-BD');
-              let imgTag = (item.image && item.image.trim() !== "") ? `<img src="${item.image}" alt="Notice Image">` : '';
-              popupList.innerHTML += `
-                  <div class="notice-item">
-                      <h4>📌 ${item.title}</h4>
-                      <p>${item.description}</p>
-                      ${imgTag}
-                      <span class="notice-date">তারিখ: ${dateStr}</span>
+
+          let myRank = -1;
+          if (currentUser) {
+              myRank = leaderboardArray.findIndex(item => item.uid === currentUser.uid);
+          }
+
+          if (currentUser && myRank !== -1) {
+              const myData = leaderboardArray[myRank];
+              summaryContainer.innerHTML = `
+                  <div class="user-rank-card">
+                      <div>
+                          <div style="font-size:12px; color:var(--subtext);">আপনার বর্তমান অবস্থান</div>
+                          <div style="font-weight:bold; font-size:14px; color:var(--text-color);">${myData.name}</div>
+                      </div>
+                      <div class="rank-badge">🏆 #${myRank + 1}</div>
+                      <div style="text-align:right;">
+                          <div style="font-size:11px; color:var(--subtext);">মোট পয়েন্ট</div>
+                          <div style="font-size:15px; font-weight:bold; color:#10b981;">${myData.score.toFixed(2)}</div>
+                      </div>
                   </div>
               `;
+          } else {
+              summaryContainer.innerHTML = '';
+          }
+
+          if (leaderboardArray.length === 0) {
+              container.innerHTML = '<p style="color:var(--subtext); text-align:center; padding:15px;">কোনো রেকর্ড পাওয়া যায়নি</p>';
+              return;
+          }
+
+          let tableHtml = `
+              <table class="leaderboard-table">
+                  <thead>
+                      <tr>
+                          <th>র‍্যাংক</th>
+                          <th>নাম</th>
+                          <th>পরীক্ষা</th>
+                          <th>স্কোর</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+          `;
+
+          leaderboardArray.forEach((item, index) => {
+              const isMe = currentUser && item.uid === currentUser.uid;
+              let rankBadge = index === 0 ? '🥇 1' : index === 1 ? '🥈 2' : index === 2 ? '🥉 3' : `#${index + 1}`;
+
+              tableHtml += `
+                  <tr class="${isMe ? 'my-rank-row' : ''}">
+                      <td style="font-weight:bold;">${rankBadge}</td>
+                      <td>${item.name} ${isMe ? ' (আপনি)' : ''}</td>
+                      <td>${item.count} টি</td>
+                      <td style="font-weight:bold; color:#10b981;">${item.score.toFixed(2)}</td>
+                  </tr>
+              `;
           });
+
+          tableHtml += '</tbody></table>';
+          container.innerHTML = tableHtml;
+      }
+
+      // NOTICE BOARD DATA LISTENER & FILTER
+      function listenToNotices() {
+          const noticesRef = ref(db, 'notices');
+          onValue(noticesRef, (snapshot) => {
+              const container = document.getElementById('popupNoticeList');
+              if (snapshot.exists()) {
+                  const data = snapshot.val();
+                  cachedNotices = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                  cachedNotices.sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+                  renderNoticesList(cachedNotices);
+              } else {
+                  container.innerHTML = '<p style="color:var(--subtext); text-align:center; padding:20px;">কোনো নোটিশ পাওয়া যায়নি।</p>';
+              }
+          });
+      }
+
+      function renderNoticesList(list) {
+          const container = document.getElementById('popupNoticeList');
+          if(list.length === 0) {
+              container.innerHTML = '<p style="color:var(--subtext); text-align:center; padding:20px;">কোনো নোটিশ মিলেনি।</p>';
+              return;
+          }
+          container.innerHTML = list.map(item => `
+              <div class="notice-item">
+                  <h4>📢 ${item.title || 'নোটিশ'}</h4>
+                  <p>${item.content || ''}</p>
+                  ${item.imageUrl ? `<img src="${item.imageUrl}" alt="Notice Image">` : ''}
+                  <span class="notice-date">📅 ${item.date ? new Date(item.date).toLocaleDateString('bn-BD') : ''}</span>
+              </div>
+          `).join('');
       }
 
       window.filterNotices = function() {
           const query = document.getElementById('noticeSearchInput').value.toLowerCase();
-          const filtered = cachedNotices.filter(item => 
-              item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)
+          const filtered = cachedNotices.filter(n => 
+              (n.title && n.title.toLowerCase().includes(query)) || 
+              (n.content && n.content.toLowerCase().includes(query))
           );
-          renderNotices(filtered);
+          renderNoticesList(filtered);
       }
 
-      async function loadLiveExamTitle() {
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam/title'));
-          if(snapshot.exists()) {
-            document.getElementById('liveExamTitle').innerText = snapshot.val();
-          }
-        } catch(e) {}
-      }
-
-      async function loadPracticeEntryTitle() {
-        try {
-          const snapshot = await get(ref(db, 'practice_exams/title'));
-          if(snapshot.exists()) {
-            document.getElementById('practiceExamTitle').innerText = snapshot.val();
-          }
-        } catch(e) {}
-      }
-
-      onAuthStateChanged(auth, async (user) => {
-        currentUser = user;
-        const c = document.getElementById('authNavContainer');
-        const dropdownAuth = document.getElementById('dropdownAuthAction');
-        
-        if (user) {
-          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : user.displayName ? user.displayName.charAt(0) : 'U';
-          c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
-          dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
-          
-          listenToNotifications(user.uid);
-
-          try {
-              const snap = await get(ref(db, `students/${user.uid}`));
-              if(snap.exists()){
-                  currentStudentProfile = snap.val();
-              } else {
-                  checkAndPromptStudentProfile(user);
+      // LIVE EXAM TITLE SYNC FROM DATABASE
+      function listenToLiveExamTitle() {
+          const liveTitleRef = ref(db, 'liveExamConfig/title');
+          onValue(liveTitleRef, (snapshot) => {
+              if (snapshot.exists()) {
+                  document.getElementById('liveExamTitle').innerText = snapshot.val();
               }
-          } catch(e){}
+          });
+      }
 
-        } else {
-          currentStudentProfile = null;
-          c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
-          dropdownAuth.innerHTML = `<button onclick="toggleAuthModal(true); toggleMenu();">🔑 লগইন</button>`;
-          document.getElementById('notifBody').innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">নোটিফিকেশন দেখতে লগইন করুন</p>';
-          document.getElementById('notifBadge').style.display = 'none';
-        }
+      // AUTHENTICATION STATE OBSERVER
+      onAuthStateChanged(auth, async (user) => {
+          if (user) {
+              currentUser = user;
+              await checkAndSyncStudentProfile(user);
+              listenToNotifications(user.uid);
+          } else {
+              currentUser = null;
+              currentStudentProfile = null;
+              document.getElementById('authNavContainer').innerHTML = `
+                  <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
+              `;
+              document.getElementById('dropdownAuthAction').innerHTML = `
+                  <button onclick="toggleAuthModal(true)">🔑 লগইন / রেজিস্ট্রেশন</button>
+              `;
+          }
       });
 
-      loadLiveExamTitle();
-      loadPracticeEntryTitle();
-      loadNotices();
+      // INITIALIZE LISTENERS
+      listenToNotices();
+      listenToLiveExamTitle();
     </script>
 </body>
 </html>
