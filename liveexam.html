@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>লাইভ পরীক্ষা — GAIVEX Smart Exam System</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS/JS for Math & Chemistry Equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
     <style>
+        :root {
+            --q-font-size: 16px;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; user-select: none; }
         
@@ -32,18 +40,23 @@
         
         /* Control Toolbar */
         .exam-toolbar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .mode-toggle { display: flex; gap: 8px; }
-        .tool-btn { background: #0f172a; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .mode-toggle { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .tool-btn { background: #0f172a; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .tool-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
         
+        /* Font Controls & Auto Advance Toggle */
+        .ctrl-group { display: flex; align-items: center; gap: 6px; background: #0f172a; padding: 3px 8px; border-radius: 6px; border: 1px solid #475569; }
+        .ctrl-label { font-size: 11px; color: #94a3b8; font-weight: 600; }
+        .font-btn { background: #1e293b; border: 1px solid #334155; color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
+
         /* Question Search & Quick Jump */
         .search-box { display: flex; gap: 6px; }
-        .search-box input { background: #0f172a; border: 1px solid #475569; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; width: 80px; text-align: center; }
+        .search-box input { background: #0f172a; border: 1px solid #475569; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; width: 70px; text-align: center; }
 
         /* Question Cards */
         .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
         .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
-        .question-title { font-size: 16px; font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
+        .question-title { font-size: var(--q-font-size); font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
         .question-meta { display: flex; gap: 6px; margin-bottom: 10px; }
         .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #0f172a; border: 1px solid #334155; color: #94a3b8; }
         .tag.hard { border-color: #f43f5e; color: #f43f5e; }
@@ -58,11 +71,11 @@
         
         /* Options */
         .options-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 15px; display: flex; align-items: center; gap: 12px; color: #f8fafc; }
+        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: var(--q-font-size); display: flex; align-items: center; gap: 12px; color: #f8fafc; }
         .option-item:hover { border-color: #38bdf8; background: #1e293b; }
         .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
 
-        .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; }
+        .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; transform: scale(1.01); }
         .option-item.locked-option { cursor: not-allowed; opacity: 0.8; }
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
@@ -72,6 +85,7 @@
         .review-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
         .insight-card { background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
         .insight-card strong { display: block; color: #38bdf8; margin-bottom: 2px; }
+        .q-time-badge { font-size: 11px; color: #38bdf8; background: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; display: inline-block; margin-top: 8px; }
 
         /* Single Mode Nav Footer */
         .single-nav-footer { display: none; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
@@ -109,7 +123,7 @@
         .prog-skip { background: #64748b; }
 
         /* AI Analysis Section */
-        .ai-box { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #6366f1; border-radius: 12px; padding: 20px; margin-top: 20px; position: relative; }
+        .ai-box { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #6366f1; border-radius: 12px; padding: 20px; margin-top: 20px; position: relative; text-align: left; }
         .ai-badge { position: absolute; top: 12px; right: 15px; background: #6366f1; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
         .topic-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .topic-pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
@@ -139,7 +153,7 @@
         .btn-confirm { background: #10b981; color: white; }
         .btn-cancel { background: #475569; color: white; }
 
-        /* Certificate Print Styles */
+        /* Printable Certificate Template */
         .certificate-card { background: #fff; color: #000; padding: 30px; border: 10px double #1e3a8a; border-radius: 8px; text-align: center; display: none; }
         .certificate-card h1 { color: #1e3a8a; font-size: 28px; margin-bottom: 5px; }
         .certificate-card h3 { color: #d97706; font-size: 18px; margin-bottom: 20px; }
@@ -205,7 +219,7 @@
 
                 <!-- Accuracy Visual Bar -->
                 <div class="chart-box">
-                    <div style="display: flex; justify- justify-content: space-between; font-size: 12px; color: #cbd5e1;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1;">
                         <span>📈 Accuracy Breakup</span>
                         <span id="resAttemptRate">Attempt Rate: 0%</span>
                     </div>
@@ -234,7 +248,8 @@
                 <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <button class="tool-btn" onclick="toggleTabs('leaderboard')">🏆 Live Leaderboard দেখুন</button>
                     <button class="tool-btn" onclick="toggleTabs('history')">📈 Performance History</button>
-                    <button class="tool-btn" onclick="printCertificate()">📜 Download Certificate</button>
+                    <button class="tool-btn" onclick="printCertificate()">📜 Certificate</button>
+                    <button class="tool-btn" style="background:#1877F2; border-color:#1877F2; color:#fff;" onclick="shareResultOnFacebook()">🌐 Share Score</button>
                 </div>
             </div>
 
@@ -260,13 +275,29 @@
         <!-- Exam Controls & Navigation Toolbar -->
         <div class="exam-toolbar" id="examToolbar">
             <div class="mode-toggle">
-                <button type="button" class="tool-btn active" id="btnModeAll" onclick="switchViewMode('all')">📄 All Questions Mode</button>
-                <button type="button" class="tool-btn" id="btnModeSingle" onclick="switchViewMode('single')">📱 One Question Mode</button>
+                <button type="button" class="tool-btn active" id="btnModeAll" onclick="switchViewMode('all')">📄 All Questions</button>
+                <button type="button" class="tool-btn" id="btnModeSingle" onclick="switchViewMode('single')">📱 One Question</button>
+                
+                <!-- Font Size Controls -->
+                <div class="ctrl-group">
+                    <span class="ctrl-label">Font:</span>
+                    <button type="button" class="font-btn" onclick="changeFontSize(-1)">A-</button>
+                    <button type="button" class="font-btn" onclick="changeFontSize(1)">A+</button>
+                </div>
+
+                <!-- Auto Advance Toggle -->
+                <div class="ctrl-group">
+                    <input type="checkbox" id="autoAdvanceCheck" style="accent-color: #38bdf8; cursor: pointer;">
+                    <label for="autoAdvanceCheck" class="ctrl-label" style="cursor: pointer;">Auto Next</label>
+                </div>
+
+                <button type="button" class="tool-btn" onclick="openShortcutModal()">⌨️ Help</button>
             </div>
+            
             <div class="search-box">
                 <input type="number" id="jumpQInput" placeholder="Q. No" min="1">
                 <button type="button" class="tool-btn" onclick="jumpToQuestion()">Go 🚀</button>
-                <button type="button" class="tool-btn" onclick="goToNextUnanswered()" style="background:#0284c7; border-color:#0284c7; color:#fff;">বাকি প্রশ্নে যান ➔</button>
+                <button type="button" class="tool-btn" onclick="goToNextUnanswered()" style="background:#0284c7; border-color:#0284c7; color:#fff;">বাকি প্রশ্ন ➔</button>
             </div>
         </div>
 
@@ -339,6 +370,24 @@
         </div>
     </div>
 
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="modal-overlay" id="shortcutModal">
+        <div class="modal-box" style="text-align: left;">
+            <h3 style="color: #38bdf8; margin-bottom: 15px; text-align: center;">⌨️ Keyboard Shortcuts</h3>
+            <ul style="color: #cbd5e1; font-size: 13px; line-height: 2; list-style: none;">
+                <li>➡️ <b>Right Arrow:</b> পরবর্তী প্রশ্ন</li>
+                <li>⬅️ <b>Left Arrow:</b> পূর্ববর্তী প্রশ্ন</li>
+                <li>1️⃣, 2️⃣, 3️⃣, 4️⃣: <b>ক, খ, গ, ঘ</b> সিলেক্ট করুন</li>
+                <li>🔤 <b>A, B, C, D:</b> অপশন প্রেস করুন</li>
+                <li>🔖 <b>M Key:</b> Mark for Review</li>
+                <li>⭐ <b>B Key:</b> Bookmark</li>
+            </ul>
+            <div class="modal-buttons" style="margin-top: 15px;">
+                <button type="button" class="modal-btn btn-cancel" onclick="closeShortcutModal()">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Printable Certificate Template (Hidden) -->
     <div id="certificateContainer" class="certificate-card">
         <h1>GAIVEX Digital Certificate</h1>
@@ -402,11 +451,44 @@
       let bookmarkedQuestions = {};
       let reviewQuestions = {};
       let isSubmitted = false;
-      let viewMode = 'all'; // 'all' or 'single'
+      let viewMode = 'all'; 
       let currentSingleIndex = 0;
-      let markingScheme = { correct: 1.0, wrong: -0.25, skip: 0.0 };
+      let currentFontSize = 16;
 
-      // Default Exam Questions with Enhanced Topic/Difficulty Meta
+      // Audio & Analytics Tracking
+      let soundEnabled = true;
+      let perQuestionTime = {};
+      let currentQuestionStartTime = Date.now();
+
+      // Audio Synthesizer (Web Audio API)
+      function playAudioFeedback(type) {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          if (type === 'click') {
+            osc.frequency.setValueAtTime(600, ctx.currentTime);
+            gain.gain.setValueAtTime(0.05, ctx.currentTime);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.05);
+          } else if (type === 'warning') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.2);
+          }
+        } catch(e){}
+      }
+
+      function triggerHaptic() {
+        if (navigator.vibrate) navigator.vibrate(30);
+      }
+
+      // Default Exam Questions
       const defaultExamData = {
         id: "chemical_changes_mcq_50_v2",
         title: "🧪 রাসায়নিক পরিবর্তন (Chemical Changes) — ৫০টি গুরুত্বপূর্ণ MCQ",
@@ -417,58 +499,58 @@
           { question: "শূন্য ক্রম (Zero order) বিক্রিয়ার বেগ ধ্রুবকের (k) একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, topic: "Reaction Order", difficulty: "easy", explanation: "শূন্য ক্রম বিক্রিয়ার ক্ষেত্রে Rate = k[A]⁰ = k। সুতরাং k এর একক বিক্রিয়ার হারের এককই (mol L⁻¹ s⁻¹)।" },
           { question: "প্রথম ক্রম (First order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, topic: "Reaction Order", difficulty: "easy", explanation: "প্রথম ক্রম বিক্রিয়ায় Rate = k[A] ⟹ k = Rate/[A] = (mol L⁻¹ s⁻¹)/(mol L⁻¹) = s⁻¹।" },
           { question: "দ্বিতীয় ক্রম (Second order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 2, topic: "Reaction Order", difficulty: "medium", explanation: "সাধারণ বিক্রিয়ার একক: (mol L⁻¹)^(1-n) s⁻¹। n=2 বসালে পাওয়া যায় L mol⁻¹ s⁻¹।" },
-          { question: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু (t_1/2) এর সাথে প্রারম্ভিক ঘনমাত্রার সম্পর্ক কী?", options: ["সরাসরি সমানুপাতিক", "ব্যস্তানুপাতিক", "ঘনমাত্রার ওপর নির্ভর করে না", "ঘনমাত্রার বর্গের সমানুপাতিক"], correct: 2, topic: "Half Life", difficulty: "medium", explanation: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু t_1/2 = 0.693 / k, যা প্রারম্ভিক ঘনমাত্রার (a) ওপর সম্পূর্ণ স্বাধীন।" },
-          { question: "তাপমাত্রার সাথে বিক্রিয়ার হার ধ্রুবক (k) এর সম্পর্ক নির্দেশকারী সমীকরণ কোনটি?", options: ["আর্হেনিয়াস সমীকরণ", "ভ্যান্ট হফ সমীকরণ", "অস্টওয়াল্ড সমীকরণ", "এনথালপি সমীকরণ"], correct: 0, topic: "Arrhenius Equation", difficulty: "easy", explanation: "আর্হেনিয়াস সমীকরণ k = A e^(-Ea/RT) তাপমাত্রার সাথে k এর সম্পর্ক দেখায়।" },
-          { question: "আর্হেনিয়াস সমীকরণ অনুযায়ী ln(k) বনাম 1/T লেখচিত্রের ঢাল (Slope) কত?", options: ["Ea/R", "-Ea/R", "-Ea/(2.303 R)", "Ea"], correct: 1, topic: "Arrhenius Equation", difficulty: "hard", explanation: "ln(k) = ln(A) - (Ea/R)(1/T)। এটি y = c + mx সমীকরণ মেনে চলে, যেখানে ঢাল m = -Ea/R।" },
-          { question: "সাধারণত প্রতি ১০°C তাপমাত্রা বৃদ্ধির জন্য বিক্রিয়ার হার কত গুণ বৃদ্ধি পায়?", options: ["১-২ গুণ", "২-৩ গুণ", "৪-৫ গুণ", "১০ গুণ"], correct: 1, topic: "Temperature Coefficient", difficulty: "easy", explanation: "তাপমাত্রা গুণাঙ্ক μ = k_(t+10) / k_t ≈ 2 থেকে 3।" },
-          { question: "অনুঘটক বা প্রভাবক (Catalyst) বিক্রিয়ার হার কীভাবে বৃদ্ধি করে?", options: ["সক্রিয়ণ শক্তি বৃদ্ধি করে", "সক্রিয়ণ শক্তি হ্রাস করে", "বিক্রিয়া তাপ হ্রাস করে", "সাম্যধ্রুবক বৃদ্ধি করে"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "প্রভাবক বিক্রিয়াকে একটি বিকল্প কম শক্তিযুক্ত পথ প্রদান করে, ফলে সক্রিয়ণ শক্তি (Ea) হ্রাস পায় ও হার বাড়ে।" },
-          { question: "রাসায়নিক সাম্যাবস্থায় Kc এবং Kp এর মধ্যকার সম্পর্ক সমীকরণ কোনটি?", options: ["Kp = Kc (RT)^Δn", "Kc = Kp (RT)^Δn", "Kp = Kc RT", "Kp = Kc (RT)^(-Δn)"], correct: 0, topic: "Chemical Equilibrium", difficulty: "medium", explanation: "আদর্শ গ্যাস সমীকরণ প্রয়োগে পাওয়া যায় Kp = Kc (RT)^Δn।" },
-          { question: "কোন বিক্রিয়াটির ক্ষেত্রে Kp = Kc হবে?", options: ["N₂ + 3H₂ ⇌ 2NH₃", "PCl₅ ⇌ PCl₃ + Cl₂", "H₂ + I₂ ⇌ 2HI", "2SO₂ + O₂ ⇌ 2SO₃"], correct: 2, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "H₂ + I₂ ⇌ 2HI বিক্রিয়ায় Δn = 2 - (1+1) = 0। ফলে Kp = Kc (RT)⁰ = Kc।" },
-          { question: "PCl₅(g) ⇌ PCl₃(g) + Cl₂(g) বিক্রিয়ার জন্য Δn এর মান কত?", options: ["0", "+1", "-1", "+2"], correct: 1, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "Δn = উৎপাদের গ্যাসীয় মোলসংখ্যা - বিক্রিয়কের গ্যাসীয় মোলসংখ্যা = (1 + 1) - 1 = +1।" },
-          { question: "N₂(g) + 3H₂(g) ⇌ 2NH₃(g) বিক্রিয়াটিতে চাপ বৃদ্ধি করলে সাম্যাবস্থা কোন দিকে সরে যাবে?", options: ["বাম দিকে (পশ্চাৎমুখী)", "ডান দিকে (সম্মুখমুখী)", "কোনো পরিবর্তন হবে না", "বিক্রিয়া বন্ধ হবে"], correct: 1, topic: "Le Chatelier Principle", difficulty: "medium", explanation: "লা-শাতেলিয়ার নীতি অনুসারে চাপ বাড়ালে সাম্যাবস্থা বেশি মোল সংখ্যার দিক থেকে কম মোল সংখ্যার দিকে (৪ মোল ➔ ২ মোল অর্থাৎ ডান দিকে) সরবে।" },
-          { question: "কোনটির ওপর সাম্যধ্রুবকের (Kc / Kp) মান নির্ভর করে?", options: ["ঘনমাত্রা", "চাপ", "তাপমাত্রা", "প্রভাবক"], correct: 2, topic: "Equilibrium Constant", difficulty: "easy", explanation: "সাম্যধ্রুবক (Kc বা Kp) কেবল তাপমাত্রার পরিবর্তনের ওপর নির্ভর করে; ঘনমাত্রা, চাপ বা প্রভাবকে পরিবর্তিত হয় না।" },
-          { question: "তাপউৎপাদী (Exothermic) বিক্রিয়ার ক্ষেত্রে তাপমাত্রা বৃদ্ধি করলে সাম্যধ্রুবক (K) এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "একই থাকে", "শূন্য হয়"], correct: 1, topic: "van 't Hoff Equation", difficulty: "medium", explanation: "ভ্যান্ট হফ সমীকরণ অনুযায়ী তাপউৎপাদী বিক্রিয়ায় (ΔH < 0) তাপমাত্রা বাড়ালে সাম্যধ্রুবকের মান হ্রাস পায়।" },
-          { question: "বিশুদ্ধ পানির অটো-আয়োনাইজেশন ধ্রুবক (Kw) ২৫°C তাপমাত্রায় কত?", options: ["1.0 × 10⁻⁷ M²", "1.0 × 10⁻¹⁴ M²", "1.0 × 10⁻¹⁰ M²", "1.0 × 10¹⁴ M²"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "২৫°C-এ পানির আয়নিক গুণফল Kw = [H⁺][OH⁻] = (10⁻⁷)(10⁻⁷) = 1.0 × 10⁻¹⁴ M²।" },
-          { question: "২৫°C তাপমাত্রায় বিশুদ্ধ পানির pH এর মান কত?", options: ["0", "7.0", "14.0", "1.0"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "বিশুদ্ধ পানিতে [H⁺] = 10⁻⁷ M, সুতরাং pH = -log(10⁻⁷) = 7.0 (নিরপেক্ষ)।" },
-          { question: "তাপমাত্রা বৃদ্ধি করলে বিশুদ্ধ পানির pH এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "অপরিবর্তিত থাকে", "১৪ হয়"], correct: 1, topic: "pH & Water", difficulty: "hard", explanation: "তাপমাত্রা বাড়লে পানির স্বতঃস্ফূর্ত বিয়োজন বাড়ে, ফলে [H⁺] বাড়ে এবং pH-এর মান ৭ এর নিচে নেমে আসে (তবে পানি নিরপেক্ষই থাকে)।" },
-          { question: "0.005 M H₂SO₄ দ্রবণের pH কত?", options: ["2.0", "1.0", "2.3", "3.0"], correct: 0, topic: "pH Calculation", difficulty: "hard", explanation: "H₂SO₄ তীব্র দ্বিক্ষারকীয় এসিড। [H⁺] = 2 × 0.005 = 0.01 M = 10⁻² M। pH = -log(10⁻²) = 2.0।" },
-          { question: "0.01 M NaOH দ্রবণের pH কত?", options: ["2", "12", "7", "10"], correct: 1, topic: "pH Calculation", difficulty: "medium", explanation: "[OH⁻] = 0.01 M = 10⁻² M ⟹ pOH = 2 ⟹ pH = 14 - pOH = 14 - 2 = 12।" },
-          { question: "অ্যাসিডিক বা অম্লীয় বাফার দ্রবণ তৈরির জন্য কোনটি ব্যবহৃত হয়?", options: ["তীব্র এসিড ও মৃদু ক্ষার", "মৃদু এসিড ও তার লবণ", "তীব্র এসিড ও তার লবণ", "মৃদু ক্ষার ও তার লবণ"], correct: 1, topic: "Buffer Solution", difficulty: "easy", explanation: "অম্লীয় বাফার দ্রবণ মৃদু অম্ল (যেমন CH₃COOH) এবং শক্তিশালী ক্ষারের সাথে তৈরি অম্লের লবণ (যেমন CH₃COONa) দিয়ে তৈরি হয়।" },
-          { question: "ক্ষারীয বাফার দ্রবণের pH গণনার জন্য কোন সমীকরণটি ব্যবহৃত হয়?", options: ["pH = pKa + log([Salt]/[Acid])", "pOH = pKb + log([Salt]/[Base])", "pH = pKb + log([Base]/[Salt])", "pH = 14 + pKa"], correct: 1, topic: "Buffer Solution", difficulty: "medium", explanation: "হ্যান্ডারসন-হ্যাসেলবালখ সমীকরণ অনুসারে ক্ষারীয় বাফারের ক্ষেত্রে pOH = pKb + log([Salt]/[Base])।" },
+          { question: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু ($t_{1/2}$) এর সাথে প্রারম্ভিক ঘনমাত্রার সম্পর্ক কী?", options: ["সরাসরি সমানুপাতিক", "ব্যস্তানুপাতিক", "ঘনমাত্রার ওপর নির্ভর করে না", "ঘনমাত্রার বর্গের সমানুপাতিক"], correct: 2, topic: "Half Life", difficulty: "medium", explanation: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু $t_{1/2} = \\frac{0.693}{k}$, যা প্রারম্ভিক ঘনমাত্রার (a) ওপর সম্পূর্ণ স্বাধীন।" },
+          { question: "তাপমাত্রার সাথে বিক্রিয়ার হার ধ্রুবক (k) এর সম্পর্ক নির্দেশকারী সমীকরণ কোনটি?", options: ["আর্হেনিয়াস সমীকরণ", "ভ্যান্ট হফ সমীকরণ", "অস্টওয়াল্ড সমীকরণ", "এনথালপি সমীকরণ"], correct: 0, topic: "Arrhenius Equation", difficulty: "easy", explanation: "আর্হেনিয়াস সমীকরণ $k = A e^{-E_a/RT}$ তাপমাত্রার সাথে k এর সম্পর্ক দেখায়।" },
+          { question: "আর্হেনিয়াস সমীকরণ অনুযায়ী $\\ln(k)$ বনাম $1/T$ লেখচিত্রের ঢাল (Slope) কত?", options: ["$E_a/R$", "$-E_a/R$", "$-E_a/(2.303 R)$", "$E_a$"], correct: 1, topic: "Arrhenius Equation", difficulty: "hard", explanation: "$\\ln(k) = \\ln(A) - \\frac{E_a}{R}\\frac{1}{T}$। এটি $y = c + mx$ সমীকরণ মেনে চলে, যেখানে ঢাল $m = -E_a/R$।" },
+          { question: "সাধারণত প্রতি ১০°C তাপমাত্রা বৃদ্ধির জন্য বিক্রিয়ার হার কত গুণ বৃদ্ধি পায়?", options: ["১-২ গুণ", "২-৩ গুণ", "৪-৫ গুণ", "১০ গুণ"], correct: 1, topic: "Temperature Coefficient", difficulty: "easy", explanation: "তাপমাত্রা গুণাঙ্ক $\\mu = \\frac{k_{t+10}}{k_t} \\approx 2$ থেকে $3$।" },
+          { question: "অনুঘটক বা প্রভাবক (Catalyst) বিক্রিয়ার হার কীভাবে বৃদ্ধি করে?", options: ["সক্রিয়ণ শক্তি বৃদ্ধি করে", "সক্রিয়ণ শক্তি হ্রাস করে", "বিক্রিয়া তাপ হ্রাস করে", "সাম্যধ্রুবক বৃদ্ধি করে"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "প্রভাবক বিক্রিয়াকে একটি বিকল্প কম শক্তিযুক্ত পথ প্রদান করে, ফলে সক্রিয়ণ শক্তি ($E_a$) হ্রাস পায় ও হার বাড়ে।" },
+          { question: "রাসায়নিক সাম্যাবস্থায় $K_c$ এবং $K_p$ এর মধ্যকার সম্পর্ক সমীকরণ কোনটি?", options: ["$K_p = K_c (RT)^{\\Delta n}$", "$K_c = K_p (RT)^{\\Delta n}$", "$K_p = K_c RT$", "$K_p = K_c (RT)^{-\\Delta n}$"], correct: 0, topic: "Chemical Equilibrium", difficulty: "medium", explanation: "আদর্শ গ্যাস সমীকরণ প্রয়োগে পাওয়া যায় $K_p = K_c (RT)^{\\Delta n}$।" },
+          { question: "কোন বিক্রিয়াটির ক্ষেত্রে $K_p = K_c$ হবে?", options: ["$N_2 + 3H_2 \\rightleftharpoons 2NH_3$", "$PCl_5 \\rightleftharpoons PCl_3 + Cl_2$", "$H_2 + I_2 \\rightleftharpoons 2HI$", "$2SO_2 + O_2 \\rightleftharpoons 2SO_3$"], correct: 2, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "$H_2 + I_2 \\rightleftharpoons 2HI$ বিক্রিয়ায় $\\Delta n = 2 - (1+1) = 0$। ফলে $K_p = K_c (RT)^0 = K_c$।" },
+          { question: "$PCl_5(g) \\rightleftharpoons PCl_3(g) + Cl_2(g)$ বিক্রিয়ার জন্য $\\Delta n$ এর মান কত?", options: ["0", "+1", "-1", "+2"], correct: 1, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "$\\Delta n = \\text{উৎপাদের গ্যাসীয় মোলসংখ্যা} - \\text{বিক্রিয়কের গ্যাসীয় মোলসংখ্যা} = (1 + 1) - 1 = +1$।" },
+          { question: "$N_2(g) + 3H_2(g) \\rightleftharpoons 2NH_3(g)$ বিক্রিয়াটিতে চাপ বৃদ্ধি করলে সাম্যাবস্থা কোন দিকে সরে যাবে?", options: ["বাম দিকে (পশ্চাৎমুখী)", "ডান দিকে (সম্মুখমুখী)", "কোনো পরিবর্তন হবে না", "বিক্রিয়া বন্ধ হবে"], correct: 1, topic: "Le Chatelier Principle", difficulty: "medium", explanation: "লা-শাতেলিয়ার নীতি অনুসারে চাপ বাড়ালে সাম্যাবস্থা বেশি মোল সংখ্যার দিক থেকে কম মোল সংখ্যার দিকে (৪ মোল ➔ ২ মোল অর্থাৎ ডান দিকে) সরবে।" },
+          { question: "কোনটির ওপর সাম্যধ্রুবকের ($K_c / K_p$) মান নির্ভর করে?", options: ["ঘনমাত্রা", "চাপ", "তাপমাত্রা", "প্রভাবক"], correct: 2, topic: "Equilibrium Constant", difficulty: "easy", explanation: "সাম্যধ্রুবক কেবল তাপমাত্রার পরিবর্তনের ওপর নির্ভর করে; ঘনমাত্রা, চাপ বা প্রভাবকে পরিবর্তিত হয় না।" },
+          { question: "তাপউৎপাদী (Exothermic) বিক্রিয়ার ক্ষেত্রে তাপমাত্রা বৃদ্ধি করলে সাম্যধ্রুবক (K) এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "একই থাকে", "শূন্য হয়"], correct: 1, topic: "van 't Hoff Equation", difficulty: "medium", explanation: "ভ্যান্ট হফ সমীকরণ অনুযায়ী তাপউৎপাদী বিক্রিয়ায় ($\\Delta H < 0$) তাপমাত্রা বাড়ালে সাম্যধ্রুবকের মান হ্রাস পায়।" },
+          { question: "বিশুদ্ধ পানির অটো-আয়োনাইজেশন ধ্রুবক ($K_w$) ২৫°C তাপমাত্রায় কত?", options: ["$1.0 \\times 10^{-7}\\text{ M}^2$", "$1.0 \\times 10^{-14}\\text{ M}^2$", "$1.0 \\times 10^{-10}\\text{ M}^2$", "$1.0 \\times 10^{14}\\text{ M}^2$"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "২৫°C-এ পানির আয়নিক গুণফল $K_w = [H^+][OH^-] = (10^{-7})(10^{-7}) = 1.0 \\times 10^{-14} \\text{ M}^2$।" },
+          { question: "২৫°C তাপমাত্রায় বিশুদ্ধ পানির pH এর মান কত?", options: ["0", "7.0", "14.0", "1.0"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "বিশুদ্ধ পানিতে $[H^+] = 10^{-7}\\text{ M}$, সুতরাং $\\text{pH} = -\\log(10^{-7}) = 7.0$ (নিরপেক্ষ)।" },
+          { question: "তাপমাত্রা বৃদ্ধি করলে বিশুদ্ধ পানির pH এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "অপরিবর্তিত থাকে", "১৪ হয়"], correct: 1, topic: "pH & Water", difficulty: "hard", explanation: "তাপমাত্রা বাড়লে পানির স্বতঃস্ফূর্ত বিয়োজন বাড়ে, ফলে $[H^+]$ বাড়ে এবং pH-এর মান ৭ এর নিচে নেমে আসে (তবে পানি নিরপেক্ষই থাকে)।" },
+          { question: "$0.005\\text{ M } H_2SO_4$ দ্রবণের pH কত?", options: ["2.0", "1.0", "2.3", "3.0"], correct: 0, topic: "pH Calculation", difficulty: "hard", explanation: "$H_2SO_4$ তীব্র দ্বিক্ষারকীয় এসিড। $[H^+] = 2 \\times 0.005 = 0.01\\text{ M} = 10^{-2}\\text{ M}$। $\\text{pH} = -\\log(10^{-2}) = 2.0$।" },
+          { question: "$0.01\\text{ M } NaOH$ দ্রবণের pH কত?", options: ["2", "12", "7", "10"], correct: 1, topic: "pH Calculation", difficulty: "medium", explanation: "$[OH^-] = 0.01\\text{ M} = 10^{-2}\\text{ M} \\implies \\text{pOH} = 2 \\implies \\text{pH} = 14 - 2 = 12$।" },
+          { question: "অ্যাসিডিক বা অম্লীয় বাফার দ্রবণ তৈরির জন্য কোনটি ব্যবহৃত হয়?", options: ["তীব্র এসিড ও মৃদু ক্ষার", "মৃদু এসিড ও তার লবণ", "তীব্র এসিড ও তার লবণ", "মৃদু ক্ষার ও তার লবণ"], correct: 1, topic: "Buffer Solution", difficulty: "easy", explanation: "অম্লীয় বাফার দ্রবণ মৃদু অম্ল (যেমন $CH_3COOH$) এবং শক্তিশালী ক্ষারের সাথে তৈরি অম্লের লবণ (যেমন $CH_3COONa$) দিয়ে তৈরি হয়।" },
+          { question: "ক্ষারীয বাফার দ্রবণের pH গণনার জন্য কোন সমীকরণটি ব্যবহৃত হয়?", options: ["$\\text{pH} = \\text{pKa} + \\log([\\text{Salt}]/[\\text{Acid}])$", "$\\text{pOH} = \\text{pKb} + \\log([\\text{Salt}]/[\\text{Base}])$", "$\\text{pH} = \\text{pKb} + \\log([\\text{Base}]/[\\text{Salt}])$", "$\\text{pH} = 14 + \\text{pKa}$"], correct: 1, topic: "Buffer Solution", difficulty: "medium", explanation: "হ্যান্ডারসন-হ্যাসেলবালখ সমীকরণ অনুসারে ক্ষারীয় বাফারের ক্ষেত্রে $\\text{pOH} = \\text{pKb} + \\log([\\text{Salt}]/[\\text{Base}])$।" },
           { question: "মানুষের রক্তের pH এর স্বাভাবিক পরিসীমা (Range) কত?", options: ["6.5 - 7.0", "7.35 - 7.45", "7.8 - 8.2", "8.5 - 9.0"], correct: 1, topic: "Blood Buffer", difficulty: "easy", explanation: "মানুষের রক্তের স্বাভাবিক pH হলো ৭.৩৫ থেকে ৭.৪৫ (গড় ৭.৪)।" },
-          { question: "মানুষের রক্তে প্রধান বাফার সিস্টেম কোনটি?", options: ["ফসফেট বাফার", "প্রোটিন বাফার", "বাইকার্বোনেট বাফার (H₂CO₃ / HCO₃⁻)", "অ্যাসিটেট বাফার"], correct: 2, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের প্রধান প্রাইমারি বাফার হলো কার্বনিক এসিড-বাইকার্বোনেট বাফার সিস্টেম।" },
+          { question: "মানুষের রক্তে প্রধান বাফার সিস্টেম কোনটি?", options: ["ফসফেট বাফার", "প্রোটিন বাফার", "বাইকার্বোনেট বাফার ($H_2CO_3 / HCO_3^-$)", "অ্যাসিটেট বাফার"], correct: 2, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের প্রধান প্রাইমারি বাফার হলো কার্বনিক এসিড-বাইকার্বোনেট বাফার সিস্টেম।" },
           { question: "রক্তের pH ৭.৩৫ এর নিচে নেমে গেলে সেই অবস্থাকে কী বলে?", options: ["অ্যালকালোসিস (Alkalosis)", "এসিডোসিস (Acidosis)", "বাফারিং", "নিউট্রালাইজেশন"], correct: 1, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের pH ৭.৩৫ এর নিচে নামলে এসিডোসিস এবং ৭.৪৫ এর উপরে উঠলে অ্যালকালোসিস বলে।" },
-          { question: "পানির স্থায়ী খড়তার (Permanent Hardness) জন্য দায়ী কোন লবণগুলো?", options: ["Ca ও Mg এর বাইকার্বোনেট", "Ca ও Mg এর ক্লোরাইড ও সালফেট", "Na ও K এর কার্বোনেট", "Fe ও Mn এর হাইড্রোক্সাইড"], correct: 1, topic: "Water Hardness", difficulty: "medium", explanation: "CaCl₂, MgCl₂, CaSO₄, MgSO₄ দ্রবীভূত থাকলে পানির স্থায়ী খড়তা সৃষ্টি হয়।" },
+          { question: "পানির স্থায়ী খড়তার (Permanent Hardness) জন্য দায়ী কোন লবণগুলো?", options: ["Ca ও Mg এর বাইকার্বোনেট", "Ca ও Mg এর ক্লোরাইড ও সালফেট", "Na ও K এর কার্বোনেট", "Fe ও Mn এর হাইড্রোক্সাইড"], correct: 1, topic: "Water Hardness", difficulty: "medium", explanation: "$CaCl_2, MgCl_2, CaSO_4, MgSO_4$ দ্রবীভূত থাকলে পানির স্থায়ী খড়তা সৃষ্টি হয়।" },
           { question: "অস্থায়ী খড়তা দূর করার সবচেয়ে সহজ পদ্ধতি কোনটি?", options: ["ফুটানো (Boiling)", "পারমুটিট প্রণালী", "আয়ন বিনিময় পদ্ধতি", "ক্লোরিনেশন"], correct: 0, topic: "Water Hardness", difficulty: "easy", explanation: "পানি ফুটালে দ্রবণীয় বাইকার্বোনেট লবণগুলো অদ্রবণীয় কার্বনেটে পরিণত হয়ে থিতিয়ে পড়ে।" },
-          { question: "বিওডি (BOD - Biochemical Oxygen Demand) দ্বারা কী পরিমাপ করা হয়?", options: ["পানির অম্লতা", "পানিতে দ্রবীভূত জৈব দূষকের পরিমাণ", "পানির খড়তা", "হেভি মেটালের পরিমাণ"], correct: 1, topic: "Environmental Water", difficulty: "easy", explanation: "জৈব পচনশীল পদার্থকে অনুজীব দ্বারা ভাঙতে যে পরিমাণ O₂ লাগে তাকে BOD বলে।" },
+          { question: "বিওডি (BOD - Biochemical Oxygen Demand) দ্বারা কী পরিমাপ করা হয়?", options: ["পানির অম্লতা", "পানিতে দ্রবীভূত জৈব দূষকের পরিমাণ", "পানির খড়তা", "হেভি মেটালের পরিমাণ"], correct: 1, topic: "Environmental Water", difficulty: "easy", explanation: "জৈব পচনশীল পদার্থকে অনুজীব দ্বারা ভাঙতে যে পরিমাণ $O_2$ লাগে তাকে BOD বলে।" },
           { question: "পানীয় জলের জন্য BOD এর মান অনুমেয় সীমা কত ধরা হয় (WHO অনুযায়ী)?", options: ["1 - 2 ppm", "10 ppm", "100 ppm", "0 ppm"], correct: 0, topic: "Environmental Water", difficulty: "medium", explanation: "পানযোগ্য বিশুদ্ধ পানির BOD এর মান সাধারণতঃ 1 - 2 mg/L বা ppm হয়।" },
           { question: "COD (Chemical Oxygen Demand) এর মান সর্বদা BOD অপেক্ষা কেমন হয়?", options: ["কম হয়", "সমান হয়", "বেশি হয়", "অর্ধেক হয়"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "COD তে জৈব পচনশীল ও অপচনশীল উভয় বস্তুর জারণ ঘটে, তাই COD > BOD।" },
           { question: "পানীয় জলে আর্সেনিকের (As) বিশ্ব স্বাস্থ্য সংস্থা (WHO) অনুমোদিত সর্বোচ্চ সীমা কত?", options: ["0.01 mg/L", "0.05 mg/L", "0.1 mg/L", "1.0 mg/L"], correct: 0, topic: "Environmental Water", difficulty: "medium", explanation: "WHO নির্দেশিত নিরাপদ সীমা 0.01 mg/L (তবে বাংলাদেশের মানদণ্ড 0.05 mg/L)।" },
-          { question: "পানির দ্রবীভূত অক্সিজেন (DO - Dissolved Oxygen) এর ন্যূনতম মান কত হওয়া উচিত?", options: ["1 ppm", "2 ppm", "4 - 6 ppm", "10 - 12 ppm"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "জলজ জীবের বেঁচে থাকার জন্য পানিতে দ্রবীভূত অক্সিজেনের মান কমপক্ষে 4 - 6 ppm থাকা প্রয়োজন।" },
-          { question: "কোনো প্রক্রিয়ায় সিস্টেমে তাপের কোনো আদান-প্রদান ঘটে না, তাকে কী বলে?", options: ["সমোষ্ণ প্রক্রিয়া (Isothermal)", "রুদ্ধতাপীয় প্রক্রিয়া (Adiabatic)", "সমচাপীয় প্রক্রিয়া", "সমআয়তন প্রক্রিয়া"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "রুদ্ধতাপীয় (Adiabatic) প্রক্রিয়ায় সিস্টেম ও পরিবেশের মধ্যে তাপের আদান-প্রদান dQ = 0 হয়।" },
+          { question: "পানির দ্রবীভূত অক্সিজেন (DO - Dissolved Oxygen) এর ন্যূনতম মান কত হওয়া উচিত?", options: ["1 ppm", "2 ppm", "4 - 6 ppm", "10 - 12 ppm"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "জলজ जीवों বেঁচে থাকার জন্য পানিতে দ্রবীভূত অক্সিজেনের মান কমপক্ষে 4 - 6 ppm থাকা প্রয়োজন।" },
+          { question: "কোনো প্রক্রিয়ায় সিস্টেমে তাপের কোনো আদান-প্রদান ঘটে না, তাকে কী বলে?", options: ["সমোষ্ণ প্রক্রিয়া (Isothermal)", "রুদ্ধতাপীয় প্রক্রিয়া (Adiabatic)", "সমচাপীয় প্রক্রিয়া", "সমআয়তন প্রক্রিয়া"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "রুদ্ধতাপীয় (Adiabatic) প্রক্রিয়ায় সিস্টেম ও পরিবেশের মধ্যে তাপের আদান-প্রদান $dQ = 0$ হয়।" },
           { question: "হেসের তাপ সমষ্টির সূত্র (Hess's Law) তাপগতিবিদ্যার কোন সূত্রের ওপর প্রতিষ্ঠিত?", options: ["প্রথম সূত্র (শক্তি সংরক্ষণশীলতা)", "দ্বিতীয় সূত্র", "তৃতীয় সূত্র", "শূন্যতম সূত্র"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "হেসের সূত্রটি মূলত শক্তির নিত্যতা বা সংরক্ষণশীলতা নীতির প্রয়োগ।" },
           { question: "তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ (Heat of Neutralization) এর মান কত?", options: ["-57.34 kJ mol⁻¹", "-13.7 kJ mol⁻¹", "+57.34 kJ mol⁻¹", "-68.3 kJ mol⁻¹"], correct: 0, topic: "Thermochemistry", difficulty: "easy", explanation: "সব তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ ধ্রুবক এবং এর মান -57.34 kJ mol⁻¹ (বা -13.7 kcal mol⁻¹)।" },
-          { question: "HF ও NaOH এর প্রশমন তাপের মান -57.34 kJ mol⁻¹ অপেক্ষা বেশি (-68.6 kJ mol⁻¹) হওয়ার কারণ—", options: ["HF তীব্র এসিড", "F⁻ আয়নের উচ্চ হাইড্রেশন শক্তি", "NaOH দুর্বল ক্ষার", "HF এর বিয়োজন এনথালপি বেশি"], correct: 1, topic: "Thermochemistry", difficulty: "hard", explanation: "ক্ষুদ্র আকারের F⁻ আয়নের হাইড্রেশন শক্তি অত্যন্ত বেশি থাকায় নির্গত তাপের মান স্বাভাবিকের চেয়ে বেশি হয়।" },
-          { question: "CH₃COOH ও NaOH এর প্রশমন তাপ -57.34 kJ mol⁻¹ অপেক্ষা কম (-55.2 kJ mol⁻¹) কেন?", options: ["CH₃COOH সম্পূর্ণ বিয়োজিত হয় না (বিয়োজন তাপে কিছু শক্তি ব্যয় হয়)", "সোডিয়াম অ্যাসিটেট লবণ তৈরি হয়", "বিক্রিয়াটি শ্লথ", "পানি উৎপন্ন হয় না"], correct: 0, topic: "Thermochemistry", difficulty: "medium", explanation: "দুর্বল এসিড (CH₃COOH) কে পূর্ণ বিয়োজিত করতে কিছু শক্তি শোষিত হয়, ফলে নিট নির্গত তাপ কমে যায়।" },
-          { question: "স্বতঃস্ফূর্ত (Spontaneous) পরিবর্তনের জন্য গিবস মুক্ত শক্তির পরিবর্তন (ΔG) কেমন হবে?", options: ["ধনাত্মক (ΔG > 0)", "ঋণাত্মক (ΔG < 0)", "শূন্য (ΔG = 0)", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "medium", explanation: "যেকোনো স্বতঃস্ফূর্ত বা স্বমেধিত প্রক্রিয়ায় ΔG সর্বদা ঋণাত্মক (ΔG < 0) হতে হয়।" },
-          { question: "সাম্যাবাস্থায় গিবস মুক্ত শক্তির পরিবর্তন (ΔG) এর মান কত?", options: ["ΔG < 0", "ΔG > 0", "ΔG = 0", "ΔG = ΔH"], correct: 2, topic: "Thermodynamics", difficulty: "easy", explanation: "বিক্রিয়া সাম্যাবস্থায় উপনীত হলে মুক্ত শক্তির কোনো নিট পরিবর্তন হয় না, অর্থাৎ ΔG = 0।" },
-          { question: "একটি এনডোথার্মিক (তাপহারী) বিক্রিয়ার জন্য enthalpy পরিবর্তন (ΔH) কেমন হয়?", options: ["ΔH < 0 (ঋণাত্মক)", "ΔH > 0 (ধনাত্মক)", "ΔH = 0", "ΔH = ∞"], correct: 1, topic: "Thermochemistry", difficulty: "easy", explanation: "তাপহারী বিক্রিয়ায় সিস্টেম তাপ শোষণ করে, ফলে ΔH ধনাত্মক (+) হয়।" },
-          { question: "বিক্রিয়া এনথালপি ΔH, এন্ট্রপি ΔS এবং পরম তাপমাত্রা T এর সম্পর্কযুক্ত গিবস সমীকরণ কোনটি?", options: ["ΔG = ΔH - TΔS", "ΔG = ΔH + TΔS", "ΔH = ΔG - TΔS", "ΔS = ΔH / ΔG"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "গিবস-হেলমহোল্টজ সমীকরণ: ΔG = ΔH - TΔS।" },
+          { question: "HF ও NaOH এর প্রশমন তাপের মান -57.34 kJ mol⁻¹ অপেক্ষা বেশি (-68.6 kJ mol⁻¹) হওয়ার কারণ—", options: ["HF তীব্র এসিড", "$F^-$ আয়নের উচ্চ হাইড্রেশন শক্তি", "NaOH দুর্বল ক্ষার", "HF এর বিয়োজন এনথালপি বেশি"], correct: 1, topic: "Thermochemistry", difficulty: "hard", explanation: "ক্ষুদ্র আকারের $F^-$ আয়নের হাইড্রেশন শক্তি অত্যন্ত বেশি থাকায় নির্গত তাপের মান স্বাভাবিকের চেয়ে বেশি হয়।" },
+          { question: "$CH_3COOH$ ও NaOH এর প্রশমন তাপ -57.34 kJ mol⁻¹ অপেক্ষা কম (-55.2 kJ mol⁻¹) কেন?", options: ["$CH_3COOH$ সম্পূর্ণ বিয়োজিত হয় না (বিয়োজন তাপে কিছু শক্তি ব্যয় হয়)", "সোডিয়াম অ্যাসিটেট লবণ তৈরি হয়", "বিক্রিয়াটি শ্লথ", "পানি উৎপন্ন হয় না"], correct: 0, topic: "Thermochemistry", difficulty: "medium", explanation: "দুর্বল এসিড ($CH_3COOH$) কে পূর্ণ বিয়োজিত করতে কিছু শক্তি শোষিত হয়, ফলে নিট নির্গত তাপ কমে যায়।" },
+          { question: "স্বতঃস্ফূর্ত (Spontaneous) পরিবর্তনের জন্য গিবস মুক্ত শক্তির পরিবর্তন ($\\Delta G$) কেমন হবে?", options: ["ধনাত্মক ($\\Delta G > 0$)", "ঋণাত্মক ($\\Delta G < 0$)", "শূন্য ($\\Delta G = 0$)", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "medium", explanation: "যেকোনো স্বতঃস্ফূর্ত বা স্বমেধিত প্রক্রিয়ায় $\\Delta G$ সর্বদা ঋণাত্মক ($\\Delta G < 0$) হতে হয়।" },
+          { question: "সাম্যাবাস্থায় গিবস মুক্ত শক্তির পরিবর্তন ($\\Delta G$) এর মান কত?", options: ["$\\Delta G < 0$", "$\\Delta G > 0$", "$\\Delta G = 0$", "$\\Delta G = \\Delta H$"], correct: 2, topic: "Thermodynamics", difficulty: "easy", explanation: "বিক্রিয়া সাম্যাবস্থায় উপনীত হলে মুক্ত শক্তির কোনো নিট পরিবর্তন হয় না, অর্থাৎ $\\Delta G = 0$।" },
+          { question: "একটি এনডোথার্মিক (তাপহারী) বিক্রিয়ার জন্য enthalpy পরিবর্তন ($\\Delta H$) কেমন হয়?", options: ["$\\Delta H < 0$ (ঋণাত্মক)", "$\\Delta H > 0$ (ধনাত্মক)", "$\\Delta H = 0$", "$\\Delta H = \\infty$"], correct: 1, topic: "Thermochemistry", difficulty: "easy", explanation: "তাপহারী বিক্রিয়ায় সিস্টেম তাপ শোষণ করে, ফলে $\\Delta H$ ধনাত্মক (+) হয়।" },
+          { question: "বিক্রিয়া এনথালপি $\\Delta H$, এন্ট্রপি $\\Delta S$ এবং পরম তাপমাত্রা T এর সম্পর্কযুক্ত গিবস সমীকরণ কোনটি?", options: ["$\\Delta G = \\Delta H - T\\Delta S$", "$\\Delta G = \\Delta H + T\\Delta S$", "$\\Delta H = \\Delta G - T\\Delta S$", "$\\Delta S = \\Delta H / \\Delta G$"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "গিবস-হেলমহোল্টজ সমীকরণ: $\\Delta G = \\Delta H - T\\Delta S$।" },
           { question: "কোনো কেলাসিত বিশুদ্ধ পদার্থের পরম শূন্য তাপমাত্রায় (0 K) এন্ট্রপির (Entropy) মান কত?", options: ["সর্বোচ্চ", "শূন্য (0)", "ঋণাত্মক", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "তাপগতিবিদ্যার ৩য় সূত্র অনুসারে পরম শূন্য তাপমাত্রায় বিশুদ্ধ ক্লাসের এন্ট্রপি শূন্য।" },
-          { question: "হেবার প্রণালীতে অ্যামোনিয়া (NH₃) শিল্প উৎপাদনে ব্যবহৃত অনুঘটক (Catalyst) কোনটি?", options: ["V₂O₅", "সূক্ষ্ম চূর্ণিত Fe (আয়রন)", "Pt (প্লাটিনাম)", "Ni (নিকেল)"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "হেবার প্রণালীতে আয়রন চূর্ণ (Fe) প্রভাবক এবং মোলিবেডনাম (Mo) প্রভাবক সহায়কের কাজ করে।" },
-          { question: "স্পর্শ প্রণালীতে সালফিউরিক এসিড (H₂SO₄) তৈরিতে ব্যবহৃত আধুনিক প্রভাবক কোনটি?", options: ["Pt (প্লাটিনাম)", "V₂O₅ (ভ্যানাডিয়াম পেন্টঅক্সাইড)", "Fe₂O₃", "MnO₂"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "পূর্বে প্লাটাইনাবৃত অ্যাসবেস্টস ব্যবহার হলেও বর্তমানে সস্তা ও বিষমুক্ত V₂O₅ ব্যবহৃত হয়।" },
-          { question: "নিচের কোনটি ঋণাত্মক প্রভাবক (Negative Catalyst) হিসেবে কাজ করে?", options: ["MnO₂", "গ্লিসারিন / ফসফরিক এসিড", "Pt", "Fe"], correct: 1, topic: "Catalysis", difficulty: "medium", explanation: "গ্লিসারিন বা অ্যালকোহল H₂O₂ এর বিয়োজন হার কমিয়ে দেয়, যা ঋণাত্মক প্রভাবক।" },
-          { question: "অটো-ক্যাটালিস্ট (Auto-catalyst) এর উদাহরণ কোনটি?", options: ["KMnO₄ দ্বারা অক্সালিক এসিডের জারণে উৎপন্ন Mn²⁺ আয়ন", "H₂O₂ বিয়োজনে MnO₂", "এস্টার আদ্রবিশ্লেষণে এসিড", "উভয় ক ও গ"], correct: 3, topic: "Catalysis", difficulty: "hard", explanation: "বিক্রিয়ায় উৎপন্ন Mn²⁺ অথবা উৎপন্ন এসিড স্বয়ং প্রভাবক হিসেবে কাজ করায় এরা স্ব-প্রভাবক।" },
-          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, topic: "Acid Base Theory", difficulty: "hard", explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ક્ષાર (Conjugate base) তত শক্তিশালী হবে।" },
-          { question: "NH₃ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["NH₂⁻", "NH₄⁺", "N³⁻", "NH₃⁺"], correct: 1, topic: "Acid Base Theory", difficulty: "easy", explanation: "একটি প্রোটন (H⁺) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: NH₃ + H⁺ ➔ NH₄⁺।" },
-          { question: "HCO₃⁻ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, topic: "Acid Base Theory", difficulty: "medium", explanation: "HCO₃⁻ প্রোটন ত্যাগ করে CO₃²⁻ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে H₂CO₃ হতে পারে (ক্ষারক)।" },
+          { question: "হেবার প্রণালীতে অ্যামোনিয়া ($NH_3$) শিল্প উৎপাদনে ব্যবহৃত অনুঘটক (Catalyst) কোনটি?", options: ["$V_2O_5$", "সূক্ষ্ম চূর্ণিত Fe (আয়রন)", "Pt (প্লাটিনাম)", "Ni (নিকেল)"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "হেবার প্রণালীতে আয়রন চূর্ণ (Fe) প্রভাবক এবং মোলিবেডনাম (Mo) প্রভাবক সহায়কের কাজ করে।" },
+          { question: "স্পর্শ প্রণালীতে সালফিউরিক এসিড ($H_2SO_4$) তৈরিতে ব্যবহৃত আধুনিক প্রভাবক কোনটি?", options: ["Pt (প্লাটিনাম)", "$V_2O_5$ (ভ্যানাডিয়াম পেন্টঅক্সাইড)", "$Fe_2O_3$", "$MnO_2$"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "পূর্বে প্লাটাইনাবৃত অ্যাসবেস্টস ব্যবহার হলেও বর্তমানে সস্তা ও বিষমুক্ত $V_2O_5$ ব্যবহৃত হয়।" },
+          { question: "নিচের কোনটি ঋণাত্মক প্রভাবক (Negative Catalyst) হিসেবে কাজ করে?", options: ["$MnO_2$", "গ্লিসারিন / ফসফরিক এসিড", "Pt", "Fe"], correct: 1, topic: "Catalysis", difficulty: "medium", explanation: "গ্লিসারিন বা অ্যালকোহল $H_2O_2$ এর বিয়োজন হার কমিয়ে দেয়, যা ঋণাত্মক প্রভাবক।" },
+          { question: "অটো-ক্যাটালিস্ট (Auto-catalyst) এর উদাহরণ কোনটি?", options: ["$KMnO_4$ দ্বারা অক্সালিক এসিডের জারণে উৎপন্ন $Mn^{2+}$ আয়ন", "$H_2O_2$ বিয়োজনে $MnO_2$", "এস্টার আদ্রবিশ্লেষণে এসিড", "উভয় ক ও গ"], correct: 3, topic: "Catalysis", difficulty: "hard", explanation: "বিক্রিয়ায় উৎপন্ন $Mn^{2+}$ অথবা উৎপন্ন এসিড স্বয়ং প্রভাবক হিসেবে কাজ করায় এরা স্ব-প্রভাবক।" },
+          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, topic: "Acid Base Theory", difficulty: "hard", explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ক্ষার (Conjugate base) তত শক্তিশালী হবে।" },
+          { question: "$NH_3$ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["$NH_2^-$", "$NH_4^+$", "$N^{3-}$", "$NH_3^+$"], correct: 1, topic: "Acid Base Theory", difficulty: "easy", explanation: "একটি প্রোটন ($H^+$) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: $NH_3 + H^+ \\rightarrow NH_4^+$।" },
+          { question: "$HCO_3^-$ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, topic: "Acid Base Theory", difficulty: "medium", explanation: "$HCO_3^-$ প্রোটন ত্যাগ করে $CO_3^{2-}$ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে $H_2CO_3$ হতে পারে (ক্ষারক)।" },
           { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, topic: "pH Applications", difficulty: "medium", explanation: "মুখের লালার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
         ]
       };
 
       let examData = defaultExamData;
 
-      // --- Init Function ---
+      // Init Function
       async function checkAttemptAndLoad() {
         if (currentUser) {
           try {
@@ -497,7 +579,6 @@
           } catch(err) { console.error("Error checking user:", err); }
         }
 
-        // Fetch Live Exam Metadata
         try {
           const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
           if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
@@ -516,7 +597,6 @@
         examTimerKey = "gaivex_timer_" + cleanId;
         autoSaveKey = "gaivex_autosave_" + cleanId;
 
-        // Offline Answer Recovery Cache
         const localAutoSave = localStorage.getItem(autoSaveKey);
         if (localAutoSave) {
           try { userSelections = JSON.parse(localAutoSave); } catch(e){}
@@ -533,14 +613,15 @@
         if (savedResult) {
           const resultData = JSON.parse(savedResult);
           isSubmitted = true;
-          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpent || 0);
+          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpent || 0, resultData.perQuestionTime || {});
         } else {
           startTimer();
           setupAntiCheat();
+          setupUnloadProtection();
         }
       }
 
-      // --- Rendering Engine ---
+      // Rendering Engine
       function renderQuestions() {
         const container = document.getElementById('questionsContainer');
         const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
@@ -575,6 +656,7 @@
                 <div class="insight-card"><strong>⚠️ Common Mistake:</strong> ${q.mistake || 'N/A'}</div>
                 <div class="insight-card"><strong>🎯 Admission Tip:</strong> ${q.tip || 'N/A'}</div>
               </div>
+              <div class="q-time-badge" id="q-time-${qIndex}">⏱️ ব্যয়িত সময়: 0s</div>
             </div>
           </div>
         `).join('');
@@ -582,10 +664,12 @@
         window.selectOption = function(qIndex, oIndex) {
           if (isSubmitted) return;
           
+          triggerHaptic();
+          playAudioFeedback('click');
+
           userSelections[qIndex] = oIndex;
           localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
           
-          // Auto sync to Firebase Cloud Session
           if (currentUser) {
             update(ref(db, `exam_sessions/${currentUser.uid}/${examData.id || 'exam'}`), {
               answers: userSelections,
@@ -600,9 +684,21 @@
           });
 
           updatePalette();
+
+          // Auto-advance logic
+          const autoAdvance = document.getElementById('autoAdvanceCheck').checked;
+          if (autoAdvance) {
+            if (viewMode === 'single' && qIndex < examData.questions.length - 1) {
+              setTimeout(() => navigateSingle(1), 250);
+            } else if (viewMode === 'all' && qIndex < examData.questions.length - 1) {
+              const nextCard = document.getElementById(`q-box-${qIndex + 1}`);
+              if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
         };
 
         window.toggleBookmark = function(qIndex) {
+          triggerHaptic();
           bookmarkedQuestions[qIndex] = !bookmarkedQuestions[qIndex];
           const btn = document.getElementById(`bookmark-${qIndex}`);
           if(bookmarkedQuestions[qIndex]) btn.classList.add('active');
@@ -611,12 +707,27 @@
         };
 
         window.toggleReview = function(qIndex) {
+          triggerHaptic();
           reviewQuestions[qIndex] = !reviewQuestions[qIndex];
           const btn = document.getElementById(`review-${qIndex}`);
           if(reviewQuestions[qIndex]) btn.classList.add('active');
           else btn.classList.remove('active');
           updatePalette();
         };
+
+        // Render Mathematical LaTeX Equations
+        renderMathInQuestions();
+      }
+
+      function renderMathInQuestions() {
+        if (window.renderMathInElement) {
+          window.renderMathInElement(document.getElementById('questionsContainer'), {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ]
+          });
+        }
       }
 
       function renderPalette() {
@@ -650,8 +761,20 @@
         document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
       }
 
-      // --- Navigation Controls ---
+      // Font Zoom Control
+      window.changeFontSize = function(delta) {
+        currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
+        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
+      };
+
+      // Navigation Controls
       window.scrollToQuestion = function(index) {
+        // Track time spent on previous question
+        const now = Date.now();
+        const spent = Math.round((now - currentQuestionStartTime) / 1000);
+        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
+        currentQuestionStartTime = now;
+
         currentSingleIndex = index;
         if (viewMode === 'single') {
           examData.questions.forEach((_, i) => {
@@ -713,7 +836,7 @@
         alert("🎉 সব প্রশ্ন ইতোমধ্যে উত্তর দেওয়া হয়ে গেছে!");
       };
 
-      // --- Timer & Anti-Cheat ---
+      // Timer & Anti-Cheat
       function startTimer() {
         updateTimerDisplay();
         timerInterval = setInterval(() => {
@@ -721,10 +844,9 @@
           localStorage.setItem(examTimerKey, timeRemaining);
           updateTimerDisplay();
 
-          // Smart Warning System
-          if (timeRemaining === 600) showToastWarning("⚠️ আপনার পরীক্ষার আর ১০ মিনিট বাকি!");
-          if (timeRemaining === 300) showToastWarning("🔥 দ্রুত বাকি প্রশ্নগুলো সম্পন্ন করুন (৫ মিনিট বাকি)!");
-          if (timeRemaining === 60) showToastWarning("🚨 মাত্র ১ মিনিট বাকি!");
+          if (timeRemaining === 600) { playAudioFeedback('warning'); showToastWarning("⚠️ আপনার পরীক্ষার আর ১০ মিনিট বাকি!"); }
+          if (timeRemaining === 300) { playAudioFeedback('warning'); showToastWarning("🔥 দ্রুত বাকি প্রশ্নগুলো সম্পন্ন করুন (৫ মিনিট বাকি)!"); }
+          if (timeRemaining === 60)  { playAudioFeedback('warning'); showToastWarning("🚨 মাত্র ১ মিনিট বাকি!"); }
 
           if (timeRemaining <= 0) {
             clearInterval(timerInterval);
@@ -756,6 +878,12 @@
         });
       }
 
+      function setupUnloadProtection() {
+        window.onbeforeunload = function() {
+          if (!isSubmitted) return "আপনার পরীক্ষাটি জমা দেওয়া হয়নি! বের হতে চান?";
+        };
+      }
+
       // Keyboard Shortcuts
       document.addEventListener('keydown', (e) => {
         if (isSubmitted) return;
@@ -763,9 +891,24 @@
         if (e.key === 'ArrowLeft') navigateSingle(-1);
         if (e.key.toLowerCase() === 'm') toggleReview(currentSingleIndex);
         if (e.key.toLowerCase() === 'b') toggleBookmark(currentSingleIndex);
+
+        // Option selections with 1,2,3,4 or a,b,c,d
+        const key = e.key.toLowerCase();
+        let optIdx = -1;
+        if (['1', 'a'].includes(key)) optIdx = 0;
+        if (['2', 'b'].includes(key)) optIdx = 1;
+        if (['3', 'c'].includes(key)) optIdx = 2;
+        if (['4', 'd'].includes(key)) optIdx = 3;
+
+        if (optIdx !== -1) {
+          selectOption(currentSingleIndex, optIdx);
+        }
       });
 
-      // --- Submission & Evaluation ---
+      // Modals
+      window.openShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'flex'; };
+      window.closeShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'none'; };
+
       window.openConfirmModal = function() {
         if (isSubmitted) return;
         const total = examData.questions.length;
@@ -780,28 +923,28 @@
         document.getElementById('confirmModal').style.display = 'flex';
       };
 
-      window.closeConfirmModal = function() {
-        document.getElementById('confirmModal').style.display = 'none';
-      };
+      window.closeConfirmModal = function() { document.getElementById('confirmModal').style.display = 'none'; };
+      window.confirmAndSubmit = function() { closeConfirmModal(); submitExamAction(); };
 
-      window.confirmAndSubmit = function() {
-        closeConfirmModal();
-        submitExamAction();
-      };
-
+      // Submission & Evaluation
       async function submitExamAction() {
         if (isSubmitted) return;
+
+        // Record last question time
+        const now = Date.now();
+        const spent = Math.round((now - currentQuestionStartTime) / 1000);
+        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
 
         clearInterval(timerInterval);
         localStorage.removeItem(examTimerKey);
         isSubmitted = true;
+        window.onbeforeunload = null;
 
         const timeSpent = totalDurationSeconds - Math.max(0, timeRemaining);
         let correctCount = 0;
         let wrongCount = 0;
         const total = examData.questions.length;
 
-        // Topic-wise metrics
         let topicStats = {};
 
         examData.questions.forEach((q, i) => {
@@ -829,16 +972,16 @@
         localStorage.setItem(activeExamKey, JSON.stringify({
           score: finalScore,
           userAnswers: userSelections,
-          timeSpent: timeSpent
+          timeSpent: timeSpent,
+          perQuestionTime: perQuestionTime
         }));
 
-        showSubmittedResult(userSelections, finalScore, timeSpent, topicStats);
+        showSubmittedResult(userSelections, finalScore, timeSpent, perQuestionTime, topicStats);
 
         const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
         const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
 
         try {
-          // Push attempt to Firebase
           if (currentUser) {
             const attemptRef = push(ref(db, `exam_attempts/${currentUser.uid}`));
             await set(attemptRef, {
@@ -851,7 +994,6 @@
               userAnswers: userSelections
             });
 
-            // Update Leaderboard Node
             await set(ref(db, `leaderboard/${examIdClean}/${currentUser.uid}`), {
               name: document.getElementById('uName').innerText || "Student",
               score: finalScore,
@@ -864,8 +1006,8 @@
         loadLiveLeaderboard(examIdClean);
       }
 
-      // --- Dashboard & Review Display ---
-      function showSubmittedResult(userAnswers, score, timeSpent, topicStats) {
+      // Dashboard & Review Display
+      function showSubmittedResult(userAnswers, score, timeSpent, qTimeMap, topicStats) {
         const total = examData.questions.length;
         const skipped = total - Object.keys(userAnswers).length;
         const correct = Math.round((score + (total - skipped - score)/(1 + (examData.marking?.wrong||0.25))));
@@ -873,7 +1015,6 @@
         const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0;
         const attemptRate = Math.round(((total - skipped) / total) * 100);
 
-        // Header Metrics Update
         document.getElementById('resultDashboard').style.display = 'block';
         document.getElementById('resScore').innerText = score.toFixed(2);
         document.getElementById('resAccuracy').innerText = accuracy + '%';
@@ -886,15 +1027,12 @@
         document.getElementById('resTime').innerText = `${m}m ${s}s`;
         document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${attemptRate}%`;
 
-        // Progress Bar
         document.getElementById('barCorrect').style.width = `${(correct/total)*100}%`;
         document.getElementById('barWrong').style.width = `${(wrong/total)*100}%`;
         document.getElementById('barSkip').style.width = `${(skipped/total)*100}%`;
 
-        // AI Weakness Analysis Engine
         runAIAnalysis(accuracy, topicStats);
 
-        // Render Review Inputs
         document.getElementById('timerDisplay').innerText = "00:00";
         document.getElementById('filterBar').style.display = 'flex';
         document.getElementById('topSubmitBtn').style.display = 'none';
@@ -906,6 +1044,11 @@
           const correctVal = parseInt(q.correct, 10);
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
+
+          const timeBadge = document.getElementById(`q-time-${i}`);
+          if (timeBadge && qTimeMap && qTimeMap[i]) {
+            timeBadge.innerText = `⏱️ ব্যয়িত সময়: ${qTimeMap[i]}s`;
+          }
 
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
@@ -940,7 +1083,6 @@
 
         document.getElementById('aiAnalysisText').innerText = aiText;
 
-        // Extract weak vs strong topics
         for (const [topic, stat] of Object.entries(topicStats || {})) {
           const acc = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0;
           const isWeak = acc < 60;
@@ -954,7 +1096,14 @@
         alert("🤖 GAIVEX AI Engine: আপনার দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি স্পেশাল রিভিশন MCQ তৈরি করা হচ্ছে... (Redirecting to Practice Module)");
       };
 
-      // Leaderboard Engine
+      window.shareResultOnFacebook = function() {
+        const score = document.getElementById('resScore').innerText;
+        const acc = document.getElementById('resAccuracy').innerText;
+        const text = `আমি GAIVEX Smart Exam System-এ "রাসায়নিক পরিবর্তন" পরীক্ষায় স্কোর করেছি ${score} (Accuracy: ${acc})! আপনার প্রস্তুতি পরখ করতে লাইভ পরীক্ষা দিন।`;
+        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+      };
+
       async function loadLiveLeaderboard(examIdClean) {
         const tbody = document.getElementById('leaderboardBody');
         try {
@@ -982,13 +1131,11 @@
         }
       }
 
-      // Tab Switchers
       window.toggleTabs = function(tab) {
         document.getElementById('tabLeaderboard').style.display = tab === 'leaderboard' ? 'block' : 'none';
         document.getElementById('tabHistory').style.display = tab === 'history' ? 'block' : 'none';
       };
 
-      // Filter Questions
       window.filterQuestions = function(type) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
@@ -1010,7 +1157,6 @@
         });
       };
 
-      // Question Report Modal
       window.openReportModal = function(qIndex) {
         document.getElementById('reportQIndex').value = qIndex;
         document.getElementById('reportModal').style.display = 'flex';
@@ -1036,7 +1182,6 @@
         } catch(e) { alert("❌ রিপোর্ট জমা দেওয়া যায়নি।"); }
       };
 
-      // Printable Digital Certificate
       window.printCertificate = function() {
         document.getElementById('certName').innerText = document.getElementById('uName').innerText || "Student";
         document.getElementById('certExam').innerText = examData.title;
@@ -1052,7 +1197,6 @@
         certWin.print();
       };
 
-      // Auth Observer & Boot
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         checkAttemptAndLoad();
