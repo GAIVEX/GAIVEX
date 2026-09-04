@@ -6,7 +6,7 @@
     <title>লাইভ পরীক্ষা — GAIVEX Smart Exam System</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- KaTeX CSS/JS for Math & Chemistry Equations -->
+    <!-- KaTeX CSS/JS for Math & Equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 
@@ -14,8 +14,50 @@
         :root {
             --q-font-size: 16px;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; user-select: none; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Hind Siliguri', sans-serif; 
+            /* Anti-Copy and Text Selection Disable */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        
+        body { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+        }
+
+        /* Screen capture / Blur Protection Overlay */
+        .secure-blur {
+            filter: blur(15px) grayscale(100%) !important;
+            pointer-events: none !important;
+        }
+
+        #screenProtectOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.98);
+            z-index: 99999;
+            color: #f43f5e;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
         
         /* Navbar */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 1000; }
@@ -131,10 +173,6 @@
         .topic-pill.strong { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
 
         /* Leaderboard & Tabs */
-        .tab-bar { display: flex; gap: 10px; border-bottom: 1px solid #334155; margin-bottom: 15px; }
-        .tab-btn { background: none; border: none; color: #94a3b8; padding: 10px 15px; font-weight: bold; cursor: pointer; font-size: 14px; border-bottom: 2px solid transparent; }
-        .tab-btn.active { color: #38bdf8; border-color: #38bdf8; }
-
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         .leaderboard-table th, .leaderboard-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; }
         .leaderboard-table th { background: #0f172a; color: #38bdf8; }
@@ -167,6 +205,11 @@
         .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
         .social-btn svg { width: 18px; height: 18px; }
 
+        /* Print Media Security CSS */
+        @media print {
+            body { display: none !important; }
+        }
+
         @media (max-width: 640px) {
           .timer-header { flex-wrap: wrap; }
           #examTitle { max-width: 140px; }
@@ -175,10 +218,17 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
+
+    <!-- Anti-Screenshot / Blur Protection Screen Overlay -->
+    <div id="screenProtectOverlay">
+        <h2>🔒 সিকিউরিটি অ্যালার্ট!</h2>
+        <p style="margin-top: 10px; font-size: 16px; color: #cbd5e1;">পরীক্ষা চলাকালীন স্ক্রিনশট নেওয়া, উইন্ডো পরিবর্তন করা বা প্রিন্ট করা নিষিদ্ধ!</p>
+        <p style="margin-top: 5px; font-size: 13px; color: #38bdf8;">পরীক্ষার স্ক্রিনে ফিরে আসতে এখানে ক্লিক করুন...</p>
+    </div>
 
     <!-- Header / Navbar -->
-    <header class="navbar">
+    <header class="navbar" id="mainHeader">
         <a href="index.html" class="logo">GAIVEX<span>.</span></a>
         <div class="nav-right">
             <div class="user-badge" id="userProfileBadge">
@@ -189,9 +239,9 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container" id="mainExamContainer">
         <!-- Anti-cheat / System Warning Toast -->
-        <div class="warning-toast" id="warningToast">⚠️ সতর্কতা: ট্যাব পরিবর্তন বা উইন্ডো মিনিমাইজ করলে পরীক্ষা বাতিল হতে পারে!</div>
+        <div class="warning-toast" id="warningToast">⚠️ সতর্কতা: স্ক্রিনশট, ক্যাপচার বা ট্যাব পরিবর্তন করার চেষ্টা করলে পরীক্ষা বাতিল হতে পারে!</div>
 
         <!-- Sticky Timer Bar -->
         <div class="timer-header">
@@ -206,7 +256,7 @@
         <div class="result-dashboard" id="resultDashboard">
             <div class="dash-header">
                 <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড</h2>
-                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Chemical Changes — Live Exam Result</p>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Plant Breeding (উদ্ভিদ প্রজনন) — Live Exam Result</p>
                 
                 <div class="stats-grid">
                     <div class="stat-card"><div class="num" id="resScore">0.00</div><div class="lbl">মোট নম্বর</div></div>
@@ -394,7 +444,7 @@
         <h3>Certificate of Participation & Performance</h3>
         <p>This is awarded to</p>
         <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Student Name</h2>
-        <p>for completing the live examination <b><span id="certExam">Chemical Changes</span></b></p>
+        <p>for completing the live examination <b><span id="certExam">Plant Breeding</span></b></p>
         <br>
         <p>Score Obtained: <b><span id="certScore">00</span></b> | Accuracy: <b><span id="certAcc">00%</span></b></p>
         <p>Date: <span id="certDate">02/09/2026</span></p>
@@ -456,7 +506,6 @@
       let currentFontSize = 16;
 
       // Audio & Analytics Tracking
-      let soundEnabled = true;
       let perQuestionTime = {};
       let currentQuestionStartTime = Date.now();
 
@@ -488,70 +537,133 @@
         if (navigator.vibrate) navigator.vibrate(30);
       }
 
-      // Default Exam Questions
+      // 🌾 50 Plant Breeding (উদ্ভিদ প্রজনন) Exam Questions
       const defaultExamData = {
-        id: "chemical_changes_mcq_50_v2",
-        title: "🧪 রাসায়নিক পরিবর্তন (Chemical Changes) — ৫০টি গুরুত্বপূর্ণ MCQ",
+        id: "plant_breeding_mcq_50_v1",
+        title: "🌾 উদ্ভিদ প্রজনন (Plant Breeding) — ৫০টি গুরুত্বপূর্ণ MCQ",
         duration: 25,
         marking: { correct: 1, wrong: 0.25 },
         questions: [
-          { question: "বিক্রিয়ার হার (Rate of Reaction) এর একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "mol L s⁻¹", "L mol⁻¹ s⁻¹", "mol L⁻² s⁻¹"], correct: 0, topic: "Reaction Kinetics", difficulty: "easy", explanation: "বিক্রিয়ার হার = ঘনমাত্রার পরিবর্তন / সময় = (mol/L) / s = mol L⁻¹ s⁻¹।", concept: "Rate of Reaction", shortcut: "Concentration / Time", mistake: "s-1 বাদ দিয়ে হিসাব করা", tip: "একক সরাসরি মুখস্থ রাখুন।" },
-          { question: "শূন্য ক্রম (Zero order) বিক্রিয়ার বেগ ধ্রুবকের (k) একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, topic: "Reaction Order", difficulty: "easy", explanation: "শূন্য ক্রম বিক্রিয়ার ক্ষেত্রে Rate = k[A]⁰ = k। সুতরাং k এর একক বিক্রিয়ার হারের এককই (mol L⁻¹ s⁻¹)।" },
-          { question: "প্রথম ক্রম (First order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 1, topic: "Reaction Order", difficulty: "easy", explanation: "প্রথম ক্রম বিক্রিয়ায় Rate = k[A] ⟹ k = Rate/[A] = (mol L⁻¹ s⁻¹)/(mol L⁻¹) = s⁻¹।" },
-          { question: "দ্বিতীয় ক্রম (Second order) বিক্রিয়ার হার ধ্রুবকের একক কোনটি?", options: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 2, topic: "Reaction Order", difficulty: "medium", explanation: "সাধারণ বিক্রিয়ার একক: (mol L⁻¹)^(1-n) s⁻¹। n=2 বসালে পাওয়া যায় L mol⁻¹ s⁻¹।" },
-          { question: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু ($t_{1/2}$) এর সাথে প্রারম্ভিক ঘনমাত্রার সম্পর্ক কী?", options: ["সরাসরি সমানুপাতিক", "ব্যস্তানুপাতিক", "ঘনমাত্রার ওপর নির্ভর করে না", "ঘনমাত্রার বর্গের সমানুপাতিক"], correct: 2, topic: "Half Life", difficulty: "medium", explanation: "প্রথম ক্রম বিক্রিয়ার অর্ধায়ু $t_{1/2} = \\frac{0.693}{k}$, যা প্রারম্ভিক ঘনমাত্রার (a) ওপর সম্পূর্ণ স্বাধীন।" },
-          { question: "তাপমাত্রার সাথে বিক্রিয়ার হার ধ্রুবক (k) এর সম্পর্ক নির্দেশকারী সমীকরণ কোনটি?", options: ["আর্হেনিয়াস সমীকরণ", "ভ্যান্ট হফ সমীকরণ", "অস্টওয়াল্ড সমীকরণ", "এনথালপি সমীকরণ"], correct: 0, topic: "Arrhenius Equation", difficulty: "easy", explanation: "আর্হেনিয়াস সমীকরণ $k = A e^{-E_a/RT}$ তাপমাত্রার সাথে k এর সম্পর্ক দেখায়।" },
-          { question: "আর্হেনিয়াস সমীকরণ অনুযায়ী $\\ln(k)$ বনাম $1/T$ লেখচিত্রের ঢাল (Slope) কত?", options: ["$E_a/R$", "$-E_a/R$", "$-E_a/(2.303 R)$", "$E_a$"], correct: 1, topic: "Arrhenius Equation", difficulty: "hard", explanation: "$\\ln(k) = \\ln(A) - \\frac{E_a}{R}\\frac{1}{T}$। এটি $y = c + mx$ সমীকরণ মেনে চলে, যেখানে ঢাল $m = -E_a/R$।" },
-          { question: "সাধারণত প্রতি ১০°C তাপমাত্রা বৃদ্ধির জন্য বিক্রিয়ার হার কত গুণ বৃদ্ধি পায়?", options: ["১-২ গুণ", "২-৩ গুণ", "৪-৫ গুণ", "১০ গুণ"], correct: 1, topic: "Temperature Coefficient", difficulty: "easy", explanation: "তাপমাত্রা গুণাঙ্ক $\\mu = \\frac{k_{t+10}}{k_t} \\approx 2$ থেকে $3$।" },
-          { question: "অনুঘটক বা প্রভাবক (Catalyst) বিক্রিয়ার হার কীভাবে বৃদ্ধি করে?", options: ["সক্রিয়ণ শক্তি বৃদ্ধি করে", "সক্রিয়ণ শক্তি হ্রাস করে", "বিক্রিয়া তাপ হ্রাস করে", "সাম্যধ্রুবক বৃদ্ধি করে"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "প্রভাবক বিক্রিয়াকে একটি বিকল্প কম শক্তিযুক্ত পথ প্রদান করে, ফলে সক্রিয়ণ শক্তি ($E_a$) হ্রাস পায় ও হার বাড়ে।" },
-          { question: "রাসায়নিক সাম্যাবস্থায় $K_c$ এবং $K_p$ এর মধ্যকার সম্পর্ক সমীকরণ কোনটি?", options: ["$K_p = K_c (RT)^{\\Delta n}$", "$K_c = K_p (RT)^{\\Delta n}$", "$K_p = K_c RT$", "$K_p = K_c (RT)^{-\\Delta n}$"], correct: 0, topic: "Chemical Equilibrium", difficulty: "medium", explanation: "আদর্শ গ্যাস সমীকরণ প্রয়োগে পাওয়া যায় $K_p = K_c (RT)^{\\Delta n}$।" },
-          { question: "কোন বিক্রিয়াটির ক্ষেত্রে $K_p = K_c$ হবে?", options: ["$N_2 + 3H_2 \\rightleftharpoons 2NH_3$", "$PCl_5 \\rightleftharpoons PCl_3 + Cl_2$", "$H_2 + I_2 \\rightleftharpoons 2HI$", "$2SO_2 + O_2 \\rightleftharpoons 2SO_3$"], correct: 2, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "$H_2 + I_2 \\rightleftharpoons 2HI$ বিক্রিয়ায় $\\Delta n = 2 - (1+1) = 0$। ফলে $K_p = K_c (RT)^0 = K_c$।" },
-          { question: "$PCl_5(g) \\rightleftharpoons PCl_3(g) + Cl_2(g)$ বিক্রিয়ার জন্য $\\Delta n$ এর মান কত?", options: ["0", "+1", "-1", "+2"], correct: 1, topic: "Chemical Equilibrium", difficulty: "easy", explanation: "$\\Delta n = \\text{উৎপাদের গ্যাসীয় মোলসংখ্যা} - \\text{বিক্রিয়কের গ্যাসীয় মোলসংখ্যা} = (1 + 1) - 1 = +1$।" },
-          { question: "$N_2(g) + 3H_2(g) \\rightleftharpoons 2NH_3(g)$ বিক্রিয়াটিতে চাপ বৃদ্ধি করলে সাম্যাবস্থা কোন দিকে সরে যাবে?", options: ["বাম দিকে (পশ্চাৎমুখী)", "ডান দিকে (সম্মুখমুখী)", "কোনো পরিবর্তন হবে না", "বিক্রিয়া বন্ধ হবে"], correct: 1, topic: "Le Chatelier Principle", difficulty: "medium", explanation: "লা-শাতেলিয়ার নীতি অনুসারে চাপ বাড়ালে সাম্যাবস্থা বেশি মোল সংখ্যার দিক থেকে কম মোল সংখ্যার দিকে (৪ মোল ➔ ২ মোল অর্থাৎ ডান দিকে) সরবে।" },
-          { question: "কোনটির ওপর সাম্যধ্রুবকের ($K_c / K_p$) মান নির্ভর করে?", options: ["ঘনমাত্রা", "চাপ", "তাপমাত্রা", "প্রভাবক"], correct: 2, topic: "Equilibrium Constant", difficulty: "easy", explanation: "সাম্যধ্রুবক কেবল তাপমাত্রার পরিবর্তনের ওপর নির্ভর করে; ঘনমাত্রা, চাপ বা প্রভাবকে পরিবর্তিত হয় না।" },
-          { question: "তাপউৎপাদী (Exothermic) বিক্রিয়ার ক্ষেত্রে তাপমাত্রা বৃদ্ধি করলে সাম্যধ্রুবক (K) এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "একই থাকে", "শূন্য হয়"], correct: 1, topic: "van 't Hoff Equation", difficulty: "medium", explanation: "ভ্যান্ট হফ সমীকরণ অনুযায়ী তাপউৎপাদী বিক্রিয়ায় ($\\Delta H < 0$) তাপমাত্রা বাড়ালে সাম্যধ্রুবকের মান হ্রাস পায়।" },
-          { question: "বিশুদ্ধ পানির অটো-আয়োনাইজেশন ধ্রুবক ($K_w$) ২৫°C তাপমাত্রায় কত?", options: ["$1.0 \\times 10^{-7}\\text{ M}^2$", "$1.0 \\times 10^{-14}\\text{ M}^2$", "$1.0 \\times 10^{-10}\\text{ M}^2$", "$1.0 \\times 10^{14}\\text{ M}^2$"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "২৫°C-এ পানির আয়নিক গুণফল $K_w = [H^+][OH^-] = (10^{-7})(10^{-7}) = 1.0 \\times 10^{-14} \\text{ M}^2$।" },
-          { question: "২৫°C তাপমাত্রায় বিশুদ্ধ পানির pH এর মান কত?", options: ["0", "7.0", "14.0", "1.0"], correct: 1, topic: "pH & Water", difficulty: "easy", explanation: "বিশুদ্ধ পানিতে $[H^+] = 10^{-7}\\text{ M}$, সুতরাং $\\text{pH} = -\\log(10^{-7}) = 7.0$ (নিরপেক্ষ)।" },
-          { question: "তাপমাত্রা বৃদ্ধি করলে বিশুদ্ধ পানির pH এর মান—", options: ["বৃদ্ধি পায়", "হ্রাস পায়", "অপরিবর্তিত থাকে", "১৪ হয়"], correct: 1, topic: "pH & Water", difficulty: "hard", explanation: "তাপমাত্রা বাড়লে পানির স্বতঃস্ফূর্ত বিয়োজন বাড়ে, ফলে $[H^+]$ বাড়ে এবং pH-এর মান ৭ এর নিচে নেমে আসে (তবে পানি নিরপেক্ষই থাকে)।" },
-          { question: "$0.005\\text{ M } H_2SO_4$ দ্রবণের pH কত?", options: ["2.0", "1.0", "2.3", "3.0"], correct: 0, topic: "pH Calculation", difficulty: "hard", explanation: "$H_2SO_4$ তীব্র দ্বিক্ষারকীয় এসিড। $[H^+] = 2 \\times 0.005 = 0.01\\text{ M} = 10^{-2}\\text{ M}$। $\\text{pH} = -\\log(10^{-2}) = 2.0$।" },
-          { question: "$0.01\\text{ M } NaOH$ দ্রবণের pH কত?", options: ["2", "12", "7", "10"], correct: 1, topic: "pH Calculation", difficulty: "medium", explanation: "$[OH^-] = 0.01\\text{ M} = 10^{-2}\\text{ M} \\implies \\text{pOH} = 2 \\implies \\text{pH} = 14 - 2 = 12$।" },
-          { question: "অ্যাসিডিক বা অম্লীয় বাফার দ্রবণ তৈরির জন্য কোনটি ব্যবহৃত হয়?", options: ["তীব্র এসিড ও মৃদু ক্ষার", "মৃদু এসিড ও তার লবণ", "তীব্র এসিড ও তার লবণ", "মৃদু ক্ষার ও তার লবণ"], correct: 1, topic: "Buffer Solution", difficulty: "easy", explanation: "অম্লীয় বাফার দ্রবণ মৃদু অম্ল (যেমন $CH_3COOH$) এবং শক্তিশালী ক্ষারের সাথে তৈরি অম্লের লবণ (যেমন $CH_3COONa$) দিয়ে তৈরি হয়।" },
-          { question: "ক্ষারীয বাফার দ্রবণের pH গণনার জন্য কোন সমীকরণটি ব্যবহৃত হয়?", options: ["$\\text{pH} = \\text{pKa} + \\log([\\text{Salt}]/[\\text{Acid}])$", "$\\text{pOH} = \\text{pKb} + \\log([\\text{Salt}]/[\\text{Base}])$", "$\\text{pH} = \\text{pKb} + \\log([\\text{Base}]/[\\text{Salt}])$", "$\\text{pH} = 14 + \\text{pKa}$"], correct: 1, topic: "Buffer Solution", difficulty: "medium", explanation: "হ্যান্ডারসন-হ্যাসেলবালখ সমীকরণ অনুসারে ক্ষারীয় বাফারের ক্ষেত্রে $\\text{pOH} = \\text{pKb} + \\log([\\text{Salt}]/[\\text{Base}])$।" },
-          { question: "মানুষের রক্তের pH এর স্বাভাবিক পরিসীমা (Range) কত?", options: ["6.5 - 7.0", "7.35 - 7.45", "7.8 - 8.2", "8.5 - 9.0"], correct: 1, topic: "Blood Buffer", difficulty: "easy", explanation: "মানুষের রক্তের স্বাভাবিক pH হলো ৭.৩৫ থেকে ৭.৪৫ (গড় ৭.৪)।" },
-          { question: "মানুষের রক্তে প্রধান বাফার সিস্টেম কোনটি?", options: ["ফসফেট বাফার", "প্রোটিন বাফার", "বাইকার্বোনেট বাফার ($H_2CO_3 / HCO_3^-$)", "অ্যাসিটেট বাফার"], correct: 2, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের প্রধান প্রাইমারি বাফার হলো কার্বনিক এসিড-বাইকার্বোনেট বাফার সিস্টেম।" },
-          { question: "রক্তের pH ৭.৩৫ এর নিচে নেমে গেলে সেই অবস্থাকে কী বলে?", options: ["অ্যালকালোসিস (Alkalosis)", "এসিডোসিস (Acidosis)", "বাফারিং", "নিউট্রালাইজেশন"], correct: 1, topic: "Blood Buffer", difficulty: "easy", explanation: "রক্তের pH ৭.৩৫ এর নিচে নামলে এসিডোসিস এবং ৭.৪৫ এর উপরে উঠলে অ্যালকালোসিস বলে।" },
-          { question: "পানির স্থায়ী খড়তার (Permanent Hardness) জন্য দায়ী কোন লবণগুলো?", options: ["Ca ও Mg এর বাইকার্বোনেট", "Ca ও Mg এর ক্লোরাইড ও সালফেট", "Na ও K এর কার্বোনেট", "Fe ও Mn এর হাইড্রোক্সাইড"], correct: 1, topic: "Water Hardness", difficulty: "medium", explanation: "$CaCl_2, MgCl_2, CaSO_4, MgSO_4$ দ্রবীভূত থাকলে পানির স্থায়ী খড়তা সৃষ্টি হয়।" },
-          { question: "অস্থায়ী খড়তা দূর করার সবচেয়ে সহজ পদ্ধতি কোনটি?", options: ["ফুটানো (Boiling)", "পারমুটিট প্রণালী", "আয়ন বিনিময় পদ্ধতি", "ক্লোরিনেশন"], correct: 0, topic: "Water Hardness", difficulty: "easy", explanation: "পানি ফুটালে দ্রবণীয় বাইকার্বোনেট লবণগুলো অদ্রবণীয় কার্বনেটে পরিণত হয়ে থিতিয়ে পড়ে।" },
-          { question: "বিওডি (BOD - Biochemical Oxygen Demand) দ্বারা কী পরিমাপ করা হয়?", options: ["পানির অম্লতা", "পানিতে দ্রবীভূত জৈব দূষকের পরিমাণ", "পানির খড়তা", "হেভি মেটালের পরিমাণ"], correct: 1, topic: "Environmental Water", difficulty: "easy", explanation: "জৈব পচনশীল পদার্থকে অনুজীব দ্বারা ভাঙতে যে পরিমাণ $O_2$ লাগে তাকে BOD বলে।" },
-          { question: "পানীয় জলের জন্য BOD এর মান অনুমেয় সীমা কত ধরা হয় (WHO অনুযায়ী)?", options: ["1 - 2 ppm", "10 ppm", "100 ppm", "0 ppm"], correct: 0, topic: "Environmental Water", difficulty: "medium", explanation: "পানযোগ্য বিশুদ্ধ পানির BOD এর মান সাধারণতঃ 1 - 2 mg/L বা ppm হয়।" },
-          { question: "COD (Chemical Oxygen Demand) এর মান সর্বদা BOD অপেক্ষা কেমন হয়?", options: ["কম হয়", "সমান হয়", "বেশি হয়", "অর্ধেক হয়"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "COD তে জৈব পচনশীল ও অপচনশীল উভয় বস্তুর জারণ ঘটে, তাই COD > BOD।" },
-          { question: "পানীয় জলে আর্সেনিকের (As) বিশ্ব স্বাস্থ্য সংস্থা (WHO) অনুমোদিত সর্বোচ্চ সীমা কত?", options: ["0.01 mg/L", "0.05 mg/L", "0.1 mg/L", "1.0 mg/L"], correct: 0, topic: "Environmental Water", difficulty: "medium", explanation: "WHO নির্দেশিত নিরাপদ সীমা 0.01 mg/L (তবে বাংলাদেশের মানদণ্ড 0.05 mg/L)।" },
-          { question: "পানির দ্রবীভূত অক্সিজেন (DO - Dissolved Oxygen) এর ন্যূনতম মান কত হওয়া উচিত?", options: ["1 ppm", "2 ppm", "4 - 6 ppm", "10 - 12 ppm"], correct: 2, topic: "Environmental Water", difficulty: "easy", explanation: "জলজ जीवों বেঁচে থাকার জন্য পানিতে দ্রবীভূত অক্সিজেনের মান কমপক্ষে 4 - 6 ppm থাকা প্রয়োজন।" },
-          { question: "কোনো প্রক্রিয়ায় সিস্টেমে তাপের কোনো আদান-প্রদান ঘটে না, তাকে কী বলে?", options: ["সমোষ্ণ প্রক্রিয়া (Isothermal)", "রুদ্ধতাপীয় প্রক্রিয়া (Adiabatic)", "সমচাপীয় প্রক্রিয়া", "সমআয়তন প্রক্রিয়া"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "রুদ্ধতাপীয় (Adiabatic) প্রক্রিয়ায় সিস্টেম ও পরিবেশের মধ্যে তাপের আদান-প্রদান $dQ = 0$ হয়।" },
-          { question: "হেসের তাপ সমষ্টির সূত্র (Hess's Law) তাপগতিবিদ্যার কোন সূত্রের ওপর প্রতিষ্ঠিত?", options: ["প্রথম সূত্র (শক্তি সংরক্ষণশীলতা)", "দ্বিতীয় সূত্র", "তৃতীয় সূত্র", "শূন্যতম সূত্র"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "হেসের সূত্রটি মূলত শক্তির নিত্যতা বা সংরক্ষণশীলতা নীতির প্রয়োগ।" },
-          { question: "তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ (Heat of Neutralization) এর মান কত?", options: ["-57.34 kJ mol⁻¹", "-13.7 kJ mol⁻¹", "+57.34 kJ mol⁻¹", "-68.3 kJ mol⁻¹"], correct: 0, topic: "Thermochemistry", difficulty: "easy", explanation: "সব তীব্র এসিড ও তীব্র ক্ষারের প্রশমন তাপ ধ্রুবক এবং এর মান -57.34 kJ mol⁻¹ (বা -13.7 kcal mol⁻¹)।" },
-          { question: "HF ও NaOH এর প্রশমন তাপের মান -57.34 kJ mol⁻¹ অপেক্ষা বেশি (-68.6 kJ mol⁻¹) হওয়ার কারণ—", options: ["HF তীব্র এসিড", "$F^-$ আয়নের উচ্চ হাইড্রেশন শক্তি", "NaOH দুর্বল ক্ষার", "HF এর বিয়োজন এনথালপি বেশি"], correct: 1, topic: "Thermochemistry", difficulty: "hard", explanation: "ক্ষুদ্র আকারের $F^-$ আয়নের হাইড্রেশন শক্তি অত্যন্ত বেশি থাকায় নির্গত তাপের মান স্বাভাবিকের চেয়ে বেশি হয়।" },
-          { question: "$CH_3COOH$ ও NaOH এর প্রশমন তাপ -57.34 kJ mol⁻¹ অপেক্ষা কম (-55.2 kJ mol⁻¹) কেন?", options: ["$CH_3COOH$ সম্পূর্ণ বিয়োজিত হয় না (বিয়োজন তাপে কিছু শক্তি ব্যয় হয়)", "সোডিয়াম অ্যাসিটেট লবণ তৈরি হয়", "বিক্রিয়াটি শ্লথ", "পানি উৎপন্ন হয় না"], correct: 0, topic: "Thermochemistry", difficulty: "medium", explanation: "দুর্বল এসিড ($CH_3COOH$) কে পূর্ণ বিয়োজিত করতে কিছু শক্তি শোষিত হয়, ফলে নিট নির্গত তাপ কমে যায়।" },
-          { question: "স্বতঃস্ফূর্ত (Spontaneous) পরিবর্তনের জন্য গিবস মুক্ত শক্তির পরিবর্তন ($\\Delta G$) কেমন হবে?", options: ["ধনাত্মক ($\\Delta G > 0$)", "ঋণাত্মক ($\\Delta G < 0$)", "শূন্য ($\\Delta G = 0$)", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "medium", explanation: "যেকোনো স্বতঃস্ফূর্ত বা স্বমেধিত প্রক্রিয়ায় $\\Delta G$ সর্বদা ঋণাত্মক ($\\Delta G < 0$) হতে হয়।" },
-          { question: "সাম্যাবাস্থায় গিবস মুক্ত শক্তির পরিবর্তন ($\\Delta G$) এর মান কত?", options: ["$\\Delta G < 0$", "$\\Delta G > 0$", "$\\Delta G = 0$", "$\\Delta G = \\Delta H$"], correct: 2, topic: "Thermodynamics", difficulty: "easy", explanation: "বিক্রিয়া সাম্যাবস্থায় উপনীত হলে মুক্ত শক্তির কোনো নিট পরিবর্তন হয় না, অর্থাৎ $\\Delta G = 0$।" },
-          { question: "একটি এনডোথার্মিক (তাপহারী) বিক্রিয়ার জন্য enthalpy পরিবর্তন ($\\Delta H$) কেমন হয়?", options: ["$\\Delta H < 0$ (ঋণাত্মক)", "$\\Delta H > 0$ (ধনাত্মক)", "$\\Delta H = 0$", "$\\Delta H = \\infty$"], correct: 1, topic: "Thermochemistry", difficulty: "easy", explanation: "তাপহারী বিক্রিয়ায় সিস্টেম তাপ শোষণ করে, ফলে $\\Delta H$ ধনাত্মক (+) হয়।" },
-          { question: "বিক্রিয়া এনথালপি $\\Delta H$, এন্ট্রপি $\\Delta S$ এবং পরম তাপমাত্রা T এর সম্পর্কযুক্ত গিবস সমীকরণ কোনটি?", options: ["$\\Delta G = \\Delta H - T\\Delta S$", "$\\Delta G = \\Delta H + T\\Delta S$", "$\\Delta H = \\Delta G - T\\Delta S$", "$\\Delta S = \\Delta H / \\Delta G$"], correct: 0, topic: "Thermodynamics", difficulty: "medium", explanation: "গিবস-হেলমহোল্টজ সমীকরণ: $\\Delta G = \\Delta H - T\\Delta S$।" },
-          { question: "কোনো কেলাসিত বিশুদ্ধ পদার্থের পরম শূন্য তাপমাত্রায় (0 K) এন্ট্রপির (Entropy) মান কত?", options: ["সর্বোচ্চ", "শূন্য (0)", "ঋণাত্মক", "অসীম"], correct: 1, topic: "Thermodynamics", difficulty: "easy", explanation: "তাপগতিবিদ্যার ৩য় সূত্র অনুসারে পরম শূন্য তাপমাত্রায় বিশুদ্ধ ক্লাসের এন্ট্রপি শূন্য।" },
-          { question: "হেবার প্রণালীতে অ্যামোনিয়া ($NH_3$) শিল্প উৎপাদনে ব্যবহৃত অনুঘটক (Catalyst) কোনটি?", options: ["$V_2O_5$", "সূক্ষ্ম চূর্ণিত Fe (আয়রন)", "Pt (প্লাটিনাম)", "Ni (নিকেল)"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "হেবার প্রণালীতে আয়রন চূর্ণ (Fe) প্রভাবক এবং মোলিবেডনাম (Mo) প্রভাবক সহায়কের কাজ করে।" },
-          { question: "স্পর্শ প্রণালীতে সালফিউরিক এসিড ($H_2SO_4$) তৈরিতে ব্যবহৃত আধুনিক প্রভাবক কোনটি?", options: ["Pt (প্লাটিনাম)", "$V_2O_5$ (ভ্যানাডিয়াম পেন্টঅক্সাইড)", "$Fe_2O_3$", "$MnO_2$"], correct: 1, topic: "Catalysis", difficulty: "easy", explanation: "পূর্বে প্লাটাইনাবৃত অ্যাসবেস্টস ব্যবহার হলেও বর্তমানে সস্তা ও বিষমুক্ত $V_2O_5$ ব্যবহৃত হয়।" },
-          { question: "নিচের কোনটি ঋণাত্মক প্রভাবক (Negative Catalyst) হিসেবে কাজ করে?", options: ["$MnO_2$", "গ্লিসারিন / ফসফরিক এসিড", "Pt", "Fe"], correct: 1, topic: "Catalysis", difficulty: "medium", explanation: "গ্লিসারিন বা অ্যালকোহল $H_2O_2$ এর বিয়োজন হার কমিয়ে দেয়, যা ঋণাত্মক প্রভাবক।" },
-          { question: "অটো-ক্যাটালিস্ট (Auto-catalyst) এর উদাহরণ কোনটি?", options: ["$KMnO_4$ দ্বারা অক্সালিক এসিডের জারণে উৎপন্ন $Mn^{2+}$ আয়ন", "$H_2O_2$ বিয়োজনে $MnO_2$", "এস্টার আদ্রবিশ্লেষণে এসিড", "উভয় ক ও গ"], correct: 3, topic: "Catalysis", difficulty: "hard", explanation: "বিক্রিয়ায় উৎপন্ন $Mn^{2+}$ অথবা উৎপন্ন এসিড স্বয়ং প্রভাবক হিসেবে কাজ করায় এরা স্ব-প্রভাবক।" },
-          { question: "সবচেয়ে শক্তিশালী কনজুগেট ক্ষারক (Conjugated Base) কোনটি থেকে তৈরি হয়?", options: ["তীব্র অম্ল থেকে", "দুর্বল অম্ল থেকে", "তীব্র ক্ষার থেকে", "প্রকৃতিতে নিরপেক্ষ বস্তু থেকে"], correct: 1, topic: "Acid Base Theory", difficulty: "hard", explanation: "ব্রনস্টেড-লাউরি তত্ত্বানুসারে, অম্ল যত দুর্বল হবে, তার অনুবন্ধী ক্ষার (Conjugate base) তত শক্তিশালী হবে।" },
-          { question: "$NH_3$ এর অনুবন্ধী অম্ল (Conjugate Acid) কোনটি?", options: ["$NH_2^-$", "$NH_4^+$", "$N^{3-}$", "$NH_3^+$"], correct: 1, topic: "Acid Base Theory", difficulty: "easy", explanation: "একটি প্রোটন ($H^+$) গ্রহণ করার পর যে অম্ল উৎপন্ন হয়: $NH_3 + H^+ \\rightarrow NH_4^+$।" },
-          { question: "$HCO_3^-$ আয়নটির ক্ষেত্রে কোনটি সত্য?", options: ["এটি শুধুমাত্র অম্ল", "এটি শুধুমাত্র ক্ষারক", "এটি উভধর্মী (Amphoteric)", "এটি বাফার নয়"], correct: 2, topic: "Acid Base Theory", difficulty: "medium", explanation: "$HCO_3^-$ প্রোটন ত্যাগ করে $CO_3^{2-}$ দিতে পারে (অম্ল) আবার প্রোটন গ্রহণ করে $H_2CO_3$ হতে পারে (ক্ষারক)।" },
-          { question: "দাঁতের এনামেল ক্ষয় রোধে মুখে pH এর মান কতের নিচে নামা উচিত নয়?", options: ["5.5", "6.5", "7.0", "4.0"], correct: 0, topic: "pH Applications", difficulty: "medium", explanation: "মুখের লালার pH 5.5 এর নিচে নামলে দাঁতের এনামেল (হাইড্রক্সি এপাটাইট) দ্রবীভূত হতে শুরু করে।" }
+          { question: "উদ্ভিদ প্রজননের মূল লক্ষ্য কোনটি?", options: ["উদ্ভিদের রূপ বৃদ্ধি করা", "উচ্চ ফলনশীল ও রোগপ্রতিরোধী জাত উদ্ভাবন", "উদ্ভিদের আয়ু কমানো", "উদ্ভিদের আকার ছোট করা"], correct: 1, topic: "Introduction to Plant Breeding", difficulty: "easy", explanation: "উদ্ভিদ প্রজননের প্রধান উদ্দেশ্য হলো ফসলের ফলন বৃদ্ধি, গুণগত মান উন্নয়ন এবং প্রতিকূল পরিবেশ ও রোগ সহ্য করার ক্ষমতা বাড়ানো।", concept: "Plant Breeding Goals", shortcut: "High Yield + Resistance", mistake: "শুধুমাত্র আকৃতি বৃদ্ধি মনে করা", tip: "উদ্ভিদের অর্থনৈতিক বৈশিষ্ট্য উন্নয়নই মূল উদ্দেশ্য।" },
+          { question: "ফুলের পরাগরেণু একই ফুলের গর্ভমুণ্ডে পতিত হওয়াকে কী বলে?", options: ["পরপরাগযোগ (Cross Pollination)", "স্বসংকরায়ন", "স্ব-পরাগযোগ (Self Pollination)", "এপোমিক্সিস"], correct: 2, topic: "Pollination Biology", difficulty: "easy", explanation: "একই ফুল বা একই গাছের অন্য ফুলের মধ্যে পরাগযোগ ঘটলে তাকে স্ব-পরাগযোগ বলে।", concept: "Pollination Modes", shortcut: "Same Flower/Plant = Self", mistake: "পরপরাগযোগের সাথে গুটিয়ে ফেলা", tip: "ধান, গম, মটরশুঁটি স্ব-পরাগায়িত উদ্ভিদ।" },
+          { question: "নিচের কোনটি স্ব-পরাগায়িত (Self-pollinated) উদ্ভিদ?", options: ["ভুট্টা", "ধান", "পেঁপে", "সরিষা"], correct: 1, topic: "Pollination Biology", difficulty: "easy", explanation: "ধান, গম, টমেটো, মটরশুঁটি ইত্যাদি প্রধানত স্ব-পরাগায়িত ফসল।", concept: "Crop Selfing", shortcut: "Paddy = Self Pollinated", mistake: "ভুট্টাকে স্ব-পরাগায়িত ভাবা", tip: "ভুট্টা একটি প্রধান পর-পরাগায়িত উদ্ভিদ।" },
+          { question: "উভলিঙ্গ ফুল থেকে কচি অবস্থায় পুংকেশর কেটে ফেলে দেওয়াকে কী বলা হয়?", options: ["ইমাসকুলেশন (Emasculation)", "ব্যাগিং (Bagging)", "ট্যাগিং (Tagging)", "ক্রসিং"], correct: 0, topic: "Hybridization Technique", difficulty: "easy", explanation: "কৃত্রিম সংকরায়ণে অवांছিত স্ব-পরাগযোগ রোধে ফুল ফোটার আগে পরাগধানী বা পুংকেশর অপসারণ করাকে ইমাসকুলেশন বলে।", concept: "Emasculation Definition", shortcut: "Anther Removal = Emasculation", mistake: "ব্যাগিংয়ের সাথে গুলিয়ে ফেলা", tip: "ইমাসকুলেশন কেবল স্ত্রী-প্যারেন্ট উদ্ভিদে করা হয়।" },
+          { question: "ইমাসকুলেশনের পর ফুলকে বাটার পেপার দিয়ে ঢেকে দেওয়াকে কী বলে?", options: ["ট্যাগিং", "ইমাসকুলেশন", "ব্যাগিং (Bagging)", "আইসোলেশন"], correct: 2, topic: "Hybridization Technique", difficulty: "easy", explanation: "বাইরের অনিচ্ছাকৃত পরাগরেণু এসে যেন গর্ভমুণ্ডে না পড়ে, সেজন্য ইমাসকুলেটেড ফুলকে বাটার পেপার ব্যাগ দিয়ে ঢেকে রাখা হয়।", concept: "Bagging Technique", shortcut: "Covering = Bagging", mistake: "ট্যাগিং মনে করা", tip: "ব্যাগিং পরাগরেণুর দূষণ রোধ করে।" },
+          { question: "সংকরায়ণে প্রাপ্ত প্রথম বংশধরকে কী বলা হয়?", options: ["F2 জনু", "F1 জনু (First Filial Generation)", "P1 জনু", "প্যারেন্টাল জেনারেশন"], correct: 1, topic: "Hybridization Concepts", difficulty: "easy", explanation: "দুইটি বিশুদ্ধ মা-বাবার (Parents) মধ্যে সংকরায়ণের ফলে সৃষ্ট প্রথম অপত্য বংশধরকে F1 জেনারেশন বলে।", concept: "Filial Generations", shortcut: "First Cross = F1", mistake: "P1 ভেবে ভুল করা", tip: "F এর পূর্ণরূপ Filial।" },
+          { question: "সঙ্করায়নের ফলে সৃষ্ট অপত্য উদ্ভিদ যদি মা-বাবা উভয়ের চেয়ে শ্রেষ্ঠ গুণসম্পন্ন হয়, তবে তাকে কী বলে?", options: ["হেটেরোসিস (Heterosis / Hybrid Vigour)", "ইনব্রিডিং ডিপ্রেশন", "জিনোটাইপ", "পলিপ্রোয়েডি"], correct: 0, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "সংকর উদ্ভিদের বর্ধন, জীবনীশক্তি ও ফলন বাবা-মা উভয় অপেক্ষা বৃদ্ধি পাওয়াকে হেটেরোসিস বা হাইব্রিড ভিগর বলে।", concept: "Heterosis Definition", shortcut: "Hybrid > Parents = Heterosis", mistake: "ইনব্রিডিং ভাবা", tip: "G.H. Shull ১৯১৪ সালে Heterosis শব্দটি প্রবর্তন করেন।" },
+          { question: "পরপর কয়েক বংশধর ধরে স্ব-পরাগযোগের মাধ্যমে হেটেরোসিস হ্রাস পাওয়াকে কী বলে?", options: ["জিন ড্রাফট", "ইনব্রিডিং ডিপ্রেশন (Inbreeding Depression)", "এপোমিক্সিস", "জিন মিউটেশন"], correct: 1, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "স্ব-পরাগায়নের ফলে ক্ষতিকর প্রচ্ছন্ন জিনগুলো হোমোজাইগাস হয়ে আত্মপ্রকাশ করায় উদ্ভিদের তেজ ও ফলন হ্রাস পায়, একে ইনব্রিডিং ডিপ্রেশন বলে।", concept: "Inbreeding Effect", shortcut: "Continuous Selfing = Inbreeding Depression", mistake: "হেটেরোসিস বৃদ্ধি ভাবা", tip: "পর-পরাগায়িত উদ্ভিদে এটি বেশি স্পষ্ট।" },
+          { question: "উদ্ভিদের কোনো কোষ বা টিস্যু থেকে পূর্ণাঙ্গ উদ্ভিদ পুনরুৎপাদনের ক্ষমতাকে কী বলা হয়?", options: ["টোটিপোটেন্সি (Totipotency)", "প্লুরিপোটেন্সি", "ক্যালোজেনেসিস", "এমব্রায়োজেনেসিস"], correct: 0, topic: "Tissue Culture & Biotechnology", difficulty: "easy", explanation: "উদ্ভিদ কোষের একটি পূর্ণাঙ্গ উদ্ভিদে পরিণত হওয়ার অন্তর্নিহিত জিনগত ক্ষমতাকে টোটিপোটেন্সি বলে।", concept: "Cell Totipotency", shortcut: "Single Cell to Plant = Totipotency", mistake: "প্লুরিপোটেন্সির সাথে মেলানো", tip: "G. Haberlandt কে টিস্যু কালচারের জনক বলা হয়।" },
+          { question: "উদ্ভিদ প্রজননে কৃত্রিমভাবে মিউটেশন ঘটানোর জন্য বহুল ব্যবহৃত রাসায়নিক কোনটি?", options: ["ইথাইল মিথেন সালফোনেট (EMS)", "জিব্যারেলিন", "2,4-D", "কোলচিসিন"], correct: 0, topic: "Mutation Breeding", difficulty: "hard", explanation: "EMS (Ethyl Methane Sulfonate) হলো একটি শক্তিশালী কেমিক্যাল মিউটাজেন যা জিনে মিউটেশন ঘটাতে ব্যবহৃত হয়।", concept: "Chemical Mutagen", shortcut: "EMS = Chemical Mutagens", mistake: "কোলচিসিনকে মিউটাজেন ভাবা", tip: "কোলচিসিন পলিপ্লয়েডি তৈরিতে ব্যবহৃত হয়।" },
+          { question: "উদ্ভিদ কোষে ক্রোমোজোম সংখ্যা দ্বিগুণ করার জন্য কোন রাসায়নিক এজেন্ট ব্যবহৃত হয়?", options: ["আইএএ (IAA)", "কোলচিসিন (Colchicine)", "কাইনেটিন", "এমএস মিডিয়াম"], correct: 1, topic: "Polyploidy Breeding", difficulty: "medium", explanation: "কোলচিসিন কোষ বিভাজনের সময় স্পিন্ডল তন্তু গঠনে বাধা দেয়, ফলে ক্রোমোজোম বিভাজন না হয়ে দ্বিগুণ (Polyploid) হয়ে যায়।", concept: "Polyploidy Induction", shortcut: "Chromosome Doubling = Colchicine", mistake: "অক্সিন মনে করা", tip: "কোলচিসিন *Colchicum autumnale* উদ্ভিদ থেকে সংগৃহীত হয়।" },
+          { question: "একই প্রজাতিভুক্ত দুটি ভিন্ন স্বাদের বা জাতের উদ্ভিদের মধ্যে সংকরায়ণকে কী বলে?", options: ["ইন্ট্রাস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারজেনেরিক হাইব্রিডাইজেশন", "ডিস্ট্যান্ট হাইব্রিডাইজেশন"], correct: 0, topic: "Hybridization Types", difficulty: "medium", explanation: "একই প্রজাতির (Interspecific নয়) অন্তর্গত দুটি জাতের সংকরায়ণ হলো Intra-specific বা Intra-varietal cross।", concept: "Intraspecific Cross", shortcut: "Within Species = Intra-specific", mistake: "Interspecific মনে করা", tip: "Intra = একই, Inter = ভিন্ন।" },
+          { question: "ভিন্ন দুই গণের (Genus) মধ্যে সংকরায়ণের মাধ্যমে সৃষ্ট বিখ্যাত শস্য 'Triticale' কোন দুটির সংকর?", options: ["গম ও ধান", "গম ও রাই (Wheat × Rye)", "ধান ও বার্লি", "ভুট্টা ও গম"], correct: 1, topic: "Hybridization Types", difficulty: "medium", explanation: "Triticale হলো মানবসৃষ্ট প্রথম শস্য, যা গম (Triticum) এবং রাই (Secale)-এর ইন্টারজেনেরিক সংকরায়ণে তৈরি।", concept: "Intergeneric Hybrid", shortcut: "Wheat × Rye = Triticale", mistake: "ধান ও গমের সংকর ভাবা", tip: "এটি একটি এলোপলিপ্লয়েড (Allopolyploid) শস্য।" },
+          { question: "প্রাকৃতিক উপায়ে বীজ উৎপাদন ছাড়াই ভ্রূণ ও বীজ গঠন প্রক্রিয়াকে কী বলে?", options: ["পারথেনোকার্পি", "এপোমিক্সিস (Apomixis)", "অ্যামফিমিক্সিস", "পলিমিক্সিস"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "hard", explanation: "নিষেক ছাড়াই অসেক উপায়ে বীজ উৎপাদনের প্রক্রিয়াকে এপোমিক্সিস বলে।", concept: "Apomixis Definition", shortcut: "Seed without Fertilization = Apomixis", mistake: "পারথেনোকার্পির সাথে গুলিয়ে ফেলা", tip: "পারথেনোকার্পিতে বীজহীন ফল হয়, কিন্তু এপোমিক্সিসে বীজ তৈরি হয়।" },
+          { question: "বীজহীন ফল (Seedless Fruit) উৎপাদনের প্রক্রিয়াকে কী বলা হয়?", options: ["এপোমিক্সিস", "পারথেনোকার্পি (Parthenocarpy)", "পারথেনোজেনেসিস", "পলিএম্ব্রায়োনি"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "easy", explanation: "নিষেক ছাড়াই ফল সৃষ্টি হলে তাকে পারথেনোকার্পিক ফল বলে (যেমন: কলা, বীজহীন আঙুর)।", concept: "Parthenocarpy", shortcut: "Fruit without Seed = Parthenocarpy", mistake: "পারথেনোজেনেসিস ভাবা", tip: "পারথেনোজেনেসিস হলো অসেক প্রজননের মাধ্যমে অপত্য জীব সৃষ্টি।" },
+          { question: "সবচেয়ে প্রাচীন উদ্ভিদ প্রজনন পদ্ধতি কোনটি?", options: ["সংকরায়ণ", "পছন্দকরণ / নির্বাচন (Selection)", "মিউটেশন ব্রিডিং", "জিন প্রকৌশল"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "কৃষিকাজের শুরু থেকেই মানুষ ভালো ফসল বাছাই বা নির্বাচন (Selection) করে বীজ সংরক্ষণ করতো, যা সবচেয়ে প্রাচীন পদ্ধতি।", concept: "Plant Selection History", shortcut: "Oldest Method = Selection", mistake: "সংকরায়ণকে প্রাচীন ভাবা", tip: "Selection দুই প্রকার: Mass Selection ও Pureline Selection।" },
+          { question: "একটি মাত্র স্ব-পরাগায়িত উদ্ভিদ থেকে বংশানুক্রমে সৃষ্ট সমলক্ষণী জীবগোষ্ঠীকে কী বলে?", options: ["প্যুরলাইন (Pureline / বিশুদ্ধ বংশধারক)", "ইনব্রিড লাইন", "ক্লোন", "হাইব্রিড"], correct: 0, topic: "Selection Methods", difficulty: "medium", explanation: "ড্যানিশ বিজ্ঞানী জোহানসেন (Johannsen) ১৯০৩ সালে Pureline তত্ত্ব দেন। এটি homozygous ও homogenous উদ্ভিদগোষ্ঠী।", concept: "Pureline Theory", shortcut: "Johannsen = Pureline", mistake: "ক্লোন ভাবা", tip: "অঙ্গজ প্রজননে সৃষ্ট জনগোষ্ঠী হলো ক্লোন (Clone)।" },
+          { question: "অঙ্গজ প্রজনন (Vegetative Propagation) দ্বারা উৎপন্ন হুবহু একই জিনোটাইপযুক্ত উদ্ভিদদলকে কী বলা হয়?", options: ["বিশুদ্ধ লাইন", "ক্লোন (Clone)", "মাস সিলেক্টেড লাইন", "সংকর"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "মাতৃউদ্ভিদের অঙ্গজ অংশ থেকে তৈরি সমস্ত অপত্য উদ্ভিদ জিনগতভাবে অবিকল এক হওয়ায় এদের ক্লোন বলা হয়।", concept: "Clones in Plants", shortcut: "Asexual progeny = Clone", mistake: "Pureline এর সাথে মেলানো", tip: "আলু, আদা, কলার বংশবৃদ্ধি ক্লোন পদ্ধতির উদাহরণ।" },
+          { question: "টিস্যু কালচারে এক্সপ্ল্যান্ট (Explant) হিসেবে উদ্ভিদের কোন অংশ সবচেয়ে বেশি উপযোগী?", options: ["শীর্ষ মুকুল বা ভাজক টিস্যু (Meristem)", "পরিপক্ক কাণ্ড", "পুরোনো পাতা", "মৃত ছাল"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "ভাজক টিস্যু (Meristem) দ্রুত বিভাজনক্ষম এবং ভাইরাস মুক্ত থাকায় টিস্যু কালচারে শীর্ষ বা কাক্ষিক মুকুল এক্সপ্ল্যান্ট হিসেবে উত্তম।", concept: "Explant Selection", shortcut: "Virus Free = Meristem", mistake: "যেকোনো বয়স্ক অংশ ভাবা", tip: "মেরিস্টেম কালচারের মাধ্যমে ভাইরাসমুক্ত চারা তৈরি করা হয়।" },
+          { question: "টিস্যু কালচার পুষ্টি মাধ্যমে অনিয়ন্ত্রিতভাবে বিভক্ত অসংগঠিত কোষের মণ্ডকে কী বলা হয়?", options: ["ক্যালস (Callus)", "এমব্রয়েড", "প্রোটোপ্লাস্ট", "এক্সপ্ল্যান্ট"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অক্সিন ও সাইটোকাইনিন হরমোনের প্রভাবে এক্সপ্ল্যান্ট বিভাজিত হয়ে যে অবিন্যস্ত কোষপিণ্ড তৈরি করে তাকে ক্যালস বলে।", concept: "Callus Formation", shortcut: "Undifferentiated Cell Mass = Callus", mistake: "এমব্রয়েড ভাবা", tip: "ক্যালস থেকে পরবর্তীতে মূল ও বিটপ সৃষ্টি হয়।" },
+          { question: "উদ্ভিদের কোষ প্রাচীর এনজাইম দিয়ে গলিয়ে ফেলা কোষকে কী বলা হয়?", options: ["ক্যালস", "প্রোটোপ্লাস্ট (Protoplast)", "সোমাটিক হাইব্রিড", "সাইব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "medium", explanation: "সেলুলেজ ও পেকটিনেজ এনজাইম দিয়ে কোষ প্রাচীর সরিয়ে ফেললে কেবল প্লাজমামেমব্রেন বেষ্টিত প্রোটোপ্লাস্ট পাওয়া যায়।", concept: "Protoplast Isolation", shortcut: "Cell without Wall = Protoplast", mistake: "সাইব্রিড ভাবা", tip: "প্রোটোপ্লাস্ট ফিউশন দিয়ে সোমাটিক হাইব্রিড তৈরি করা হয়।" },
+          { question: "দুটি ভিন্ন প্রজাতির প্রোটোপ্লাস্টের সংমিশ্রণে নতুন উদ্ভিদ সৃষ্টির প্রযুক্তিকে কী বলা হয়?", options: ["সোমাটিক হাইব্রিডাইজেশন (Somatic Hybridization)", "সাইটোপ্লাজমীয় জিনোটাইপ", "জেনেটিক ইঞ্জিনিয়ারিং", "মাইক্রোপ্রোপাগেশন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "দৈহিক কোষের প্রোটোপ্লাস্ট গলিয়ে মিলন ঘটিয়ে সংকর উদ্ভিদ তৈরি করাকে সোমাটিক হাইব্রিডাইজেশন বলে (যেমন: Pomato)।", concept: "Somatic Hybrids", shortcut: "Protoplast Fusion = Somatic Hybrid", mistake: "জেনেটিক ইঞ্জিনিয়ারিং বলা", tip: "পটেটো ও টমেটোর প্রোটোপ্লাস্ট ফিউশনে 'পমেটো' তৈরি হয়।" },
+          { question: "টমেটো এবং আলুর প্রোটোপ্লাস্ট ফিউশন ঘটিয়ে সৃষ্ট সোমাটিক সংকর উদ্ভিদের নাম কী?", options: ["টমেটো আলু", "পমেটো (Pomato)", "টপটেটো", "আলুটমেটো"], correct: 1, topic: "Protoplast Fusion", difficulty: "easy", explanation: "Potato + Tomato = Pomato (মাটির নিচে আলু এবং উপরে টমেটো ফলে)।", concept: "Pomato Example", shortcut: "Potato + Tomato = Pomato", mistake: "টমেটো আলু বলা", tip: "এটি প্রোটোপ্লাস্ট ফিউশনের একটি যুগান্তকারী উদাহরণ।" },
+          { question: "প্রোটোপ্লাস্ট ফিউশন বা গলন ত্বরান্বিত করার জন্য কোন রাসায়নিক দ্রবণ ব্যবহৃত হয়?", options: ["পলিইথিলিন গ্লাইকল (PEG)", "ইথানল", "সোডিয়াম ক্লোরাইড", "ফরমালিন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "PEG (Polyethylene Glycol) প্রোটোপ্লাস্ট দুটির মেমব্রেনকে সাময়িকভাবে গলিয়ে দ্রুত ফিউশনে সাহায্য করে।", concept: "Fusogen Chemical", shortcut: "PEG = Protoplast Fusogen", mistake: "ইথানল মনে করা", tip: "PEG এবং উচ্চ pH/Ca2+ আয়ন ফিউশনে ভূমিকা রাখে।" },
+          { question: "পরাগরেণু বা পরাগধানী কালচার করে কোন ধরণের উদ্ভিদ তৈরি করা যায়?", options: ["ডিপ্লয়েড (2n)", "হ্যাপ্লয়েড (n)", "টেট্রাপ্লয়েড (4n)", "ট্রিপ্লয়েড (3n)"], correct: 1, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "পরাগরেণু মিয়োসিসের ফলে উৎপন্ন হওয়ায় এটি হ্যাপ্লয়েড (n)। পরাগধানী কালচারে সরাসরী হ্যাপ্লয়েড উদ্ভিদ পাওয়া যায়।", concept: "Haploid Plant Breeding", shortcut: "Pollen Culture = Haploid (n)", mistake: "ডিপ্লয়েড ভাবা", tip: "Guha & Maheshwari (1964) প্রথম ধুতুরা গাছে এনথার কালচার করেন।" },
+          { question: "প্রথম পরাগধানী কালচার (Anther Culture) করে হ্যাপ্লয়েড উদ্ভিদ তৈরি করেন কোন বিজ্ঞানীদ্বয়?", options: ["গুহ ও মহেশ্বরী (Guha & Maheshwari)", "ওয়াটসন ও ক্রিক", "হাবারল্যান্ডট", "মেন্ডেল"], correct: 0, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "ভারতীয় বিজ্ঞানী শিপোরা গুহ ও পঞ্চানন মহেশ্বরী ১৯৬৪ সালে *Datura innoxia* গাছে অ্যানথার কালচার সফল করেন।", concept: "Haploid Breeding History", shortcut: "Guha & Maheshwari = Anther Culture", mistake: "হাবারল্যান্ডট বলা", tip: "এটি বায়োলজির অন্যতম সেরা ভারতীয় আবিষ্কার।" },
+          { question: "রোগমুক্ত বা ভাইরাসমুক্ত চারা উৎপাদনের জন্য টিস্যু কালচারের কোন পদ্ধতি ব্যবহার করা হয়?", options: ["মেরিস্টেম কালচার (Meristem Culture)", "এনথার কালচার", "এমব্রায়ো কালচার", "প্রোটোপ্লাস্ট ফিউশন"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "কাণ্ডের অগ্রভাগের ভাজক টিস্যুতে (Meristem) সংবহন না থাকায় এবং কোষ বিভাজনের হার বেশি হওয়ায় সেখানে ভাইরাস পৌঁছাতে পারে না।", concept: "Virus-free Plants", shortcut: "Meristem = Virus Free", mistake: "এমব্রায়ো কালচার বলা", tip: "আলু ও কলার ক্ষেত্রে ভাইরাসমুক্ত চারা তৈরিতে এটি সফল।" },
+          { question: "বিটি কটন (Bt Cotton) বা বিটি বেগুন তৈরিতে কোন ব্যাকটেরিয়ার জিন প্রবেশ করানো হয়েছে?", options: ["*Agrobacterium tumefaciens*", "*Bacillus thuringiensis*", "*Escherichia coli*", "*Rhizobium leguminosarum*"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "*Bacillus thuringiensis* (Bt) ব্যাকটেরিয়ার Cry-জিন ক্রিস্টাল প্রোটিন তৈরি করে যা ক্ষতিকর পোকা মারতে সক্ষম।", concept: "Bt Crops", shortcut: "Bt = Bacillus thuringiensis", mistake: "Agrobacterium মনে করা", tip: "Bt বেগুন ডাল ও ডগা ছিদ্রকারী পোকা প্রতিরোধী।" },
+          { question: "উদ্ভিদ প্রজননে জিন স্থানান্তরের জন্য সবচেয়ে জনপ্রিয় প্রাকৃতিক ভেক্টর (Natural Genetic Engineer) কোনটি?", options: ["*Agrobacterium tumefaciens* এর Ti প্লাজমিড", "*E. coli* প্লাজমিড", "TMV ভাইরাস", "ব্যাকটেরিওফেজ"], correct: 0, topic: "Genetic Engineering in Breeding", difficulty: "medium", explanation: "*Agrobacterium tumefaciens* ব্যাকটেরিয়ার Ti (Tumor Inducing) প্লাজমিড দ্বি-বীজপত্রী উদ্ভিদে সহজেই T-DNA ট্রান্সফার করতে পারে।", concept: "Plant Vector", shortcut: "Natural Genetic Engineer = Agrobacterium", mistake: "E. coli বলা", tip: "উদ্ভিদে ট্রান্সজিন স্থানান্তরে Ti-প্লাজমিড বহুল ব্যবহৃত।" },
+          { question: "গোল্ডেন রাইস (Golden Rice) এ কোন ভিটামিনের পূর্বসূরী (Beta-Carotene) সমৃদ্ধ জিন যুক্ত করা হয়েছে?", options: ["ভিটামিন সি", "ভিটামিন এ (Vitamin A)", "ভিটামিন ডি", "ভিটামিন বি১২"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "গোল্ডেন রাইসে বিটা-ক্যারোটিন তৈরির জিন স্থানান্তরিত করা হয়েছে, যা মানবদেহে গিয়ে ভিটামিন-এ তে রূপান্তরিত হয়।", concept: "Golden Rice Nutrition", shortcut: "Golden Rice = Vitamin A", mistake: "ভিটামিন সি ভাবা", tip: "অন্ধত্ব নিরাময়ে গোল্ডেন রাইস উদ্ভাবিত হয়েছে।" },
+          { question: "কোন এনজাইমের সাহায্যে ডিএনএ অণুর নির্দিষ্ট অংশ কাটা যায়?", options: ["লাইগেজ (Ligase)", "রেস্ট্রিকশন এন্ডোনিউক্লিয়েজ (Restriction Endonuclease)", "পলিমারেজ", "প্রোটিয়েজ"], correct: 1, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "রেস্ট্রিকশন এনজাইমকে 'আণবিক কাঁচি' (Molecular Scissors) বলা হয় কারণ এটি DNA-এর নির্দিষ্ট সিকোয়েন্স কেটে ফেলে।", concept: "Molecular Scissors", shortcut: "Cutting DNA = Restriction Enzyme", mistake: "লাইগেজ ভাবা (যা জোড়া দেয়)", tip: "EcoRI একটি বিখ্যাত রেস্ট্রিকশন এনজাইম।" },
+          { question: "কাটা ডিএনএ খণ্ডগুলোকে একত্রিত বা জোড়া লাগানোর কাজে কোন এনজাইম ব্যবহৃত হয়?", options: ["ডিএনএ লাইগেজ (DNA Ligase)", "রেস্ট্রিকশন এনজাইম", "হেলিকেজ", "জাইমেজ"], correct: 0, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "ডিএনএ লাইগেজকে 'আণবিক আঠা' (Molecular Glue) বলা হয়, যা ফসফোডাইএস্টার বন্ধন তৈরি করে DNA জোড়া দেয়।", concept: "Molecular Glue", shortcut: "Joining DNA = DNA Ligase", mistake: "কাটার এনজাইমের সাথে মেলানো", tip: "Recombinant DNA তৈরিতে কাটিং ও জয়েনিং অত্যাবশ্যক।" },
+          { question: "কৃত্রিম উপায়ে উদ্ভিদের পুষ্টি মাধ্যমে ভ্রূণ সুপ্তাবস্থা কাটিয়ে দ্রুত চারা তৈরির পদ্ধতিকে কী বলে?", options: ["এমব্রায়ো রেসকিউ (Embryo Rescue)", "ক্যালস কালচার", "সোমাটিক এমব্রায়োজেনেসিস", "এনথার কালচার"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "দূরবর্তী সংকরায়ণে ভ্রূণ নষ্ট হওয়া রোধ করতে অপরিণত ভ্রূণকে পুষ্টি মাধ্যমে প্রতিস্থাপন করে রক্ষা করাকে Embryo Rescue বলে।", concept: "Embryo Rescue", shortcut: "Saving Aborted Embryo = Embryo Rescue", mistake: "ক্যালস কালচার ভাবা", tip: "Inter-specific সংকরায়ণে এটি অত্যন্ত কার্যকর।" },
+          { question: "অঙ্গজ টিস্যু কালচার থেকে সৃষ্ট উদ্ভিদের মধ্যে যে সোমাটিক পরিবর্তন বা প্রকরণ দেখা যায় তাকে কী বলে?", options: ["সোমাক্লোনাল ভ্যারিয়েশন (Somaclonal Variation)", "জার্মপ্লাজম পরিবর্তন", "জিন মিউটেশন", "হাইব্রিড ভিগর"], correct: 0, topic: "Tissue Culture Applications", difficulty: "medium", explanation: "ইন-ভিট্রো কালচার বা টিস্যু কালচারের সময় ক্যালস টিস্যুতে যে পরিবর্তন ও প্রকরণ ঘটে তাকে সোমাক্লোনাল ভ্যারিয়েশন বলে।", concept: "Tissue Culture Variation", shortcut: "In vitro Variation = Somaclonal", mistake: "হাইব্রিডাইজেশন বলা", tip: "নতুন জাত উদ্ভাবনে সোমাক্লোনাল ভ্যারিয়েশন কাজে লাগে।" },
+          { question: "একটি নির্দিষ্ট অঞ্চলের সকল প্রকার বৈচিত্র্যময় প্রজাতি ও তাদের জিনের সংগ্রহকে কী বলা হয়?", options: ["জিন ব্যাংক", "জার্মপ্লাজম (Germplasm)", "জিনোম", "জিন পুল"], correct: 1, topic: "Germplasm Conservation", difficulty: "medium", explanation: "কোনো ফসলের বা তার বুনো আত্মীয়ের সকল প্রকার এলিল বা জিন ধারণকারী প্রজনন উপাদানকে একত্রে জার্মপ্লাজম বলে।", concept: "Germplasm Definition", shortcut: "Total Genetic Material = Germplasm", mistake: "জিনপুল ভাবা", tip: "জার্মপ্লাজম সংরক্ষণ করা না হলে প্রজাতির বিলুপ্তি ঘটে।" },
+          { question: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট (BRRI) কোথায় অবস্থিত?", options: ["গাজীপুর", "ময়মনসিংহ", "ঢাকা", "রংপুর"], correct: 0, topic: "Plant Breeding Research Institutes", difficulty: "easy", explanation: "BRRI (Bangladesh Rice Research Institute) জয়দেবপুর, গাজীপুরে অবস্থিত।", concept: "BRRI Location", shortcut: "BRRI = Gazipur", mistake: "ময়মনসিংহ ভাবা (যেখানে BAU)", tip: "BRRI বহু উফশী ও প্রতিকূলতা সহনশীল ধানের জাত তৈরি করেছে।" },
+          { question: "বিআর-২৮ (BR-28) এবং বিআর-২৯ (BR-29) বাংলাদেশের কোন ফসলের জনপ্রিয় উফশী জাত?", options: ["গম", "ধান", "ভুট্টা", "সরিষা"], correct: 1, topic: "Crop Varieties in BD", difficulty: "easy", explanation: "BR-28 ও BR-29 বোরো মৌসুমের অত্যন্ত জনপ্রিয় এবং উচ্চফলনশীল (HYV) ধানের জাত।", concept: "Rice Varieties", shortcut: "BR = Rice (BRRI)", mistake: "গমের জাত ভাবা", tip: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট এগুলো প্রবর্তন করে।" },
+          { question: "বাংলাদেশে লবণাক্ততা সহনশীল ধানের জাত কোনটি?", options: ["ব্রি ধান ৪৭ (BRRI Dhan 47)", "বিআর ৮", "ব্রি ধান ২৮", "বিআর ১১"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "দক্ষিণাঞ্চলের লবণাক্ত উপকূলীয় এলাকায় চাষের জন্য ব্রি ধান ৪৭, ব্রি ধান ৬১ ইত্যাদি উদ্ভাবন করা হয়েছে।", concept: "Stress Tolerant Rice", shortcut: "Salt Tolerant = BRRI Dhan 47", mistake: "ব্রি ধান ২৮ মনে করা", tip: "এটি ১০-১২ dS/m লবণাক্ততা সহ্য করতে পারে।" },
+          { question: "খরা সহনশীল (Drought tolerant) ধানের জাত কোনটি?", options: ["ব্রি ধান ৫৬ (BRRI Dhan 56)", "ব্রি ধান ৪৭", "বিআর ২৬", "ব্রি ধান ২৯"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "ব্রি ধান ৫৬ এবং ব্রি ধান ৫৭ হলো খরাপ্রবণ বরেন্দ্র এলাকার জন্য উপযোগী খরা সহনশীল জাত।", concept: "Drought Tolerant Rice", shortcut: "Drought = BRRI Dhan 56", mistake: "ব্রি ধান ৪৭ ভাবা (যা লবণাক্ততা সহনশীল)", tip: "মঙ্গা এলাকায় এর চাষ লাভজনক।" },
+          { question: "কৃত্রিম জিন স্থানান্তরের জন্য 'জিন গান' (Gene Gun / Biolistic) পদ্ধতিতে কোন ধাতুর সূক্ষ্ম কণা ব্যবহার করা হয়?", options: ["লোহা ও তামা", "সোনা বা টাংস্টেন (Gold or Tungsten)", "অ্যালুমিনিয়াম", "রুপা"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "hard", explanation: "জিন গান পদ্ধতিতে সোনা (Gold) বা টাংস্টেন দিয়ে কোট করা DNA কণাকে উচ্চবেগে কোষের ভেতরে নিক্ষেপ করা হয়।", concept: "Gene Gun Technique", shortcut: "Gene Gun Microcarriers = Gold/Tungsten", mistake: "তামা ভাবা", tip: "একবীজপত্রী উদ্ভিদে জিন স্থানান্তরে জিন গান উপযোগী।" },
+          { question: "বাংলাদেশে পারমাণবিক শক্তি গবেষণা প্রতিষ্ঠানের (BINA) প্রধান কাজ কী?", options: ["রাসায়নিক সার তৈরি", "মিউটেশন ব্রিডিং এর মাধ্যমে উন্নত জাত উদ্ভাবন", "কীটনাশক তৈরি", "মাটি পরীক্ষা"], correct: 1, topic: "Plant Breeding Research Institutes", difficulty: "medium", explanation: "BINA (Bangladesh Institute of Nuclear Agriculture) তেজস্ক্রিয় রশ্নি (Gamma Radiation) প্রয়োগ করে মিউট্যান্ট জাত তৈরি করে।", concept: "BINA Role", shortcut: "BINA = Mutation Breeding / Nuclear Ag", mistake: "সার তৈরি ভাবা", tip: "ইরাটম ধান ও বিনাসরিষা BINA-এর উদ্ভাবন।" },
+          { question: "তেজস্ক্রিয় গামা রশ্নি (Gamma Rays) প্রয়োগ করে উদ্ভিদ প্রজননের কোন পদ্ধতিটি সম্পাদন করা হয়?", options: ["মিউটেশন ব্রিডিং (Mutation Breeding)", "ইমাসকুলেশন", "টিস্যু কালচার", "পদ্ধতিগত নির্বাচন"], correct: 0, topic: "Mutation Breeding", difficulty: "easy", explanation: "গামা রশ্নি, এক্স-রে বা নিউট্রন প্রয়োগ করে কৃত্রিম মিউটেশন ঘটানোকে Induced Mutation বা Mutation Breeding বলে।", concept: "Physical Mutagens", shortcut: "Gamma Rays = Mutation Breeding", mistake: "টিস্যু কালচার মনে করা", tip: "গামা গার্ডেনে তেজস্ক্রিয় কোবাল্ট-৬০ ব্যবহার করা হয়।" },
+          { question: "কোনটি স্ব-পরাগযোগের জন্য একটি প্রাকৃতিক অভিযোজন?", options: ["ডাইকোগ্যামি (Dichogamy)", "ক্লিস্টোগ্যামি (Clistogamy)", "স্ব-বন্ধ্যাত্ব (Self-sterility)", "একলিঙ্গতা (Heterostyly)"], correct: 1, topic: "Pollination Biology", difficulty: "hard", explanation: "ক্লিস্টোগ্যামি অবস্থায় ফুল কখনোই ফোটে না (বন্ধ থাকে), ফলে কেবল স্ব-পরাগযোগ বাধ্যতামূলক হয়ে দাঁড়ায় (যেমন: কানশিরা)।", concept: "Self Pollination Adaptation", shortcut: "Closed Flower = Clistogamy", mistake: "ডাইকোগ্যামি ভাবা", tip: "ডাইকোগ্যামি হলো পর-পরাগযোগের অভিযোজন।" },
+          { question: "স্ত্রী ও পুরুষ ফুল ভিন্ন গাছে অবস্থান করলে সেই উদ্ভিদকে কী বলা হয়?", options: ["মনোএসিয়াস (Monoecious)", "ডাইওসিয়াস (Dioecious)", "উভলিঙ্গ", "পলিগ্যামাস"], correct: 1, topic: "Pollination Biology", difficulty: "medium", explanation: "একই গাছে উভয় ফুল থাকলে Monoecious (যেমন: ভুট্টা) এবং ভিন্ন ভিন্ন গাছে থাকলে Dioecious (যেমন: পেঁপে, তাল)।", concept: "Plant Sex Distribution", shortcut: "Separate Plants = Dioecious", mistake: "Monoecious এর সাথে গুলিয়ে ফেলা", tip: "পেঁপে গাছে পর-পরাগযোগ বাধ্যতামূলক।" },
+          { question: "উদ্ভিদ প্রজননে সায়ব্রিড (Cybrid) বলতে কী বোঝায়?", options: ["দুইটি নিউক্লিয়াসের মিলন", "সাইটোপ্লাজমিক সংকর (Cytoplasmic Hybrid)", "জিনগত মিউট্যান্ট", "ডিএনএ জোড় সায়ব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "hard", explanation: "একটি কোষের নিউক্লিয়াস এবং অন্য কোষের সাইটোপ্লাজম যুক্ত হয়ে সৃষ্ট সংকরকে Cybrid (Cytoplasmic Hybrid) বলে।", concept: "Cybrid Definition", shortcut: "One Nucleus + Other Cytoplasm = Cybrid", mistake: "Somatic Hybrid এর সাথে গুটিয়ে ফেলা", tip: "সায়ব্রিডে কেবল একটি জেনোম এবং উভয় প্লাস্টিড থাকে।" },
+          { question: "টিস্যু কালচারের ক্ষেত্রে কালচার মিডিয়ামের pH সাধারণত কত রাখা হয়?", options: ["3.5 - 4.5", "5.6 - 5.8", "7.0 - 7.5", "8.5 - 9.0"], correct: 1, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "এমএস (MS) পুষ্টি মিডিয়ামের অনুকূল pH হলো ৫.৬ থেকে ৫.৮ (হালকা অম্লীয়)।", concept: "Culture Media pH", shortcut: "Media pH = 5.6 to 5.8", mistake: "৭.০ (নিরপেক্ষ) ভাবা", tip: "অটো ক্লেভ করার আগেই pH ঠিক করতে হয়।" },
+          { question: "টিস্যু কালচার পুষ্টি মাধ্যমকে জীবাণুমুক্ত (Sterilization) করার আধুনিক যন্ত্র কোনটি?", options: ["হট এয়ার ওভেন", "ইনকিউবেটর", "অটোক্লেভ (Autoclave)", "সেনট্রিফিউজ"], correct: 2, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অটোক্লেভ যন্ত্রে ১২১°C তাপমাত্রায়, ১৫ পাউন্ড/বর্গইঞ্চি চাপে ১৫-২০ মিনিট রেখে শতভাগ জীবাণুমুক্ত করা হয়।", concept: "Autoclave Sterilization", shortcut: "121°C, 15 psi = Autoclave", mistake: "ইনকিউবেটর ভাবা", tip: "ইনকিউবেটর তাপমাত্রা নিয়ন্ত্রণে ও কালচারে ব্যবহৃত হয়।" },
+          { question: "নিচের কোনটি উদ্ভিদের প্রধান সাইটোকাইনিন হরমোন যা টিস্যু কালচারে কোষ বিভাজন উদ্দীপিত করে?", options: ["2,4-D", "কাইনেটিন / জিয়াটিন (Kinetin / Zeatin)", "IAA", "জিব্যারেলিক এসিড"], correct: 1, topic: "Plant Growth Regulators", difficulty: "medium", explanation: "সাইটোকাইনিন (কাইনেটিন, বিএপি, জিয়াটিন) টিস্যু কালচারে দ্রুত কোষ বিভাজন ও বিটপ (Shoot) গঠনে সাহায্য করে।", concept: "Hormone Role in Culture", shortcut: "Cytokinin = Shoot / Cell Division", mistake: "2,4-D বলা (যা মূলত অক্সিন)", tip: "অক্সিন ও সাইটোকাইনিনের অনুপাত অঙ্গ সৃষ্টি নিয়ন্ত্রণ করে।" },
+          { question: "কৃত্রিম বীজ (Synthetic Seed / Somatic Seed) তৈরিতে সোমাটিক ভ্রূণকে কোন কেমিকেল দিয়ে আবৃত (Encapsulate) করা হয়?", options: ["সোডিয়াম অ্যালজিনেট (Sodium Alginate)", "অগার", "সেলুলোজ", "পেকটিন"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "সোমাটিক এমব্রায়ো বা ক্যালসকে সোডিয়াম অ্যালজিনেট ও ক্যালসিয়াম ক্লোরাইড দিয়ে কোটিং করে কৃত্রিম বীজ প্রস্তুত করা হয়।", concept: "Synthetic Seeds", shortcut: "Sodium Alginate = SynSeed Coating", mistake: "অগার মনে করা", tip: "এর মাধ্যমে কৃত্রিম বীজ দীর্ঘকাল সংরক্ষণ করা যায়।" },
+          { question: "কলা (Banana) উদ্ভিদের দ্রুত ও বিপুল পরিমানে বংশবৃদ্ধির জন্য বাণিজ্যিকভাবে কোন প্রযুক্তি ব্যবহৃত হচ্ছে?", options: ["বীজ বপন", "মাইক্রোপ্রোপাগেশন / টিস্যু কালচার (Micropropagation)", "গ্রাফটিং", "কাটিং"], correct: 1, topic: "Tissue Culture Applications", difficulty: "easy", explanation: "মাইক্রোপ্রোপাগেশন টিস্যু কালচারের একটি রূপ, যার মাধ্যমে অত্যন্ত কম সময়ে রোগমুক্ত হাজার হাজার কলার চারা তৈরি সম্ভব।", concept: "Micropropagation Benefits", shortcut: "Commercial Clones = Micropropagation", mistake: "গ্রাফটিং ভাবা", tip: "কলা বীজহীন হওয়ায় মাইক্রোপ্রোপাগেশনই সেরা উপায়।" }
         ]
       };
 
       let examData = defaultExamData;
 
+      // 🛡️ SECURITY ENGINE: Anti-Screenshot & Capture Deterrent
+      function initSecurityEngine() {
+        const overlay = document.getElementById('screenProtectOverlay');
+        const container = document.getElementById('mainExamContainer');
+        const header = document.getElementById('mainHeader');
+
+        function triggerSecurityLock(reason) {
+          if (isSubmitted) return;
+          container.classList.add('secure-blur');
+          header.classList.add('secure-blur');
+          overlay.style.display = 'flex';
+          playAudioFeedback('warning');
+          showToastWarning(`🚨 সিকিউরিটি অ্যালার্ট: ${reason}`);
+        }
+
+        function unlockSecurity() {
+          container.classList.remove('secure-blur');
+          header.classList.remove('secure-blur');
+          overlay.style.display = 'none';
+        }
+
+        // 1. Screen Capture Key Shortcuts (PrtScn, Snipping Tool, Inspect)
+        window.addEventListener('keyup', (e) => {
+          if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            navigator.clipboard.writeText(''); // Clear Clipboard
+            triggerSecurityLock("স্ক্রিনশট নেওয়ার চেষ্টা শনাক্ত করা হয়েছে!");
+          }
+        });
+
+        window.addEventListener('keydown', (e) => {
+          // Block Ctrl+P (Print), Ctrl+Shift+I (DevTools), Ctrl+U (Source), Ctrl+S (Save), Alt+PrtScn
+          if (
+            (e.ctrlKey && (e.key === 'p' || e.key === 'P')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+            (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
+            (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
+            (e.key === 'F12')
+          ) {
+            e.preventDefault();
+            triggerSecurityLock("নিষিদ্ধ কি-কম্বিনেশন প্রেস করা হয়েছে!");
+            return false;
+          }
+        });
+
+        // 2. Prevent Right Click & Copying
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('copy', (e) => {
+          e.preventDefault();
+          showToastWarning("⚠️ প্রশ্ন কপি করা নিষিদ্ধ!");
+        });
+
+        // 3. Tab Change & Window Blur
+        window.addEventListener('blur', () => {
+          if (!isSubmitted) triggerSecurityLock("উইন্ডো পরিবর্তন বা মিনিমাইজ করা হয়েছে!");
+        });
+
+        overlay.addEventListener('click', () => {
+          unlockSecurity();
+        });
+      }
+
       // Init Function
       async function checkAttemptAndLoad() {
+        initSecurityEngine();
+
         if (currentUser) {
           try {
             let userSnap = await get(ref(db, `users/${currentUser.uid}`));
@@ -667,7 +779,7 @@
           triggerHaptic();
           playAudioFeedback('click');
 
-          userSelections[qIndex] = oIndex;
+          userSelections[qIndex] = Number(oIndex);
           localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
           
           if (currentUser) {
@@ -680,7 +792,7 @@
           const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
           allLabels.forEach((lbl, idx) => {
             lbl.classList.remove('selected-option');
-            if(idx === oIndex) lbl.classList.add('selected-option');
+            if(idx === Number(oIndex)) lbl.classList.add('selected-option');
           });
 
           updatePalette();
@@ -715,7 +827,7 @@
           updatePalette();
         };
 
-        // Render Mathematical LaTeX Equations
+        // Render Mathematical/Botanical Equations
         renderMathInQuestions();
       }
 
@@ -769,7 +881,6 @@
 
       // Navigation Controls
       window.scrollToQuestion = function(index) {
-        // Track time spent on previous question
         const now = Date.now();
         const spent = Math.round((now - currentQuestionStartTime) / 1000);
         perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
@@ -892,7 +1003,6 @@
         if (e.key.toLowerCase() === 'm') toggleReview(currentSingleIndex);
         if (e.key.toLowerCase() === 'b') toggleBookmark(currentSingleIndex);
 
-        // Option selections with 1,2,3,4 or a,b,c,d
         const key = e.key.toLowerCase();
         let optIdx = -1;
         if (['1', 'a'].includes(key)) optIdx = 0;
@@ -930,7 +1040,6 @@
       async function submitExamAction() {
         if (isSubmitted) return;
 
-        // Record last question time
         const now = Date.now();
         const spent = Math.round((now - currentQuestionStartTime) / 1000);
         perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
@@ -949,14 +1058,14 @@
 
         examData.questions.forEach((q, i) => {
           const selected = userSelections[i];
-          const correctVal = parseInt(q.correct, 10);
+          const correctVal = Number(q.correct);
           const topicName = q.topic || 'General';
 
           if (!topicStats[topicName]) topicStats[topicName] = { correct: 0, total: 0 };
           topicStats[topicName].total++;
 
-          if (selected !== undefined) {
-            if (selected === correctVal) {
+          if (selected !== undefined && selected !== null) {
+            if (Number(selected) === correctVal) {
               correctCount++;
               topicStats[topicName].correct++;
             } else {
@@ -965,7 +1074,7 @@
           }
         });
 
-        const wrongMark = examData.marking ? examData.marking.wrong : 0.25;
+        const wrongMark = examData.marking ? Number(examData.marking.wrong) : 0.25;
         let finalScore = correctCount - (wrongCount * wrongMark);
         if (finalScore < 0) finalScore = 0;
 
@@ -1009,9 +1118,24 @@
       // Dashboard & Review Display
       function showSubmittedResult(userAnswers, score, timeSpent, qTimeMap, topicStats) {
         const total = examData.questions.length;
-        const skipped = total - Object.keys(userAnswers).length;
-        const correct = Math.round((score + (total - skipped - score)/(1 + (examData.marking?.wrong||0.25))));
-        const wrong = total - skipped - correct;
+        
+        let correct = 0;
+        let wrong = 0;
+        let skipped = 0;
+
+        examData.questions.forEach((q, i) => {
+          const selected = userAnswers ? userAnswers[i] : undefined;
+          const correctVal = Number(q.correct);
+
+          if (selected === undefined || selected === null) {
+            skipped++;
+          } else if (Number(selected) === correctVal) {
+            correct++;
+          } else {
+            wrong++;
+          }
+        });
+
         const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0;
         const attemptRate = Math.round(((total - skipped) / total) * 100);
 
@@ -1041,7 +1165,8 @@
 
         examData.questions.forEach((q, i) => {
           const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
-          const correctVal = parseInt(q.correct, 10);
+          const correctVal = Number(q.correct);
+          
           const expBox = document.getElementById(`exp-${i}`);
           if(expBox) expBox.style.display = 'block';
 
@@ -1053,15 +1178,21 @@
           (q.options || []).forEach((_, oIndex) => {
             const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
             if(lbl) {
-              lbl.classList.remove('selected-option', 'locked-option');
+              lbl.classList.remove('selected-option', 'locked-option', 'correct-opt', 'wrong-opt');
               const input = lbl.querySelector('input');
               if(input) {
                 input.disabled = true;
-                if (selected === oIndex) input.checked = true;
+                if (selected !== undefined && Number(selected) === oIndex) {
+                  input.checked = true;
+                }
               }
 
-              if (oIndex === correctVal) lbl.classList.add('correct-opt');
-              if (selected === oIndex && selected !== correctVal) lbl.classList.add('wrong-opt');
+              if (oIndex === correctVal) {
+                lbl.classList.add('correct-opt');
+              }
+              if (selected !== undefined && Number(selected) === oIndex && Number(selected) !== correctVal) {
+                lbl.classList.add('wrong-opt');
+              }
             }
           });
         });
@@ -1074,11 +1205,11 @@
         let topicListHtml = "";
 
         if (overallAcc >= 80) {
-          aiText = "🎉 চমৎকার প্রস্তুতি! আপনার অধিকাংশ টপিকে শক্তিশালী দখল রয়েছে। উচ্চ র‍্যাংক ধরে রাখতে কনসেপ্ট রিভিশন বজায় রাখুন।";
+          aiText = "🎉 চমৎকার প্রস্তুতি! 'উদ্ভিদ প্রজনন' অধ্যায়ে আপনার দারুণ দখল রয়েছে। উচ্চ র‍্যাংক ধরে রাখতে রিভিশন বজায় রাখুন।";
         } else if (overallAcc >= 50) {
-          aiText = "👍 ভালো পারফরম্যান্স! কিছু নির্দিষ্ট টপিকে ভুল হচ্ছে। দুর্বল টপিকগুলোতে আরও নজর দেওয়া দরকার।";
+          aiText = "👍 ভালো পারফরম্যান্স! তবে সংকরায়ণ, টিস্যু কালচার বা জেনেটিক ইঞ্জিনিয়ারিং টপিকে আরও কিছুটা নজর দেওয়া প্রয়োজন।";
         } else {
-          aiText = "⚠️ আপনার বেশ কিছু গুরুত্বপূর্ণ টপিকে দুর্বলতা রয়েছে। ভিত্তি শক্ত করতে কনসেপ্ট বুক রিভিশন করুন।";
+          aiText = "⚠️ উদ্ভিদ প্রজননের বেশ কিছু গুরুত্বপূর্ণ টপিকে দুর্বলতা রয়েছে। মূল বই ও কনসেপ্টগুলো আবার ভালোভাবে পড়ে নিন।";
         }
 
         document.getElementById('aiAnalysisText').innerText = aiText;
@@ -1093,13 +1224,13 @@
       }
 
       window.generateAIPractice = function() {
-        alert("🤖 GAIVEX AI Engine: আপনার দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি স্পেশাল রিভিশন MCQ তৈরি করা হচ্ছে... (Redirecting to Practice Module)");
+        alert("🤖 GAIVEX AI Engine: উদ্ভিদ প্রজননের দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি স্পেশাল রিভিশন MCQ তৈরি করা হচ্ছে...");
       };
 
       window.shareResultOnFacebook = function() {
         const score = document.getElementById('resScore').innerText;
         const acc = document.getElementById('resAccuracy').innerText;
-        const text = `আমি GAIVEX Smart Exam System-এ "রাসায়নিক পরিবর্তন" পরীক্ষায় স্কোর করেছি ${score} (Accuracy: ${acc})! আপনার প্রস্তুতি পরখ করতে লাইভ পরীক্ষা দিন।`;
+        const text = `আমি GAIVEX Smart Exam System-এ "উদ্ভিদ প্রজনন" পরীক্ষায় স্কোর করেছি ${score} (Accuracy: ${acc})! আপনার প্রস্তুতি পরখ করতে লাইভ পরীক্ষা দিন।`;
         const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
         window.open(url, '_blank');
       };
@@ -1143,12 +1274,12 @@
         examData.questions.forEach((q, i) => {
           const card = document.getElementById(`q-box-${i}`);
           const selected = userSelections[i];
-          const correctVal = parseInt(q.correct, 10);
+          const correctVal = Number(q.correct);
           
           let show = false;
           if (type === 'all') show = true;
-          else if (type === 'correct' && selected === correctVal) show = true;
-          else if (type === 'wrong' && selected !== undefined && selected !== correctVal) show = true;
+          else if (type === 'correct' && selected !== undefined && Number(selected) === correctVal) show = true;
+          else if (type === 'wrong' && selected !== undefined && Number(selected) !== correctVal) show = true;
           else if (type === 'skipped' && selected === undefined) show = true;
           else if (type === 'bookmarked' && bookmarkedQuestions[i]) show = true;
           else if (type === 'review' && reviewQuestions[i]) show = true;
