@@ -369,11 +369,6 @@
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="index.html" class="active">🏠 হোম</a>
                     <a href="gaivexai.html">🤖 GAIVEX AI</a>
-                    <a href="community.html">💬 GAIVEX TUTO</a>
-                    <a href="qanda.html">❓ Q&A</a>
-                    <button onclick="openNoticeModal()">📢 নোটিশ বোর্ড</button>
-                    <button onclick="openResultModal()">📊 রেজাল্ট</button>
-                    <button onclick="openLeaderboardModal()">🏆 লিডারবোর্ড</button>
                     <div id="dropdownAuthAction"></div>
                 </div>
             </div>
@@ -399,7 +394,7 @@
             </div>
 
             <div id="authNavContainer">
-                <button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>
+                <button class="btn-auth" onclick="toggleAuthModal(true)">Log in</button>
             </div>
         </div>
     </header>
@@ -626,7 +621,7 @@
     <div id="leaderboardModal" class="modal">
       <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
-            <h3>🏆 অ্যাডভান্সড লিডারবোর্ড</h3>
+            <h3>🏆 Leaderboard</h3>
             <button class="modal-close-x" onclick="closeLeaderboardModal()">&times;</button>
         </div>
         
@@ -822,7 +817,7 @@
             <label>পাসওয়ার্ড:</label><input type="password" id="regPassword" required placeholder="******">
             <button type="submit" class="btn btn-save" style="width:100%; margin-top:10px;">অ্যাকাউন্ট তৈরি করুন</button>
         </form>
-        <button type="button" class="btn-google" onclick="handleGoogleSignIn()">🌐 Google দিয়ে লগইন করুন</button>
+        <button type="button" class="btn-google" onclick="handleGoogleSignIn()">🌐 Google</button>
         <div class="btn-group"><button type="button" class="btn btn-close" onclick="toggleAuthModal(false)">বন্ধ করুন</button></div>
       </div>
     </div>
