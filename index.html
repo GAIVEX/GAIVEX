@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAIVEX - The Future of Learning</title>
+    <title>GAIVEX</title>
     <meta name="description" content="মেডিক্যাল, ভার্সিটি ও ইঞ্জিনিয়ারিং এডমিশন টেস্টের জন্য বিশেষ মডেল টেস্ট, প্র্যাকটিস, নোটস ও এআই সহায়তা।">
     <meta property="og:title" content="GAIVEX">
     <meta property="og:description" content="স্বপ্নের বিশ্ববিদ্যালয়ে ভর্তির প্রস্তুতি হোক GAIVEX এর সাথে।">
@@ -358,7 +358,7 @@
 
     <main class="container">
         <div class="hero">
-            <h1 id="welcomeTitle">স্বাগতম, শিক্ষার্থী ✨</h1>
+            <h1 id="welcomeTitle">Welcome, Scholars ✨</h1>
             <div class="status-ring">
                 <span style="font-size: 22px; font-weight: 800;" id="userScoreDisplay">--</span>
                 <span style="font-size: 9px; color: var(--accent); letter-spacing: 1px;">TOTAL SCORE</span>
@@ -369,14 +369,12 @@
         <div class="floating-portal" onclick="openLiveExamInstructionModal()">
             <span class="portal-tag live">🔴 Live Gateway</span>
             <h2 id="liveExamTitle" style="font-size: 20px;">Daily Live Exam</h2>
-            <p class="desc">আপনার জ্ঞান পরীক্ষা করার শ্রেষ্ঠ সময় এখন।</p>
         </div>
 
         <!-- Practice Exam Portal -->
         <a href="https://sites.google.com/view/gaivexexam" target="_blank" class="floating-portal">
             <span class="portal-tag practice">📝 Practice Portal</span>
             <h2 id="practiceExamTitle" style="font-size: 20px;">Practice Exam</h2>
-            <p class="desc">নিজের গতিতে প্র্যাকটিস করে দক্ষতা বাড়ান।</p>
         </a>
 
         <!-- Aura Action Grid -->
@@ -1552,7 +1550,7 @@
         } else {
           currentStudentProfile = null;
           c.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">লগইন</button>`;
-          welcome.innerText = "স্বাগতম, শিক্ষার্থী ✨";
+          welcome.innerText = "Welcome, Scholars ✨";
           document.getElementById('notifBody').innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">নোটিফিকেশন দেখতে লগইন করুন</p>';
           document.getElementById('notifBadge').style.display = 'none';
           document.getElementById('userScoreDisplay').innerText = '--';
