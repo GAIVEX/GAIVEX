@@ -38,7 +38,28 @@
             --primary: #7000ff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* --- Prevent Text Selection & Copying --- */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Hind Siliguri', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            
+            /* Text protection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Allow typing and selection only inside inputs and textareas */
+        input, textarea, select {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
 
         body {
             background: var(--bg);
@@ -100,10 +121,7 @@
             border-radius: 50%; width: 17px; height: 17px; font-size: 9px; font-weight: bold;
             display: none; align-items: center; justify-content: center; border: 2px solid var(--bg);
         }
-        /* FIX #1: dropdown is now viewport-anchored (position: fixed) instead of being
-           positioned relative to the small 40px icon-orb. That's what was pushing most
-           of the 300px-wide panel off the left edge of the screen and getting clipped
-           by body's overflow-x:hidden. */
+
         .notification-dropdown {
             display: none; position: fixed; right: 4%; top: 64px;
             background: rgba(10, 15, 25, 0.92); backdrop-filter: blur(20px);
@@ -351,9 +369,6 @@
         </div>
     </header>
 
-    <!-- FIX #1: moved outside the icon-orb / header so `position: fixed` positions it
-         against the viewport instead of an ancestor with a transform/backdrop-filter,
-         and it's no longer clipped by narrow parents. -->
     <div class="notification-dropdown" id="notificationDropdown">
         <div class="notif-header">
             <h4>📢 নোটিফিকেশন</h4>
@@ -803,6 +818,59 @@
       </div>
     </div>
 
+    <!-- Anti-Copy and Protection Script -->
+    <script>
+        // Disable Right Click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Disable Copy, Cut, Select, Dragging
+        ['copy', 'cut', 'selectstart', 'dragstart'].forEach(function(event) {
+            document.addEventListener(event, function(e) {
+                // Allow typing and selecting text inside form input/textarea elements
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Disable keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+A, Ctrl+U, Ctrl+Shift+I, F12)
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            // Block Ctrl / Cmd combinations
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'c': // Copy
+                    case 'x': // Cut
+                    case 'a': // Select All
+                    case 'u': // View Source
+                    case 's': // Save Page
+                    case 'p': // Print Page
+                        e.preventDefault();
+                        break;
+                }
+            }
+
+            // Block Inspect Element (Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C)
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'i':
+                    case 'j':
+                    case 'c':
+                        e.preventDefault();
+                        break;
+                }
+            }
+
+            // Block F12 (Developer Tools)
+            if (e.key === 'F12') {
+                e.preventDefault();
+            }
+        });
+    </script>
+
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getDatabase, ref, get, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -979,10 +1047,6 @@
                       let timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'}) : '';
                       let icon = item.type === 'qanda' ? '❓' : item.type === 'reply' ? '💬' : '📢';
 
-                      /* FIX #2: only send to qanda.html for notification types that are
-                         actually about Q&A/replies, or when the item explicitly carries
-                         its own `link`. Anything else (general/notice-type items with no
-                         link) now stays put instead of forcing a redirect to Q&A. */
                       let targetUrl = item.link || (
                           (item.type === 'qanda' || item.type === 'reply') ? 'qanda.html' : ''
                       );
@@ -1013,8 +1077,6 @@
           if (currentUser && userNotifications[notifId] && !userNotifications[notifId].read) {
               try { await update(ref(db, `notifications/${currentUser.uid}/${notifId}`), { read: true }); } catch(e){}
           }
-          // FIX #2: if there's no target URL (a general notice with nothing to open),
-          // just close the dropdown instead of forcing a page redirect.
           if (targetUrl) {
               window.location.href = targetUrl;
           } else {
