@@ -185,18 +185,33 @@
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- Floating Portals (exam banners) --- */
+        /* --- Floating Portals & Dual Class Grid --- */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
         .floating-portal {
             background: var(--glass); backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 28px;
             padding: 24px; margin-bottom: 20px; cursor: pointer; text-decoration: none; display: block; color: var(--text);
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;
         }
+        .portal-grid .floating-portal {
+            margin-bottom: 0;
+            padding: 20px 16px;
+        }
         .floating-portal:hover { transform: scale(1.015) translateY(-6px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0, 242, 255, 0.12); }
         .portal-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; }
         .portal-tag.live { color: #fff; background: var(--danger); }
+        .portal-tag.past { color: #fff; background: var(--primary); }
         .portal-tag.practice { color: #fff; background: #0284c7; }
         .floating-portal p.desc { color: var(--subtext); font-size: 13px; margin-top: 4px; }
+
+        /* Align text for right/left design */
+        .align-right { text-align: right; }
+        .align-right .portal-tag { float: right; clear: both; }
 
         /* --- Aura action grid --- */
         .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; margin-top: 8px; }
@@ -339,6 +354,9 @@
             .hero h1 { font-size: 22px; }
             .aura-item { height: 108px; }
             .aura-item .icon { font-size: 27px; }
+            .portal-grid { gap: 10px; }
+            .portal-grid .floating-portal { padding: 16px 12px; border-radius: 20px; }
+            .portal-grid h2 { font-size: 16px !important; }
         }
     </style>
 </head>
@@ -386,6 +404,22 @@
                 <span style="font-size: 22px; font-weight: 800;" id="userScoreDisplay">--</span>
                 <span style="font-size: 9px; color: var(--accent); letter-spacing: 1px;">TOTAL SCORE</span>
             </div>
+        </div>
+
+        <!-- Live Class & Past Class Grid (Live Exam এর ঠিক উপরে) -->
+        <div class="portal-grid">
+            <!-- Live Class Portal -->
+            <a href="liveclass.html" class="floating-portal">
+                <span class="portal-tag live">🔴 Live Class</span>
+                <h2 style="font-size: 18px; margin-top: 4px;">Live Class</h2>
+            </a>
+
+            <!-- Past Class Portal (Opposite layout style) -->
+            <a href="pastclass.html" class="floating-portal align-right">
+                <span class="portal-tag past">📚 Past Class</span>
+                <div style="clear:both;"></div>
+                <h2 style="font-size: 18px; margin-top: 4px;">Past Class</h2>
+            </a>
         </div>
 
         <!-- Live Exam Portal -->
@@ -1607,35 +1641,14 @@
 
         if (user) {
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0) : 'U');
-          c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
-          welcome.innerText = `Welcome, ${(user.displayName || user.email).split(' ')[0]} ✨`;
-
+          c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || 'Profile'}</span></div>`;
+          welcome.innerText = `Welcome, ${user.displayName || 'Scholar'} ✨`;
+          checkAndPromptStudentProfile(user);
           listenToNotifications(user.uid);
-
-          try {
-              const snap = await get(ref(db, `students/${user.uid}`));
-              if(snap.exists()) currentStudentProfile = snap.val();
-              else checkAndPromptStudentProfile(user);
-          } catch(e){}
-
-          try {
-              const scoreSnap = await get(ref(db, `exam_attempts/${user.uid}`));
-              if (scoreSnap.exists()) {
-                  const data = scoreSnap.val();
-                  let totalScore = 0;
-                  for (let id in data) totalScore += Number(data[id].score) || 0;
-                  document.getElementById('userScoreDisplay').innerText = totalScore;
-              } else {
-                  document.getElementById('userScoreDisplay').innerText = '0';
-              }
-          } catch(e) {}
-
+          loadStudentHistory();
         } else {
-          currentStudentProfile = null;
-          c.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">লগইন</button>`;
-          welcome.innerText = "Welcome, Scholars ✨";
-          document.getElementById('notifBody').innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">নোটিফিকেশন দেখতে লগইন করুন</p>';
-          document.getElementById('notifBadge').style.display = 'none';
+          c.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">Login</button>`;
+          welcome.innerText = `Welcome, Scholars ✨`;
           document.getElementById('userScoreDisplay').innerText = '--';
         }
       });
