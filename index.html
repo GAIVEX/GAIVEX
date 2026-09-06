@@ -185,69 +185,68 @@
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- Floating Portals & Dual Class Grid --- */
-        .portal-grid {
+        /* --- Class Boxes Section (Live Class & Past Class) --- */
+        .class-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-bottom: 20px;
         }
-        
+        .class-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            height: 125px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.4s;
+            color: var(--text);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .class-card.live-class {
+            border-radius: 50% 20% 20% 50%;
+        }
+        .class-card.past-class {
+            border-radius: 20% 50% 50% 20%;
+        }
+        .class-card:hover {
+            border-color: var(--accent);
+            background: rgba(0, 242, 255, 0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 242, 255, 0.15);
+        }
+        .class-card.live-class:hover {
+            border-radius: 20% 50% 50% 20%;
+        }
+        .class-card.past-class:hover {
+            border-radius: 50% 20% 20% 50%;
+        }
+        .class-card .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .class-card span {
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            padding: 0 6px;
+        }
+
+        /* --- Floating Portals (exam banners) --- */
         .floating-portal {
             background: var(--glass); backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 28px;
             padding: 24px; margin-bottom: 20px; cursor: pointer; text-decoration: none; display: block; color: var(--text);
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;
         }
-
-        /* --- Customized Live Class & Past Class Curved Box Design --- */
-        .portal-grid .class-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            padding: 24px 20px;
-            margin-bottom: 0;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            color: var(--text);
-            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            min-height: 110px;
-            position: relative;
-        }
-
-        /* Left Card - Live Class (Top-left & Bottom-right rounded) */
-        .portal-grid .class-card.live-card {
-            border-radius: 35px 12px 35px 12px;
-            text-align: left;
-            align-items: flex-start;
-        }
-
-        /* Right Card - Past Class (Top-right & Bottom-left rounded) */
-        .portal-grid .class-card.past-card {
-            border-radius: 12px 35px 12px 35px;
-            text-align: right;
-            align-items: flex-end;
-        }
-
-        .portal-grid .class-card:hover {
-            transform: scale(1.03) translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 15px 30px rgba(0, 242, 255, 0.15);
-        }
-
-        .portal-grid .class-card:hover.live-card {
-            border-radius: 12px 35px 12px 35px;
-        }
-
-        .portal-grid .class-card:hover.past-card {
-            border-radius: 35px 12px 35px 12px;
-        }
-
-        .portal-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; }
+        .floating-portal:hover { transform: scale(1.015) translateY(-6px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0, 242, 255, 0.12); }
+        .portal-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; }
         .portal-tag.live { color: #fff; background: var(--danger); }
-        .portal-tag.past { color: #fff; background: var(--primary); }
         .portal-tag.practice { color: #fff; background: #0284c7; }
         .floating-portal p.desc { color: var(--subtext); font-size: 13px; margin-top: 4px; }
 
@@ -392,9 +391,8 @@
             .hero h1 { font-size: 22px; }
             .aura-item { height: 108px; }
             .aura-item .icon { font-size: 27px; }
-            .portal-grid { gap: 10px; }
-            .portal-grid .class-card { padding: 16px 12px; }
-            .portal-grid h2 { font-size: 16px !important; }
+            .class-card { height: 108px; }
+            .class-card .icon { font-size: 27px; }
         }
     </style>
 </head>
@@ -444,18 +442,15 @@
             </div>
         </div>
 
-        <!-- Live Class & Past Class Grid (Live Exam এর ঠিক উপরে) -->
-        <div class="portal-grid">
-            <!-- Live Class Portal -->
-            <a href="liveclass.html" class="class-card live-card">
-                <span class="portal-tag live">🔴 Live Class</span>
-                <h2 style="font-size: 18px; margin-top: 4px;">Live Class</h2>
+        <!-- Live Class & Past Class Grid (Live Exam এর উপরে যুক্ত করা হলো) -->
+        <div class="class-grid">
+            <a href="liveclass.html" class="class-card live-class">
+                <div class="icon">🎥</div>
+                <span>Live Class</span>
             </a>
-
-            <!-- Past Class Portal -->
-            <a href="pastclass.html" class="class-card past-card">
-                <span class="portal-tag past">📚 Past Class</span>
-                <h2 style="font-size: 18px; margin-top: 4px;">Past Class</h2>
+            <a href="pastclass.html" class="class-card past-class">
+                <div class="icon">📹</div>
+                <span>Past Class</span>
             </a>
         </div>
 
@@ -1174,7 +1169,7 @@
           }
       }
 
-      window.openNoticeModal = function() { document.getElementById('noticeModal').style.display = 'flex'; }
+      window.openNoticeModal = function() { document.getElementById('noticeModal').style.display = 'flex'; loadNotices(); }
       window.closeNoticeModal = function() { document.getElementById('noticeModal').style.display = 'none'; }
 
       window.openResultModal = async function() {
@@ -1652,39 +1647,64 @@
           });
       }
 
+      window.filterNotices = function() {
+          const query = document.getElementById('noticeSearchInput').value.toLowerCase();
+          const filtered = cachedNotices.filter(item => item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query));
+          renderNotices(filtered);
+      }
+
+      async function loadLiveExamTitle() {
+        try {
+          const snapshot = await get(ref(db, 'live_exams/live_daily_exam/title'));
+          if(snapshot.exists()) document.getElementById('liveExamTitle').innerText = snapshot.val();
+        } catch(e) {}
+      }
+      async function loadPracticeEntryTitle() {
+        try {
+          const snapshot = await get(ref(db, 'practice_exams/title'));
+          if(snapshot.exists()) document.getElementById('practiceExamTitle').innerText = snapshot.val();
+        } catch(e) {}
+      }
+
       onAuthStateChanged(auth, async (user) => {
-          currentUser = user;
-          const authNav = document.getElementById('authNavContainer');
-          const welcomeTitle = document.getElementById('welcomeTitle');
+        currentUser = user;
+        const c = document.getElementById('authNavContainer');
+        const welcome = document.getElementById('welcomeTitle');
 
-          if (user) {
-              listenToNotifications(user.uid);
-              try {
-                  const snapshot = await get(ref(db, `students/${user.uid}`));
-                  if (snapshot.exists()) currentStudentProfile = snapshot.val();
-              } catch(e){}
+        if (user) {
+          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0) : 'U');
+          c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
+          welcome.innerText = `Welcome, ${(user.displayName || user.email).split(' ')[0]} ✨`;
 
-              const displayName = (currentStudentProfile && currentStudentProfile.name) || user.displayName || user.email.split('@')[0];
-              welcomeTitle.innerText = `Welcome, ${displayName} ✨`;
+          listenToNotifications(user.uid);
 
-              let photoUrl = user.photoURL;
-              let avatarContent = photoUrl ? `<img src="${photoUrl}" alt="Profile">` : displayName.charAt(0).toUpperCase();
+          try {
+              const snap = await get(ref(db, `students/${user.uid}`));
+              if(snap.exists()) currentStudentProfile = snap.val();
+              else checkAndPromptStudentProfile(user);
+          } catch(e){}
 
-              authNav.innerHTML = `
-                  <div class="user-profile-btn" onclick="toggleProfileModal(true)">
-                      <div class="user-avatar">${avatarContent}</div>
-                      <span style="font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px;">${displayName}</span>
-                  </div>
-              `;
-              await loadStudentHistory();
-          } else {
-              welcomeTitle.innerText = "Welcome, Scholars ✨";
-              authNav.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">Login</button>`;
-              document.getElementById('userScoreDisplay').innerText = '--';
-          }
+          try {
+              const scoreSnap = await get(ref(db, `exam_attempts/${user.uid}`));
+              if (scoreSnap.exists()) {
+                  const data = scoreSnap.val();
+                  let totalScore = 0;
+                  for (let id in data) totalScore += Number(data[id].score) || 0;
+                  document.getElementById('userScoreDisplay').innerText = totalScore;
+              } else {
+                  document.getElementById('userScoreDisplay').innerText = '0';
+              }
+          } catch(e) {}
+
+        } else {
+          currentStudentProfile = null;
+          c.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">লগইন</button>`;
+          welcome.innerText = "Welcome, Scholars ✨";
+          document.getElementById('notifBody').innerHTML = '<p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">কোনো নোটিফিকেশন নেই</p>';
+        }
+        loadLiveExamTitle();
+        loadPracticeEntryTitle();
       });
-
-      loadNotices();
     </script>
 </body>
 </html>
