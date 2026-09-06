@@ -192,26 +192,64 @@
             gap: 16px;
             margin-bottom: 20px;
         }
+        
         .floating-portal {
             background: var(--glass); backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 28px;
             padding: 24px; margin-bottom: 20px; cursor: pointer; text-decoration: none; display: block; color: var(--text);
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;
         }
-        .portal-grid .floating-portal {
+
+        /* --- Customized Live Class & Past Class Curved Box Design --- */
+        .portal-grid .class-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 24px 20px;
             margin-bottom: 0;
-            padding: 20px 16px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--text);
+            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            min-height: 110px;
+            position: relative;
         }
-        .floating-portal:hover { transform: scale(1.015) translateY(-6px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0, 242, 255, 0.12); }
-        .portal-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; }
+
+        /* Left Card - Live Class (Top-left & Bottom-right rounded) */
+        .portal-grid .class-card.live-card {
+            border-radius: 35px 12px 35px 12px;
+            text-align: left;
+            align-items: flex-start;
+        }
+
+        /* Right Card - Past Class (Top-right & Bottom-left rounded) */
+        .portal-grid .class-card.past-card {
+            border-radius: 12px 35px 12px 35px;
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .portal-grid .class-card:hover {
+            transform: scale(1.03) translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 30px rgba(0, 242, 255, 0.15);
+        }
+
+        .portal-grid .class-card:hover.live-card {
+            border-radius: 12px 35px 12px 35px;
+        }
+
+        .portal-grid .class-card:hover.past-card {
+            border-radius: 35px 12px 35px 12px;
+        }
+
+        .portal-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; }
         .portal-tag.live { color: #fff; background: var(--danger); }
         .portal-tag.past { color: #fff; background: var(--primary); }
         .portal-tag.practice { color: #fff; background: #0284c7; }
         .floating-portal p.desc { color: var(--subtext); font-size: 13px; margin-top: 4px; }
-
-        /* Align text for right/left design */
-        .align-right { text-align: right; }
-        .align-right .portal-tag { float: right; clear: both; }
 
         /* --- Aura action grid --- */
         .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; margin-top: 8px; }
@@ -355,7 +393,7 @@
             .aura-item { height: 108px; }
             .aura-item .icon { font-size: 27px; }
             .portal-grid { gap: 10px; }
-            .portal-grid .floating-portal { padding: 16px 12px; border-radius: 20px; }
+            .portal-grid .class-card { padding: 16px 12px; }
             .portal-grid h2 { font-size: 16px !important; }
         }
     </style>
@@ -409,15 +447,14 @@
         <!-- Live Class & Past Class Grid (Live Exam এর ঠিক উপরে) -->
         <div class="portal-grid">
             <!-- Live Class Portal -->
-            <a href="liveclass.html" class="floating-portal">
+            <a href="liveclass.html" class="class-card live-card">
                 <span class="portal-tag live">🔴 Live Class</span>
                 <h2 style="font-size: 18px; margin-top: 4px;">Live Class</h2>
             </a>
 
-            <!-- Past Class Portal (Opposite layout style) -->
-            <a href="pastclass.html" class="floating-portal align-right">
+            <!-- Past Class Portal -->
+            <a href="pastclass.html" class="class-card past-card">
                 <span class="portal-tag past">📚 Past Class</span>
-                <div style="clear:both;"></div>
                 <h2 style="font-size: 18px; margin-top: 4px;">Past Class</h2>
             </a>
         </div>
@@ -1615,46 +1652,38 @@
           });
       }
 
-      window.filterNotices = function() {
-          const query = document.getElementById('noticeSearchInput').value.toLowerCase();
-          const filtered = cachedNotices.filter(item => item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query));
-          renderNotices(filtered);
-      }
-
-      async function loadLiveExamTitle() {
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam/title'));
-          if(snapshot.exists()) document.getElementById('liveExamTitle').innerText = snapshot.val();
-        } catch(e) {}
-      }
-      async function loadPracticeEntryTitle() {
-        try {
-          const snapshot = await get(ref(db, 'practice_exams/title'));
-          if(snapshot.exists()) document.getElementById('practiceExamTitle').innerText = snapshot.val();
-        } catch(e) {}
-      }
-
       onAuthStateChanged(auth, async (user) => {
-        currentUser = user;
-        const c = document.getElementById('authNavContainer');
-        const welcome = document.getElementById('welcomeTitle');
+          currentUser = user;
+          const authNav = document.getElementById('authNavContainer');
+          const welcomeTitle = document.getElementById('welcomeTitle');
 
-        if (user) {
-          const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0) : 'U');
-          c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || 'Profile'}</span></div>`;
-          welcome.innerText = `Welcome, ${user.displayName || 'Scholar'} ✨`;
-          checkAndPromptStudentProfile(user);
-          listenToNotifications(user.uid);
-          loadStudentHistory();
-        } else {
-          c.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">Login</button>`;
-          welcome.innerText = `Welcome, Scholars ✨`;
-          document.getElementById('userScoreDisplay').innerText = '--';
-        }
+          if (user) {
+              listenToNotifications(user.uid);
+              try {
+                  const snapshot = await get(ref(db, `students/${user.uid}`));
+                  if (snapshot.exists()) currentStudentProfile = snapshot.val();
+              } catch(e){}
+
+              const displayName = (currentStudentProfile && currentStudentProfile.name) || user.displayName || user.email.split('@')[0];
+              welcomeTitle.innerText = `Welcome, ${displayName} ✨`;
+
+              let photoUrl = user.photoURL;
+              let avatarContent = photoUrl ? `<img src="${photoUrl}" alt="Profile">` : displayName.charAt(0).toUpperCase();
+
+              authNav.innerHTML = `
+                  <div class="user-profile-btn" onclick="toggleProfileModal(true)">
+                      <div class="user-avatar">${avatarContent}</div>
+                      <span style="font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px;">${displayName}</span>
+                  </div>
+              `;
+              await loadStudentHistory();
+          } else {
+              welcomeTitle.innerText = "Welcome, Scholars ✨";
+              authNav.innerHTML = `<button class="cyber-btn-sm" onclick="toggleAuthModal(true)">Login</button>`;
+              document.getElementById('userScoreDisplay').innerText = '--';
+          }
       });
 
-      loadLiveExamTitle();
-      loadPracticeEntryTitle();
       loadNotices();
     </script>
 </body>
