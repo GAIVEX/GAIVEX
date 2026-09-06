@@ -100,11 +100,15 @@
             border-radius: 50%; width: 17px; height: 17px; font-size: 9px; font-weight: bold;
             display: none; align-items: center; justify-content: center; border: 2px solid var(--bg);
         }
+        /* FIX #1: dropdown is now viewport-anchored (position: fixed) instead of being
+           positioned relative to the small 40px icon-orb. That's what was pushing most
+           of the 300px-wide panel off the left edge of the screen and getting clipped
+           by body's overflow-x:hidden. */
         .notification-dropdown {
-            display: none; position: absolute; right: 0; top: 50px;
+            display: none; position: fixed; right: 4%; top: 64px;
             background: rgba(10, 15, 25, 0.92); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 20px; width: 300px; max-width: 88vw;
-            max-height: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden;
+            border: 1px solid var(--glass-border); border-radius: 20px; width: 300px; max-width: 90vw;
+            max-height: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 3500; overflow: hidden;
             flex-direction: column;
         }
         [data-theme="light"] .notification-dropdown { background: rgba(255,255,255,0.95); }
@@ -337,24 +341,28 @@
     <header>
         <a href="index.html" class="logo">GAI<span>VEX</span></a>
         <div class="nav-right-group">
-            <div class="icon-orb" onclick="toggleNotificationMenu()" title="নোটিফিকেশন" style="position:relative;">
+            <div class="icon-orb" onclick="toggleNotificationMenu()" title="নোটিফিকেশন">
                 🔔
                 <span class="notification-badge" id="notifBadge">0</span>
-                <div class="notification-dropdown" id="notificationDropdown">
-                    <div class="notif-header">
-                        <h4>📢 নোটিফিকেশন</h4>
-                        <button onclick="markAllNotificationsRead()">সবগুলো পঠিত মার্ক করুন</button>
-                    </div>
-                    <div class="notif-body" id="notifBody">
-                        <p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">কোনো নতুন নোটিফিকেশন নেই</p>
-                    </div>
-                </div>
             </div>
             <div id="authNavContainer">
                 <button class="cyber-btn-sm" onclick="toggleAuthModal(true)">Login</button>
             </div>
         </div>
     </header>
+
+    <!-- FIX #1: moved outside the icon-orb / header so `position: fixed` positions it
+         against the viewport instead of an ancestor with a transform/backdrop-filter,
+         and it's no longer clipped by narrow parents. -->
+    <div class="notification-dropdown" id="notificationDropdown">
+        <div class="notif-header">
+            <h4>📢 নোটিফিকেশন</h4>
+            <button onclick="markAllNotificationsRead()">সবগুলো পঠিত মার্ক করুন</button>
+        </div>
+        <div class="notif-body" id="notifBody">
+            <p style="color:var(--subtext); font-size:12px; text-align:center; padding: 20px 0;">কোনো নতুন নোটিফিকেশন নেই</p>
+        </div>
+    </div>
 
     <main class="container">
         <div class="hero">
@@ -970,7 +978,14 @@
                       if (!item.read) unreadCount++;
                       let timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'}) : '';
                       let icon = item.type === 'qanda' ? '❓' : item.type === 'reply' ? '💬' : '📢';
-                      let targetUrl = item.link || 'qanda.html';
+
+                      /* FIX #2: only send to qanda.html for notification types that are
+                         actually about Q&A/replies, or when the item explicitly carries
+                         its own `link`. Anything else (general/notice-type items with no
+                         link) now stays put instead of forcing a redirect to Q&A. */
+                      let targetUrl = item.link || (
+                          (item.type === 'qanda' || item.type === 'reply') ? 'qanda.html' : ''
+                      );
 
                       html += `
                           <div class="notif-item ${item.read ? '' : 'unread'}" onclick="handleNotifClick('${key}', '${targetUrl}')">
@@ -998,7 +1013,13 @@
           if (currentUser && userNotifications[notifId] && !userNotifications[notifId].read) {
               try { await update(ref(db, `notifications/${currentUser.uid}/${notifId}`), { read: true }); } catch(e){}
           }
-          window.location.href = targetUrl;
+          // FIX #2: if there's no target URL (a general notice with nothing to open),
+          // just close the dropdown instead of forcing a page redirect.
+          if (targetUrl) {
+              window.location.href = targetUrl;
+          } else {
+              document.getElementById('notificationDropdown').classList.remove('show');
+          }
       }
 
       window.markAllNotificationsRead = async function() {
@@ -1014,7 +1035,7 @@
       }
 
       window.onclick = function(event) {
-          if (!event.target.closest('.icon-orb')) {
+          if (!event.target.closest('.icon-orb') && !event.target.closest('.notification-dropdown')) {
               const notifDropdown = document.getElementById("notificationDropdown");
               if (notifDropdown) notifDropdown.classList.remove('show');
           }
