@@ -1,269 +1,1340 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লাইভ ক্লাস - Live Class</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GAIVEX Live Class</title>
 
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-        /* Header Styles */
-        header {
-            background-color: #1a237e;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<style>
+:root{
+    --bg:#080d1a;
+    --bg-glow-1: rgba(56,189,248,.16);
+    --bg-glow-2: rgba(244,63,94,.12);
+    --glass: rgba(22,32,52,.55);
+    --glass-soft: rgba(22,32,52,.35);
+    --glass-border: rgba(148,163,184,.14);
+    --ink:#f1f5f9;
+    --ink-dim:#94a3b8;
+    --ink-faint:#64748b;
+    --sky:#38bdf8;
+    --sky-deep:#0284c7;
+    --rose:#f43f5e;
+    --live:#ef4444;
+    --ok:#10b981;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:9px;
+}
 
-        .live-badge {
-            background-color: #e53935;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
+*{ box-sizing:border-box; margin:0; padding:0; }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+html,body{
+    height:100%;
+    font-family:'Hind Siliguri',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    overflow-x:hidden;
+}
 
-        /* Main Container */
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+.latin{ font-family:'Outfit',sans-serif; }
 
-        /* Video Section */
-        .main-content {
-            flex: 3;
-            min-width: 300px;
-        }
+body{
+    background:
+        radial-gradient(ellipse 900px 600px at 12% -5%, var(--bg-glow-1), transparent 55%),
+        radial-gradient(ellipse 800px 700px at 95% 15%, var(--bg-glow-2), transparent 50%),
+        radial-gradient(ellipse 1000px 800px at 50% 120%, rgba(56,189,248,.08), transparent 60%),
+        var(--bg);
+    min-height:100vh;
+}
 
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            background-color: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+button{ font-family:inherit; cursor:pointer; }
+input,textarea{ font-family:inherit; }
+.hidden{ display:none!important; }
 
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+/* scrollbars */
+::-webkit-scrollbar{ width:6px; height:6px; }
+::-webkit-scrollbar-thumb{ background:rgba(148,163,184,.25); border-radius:10px; }
 
-        .class-details {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+/* ============ GLASS PRIMITIVE ============ */
+.glass{
+    background:var(--glass);
+    backdrop-filter:blur(22px) saturate(160%);
+    -webkit-backdrop-filter:blur(22px) saturate(160%);
+    border:1px solid var(--glass-border);
+    box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+}
 
-        .class-details h2 {
-            margin-bottom: 10px;
-            color: #1a237e;
-        }
+/* ============ TOPBAR ============ */
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:200;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 20px;
+    border-bottom:1px solid var(--glass-border);
+    background:rgba(8,13,26,.65);
+    backdrop-filter:blur(18px);
+}
 
-        .instructor {
-            color: #666;
-            margin-bottom: 15px;
-        }
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
-        .resources-btn {
-            background-color: #2e7d32;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+.brand-mark{
+    font-family:'Outfit',sans-serif;
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:.2px;
+    color:var(--sky);
+}
+.brand-mark span{ color:var(--rose); }
 
-        .resources-btn:hover {
-            background-color: #1b5e20;
-        }
+.brand-tag{
+    font-size:11px;
+    color:var(--ink-faint);
+    border-left:1px solid var(--glass-border);
+    padding-left:10px;
+    display:none;
+}
 
-        /* Sidebar / Chat Section */
-        .sidebar {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            height: 600px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
-        .chat-header {
-            background-color: #1a237e;
-            color: white;
-            padding: 15px;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            font-weight: bold;
-        }
+.icon-btn{
+    width:38px; height:38px;
+    border-radius:11px;
+    border:1px solid var(--glass-border);
+    background:var(--glass-soft);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    transition:.15s;
+}
+.icon-btn:hover{ color:var(--ink); border-color:rgba(56,189,248,.4); }
 
-        .chat-box {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+/* ============ LAYOUT ============ */
+.stage{
+    max-width:1400px;
+    margin:0 auto;
+    padding:18px;
+    display:grid;
+    grid-template-columns:1fr 340px;
+    gap:16px;
+    align-items:start;
+}
 
-        .message {
-            background: #f1f1f1;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
+/* ============ VIDEO BLOCK ============ */
+.video-block{
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+    position:relative;
+}
 
-        .message .username {
-            font-weight: bold;
-            color: #1a237e;
-            font-size: 12px;
-            display: block;
-            margin-bottom: 3px;
-        }
+.video-frame-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#000;
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+}
+.video-frame-wrap iframe{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    border:0;
+}
 
-        .chat-input-area {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-        }
+.video-frame-wrap:fullscreen{ border-radius:0; }
+.video-frame-wrap:fullscreen iframe{ width:100%; height:100%; }
 
-        .chat-input-area input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            outline: none;
-        }
+/* teacher floating card, top-left over video */
+.teacher-chip{
+    position:absolute;
+    top:14px; left:14px;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 14px 8px 8px;
+    border-radius:99px;
+    pointer-events:none;
+}
 
-        .chat-input-area button {
-            padding: 10px 15px;
-            background-color: #1a237e;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            margin-left: 5px;
-            cursor: pointer;
-        }
+.teacher-avatar{
+    width:36px; height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid rgba(56,189,248,.55);
+    background:#1e293b;
+}
 
-        /* Responsive Layout */
-        @media (max-width: 900px) {
-            .container {
-                flex-direction: column;
-            }
-            .sidebar {
-                height: 400px;
-            }
-        }
-    </style>
+.teacher-meta{ line-height:1.25; }
+.teacher-name{ font-size:13px; font-weight:600; color:#fff; }
+.teacher-role{ font-size:10.5px; color:var(--ink-dim); }
+
+.live-pill{
+    position:absolute;
+    top:14px; right:14px;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 12px;
+    border-radius:99px;
+    background:rgba(239,68,68,.16);
+    border:1px solid rgba(239,68,68,.45);
+    font-family:'Outfit',sans-serif;
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:.5px;
+    color:#fecaca;
+}
+.live-dot{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--live);
+    box-shadow:0 0 0 0 rgba(239,68,68,.6);
+    animation:pulse-dot 1.6s infinite;
+}
+@keyframes pulse-dot{
+    0%{ box-shadow:0 0 0 0 rgba(239,68,68,.55); }
+    70%{ box-shadow:0 0 0 8px rgba(239,68,68,0); }
+    100%{ box-shadow:0 0 0 0 rgba(239,68,68,0); }
+}
+
+.viewer-pill{
+    position:absolute;
+    bottom:14px; left:14px;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 11px;
+    border-radius:99px;
+    background:rgba(8,13,26,.55);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(10px);
+    font-size:11.5px;
+    color:var(--ink-dim);
+}
+
+.video-controls{
+    position:absolute;
+    bottom:14px; right:14px;
+    z-index:20;
+    display:flex;
+    gap:8px;
+}
+
+.ctrl-btn{
+    width:40px; height:40px;
+    border-radius:11px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(8,13,26,.55);
+    backdrop-filter:blur(10px);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    transition:.15s;
+}
+.ctrl-btn:hover{ background:rgba(56,189,248,.35); }
+
+/* reactions layer */
+.reaction-layer{
+    position:absolute; inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:15;
+}
+.float-emoji{
+    position:absolute;
+    bottom:60px;
+    font-size:26px;
+    animation:float-up 3.2s ease-out forwards;
+}
+@keyframes float-up{
+    0%{ transform:translateY(0) translateX(0) scale(.6); opacity:0; }
+    12%{ opacity:1; transform:translateY(-20px) scale(1); }
+    100%{ transform:translateY(-260px) translateX(var(--drift,20px)) scale(1.05); opacity:0; }
+}
+
+/* waiting / offline state */
+.offline-screen{
+    position:absolute; inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:14px;
+    padding:30px;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(56,189,248,.10), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(244,63,94,.08), transparent 55%),
+        #0b1120;
+}
+.offline-icon{
+    width:64px; height:64px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px;
+    background:rgba(56,189,248,.10);
+    border:1px solid rgba(56,189,248,.3);
+}
+.offline-title{ font-size:18px; font-weight:700; }
+.offline-sub{ font-size:13px; color:var(--ink-dim); max-width:320px; line-height:1.6; }
+
+/* class info bar */
+.info-bar{
+    margin-top:14px;
+    padding:14px 16px;
+    border-radius:var(--radius-md);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+}
+.info-title{
+    font-size:15px;
+    font-weight:600;
+    margin-right:auto;
+}
+.chip{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    background:rgba(15,23,42,.55);
+    border:1px solid var(--glass-border);
+    padding:5px 10px;
+    border-radius:99px;
+}
+
+/* ============ CHAT PANEL ============ */
+.chat-panel{
+    border-radius:var(--radius-lg);
+    display:flex;
+    flex-direction:column;
+    height:calc(100vh - 110px);
+    position:sticky;
+    top:80px;
+    overflow:hidden;
+}
+
+.chat-head{
+    padding:14px 16px;
+    border-bottom:1px solid var(--glass-border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.chat-head-title{ font-size:14px; font-weight:600; }
+.chat-head-sub{ font-size:11px; color:var(--ink-faint); }
+
+.chat-body{
+    flex:1;
+    overflow-y:auto;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.msg-row{ display:flex; flex-direction:column; max-width:88%; }
+.msg-row.me{ align-self:flex-end; align-items:flex-end; }
+.msg-row.teacher{ align-self:flex-start; }
+.msg-row.other{ align-self:flex-start; }
+
+.msg-sender{
+    font-size:10.5px;
+    color:var(--ink-faint);
+    margin-bottom:3px;
+    padding:0 4px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+.teacher-tag{
+    background:linear-gradient(135deg,#38bdf8,#0284c7);
+    color:#04121e;
+    font-weight:700;
+    font-size:9px;
+    padding:1.5px 6px;
+    border-radius:6px;
+    font-family:'Outfit',sans-serif;
+}
+
+.msg-bubble{
+    padding:9px 13px;
+    border-radius:16px;
+    font-size:13.5px;
+    line-height:1.5;
+    word-break:break-word;
+    white-space:pre-wrap;
+}
+.msg-row.other .msg-bubble{
+    background:rgba(51,65,85,.6);
+    border:1px solid var(--glass-border);
+    border-top-left-radius:5px;
+    color:#f1f5f9;
+}
+.msg-row.me .msg-bubble{
+    background:linear-gradient(135deg,#0284c7,#0369a1);
+    border-top-right-radius:5px;
+    color:#fff;
+}
+.msg-row.teacher .msg-bubble{
+    background:rgba(244,63,94,.14);
+    border:1px solid rgba(244,63,94,.35);
+    border-top-left-radius:5px;
+}
+
+.chat-empty{
+    margin:auto;
+    text-align:center;
+    color:var(--ink-faint);
+    font-size:12.5px;
+    padding:20px;
+}
+
+.chat-foot{
+    padding:12px;
+    border-top:1px solid var(--glass-border);
+    display:flex;
+    gap:8px;
+    align-items:flex-end;
+}
+
+.chat-input{
+    flex:1;
+    resize:none;
+    max-height:90px;
+    min-height:40px;
+    background:rgba(15,23,42,.6);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    padding:10px 12px;
+    color:#fff;
+    font-size:13.5px;
+    outline:none;
+}
+.chat-input:focus{ border-color:rgba(56,189,248,.5); }
+
+.send-btn{
+    width:42px; height:42px;
+    flex-shrink:0;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#0284c7);
+    color:#04121e;
+    font-size:16px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.reactions-bar{
+    display:flex;
+    gap:6px;
+    padding:0 12px 10px;
+}
+.react-btn{
+    border:1px solid var(--glass-border);
+    background:rgba(15,23,42,.5);
+    border-radius:10px;
+    padding:5px 9px;
+    font-size:15px;
+}
+.react-btn:hover{ background:rgba(56,189,248,.18); }
+
+/* mobile chat drawer */
+.chat-fab{
+    display:none;
+    position:fixed;
+    bottom:20px; right:18px;
+    z-index:250;
+    width:54px; height:54px;
+    border-radius:50%;
+    border:none;
+    background:linear-gradient(135deg,#38bdf8,#0284c7);
+    color:#04121e;
+    font-size:22px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 30px rgba(2,132,199,.5);
+}
+.chat-fab .badge{
+    position:absolute;
+    top:-4px; right:-4px;
+    background:var(--rose);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    min-width:18px; height:18px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    padding:0 4px;
+}
+
+/* ============ NAME GATE ============ */
+.gate-overlay{
+    position:fixed; inset:0;
+    z-index:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(4,7,15,.7);
+    backdrop-filter:blur(8px);
+}
+.gate-card{
+    width:100%; max-width:380px;
+    border-radius:var(--radius-lg);
+    padding:26px;
+}
+.gate-logo{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
+.gate-logo span{ color:var(--rose); }
+.gate-title{ text-align:center; margin-top:6px; font-size:13px; color:var(--ink-dim); margin-bottom:20px; }
+.gate-input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:11px;
+    border:1px solid var(--glass-border);
+    background:rgba(15,23,42,.6);
+    color:#fff;
+    outline:none;
+    margin-bottom:12px;
+    font-size:14px;
+}
+.gate-input:focus{ border-color:var(--sky); }
+.gate-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:99px;
+    background:linear-gradient(135deg,#38bdf8,#0284c7);
+    color:#04121e;
+    font-weight:700;
+    font-size:14.5px;
+}
+
+/* ============ TEACHER CONTROL MODAL ============ */
+.modal-overlay{
+    position:fixed; inset:0;
+    z-index:600;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    background:rgba(4,7,15,.72);
+    backdrop-filter:blur(6px);
+}
+.modal-overlay.show{ display:flex; }
+
+.modal-card{
+    width:100%; max-width:560px;
+    max-height:90vh;
+    overflow-y:auto;
+    border-radius:var(--radius-lg);
+    padding:22px;
+}
+
+.modal-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+.modal-top h3{ font-size:16px; color:var(--sky); }
+.modal-close{ background:none; border:none; color:var(--ink-dim); font-size:22px; }
+
+.field{ margin-bottom:12px; }
+.field label{ display:block; font-size:12px; color:var(--ink-dim); margin-bottom:5px; font-weight:600; }
+.field input, .field select, .field textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:9px;
+    border:1px solid var(--glass-border);
+    background:rgba(15,23,42,.6);
+    color:#fff;
+    outline:none;
+    font-size:13.5px;
+}
+.field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--sky); }
+.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+.status-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 14px;
+    border-radius:11px;
+    background:rgba(15,23,42,.5);
+    border:1px solid var(--glass-border);
+    margin:14px 0;
+}
+.status-text{ font-size:13px; font-weight:600; }
+.status-text.on{ color:#34d399; }
+.status-text.off{ color:var(--ink-faint); }
+
+.btn{
+    border:none;
+    border-radius:11px;
+    padding:12px;
+    font-weight:700;
+    font-size:14px;
+    width:100%;
+}
+.btn-go-live{ background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; }
+.btn-end-live{ background:rgba(239,68,68,.14); color:#fca5a5; border:1px solid rgba(239,68,68,.4); }
+.btn-save{ background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; margin-top:6px; }
+
+.divider{ height:1px; background:var(--glass-border); margin:18px 0; }
+
+.teacher-chat-mini{
+    max-height:220px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:10px;
+    border-radius:10px;
+    background:rgba(15,23,42,.5);
+    border:1px solid var(--glass-border);
+    margin-bottom:10px;
+}
+
+.login-error{
+    margin-top:10px;
+    padding:9px 11px;
+    border-radius:8px;
+    background:rgba(239,68,68,.12);
+    border:1px solid rgba(239,68,68,.3);
+    color:#fca5a5;
+    font-size:12.5px;
+    display:none;
+}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:980px){
+    .stage{ grid-template-columns:1fr; padding:12px; }
+    .chat-panel{
+        position:fixed;
+        right:0; bottom:0; left:0;
+        top:auto;
+        height:72vh;
+        border-radius:20px 20px 0 0;
+        transform:translateY(105%);
+        transition:transform .28s ease;
+        z-index:240;
+    }
+    .chat-panel.open{ transform:translateY(0); }
+    .chat-fab{ display:flex; }
+    .brand-tag{ display:none; }
+}
+
+@media(max-width:520px){
+    .topbar{ padding:12px 14px; }
+    .brand-mark{ font-size:17px; }
+    .teacher-name{ font-size:12px; }
+    .live-pill{ font-size:10px; padding:5px 9px; }
+    .video-controls{ bottom:10px; right:10px; }
+    .ctrl-btn{ width:36px; height:36px; font-size:15px; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+    .live-dot, .float-emoji{ animation:none!important; }
+}
+</style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <h1>লার্নিং প্ল্যাটফর্ম</h1>
-        <span class="live-badge">● LIVE</span>
-    </header>
+<!-- NAME GATE -->
+<div id="gateOverlay" class="gate-overlay">
+    <div class="gate-card glass">
+        <div class="gate-logo">GAIVEX<span>.</span></div>
+        <div class="gate-title">ক্লাসে যোগ দেওয়ার আগে আপনার নাম লিখুন</div>
+        <input id="gateNameInput" class="gate-input" placeholder="আপনার নাম" maxlength="40">
+        <button class="gate-btn" onclick="enterClass()">🎬 লাইভ ক্লাসে প্রবেশ করুন</button>
+    </div>
+</div>
 
-    <!-- Main Live Class Area -->
-    <div class="container">
-        
-        <!-- Video & Info Area -->
-        <div class="main-content">
-            <div class="video-wrapper">
-                <!-- YouTube Live Embed (Replace ID with your Live Stream Video ID) -->
-                <iframe src="https://www.youtube.com/embed/live_stream?channel=YOUR_CHANNEL_ID" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
-            </div>
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="brand">
+        <div class="brand-mark">GAIVEX<span>.</span></div>
+        <div class="brand-tag latin">LIVE CLASS</div>
+    </div>
+    <div class="topbar-right">
+        <button class="icon-btn" title="শেয়ার করুন" onclick="shareClassLink()">🔗</button>
+        <button class="icon-btn" title="Teacher Access" onclick="openTeacherLogin()">⚙️</button>
+    </div>
+</div>
 
-            <div class="class-details">
-                <h2>ওয়েব ডেভেলপমেন্ট লাইভ মাস্টারক্লাস</h2>
-                <p class="instructor">ইনস্ট্রাক্টর: রাহাত আহমেদ | বিষয়: HTML & CSS Basics</p>
-                <p style="margin-bottom: 15px;">আজকের ক্লাসে আমরা এইচটিএমএল-এর বিভিন্ন ট্যাগ এবং সিএসএস লেআউট নিয়ে বিস্তারিত আলোচনা করব।</p>
-                <button class="resources-btn" onclick="alert('লেকচার শিট ডাউনলোড হচ্ছে...')">📄 লেকচার শিট ডাউনলোড</button>
-            </div>
-        </div>
+<!-- STAGE -->
+<div class="stage">
+    <div>
+        <div class="video-block">
+            <div class="video-frame-wrap" id="videoWrap">
+                <div id="offlineScreen" class="offline-screen">
+                    <div class="offline-icon">📡</div>
+                    <div class="offline-title">লাইভ ক্লাস এখনো শুরু হয়নি</div>
+                    <div class="offline-sub">শিক্ষক ক্লাস শুরু করলেই এখানে সরাসরি ভিডিও চালু হয়ে যাবে। একটু অপেক্ষা করুন।</div>
+                </div>
 
-        <!-- Live Chat Area -->
-        <div class="sidebar">
-            <div class="chat-header">লাইভ চ্যাট</div>
-            <div class="chat-box" id="chatBox">
-                <div class="message">
-                    <span class="username">সিস্টেম</span>
-                    লাইভ চ্যাটে স্বাগতম! আপনার প্রশ্ন নিচে লিখুন।
+                <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+
+                <div class="teacher-chip glass hidden" id="teacherChip">
+                    <img id="teacherAvatar" class="teacher-avatar" src="" alt="">
+                    <div class="teacher-meta">
+                        <div class="teacher-name" id="teacherNameEl">—</div>
+                        <div class="teacher-role">শিক্ষক</div>
+                    </div>
+                </div>
+
+                <div class="live-pill hidden" id="livePill"><span class="live-dot"></span> LIVE</div>
+
+                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span> জন দেখছে</div>
+
+                <div class="reaction-layer" id="reactionLayer"></div>
+
+                <div class="video-controls hidden" id="videoControls">
+                    <button class="ctrl-btn" title="রিফ্রেশ" onclick="reloadVideo()">🔄</button>
+                    <button class="ctrl-btn" id="fsBtn" title="ফুলস্ক্রিন" onclick="toggleFullscreen()">⛶</button>
                 </div>
             </div>
-            <div class="chat-input-area">
-                <input type="text" id="userInput" placeholder="আপনার প্রশ্ন লিখুন...">
-                <button onclick="sendMessage()">পাঠান</button>
+        </div>
+
+        <div class="info-bar glass">
+            <div class="info-title" id="classTitle">ক্লাসের জন্য অপেক্ষা করুন</div>
+            <span class="chip" id="chipSubject">—</span>
+            <span class="chip" id="chipPaper">—</span>
+            <span class="chip" id="chipChapter">—</span>
+        </div>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel glass" id="chatPanel">
+        <div class="chat-head">
+            <div>
+                <div class="chat-head-title">💬 লাইভ চ্যাট</div>
+                <div class="chat-head-sub">শিক্ষকের সাথে সরাসরি কথা বলুন</div>
+            </div>
+            <button class="icon-btn" onclick="closeChatDrawer()" style="display:none" id="chatCloseBtn">✕</button>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+            <div class="chat-empty">এখনো কোনো মেসেজ নেই। প্রথম মেসেজটি আপনিই লিখুন 👋</div>
+        </div>
+
+        <div class="reactions-bar">
+            <button class="react-btn" onclick="sendReaction('❤️')">❤️</button>
+            <button class="react-btn" onclick="sendReaction('👏')">👏</button>
+            <button class="react-btn" onclick="sendReaction('🔥')">🔥</button>
+            <button class="react-btn" onclick="sendReaction('😮')">😮</button>
+            <button class="react-btn" onclick="sendReaction('🙋')">🙋</button>
+        </div>
+
+        <div class="chat-foot">
+            <textarea id="chatInput" class="chat-input" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
+            <button class="send-btn" onclick="sendChatMessage()">➤</button>
+        </div>
+    </div>
+</div>
+
+<button class="chat-fab" id="chatFab" onclick="openChatDrawer()">
+    💬
+    <span class="badge hidden" id="chatFabBadge">0</span>
+</button>
+
+<!-- TEACHER LOGIN MODAL -->
+<div class="modal-overlay" id="teacherLoginModal">
+    <div class="modal-card glass">
+        <div class="modal-top">
+            <h3>🔐 Teacher Access</h3>
+            <button class="modal-close" onclick="closeTeacherLogin()">&times;</button>
+        </div>
+        <div class="field">
+            <label>Teacher No.</label>
+            <input type="text" id="tlTeacherNo" placeholder="GVX-001098">
+        </div>
+        <div class="field">
+            <label>Teacher Password</label>
+            <input type="password" id="tlPassword" placeholder="Teacher Password">
+        </div>
+        <div class="field">
+            <label>Admin Email</label>
+            <input type="email" id="tlEmail" placeholder="gaiyumtamim@gmail.com">
+        </div>
+        <button class="btn btn-save" onclick="submitTeacherLogin()">প্রবেশ করুন</button>
+        <div id="tlError" class="login-error"></div>
+    </div>
+</div>
+
+<!-- TEACHER CONTROL MODAL -->
+<div class="modal-overlay" id="teacherControlModal">
+    <div class="modal-card glass">
+        <div class="modal-top">
+            <h3>🎛️ Live Class Control</h3>
+            <button class="modal-close" onclick="closeTeacherControl()">&times;</button>
+        </div>
+
+        <div class="status-row">
+            <span class="status-text off" id="tcStatusText">● বর্তমানে অফলাইন</span>
+            <span class="chip" id="tcViewerChip">👁️ 0</span>
+        </div>
+
+        <div class="field">
+            <label>YouTube Video লিংক (Unlisted)</label>
+            <input type="text" id="tcYoutubeUrl" placeholder="https://youtu.be/xxxxxxxxxxx">
+        </div>
+
+        <div class="field">
+            <label>ক্লাসের শিরোনাম</label>
+            <input type="text" id="tcClassTitle" placeholder="উদাহরণ: বেগ ও ত্বরণ — লাইভ আলোচনা">
+        </div>
+
+        <div class="field-row">
+            <div class="field">
+                <label>বিষয়</label>
+                <select id="tcSubject">
+                    <option value="">নির্বাচন করুন</option>
+                    <option value="physics">পদার্থবিজ্ঞান</option>
+                    <option value="chemistry">রসায়ন</option>
+                    <option value="biology">জীববিজ্ঞান</option>
+                    <option value="math">উচ্চতর গণিত</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>পত্র</label>
+                <select id="tcPaper">
+                    <option value="">নির্বাচন করুন</option>
+                    <option value="paper1">১ম পত্র</option>
+                    <option value="paper2">২য় পত্র</option>
+                </select>
             </div>
         </div>
 
+        <div class="field">
+            <label>অধ্যায়</label>
+            <input type="text" id="tcChapter" placeholder="উদাহরণ: অধ্যায় ৩: গতিবিদ্যা">
+        </div>
+
+        <div class="field-row">
+            <div class="field">
+                <label>শিক্ষকের নাম</label>
+                <input type="text" id="tcTeacherName" placeholder="যেমন: রফিক স্যার">
+            </div>
+            <div class="field">
+                <label>শিক্ষকের ছবির লিংক</label>
+                <input type="text" id="tcTeacherPhoto" placeholder="https://...">
+            </div>
+        </div>
+
+        <button class="btn btn-go-live" id="tcGoLiveBtn" onclick="teacherGoLive()">🔴 লাইভ শুরু করুন</button>
+        <button class="btn btn-end-live hidden" id="tcEndLiveBtn" onclick="teacherEndLive()" style="margin-top:8px;">⏹ লাইভ বন্ধ করুন</button>
+
+        <div class="divider"></div>
+
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink-dim);">💬 স্টুডেন্টদের লাইভ চ্যাট</div>
+        <div class="teacher-chat-mini" id="teacherChatMini"></div>
+        <div style="display:flex;gap:8px;">
+            <input type="text" id="tcReplyInput" placeholder="উত্তর লিখুন..." style="flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--glass-border);background:rgba(15,23,42,.6);color:#fff;outline:none;font-size:13px;">
+            <button class="send-btn" onclick="teacherSendChat()">➤</button>
+        </div>
     </div>
+</div>
 
-    <!-- JavaScript for Live Chat -->
-    <script>
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, onChildAdded, set, push, update, remove, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-            if (input.value.trim() !== "") {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                
-                messageDiv.innerHTML = `
-                    <span class="username">আপনি</span>
-                    ${input.value}
-                `;
+const firebaseConfig = {
+    apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+    authDomain: "gaivexexam.firebaseapp.com",
+    databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+    projectId: "gaivexexam",
+    storageBucket: "gaivexexam.firebasestorage.app",
+    messagingSenderId: "956204530190",
+    appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+};
 
-                chatBox.appendChild(messageDiv);
-                input.value = "";
-                chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll down
-            }
-        }
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-        // Press Enter to send message
-        document.getElementById("userInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
+const TEACHER_NO = "GVX-001098";
+const TEACHER_PASSWORD = "GAIVEX#@014265";
+const ADMIN_EMAIL = "gaiyumtamim@gmail.com";
+
+const SESSION_PATH = "live_class/session";
+const CHAT_PATH = "live_class/chat";
+const VIEWERS_PATH = "live_class/viewers";
+const REACTIONS_PATH = "live_class/reactions";
+
+/* ---------- student identity ---------- */
+let studentName = localStorage.getItem("gaivexLiveName") || "";
+let studentUid = localStorage.getItem("gaivexLiveUid");
+if(!studentUid){
+    studentUid = "stu_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+    localStorage.setItem("gaivexLiveUid", studentUid);
+}
+
+let currentSession = null;
+let currentYoutubeId = null;
+let chatDrawerOpen = false;
+let unreadCount = 0;
+let lastChatKey = null;
+
+/* ============ NAME GATE ============ */
+function enterClass(){
+    const val = document.getElementById("gateNameInput").value.trim();
+    if(!val){
+        document.getElementById("gateNameInput").focus();
+        return;
+    }
+    studentName = val;
+    localStorage.setItem("gaivexLiveName", studentName);
+    document.getElementById("gateOverlay").classList.add("hidden");
+    initPresence();
+}
+window.enterClass = enterClass;
+
+document.getElementById("gateNameInput").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") enterClass();
+});
+
+if(studentName){
+    document.getElementById("gateOverlay").classList.add("hidden");
+}
+
+/* ============ SESSION LISTENER ============ */
+onValue(ref(db, SESSION_PATH), (snap)=>{
+    currentSession = snap.exists() ? snap.val() : null;
+    renderSession();
+    if(document.getElementById("teacherControlModal").classList.contains("show")){
+        fillTeacherControlForm();
+    }
+});
+
+function renderSession(){
+    const offlineScreen = document.getElementById("offlineScreen");
+    const ytFrame = document.getElementById("ytFrame");
+    const teacherChip = document.getElementById("teacherChip");
+    const livePill = document.getElementById("livePill");
+    const viewerPill = document.getElementById("viewerPill");
+    const videoControls = document.getElementById("videoControls");
+
+    const isLive = currentSession && currentSession.isLive && currentSession.youtubeId;
+
+    document.getElementById("classTitle").innerText = currentSession && currentSession.title
+        ? currentSession.title
+        : "ক্লাসের জন্য অপেক্ষা করুন";
+    document.getElementById("chipSubject").innerText = "📚 " + subjectName(currentSession && currentSession.subject);
+    document.getElementById("chipPaper").innerText = "📖 " + (currentSession && currentSession.paper === "paper2" ? "২য় পত্র" : currentSession && currentSession.paper === "paper1" ? "১ম পত্র" : "—");
+    document.getElementById("chipChapter").innerText = "📌 " + ((currentSession && currentSession.chapter) || "—");
+
+    if(isLive){
+        currentYoutubeId = currentSession.youtubeId;
+        ytFrame.src = "https://www.youtube.com/embed/" + currentYoutubeId + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+        ytFrame.classList.remove("hidden");
+        offlineScreen.classList.add("hidden");
+        livePill.classList.remove("hidden");
+        viewerPill.classList.remove("hidden");
+        videoControls.classList.remove("hidden");
+    }else{
+        currentYoutubeId = null;
+        ytFrame.src = "";
+        ytFrame.classList.add("hidden");
+        offlineScreen.classList.remove("hidden");
+        livePill.classList.add("hidden");
+        viewerPill.classList.add("hidden");
+        videoControls.classList.add("hidden");
+    }
+
+    if(currentSession && currentSession.teacherName){
+        teacherChip.classList.remove("hidden");
+        document.getElementById("teacherNameEl").innerText = currentSession.teacherName;
+        document.getElementById("teacherAvatar").src = currentSession.teacherPhoto || "https://api.dicebear.com/7.x/initials/svg?seed=" + encodeURIComponent(currentSession.teacherName);
+    }else{
+        teacherChip.classList.add("hidden");
+    }
+}
+
+window.reloadVideo = function(){
+    if(currentYoutubeId){
+        const f = document.getElementById("ytFrame");
+        f.src = f.src;
+    }
+};
+
+function subjectName(subject){
+    const names = { physics:"পদার্থবিজ্ঞান", chemistry:"রসায়ন", biology:"জীববিজ্ঞান", math:"উচ্চতর গণিত" };
+    return names[subject] || "—";
+}
+
+/* ============ PRESENCE (viewer count) ============ */
+function initPresence(){
+    const myRef = ref(db, `${VIEWERS_PATH}/${studentUid}`);
+    set(myRef, { name: studentName, ts: Date.now() });
+    onDisconnect(myRef).remove();
+
+    onValue(ref(db, VIEWERS_PATH), (snap)=>{
+        const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+        document.getElementById("viewerCount").innerText = count;
+        document.getElementById("tcViewerChip").innerText = "👁️ " + count;
+    });
+}
+if(studentName) initPresence();
+
+/* ============ CHAT ============ */
+const chatBody = document.getElementById("chatBody");
+let chatBoxHasContent = false;
+
+onValue(ref(db, CHAT_PATH), (snap)=>{
+    renderChat(snap.exists() ? snap.val() : {});
+});
+
+function renderChat(data){
+    const keys = Object.keys(data);
+    if(keys.length === 0){
+        chatBody.innerHTML = `<div class="chat-empty">এখনো কোনো মেসেজ নেই। প্রথম মেসেজটি আপনিই লিখুন 👋</div>`;
+        renderTeacherMini(data);
+        return;
+    }
+
+    keys.sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
+
+    let html = "";
+    keys.forEach(k=>{
+        const m = data[k];
+        const isMe = m.uid === studentUid;
+        const isTeacher = m.role === "teacher";
+        const rowClass = isMe ? "me" : (isTeacher ? "teacher" : "other");
+        const senderLabel = isTeacher ? `<span class="teacher-tag">TEACHER</span> ${escapeHtml(m.name || "শিক্ষক")}` : escapeHtml(m.name || "শিক্ষার্থী");
+
+        html += `
+        <div class="msg-row ${rowClass}">
+            <div class="msg-sender">${senderLabel}</div>
+            <div class="msg-bubble">${escapeHtml(m.text || "")}</div>
+        </div>`;
+    });
+
+    chatBody.innerHTML = html;
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    const newestKey = keys[keys.length-1];
+    if(lastChatKey && newestKey !== lastChatKey && data[newestKey].uid !== studentUid && !chatDrawerOpen){
+        unreadCount++;
+        updateChatBadge();
+    }
+    lastChatKey = newestKey;
+
+    renderTeacherMini(data);
+}
+
+function renderTeacherMini(data){
+    const mini = document.getElementById("teacherChatMini");
+    if(!mini) return;
+    const keys = Object.keys(data);
+    if(keys.length === 0){
+        mini.innerHTML = `<div style="text-align:center;color:var(--ink-faint);font-size:12px;padding:10px;">কোনো মেসেজ নেই।</div>`;
+        return;
+    }
+    keys.sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
+    let html = "";
+    keys.forEach(k=>{
+        const m = data[k];
+        const isTeacher = m.role === "teacher";
+        html += `<div style="font-size:12.5px;padding:6px 8px;border-radius:8px;background:${isTeacher ? 'rgba(56,189,248,.12)' : 'rgba(51,65,85,.4)'};">
+            <b style="color:${isTeacher ? '#38bdf8' : '#cbd5e1'}">${escapeHtml(m.name || "")}</b>: ${escapeHtml(m.text || "")}
+        </div>`;
+    });
+    mini.innerHTML = html;
+    mini.scrollTop = mini.scrollHeight;
+}
+
+function updateChatBadge(){
+    const badge = document.getElementById("chatFabBadge");
+    if(unreadCount > 0){
+        badge.innerText = unreadCount > 9 ? "9+" : unreadCount;
+        badge.classList.remove("hidden");
+    }else{
+        badge.classList.add("hidden");
+    }
+}
+
+window.sendChatMessage = async function(){
+    if(!studentName){
+        document.getElementById("gateOverlay").classList.remove("hidden");
+        return;
+    }
+    const input = document.getElementById("chatInput");
+    const text = input.value.trim();
+    if(!text) return;
+
+    try{
+        await push(ref(db, CHAT_PATH), {
+            uid: studentUid,
+            name: studentName,
+            role: "student",
+            text: text,
+            timestamp: Date.now()
         });
-    </script>
+        input.value = "";
+        autoGrow(input);
+    }catch(e){
+        alert("মেসেজ পাঠানো যায়নি: " + e.message);
+    }
+};
 
+const chatInputEl = document.getElementById("chatInput");
+chatInputEl.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        window.sendChatMessage();
+    }
+});
+chatInputEl.addEventListener("input", ()=> autoGrow(chatInputEl));
+function autoGrow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,90)+"px"; }
+
+/* mobile chat drawer */
+window.openChatDrawer = function(){
+    document.getElementById("chatPanel").classList.add("open");
+    document.getElementById("chatCloseBtn").style.display = "flex";
+    chatDrawerOpen = true;
+    unreadCount = 0;
+    updateChatBadge();
+};
+window.closeChatDrawer = function(){
+    document.getElementById("chatPanel").classList.remove("open");
+    chatDrawerOpen = false;
+};
+
+/* ============ REACTIONS ============ */
+window.sendReaction = async function(emoji){
+    spawnFloatingEmoji(emoji);
+    try{
+        const r = push(ref(db, REACTIONS_PATH));
+        await set(r, { emoji, uid: studentUid, ts: Date.now() });
+        setTimeout(()=> remove(r).catch(()=>{}), 4000);
+    }catch(e){}
+};
+
+onChildAdded(ref(db, REACTIONS_PATH), (snap)=>{
+    const val = snap.val();
+    if(val && val.uid !== studentUid){
+        spawnFloatingEmoji(val.emoji);
+    }
+});
+
+function spawnFloatingEmoji(emoji){
+    const layer = document.getElementById("reactionLayer");
+    const el = document.createElement("div");
+    el.className = "float-emoji";
+    el.innerText = emoji;
+    const leftPos = 20 + Math.random()*60;
+    const drift = (Math.random()*80 - 40) + "px";
+    el.style.left = leftPos + "%";
+    el.style.setProperty("--drift", drift);
+    layer.appendChild(el);
+    setTimeout(()=> el.remove(), 3300);
+}
+
+/* ============ FULLSCREEN / LANDSCAPE ============ */
+window.toggleFullscreen = async function(){
+    const wrap = document.getElementById("videoWrap");
+    if(!document.fullscreenElement){
+        try{
+            await wrap.requestFullscreen();
+            if(screen.orientation && screen.orientation.lock){
+                screen.orientation.lock("landscape").catch(()=>{});
+            }
+        }catch(e){}
+    }else{
+        try{
+            if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+        }catch(e){}
+        document.exitFullscreen();
+    }
+};
+
+document.addEventListener("fullscreenchange", ()=>{
+    const btn = document.getElementById("fsBtn");
+    btn.innerText = document.fullscreenElement ? "⤢" : "⛶";
+});
+
+/* ============ SHARE ============ */
+window.shareClassLink = function(){
+    const url = location.href.split("?")[0];
+    if(navigator.share){
+        navigator.share({ title: "GAIVEX Live Class", url }).catch(()=>{});
+    }else{
+        navigator.clipboard.writeText(url).then(()=>{
+            alert("✅ লিংক কপি করা হয়েছে!");
+        }).catch(()=>{
+            prompt("লিংক কপি করুন:", url);
+        });
+    }
+};
+
+/* ============ TEACHER LOGIN ============ */
+let teacherAuthed = sessionStorage.getItem("gaivexLiveTeacher") === "true";
+
+window.openTeacherLogin = function(){
+    if(teacherAuthed){
+        openTeacherControl();
+    }else{
+        document.getElementById("teacherLoginModal").classList.add("show");
+    }
+};
+window.closeTeacherLogin = function(){
+    document.getElementById("teacherLoginModal").classList.remove("show");
+};
+
+window.submitTeacherLogin = function(){
+    const no = document.getElementById("tlTeacherNo").value.trim();
+    const pw = document.getElementById("tlPassword").value;
+    const email = document.getElementById("tlEmail").value.trim().toLowerCase();
+
+    if(no === TEACHER_NO && pw === TEACHER_PASSWORD && email === ADMIN_EMAIL){
+        teacherAuthed = true;
+        sessionStorage.setItem("gaivexLiveTeacher", "true");
+        closeTeacherLogin();
+        openTeacherControl();
+    }else{
+        const err = document.getElementById("tlError");
+        err.style.display = "block";
+        err.innerText = "তথ্য সঠিক নয়। আবার চেষ্টা করুন।";
+    }
+};
+
+/* ============ TEACHER CONTROL PANEL ============ */
+window.openTeacherControl = function(){
+    fillTeacherControlForm();
+    document.getElementById("teacherControlModal").classList.add("show");
+};
+window.closeTeacherControl = function(){
+    document.getElementById("teacherControlModal").classList.remove("show");
+};
+
+function fillTeacherControlForm(){
+    const s = currentSession || {};
+    document.getElementById("tcClassTitle").value = s.title || "";
+    document.getElementById("tcSubject").value = s.subject || "";
+    document.getElementById("tcPaper").value = s.paper || "";
+    document.getElementById("tcChapter").value = s.chapter || "";
+    document.getElementById("tcTeacherName").value = s.teacherName || "";
+    document.getElementById("tcTeacherPhoto").value = s.teacherPhoto || "";
+    document.getElementById("tcYoutubeUrl").value = s.youtubeId ? ("https://youtu.be/" + s.youtubeId) : "";
+
+    const isLive = s.isLive;
+    document.getElementById("tcStatusText").innerText = isLive ? "● বর্তমানে লাইভ চলছে" : "● বর্তমানে অফলাইন";
+    document.getElementById("tcStatusText").className = "status-text " + (isLive ? "on" : "off");
+    document.getElementById("tcGoLiveBtn").classList.toggle("hidden", !!isLive);
+    document.getElementById("tcEndLiveBtn").classList.toggle("hidden", !isLive);
+}
+
+function extractYoutubeId(url){
+    if(!url) return null;
+    url = url.trim();
+    const patterns = [
+        /youtu\.be\/([a-zA-Z0-9_-]{6,})/,
+        /youtube\.com\/watch\?v=([a-zA-Z0-9_-]{6,})/,
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/,
+        /youtube\.com\/live\/([a-zA-Z0-9_-]{6,})/
+    ];
+    for(const p of patterns){
+        const m = url.match(p);
+        if(m) return m[1];
+    }
+    if(/^[a-zA-Z0-9_-]{6,}$/.test(url)) return url;
+    return null;
+}
+
+window.teacherGoLive = async function(){
+    const ytUrl = document.getElementById("tcYoutubeUrl").value.trim();
+    const ytId = extractYoutubeId(ytUrl);
+    if(!ytId){
+        alert("সঠিক YouTube লিংক বা ভিডিও আইডি দিন।");
+        return;
+    }
+
+    const payload = {
+        isLive: true,
+        youtubeId: ytId,
+        title: document.getElementById("tcClassTitle").value.trim() || "লাইভ ক্লাস",
+        subject: document.getElementById("tcSubject").value,
+        paper: document.getElementById("tcPaper").value,
+        chapter: document.getElementById("tcChapter").value.trim(),
+        teacherName: document.getElementById("tcTeacherName").value.trim() || "শিক্ষক",
+        teacherPhoto: document.getElementById("tcTeacherPhoto").value.trim(),
+        startedAt: Date.now()
+    };
+
+    try{
+        await set(ref(db, SESSION_PATH), payload);
+        alert("🔴 লাইভ ক্লাস শুরু হয়েছে!");
+        fillTeacherControlForm();
+    }catch(e){
+        alert("সমস্যা হয়েছে: " + e.message);
+    }
+};
+
+window.teacherEndLive = async function(){
+    if(!confirm("আপনি কি নিশ্চিত লাইভ ক্লাস শেষ করতে চান?")) return;
+    try{
+        await update(ref(db, SESSION_PATH), { isLive: false, endedAt: Date.now() });
+        fillTeacherControlForm();
+    }catch(e){
+        alert("সমস্যা হয়েছে: " + e.message);
+    }
+};
+
+window.teacherSendChat = async function(){
+    const input = document.getElementById("tcReplyInput");
+    const text = input.value.trim();
+    if(!text) return;
+    try{
+        await push(ref(db, CHAT_PATH), {
+            uid: "teacher_" + TEACHER_NO,
+            name: (currentSession && currentSession.teacherName) || "শিক্ষক",
+            role: "teacher",
+            text: text,
+            timestamp: Date.now()
+        });
+        input.value = "";
+    }catch(e){
+        alert("পাঠানো যায়নি: " + e.message);
+    }
+};
+document.getElementById("tcReplyInput").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") window.teacherSendChat();
+});
+
+/* ============ UTIL ============ */
+function escapeHtml(value){
+    if(value === null || value === undefined) value = "";
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+</script>
 </body>
 </html>
