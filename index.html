@@ -351,7 +351,7 @@
                 </div>
             </div>
             <div id="authNavContainer">
-                <button class="cyber-btn-sm" onclick="toggleAuthModal(true)">লগইন</button>
+                <button class="cyber-btn-sm" onclick="toggleAuthModal(true)">Login</button>
             </div>
         </div>
     </header>
@@ -1525,7 +1525,7 @@
         if (user) {
           const photo = user.photoURL ? `<img src="${user.photoURL}" alt="User">` : (user.displayName ? user.displayName.charAt(0) : 'U');
           c.innerHTML = `<div class="user-profile-btn" onclick="toggleProfileModal(true)"><div class="user-avatar">${photo}</div><span style="font-size:13px; font-weight:bold;">${(user.displayName || user.email).split(' ')[0]}</span></div>`;
-          welcome.innerText = `স্বাগতম, ${(user.displayName || user.email).split(' ')[0]} ✨`;
+          welcome.innerText = `Welcome, ${(user.displayName || user.email).split(' ')[0]} ✨`;
 
           listenToNotifications(user.uid);
 
