@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লাইভ ক্লাস - Live Class</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .live-badge {
+            background-color: #e53935;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Video Section */
+        .main-content {
+            flex: 3;
+            min-width: 300px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .class-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .class-details h2 {
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+
+        .instructor {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .resources-btn {
+            background-color: #2e7d32;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .resources-btn:hover {
+            background-color: #1b5e20;
+        }
+
+        /* Sidebar / Chat Section */
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .chat-header {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            background: #f1f1f1;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .message .username {
+            font-weight: bold;
+            color: #1a237e;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .chat-input-area button {
+            padding: 10px 15px;
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>লার্নিং প্ল্যাটফর্ম</h1>
+        <span class="live-badge">● LIVE</span>
+    </header>
+
+    <!-- Main Live Class Area -->
+    <div class="container">
+        
+        <!-- Video & Info Area -->
+        <div class="main-content">
+            <div class="video-wrapper">
+                <!-- YouTube Live Embed (Replace ID with your Live Stream Video ID) -->
+                <iframe src="https://www.youtube.com/embed/live_stream?channel=YOUR_CHANNEL_ID" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="class-details">
+                <h2>ওয়েব ডেভেলপমেন্ট লাইভ মাস্টারক্লাস</h2>
+                <p class="instructor">ইনস্ট্রাক্টর: রাহাত আহমেদ | বিষয়: HTML & CSS Basics</p>
+                <p style="margin-bottom: 15px;">আজকের ক্লাসে আমরা এইচটিএমএল-এর বিভিন্ন ট্যাগ এবং সিএসএস লেআউট নিয়ে বিস্তারিত আলোচনা করব।</p>
+                <button class="resources-btn" onclick="alert('লেকচার শিট ডাউনলোড হচ্ছে...')">📄 লেকচার শিট ডাউনলোড</button>
+            </div>
+        </div>
+
+        <!-- Live Chat Area -->
+        <div class="sidebar">
+            <div class="chat-header">লাইভ চ্যাট</div>
+            <div class="chat-box" id="chatBox">
+                <div class="message">
+                    <span class="username">সিস্টেম</span>
+                    লাইভ চ্যাটে স্বাগতম! আপনার প্রশ্ন নিচে লিখুন।
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="আপনার প্রশ্ন লিখুন...">
+                <button onclick="sendMessage()">পাঠান</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for Live Chat -->
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+
+            if (input.value.trim() !== "") {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                
+                messageDiv.innerHTML = `
+                    <span class="username">আপনি</span>
+                    ${input.value}
+                `;
+
+                chatBox.appendChild(messageDiv);
+                input.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll down
+            }
+        }
+
+        // Press Enter to send message
+        document.getElementById("userInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+
+</body>
+</html>
