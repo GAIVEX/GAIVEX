@@ -6,7 +6,7 @@
 <title>GAIVEX Live Class</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -28,17 +28,13 @@
     --radius-lg:20px;
     --radius-md:14px;
     --radius-sm:9px;
+    --mobile-topbar-h:58px;
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
 
-html,body{
-    height:100%;
-    font-family:'Outfit',sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    overflow-x:hidden;
-}
+html,body{ height:100%; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); overflow-x:hidden; }
+.latin{ font-family:'Outfit',sans-serif; }
 
 body{
     background:
@@ -53,11 +49,9 @@ button{ font-family:inherit; cursor:pointer; }
 input,textarea{ font-family:inherit; }
 .hidden{ display:none!important; }
 
-/* scrollbars */
 ::-webkit-scrollbar{ width:6px; height:6px; }
 ::-webkit-scrollbar-thumb{ background:rgba(148,163,184,.25); border-radius:10px; }
 
-/* GLASS PRIMITIVE */
 .glass{
     background:var(--glass);
     backdrop-filter:blur(22px) saturate(160%);
@@ -66,122 +60,34 @@ input,textarea{ font-family:inherit; }
     box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
 }
 
-/* TOPBAR */
+/* ============ TOPBAR ============ */
 .topbar{
-    position:sticky;
-    top:0;
-    z-index:200;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:14px 20px;
-    border-bottom:1px solid var(--glass-border);
-    background:rgba(8,13,26,.65);
-    backdrop-filter:blur(18px);
+    position:sticky; top:0; z-index:250;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; border-bottom:1px solid var(--glass-border);
+    background:rgba(8,13,26,.65); backdrop-filter:blur(18px);
 }
-
-.brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.brand-mark{
-    font-weight:800;
-    font-size:20px;
-    letter-spacing:.2px;
-    color:var(--sky);
-}
+.brand{ display:flex; align-items:center; gap:10px; }
+.brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; letter-spacing:.2px; color:var(--sky); }
 .brand-mark span{ color:var(--rose); }
-
-.brand-tag{
-    font-size:11px;
-    color:var(--ink-faint);
-    border-left:1px solid var(--glass-border);
-    padding-left:10px;
-}
-
-.topbar-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    position:relative;
-}
-
+.brand-tag{ font-size:11px; color:var(--ink-faint); border-left:1px solid var(--glass-border); padding-left:10px; display:none; }
+.topbar-right{ display:flex; align-items:center; gap:10px; }
 .icon-btn{
-    width:38px; height:38px;
-    border-radius:11px;
-    border:1px solid var(--glass-border);
-    background:var(--glass-soft);
-    color:var(--ink-dim);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:16px;
-    transition:.15s;
-    position:relative;
+    width:38px; height:38px; border-radius:11px; border:1px solid var(--glass-border);
+    background:var(--glass-soft); color:var(--ink-dim); display:flex; align-items:center; justify-content:center;
+    font-size:16px; transition:.15s; position:relative;
 }
 .icon-btn:hover{ color:var(--ink); border-color:rgba(56,189,248,.4); }
 
-/* 3-DOTS DROPDOWN MENU */
-.dropdown-menu{
-    position:absolute;
-    top:48px;
-    right:0;
-    width:320px;
-    max-height:450px;
-    overflow-y:auto;
-    border-radius:var(--radius-md);
-    padding:12px;
-    z-index:300;
-    display:none;
-    flex-direction:column;
-    gap:12px;
-}
-.dropdown-menu.show{ display:flex; }
-.dropdown-menu h4{ font-size:13px; color:var(--sky); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
-
-/* NOTIFICATION TOASTS */
-.toast-stack{
-    position:fixed;
-    top:70px; right:14px;
-    z-index:700;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    max-width:300px;
-}
-.toast{
-    padding:11px 14px;
-    border-radius:12px;
-    font-size:12.5px;
-    line-height:1.5;
-    animation:toast-in .25s ease;
-    display:flex;
-    gap:8px;
-    align-items:flex-start;
-}
+/* ============ TOASTS ============ */
+.toast-stack{ position:fixed; top:70px; right:14px; z-index:700; display:flex; flex-direction:column; gap:8px; max-width:300px; }
+.toast{ padding:11px 14px; border-radius:12px; font-size:12.5px; line-height:1.5; animation:toast-in .25s ease; display:flex; gap:8px; align-items:flex-start; }
 @keyframes toast-in{ from{ opacity:0; transform:translateX(20px);} to{ opacity:1; transform:translateX(0);} }
 .toast-icon{ font-size:15px; }
 
-/* ANNOUNCEMENT / PINNED BANNER */
-.banner-stack{
-    max-width:1400px;
-    margin:12px auto 0;
-    padding:0 18px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-.top-banner{
-    border-radius:var(--radius-md);
-    padding:11px 14px;
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    font-size:13px;
-    line-height:1.55;
-}
+/* ============ BANNERS ============ */
+.banner-stack{ max-width:1400px; margin:12px auto 0; padding:0 18px; display:flex; flex-direction:column; gap:8px; }
+.top-banner{ border-radius:var(--radius-md); padding:11px 14px; display:flex; align-items:flex-start; gap:10px; font-size:13px; line-height:1.55; }
 .top-banner.announcement{ background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.35); }
 .top-banner.pinned{ background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.3); }
 .top-banner .b-icon{ font-size:16px; flex-shrink:0; }
@@ -189,618 +95,237 @@ input,textarea{ font-family:inherit; }
 .top-banner .b-label{ font-weight:700; font-size:11px; color:var(--gold); margin-bottom:2px; }
 .top-banner.pinned .b-label{ color:var(--sky); }
 
-/* LAYOUT */
-.stage{
-    max-width:1400px;
-    margin:0 auto;
-    padding:18px;
-    display:grid;
-    grid-template-columns:1fr 340px;
-    gap:16px;
-    align-items:start;
-}
+/* ============ LAYOUT ============ */
+.stage{ max-width:1400px; margin:0 auto; padding:18px; display:grid; grid-template-columns:1fr 340px; gap:16px; align-items:start; }
 
-/* VIDEO BLOCK */
-.video-block{
-    border-radius:var(--radius-lg);
-    overflow:hidden;
-    position:relative;
-}
-
-.video-frame-wrap{
-    position:relative;
-    width:100%;
-    aspect-ratio:16/9;
-    background:#000;
-    border-radius:var(--radius-lg);
-    overflow:hidden;
-}
-.video-frame-wrap iframe{
-    position:absolute; inset:0;
-    width:100%; height:100%;
-    border:0;
-}
-
+/* ============ VIDEO ============ */
+.video-block{ border-radius:var(--radius-lg); overflow:hidden; position:relative; }
+.video-frame-wrap{ position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:var(--radius-lg); overflow:hidden; }
+.video-frame-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 .video-frame-wrap:fullscreen{ border-radius:0; }
 .video-frame-wrap:fullscreen iframe{ width:100%; height:100%; }
 
 .conn-status{
-    position:absolute;
-    top:14px; left:14px;
-    z-index:20;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:5px 10px;
-    border-radius:99px;
-    background:rgba(8,13,26,.6);
-    border:1px solid rgba(148,163,184,.2);
-    font-size:11px;
-    color:var(--ink-dim);
-    backdrop-filter:blur(8px);
+    position:absolute; top:14px; left:14px; z-index:20; display:flex; align-items:center; gap:6px;
+    padding:5px 10px; border-radius:99px; background:rgba(8,13,26,.6); border:1px solid rgba(148,163,184,.2);
+    font-size:11px; color:var(--ink-dim); backdrop-filter:blur(8px);
 }
 .conn-dot{ width:6px; height:6px; border-radius:50%; background:var(--ok); }
 .conn-status.bad .conn-dot{ background:var(--rose); animation:pulse-dot 1.2s infinite; }
 
-/* Teacher & Meta Bar Outside Video */
 .meta-outside-bar{
-    margin-top:12px;
-    padding:12px 16px;
-    border-radius:var(--radius-md);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
+    margin-top:12px; padding:12px 16px; border-radius:var(--radius-md);
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
 }
-
-.teacher-meta-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.teacher-chip{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.teacher-avatar{
-    width:40px; height:40px;
-    border-radius:50%;
-    object-fit:cover;
-    border:2px solid rgba(56,189,248,.55);
-    background:#1e293b;
-}
-
+.teacher-meta-left{ display:flex; align-items:center; gap:12px; }
+.teacher-chip{ display:flex; align-items:center; gap:10px; }
+.teacher-avatar{ width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid rgba(56,189,248,.55); background:#1e293b; }
 .teacher-meta{ line-height:1.25; }
 .teacher-name{ font-size:14px; font-weight:600; color:#fff; display:flex; align-items:center; gap:5px; }
 .verify-badge{ color:var(--sky); font-size:12px; }
 .teacher-role{ font-size:11px; color:var(--ink-dim); }
-
-.viewer-pill{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:6px 12px;
-    border-radius:99px;
-    background:rgba(8,13,26,.55);
-    border:1px solid var(--glass-border);
-    backdrop-filter:blur(10px);
-    font-size:12px;
-    color:var(--ink-dim);
-}
-
+.viewer-pill{ display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px; background:rgba(8,13,26,.55); border:1px solid var(--glass-border); backdrop-filter:blur(10px); font-size:12px; color:var(--ink-dim); }
 .meta-right-group{ display:flex; align-items:center; gap:8px; }
+.live-pill{ display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px; background:rgba(239,68,68,.16); border:1px solid rgba(239,68,68,.45); font-family:'Outfit',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.5px; color:#fecaca; }
+.live-dot{ width:7px; height:7px; border-radius:50%; background:var(--live); box-shadow:0 0 0 0 rgba(239,68,68,.6); animation:pulse-dot 1.6s infinite; }
+@keyframes pulse-dot{ 0%{ box-shadow:0 0 0 0 rgba(239,68,68,.55);} 70%{ box-shadow:0 0 0 8px rgba(239,68,68,0);} 100%{ box-shadow:0 0 0 0 rgba(239,68,68,0);} }
 
-.live-pill{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:6px 12px;
-    border-radius:99px;
-    background:rgba(239,68,68,.16);
-    border:1px solid rgba(239,68,68,.45);
-    font-weight:700;
-    font-size:11.5px;
-    letter-spacing:.5px;
-    color:#fecaca;
-}
-.live-dot{
-    width:7px; height:7px;
-    border-radius:50%;
-    background:var(--live);
-    box-shadow:0 0 0 0 rgba(239,68,68,.6);
-    animation:pulse-dot 1.6s infinite;
-}
-@keyframes pulse-dot{
-    0%{ box-shadow:0 0 0 0 rgba(239,68,68,.55); }
-    70%{ box-shadow:0 0 0 8px rgba(239,68,68,0); }
-    100%{ box-shadow:0 0 0 0 rgba(239,68,68,0); }
-}
-
-.video-controls{
-    position:absolute;
-    bottom:14px; right:14px;
-    z-index:20;
-    display:flex;
-    gap:8px;
-}
-
-.ctrl-btn{
-    width:38px; height:38px;
-    border-radius:11px;
-    border:1px solid rgba(255,255,255,.18);
-    background:rgba(8,13,26,.55);
-    backdrop-filter:blur(10px);
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:16px;
-    transition:.15s;
-}
+.video-controls{ position:absolute; bottom:14px; right:14px; z-index:20; display:flex; gap:8px; }
+.ctrl-btn{ width:38px; height:38px; border-radius:11px; border:1px solid rgba(255,255,255,.18); background:rgba(8,13,26,.55); backdrop-filter:blur(10px); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; transition:.15s; }
 .ctrl-btn:hover{ background:rgba(56,189,248,.35); }
 
-/* Landscape Comment Toggle */
-.fs-comment-overlay{
-    display:none;
-    position:absolute;
-    bottom:60px; right:14px;
-    width:280px; height:180px;
-    background:rgba(8,13,26,.75);
-    backdrop-filter:blur(10px);
-    border-radius:12px;
-    border:1px solid var(--glass-border);
-    z-index:30;
-    flex-direction:column;
-    padding:8px;
-}
-.video-frame-wrap:fullscreen .fs-comment-overlay.show{ display:flex; }
-.fs-comment-list{ flex:1; overflow-y:auto; font-size:11px; display:flex; flex-direction:column; gap:4px; margin-bottom:6px; }
-.fs-comment-input{ display:flex; gap:4px; }
-.fs-comment-input input{ flex:1; padding:4px 8px; border-radius:6px; border:1px solid var(--glass-border); background:rgba(0,0,0,.5); color:#fff; font-size:11px; }
-
-/* Raise hand floating button */
-.raise-hand-fab{
-    position:absolute;
-    bottom:14px; left:14px;
-    z-index:20;
-    display:flex;
-    align-items:center;
-    gap:7px;
-    padding:9px 14px;
-    border-radius:99px;
-    border:1px solid rgba(255,255,255,.18);
-    background:rgba(8,13,26,.6);
-    backdrop-filter:blur(10px);
-    color:#fff;
-    font-size:12.5px;
-    font-weight:600;
-    transition:.15s;
-}
+.raise-hand-fab{ position:absolute; bottom:14px; left:14px; z-index:20; display:flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; border:1px solid rgba(255,255,255,.18); background:rgba(8,13,26,.6); backdrop-filter:blur(10px); color:#fff; font-size:12.5px; font-weight:600; transition:.15s; }
 .raise-hand-fab:hover{ background:rgba(56,189,248,.3); }
 .raise-hand-fab.active{ background:linear-gradient(135deg,#f59e0b,#d97706); border-color:transparent; }
 
-/* Reactions layer */
-.reaction-layer{
-    position:absolute; inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:15;
-}
-.float-emoji{
-    position:absolute;
-    bottom:60px;
-    font-size:26px;
-    animation:float-up 3.2s ease-out forwards;
-}
-@keyframes float-up{
-    0%{ transform:translateY(0) translateX(0) scale(.6); opacity:0; }
-    12%{ opacity:1; transform:translateY(-20px) scale(1); }
-    100%{ transform:translateY(-260px) translateX(var(--drift,20px)) scale(1.05); opacity:0; }
-}
+.reaction-layer{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:15; }
+.float-emoji{ position:absolute; bottom:60px; font-size:26px; animation:float-up 3.2s ease-out forwards; }
+@keyframes float-up{ 0%{ transform:translateY(0) translateX(0) scale(.6); opacity:0;} 12%{ opacity:1; transform:translateY(-20px) scale(1);} 100%{ transform:translateY(-260px) translateX(var(--drift,20px)) scale(1.05); opacity:0;} }
 
-/* Offline state */
 .offline-screen{
-    position:absolute; inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    gap:14px;
-    padding:30px;
-    background:
-        radial-gradient(circle at 30% 20%, rgba(56,189,248,.10), transparent 55%),
-        radial-gradient(circle at 80% 80%, rgba(244,63,94,.08), transparent 55%),
-        #0b1120;
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px; padding:30px;
+    background: radial-gradient(circle at 30% 20%, rgba(56,189,248,.10), transparent 55%), radial-gradient(circle at 80% 80%, rgba(244,63,94,.08), transparent 55%), #0b1120;
 }
-.offline-icon{
-    width:64px; height:64px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:26px;
-    background:rgba(56,189,248,.10);
-    border:1px solid rgba(56,189,248,.3);
-}
+.offline-icon{ width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; background:rgba(56,189,248,.10); border:1px solid rgba(56,189,248,.3); }
 .offline-title{ font-size:18px; font-weight:700; }
 .offline-sub{ font-size:13px; color:var(--ink-dim); max-width:320px; line-height:1.6; }
 
-/* Class info bar */
-.info-bar{
-    margin-top:10px;
-    padding:14px 16px;
-    border-radius:var(--radius-md);
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:10px;
+/* fullscreen chat overlay */
+.fs-chat-overlay{
+    position:absolute; right:10px; top:60px; bottom:60px; width:280px; max-width:78vw;
+    border-radius:14px; background:rgba(8,13,26,.78); backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.14); display:flex; flex-direction:column; z-index:30; overflow:hidden;
 }
-.info-title{
-    font-size:15px;
-    font-weight:600;
-    margin-right:auto;
-}
-.chip{
-    font-size:11.5px;
-    color:var(--ink-dim);
-    background:rgba(15,23,42,.55);
-    border:1px solid var(--glass-border);
-    padding:5px 10px;
-    border-radius:99px;
-}
+.fs-chat-body{ flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:6px; }
+.fs-chat-msg{ font-size:12px; line-height:1.4; color:#f1f5f9; }
+.fs-chat-msg b{ color:var(--sky); }
+.fs-chat-empty{ color:var(--ink-faint); font-size:11.5px; text-align:center; padding:10px; }
+.fs-chat-foot{ display:flex; gap:6px; padding:8px; border-top:1px solid rgba(255,255,255,.12); }
+.fs-chat-foot input{ flex:1; padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(15,23,42,.7); color:#fff; font-size:12.5px; outline:none; }
+.fs-chat-foot button{ width:34px; border:none; border-radius:10px; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; }
 
-/* RESOURCES / HOMEWORK ITEMS inside Dropdown */
-.section-empty{ color:var(--ink-faint); font-size:12px; padding:6px 0; }
-.resource-card, .homework-card{
-    padding:8px 10px;
-    border-radius:8px;
-    background:rgba(15,23,42,.6);
-    border:1px solid var(--glass-border);
-    margin-bottom:6px;
-    font-size:12px;
-}
-.resource-open{
-    display:inline-block;
-    margin-top:4px;
-    padding:3px 8px;
-    border-radius:99px;
-    background:rgba(56,189,248,.16);
-    border:1px solid rgba(56,189,248,.4);
-    color:var(--sky);
-    font-size:10.5px;
-    font-weight:700;
-    text-decoration:none;
-}
+.info-bar{ margin-top:10px; padding:14px 16px; border-radius:var(--radius-md); display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.info-title{ font-size:15px; font-weight:600; margin-right:auto; }
+.chip{ font-size:11.5px; color:var(--ink-dim); background:rgba(15,23,42,.55); border:1px solid var(--glass-border); padding:5px 10px; border-radius:99px; }
 
-/* CHAT / TAB PANEL */
-.chat-panel{
-    border-radius:var(--radius-lg);
-    display:flex;
-    flex-direction:column;
-    height:calc(100vh - 110px);
-    position:sticky;
-    top:80px;
-    overflow:hidden;
-}
+.section-block{ margin-top:0; border-radius:var(--radius-md); padding:0; }
+.section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.section-head h3{ font-size:14px; font-weight:700; display:flex; align-items:center; gap:7px; }
+.section-empty{ color:var(--ink-faint); font-size:12.5px; padding:8px 0; }
 
-.chat-head{
-    padding:12px 12px 0;
-    border-bottom:1px solid var(--glass-border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:6px;
-}
+.resource-card{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:11px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); margin-bottom:8px; }
+.resource-card:last-child{ margin-bottom:0; }
+.resource-icon{ font-size:18px; }
+.resource-info{ flex:1; min-width:0; }
+.resource-title{ font-size:13px; font-weight:600; }
+.resource-type{ font-size:10.5px; color:var(--ink-faint); }
+.resource-open{ padding:6px 12px; border-radius:99px; background:rgba(56,189,248,.16); border:1px solid rgba(56,189,248,.4); color:var(--sky); font-size:11.5px; font-weight:700; text-decoration:none; white-space:nowrap; }
 
-.tab-row{
-    display:flex;
-    gap:2px;
-    overflow-x:auto;
-    flex:1;
-    scrollbar-width:none;
-}
+.homework-card{ padding:12px; border-radius:11px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); margin-bottom:8px; }
+.homework-card:last-child{ margin-bottom:0; }
+.homework-title{ font-size:13px; font-weight:600; margin-bottom:4px; }
+.homework-deadline{ font-size:11px; color:var(--rose); margin-bottom:5px; }
+.homework-desc{ font-size:12px; color:var(--ink-dim); line-height:1.5; margin-bottom:8px; }
+.homework-done-toggle{ padding:6px 12px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(16,185,129,.08); color:var(--ok); font-size:11.5px; font-weight:700; }
+.homework-done-toggle.done{ background:rgba(16,185,129,.25); }
+
+/* ============ CHAT / TAB PANEL ============ */
+.chat-panel{ border-radius:var(--radius-lg); display:flex; flex-direction:column; height:calc(100vh - 110px); position:sticky; top:80px; overflow:hidden; }
+.chat-head{ padding:12px 12px 0; border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; gap:6px; }
+.tab-row{ display:flex; gap:2px; overflow-x:auto; flex:1; scrollbar-width:none; }
 .tab-row::-webkit-scrollbar{ display:none; }
-.tab-btn{
-    flex-shrink:0;
-    background:none;
-    border:none;
-    padding:9px 11px;
-    font-size:12px;
-    font-weight:600;
-    color:var(--ink-faint);
-    border-bottom:2px solid transparent;
-    display:flex;
-    align-items:center;
-    gap:5px;
-    white-space:nowrap;
-}
+.tab-btn{ flex-shrink:0; background:none; border:none; padding:9px 11px; font-size:12px; font-weight:600; color:var(--ink-faint); border-bottom:2px solid transparent; display:flex; align-items:center; gap:5px; white-space:nowrap; }
 .tab-btn.active{ color:var(--sky); border-bottom-color:var(--sky); }
-.tab-count{
-    background:rgba(244,63,94,.85);
-    color:#fff;
-    font-size:9px;
-    font-weight:700;
-    min-width:15px; height:15px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    padding:0 3px;
-}
+.tab-count{ background:rgba(244,63,94,.85); color:#fff; font-size:9px; font-weight:700; min-width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; }
 
 .tab-content{ flex:1; display:flex; flex-direction:column; overflow:hidden; }
 .tab-content.hidden{ display:none; }
 
-.chat-body{
-    flex:1;
-    overflow-y:auto;
-    padding:14px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
+.chat-body{ flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
 .msg-row{ display:flex; flex-direction:column; max-width:88%; }
 .msg-row.me{ align-self:flex-end; align-items:flex-end; }
 .msg-row.teacher{ align-self:flex-start; }
 .msg-row.other{ align-self:flex-start; }
-
-.msg-sender{
-    font-size:10.5px;
-    color:var(--ink-faint);
-    margin-bottom:3px;
-    padding:0 4px;
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-.teacher-tag{
-    background:linear-gradient(135deg,#38bdf8,#0284c7);
-    color:#04121e;
-    font-weight:700;
-    font-size:9px;
-    padding:1.5px 6px;
-    border-radius:6px;
-}
-
+.msg-sender{ font-size:10.5px; color:var(--ink-faint); margin-bottom:3px; padding:0 4px; display:flex; align-items:center; gap:5px; }
+.teacher-tag{ background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; font-size:9px; padding:1.5px 6px; border-radius:6px; font-family:'Outfit',sans-serif; }
 .msg-bubble-wrap{ display:flex; align-items:flex-end; gap:5px; }
 .msg-row.me .msg-bubble-wrap{ flex-direction:row-reverse; }
-
-.msg-bubble{
-    padding:9px 13px;
-    border-radius:16px;
-    font-size:13.5px;
-    line-height:1.5;
-    word-break:break-word;
-    white-space:pre-wrap;
-}
-.msg-row.other .msg-bubble{
-    background:rgba(51,65,85,.6);
-    border:1px solid var(--glass-border);
-    border-top-left-radius:5px;
-    color:#f1f5f9;
-}
-.msg-row.me .msg-bubble{
-    background:linear-gradient(135deg,#0284c7,#0369a1);
-    border-top-right-radius:5px;
-    color:#fff;
-}
-.msg-row.teacher .msg-bubble{
-    background:rgba(244,63,94,.14);
-    border:1px solid rgba(244,63,94,.35);
-    border-top-left-radius:5px;
-}
+.msg-bubble{ padding:9px 13px; border-radius:16px; font-size:13.5px; line-height:1.5; word-break:break-word; white-space:pre-wrap; }
+.msg-row.other .msg-bubble{ background:rgba(51,65,85,.6); border:1px solid var(--glass-border); border-top-left-radius:5px; color:#f1f5f9; }
+.msg-row.me .msg-bubble{ background:linear-gradient(135deg,#0284c7,#0369a1); border-top-right-radius:5px; color:#fff; }
+.msg-row.teacher .msg-bubble{ background:rgba(244,63,94,.14); border:1px solid rgba(244,63,94,.35); border-top-left-radius:5px; }
 .msg-ts{ font-size:9.5px; color:var(--ink-faint); margin-top:2px; padding:0 4px; }
-
-.chat-empty{
-    margin:auto;
-    text-align:center;
-    color:var(--ink-faint);
-    font-size:12.5px;
-    padding:20px;
-}
-
-.chat-foot{
-    padding:10px 12px;
-    border-top:1px solid var(--glass-border);
-    display:flex;
-    gap:8px;
-    align-items:flex-end;
-}
-
-.chat-input{
-    flex:1;
-    resize:none;
-    max-height:90px;
-    min-height:40px;
-    background:rgba(15,23,42,.6);
-    border:1px solid var(--glass-border);
-    border-radius:12px;
-    padding:10px 12px;
-    color:#fff;
-    font-size:13.5px;
-    outline:none;
-}
+.chat-empty{ margin:auto; text-align:center; color:var(--ink-faint); font-size:12.5px; padding:20px; }
+.chat-foot{ padding:10px 12px; border-top:1px solid var(--glass-border); display:flex; gap:8px; align-items:flex-end; }
+.chat-input{ flex:1; resize:none; max-height:90px; min-height:40px; background:rgba(15,23,42,.6); border:1px solid var(--glass-border); border-radius:12px; padding:10px 12px; color:#fff; font-size:13.5px; outline:none; }
 .chat-input:focus{ border-color:rgba(56,189,248,.5); }
-
-.send-btn{
-    width:42px; height:42px;
-    flex-shrink:0;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#38bdf8,#0284c7);
-    color:#04121e;
-    font-size:16px;
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+.send-btn{ width:42px; height:42px; flex-shrink:0; border:none; border-radius:12px; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-size:16px; font-weight:700; display:flex; align-items:center; justify-content:center; }
 .send-btn:disabled{ opacity:.4; }
-
-.reactions-bar{
-    display:flex;
-    gap:6px;
-    padding:0 12px 10px;
-}
-.react-btn{
-    border:1px solid var(--glass-border);
-    background:rgba(15,23,42,.5);
-    border-radius:10px;
-    padding:5px 9px;
-    font-size:15px;
-}
+.reactions-bar{ display:flex; gap:6px; padding:0 12px 10px; }
+.react-btn{ border:1px solid var(--glass-border); background:rgba(15,23,42,.5); border-radius:10px; padding:5px 9px; font-size:15px; }
 .react-btn:hover{ background:rgba(56,189,248,.18); }
+.search-mini{ margin:0 12px 8px; padding:8px 11px; border-radius:10px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:#fff; font-size:12.5px; outline:none; width:calc(100% - 24px); }
+.muted-banner{ margin:0 12px 8px; padding:8px 11px; border-radius:10px; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#fca5a5; font-size:11.5px; }
 
-.search-mini{
-    margin:0 12px 8px;
-    padding:8px 11px;
-    border-radius:10px;
-    border:1px solid var(--glass-border);
-    background:rgba(15,23,42,.5);
-    color:#fff;
-    font-size:12.5px;
-    outline:none;
-    width:calc(100% - 24px);
-}
-
-.muted-banner{
-    margin:0 12px 8px;
-    padding:8px 11px;
-    border-radius:10px;
-    background:rgba(239,68,68,.12);
-    border:1px solid rgba(239,68,68,.35);
-    color:#fca5a5;
-    font-size:11.5px;
-}
-
-/* Q&A tab */
+/* Q&A */
 .qna-body{ flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:9px; }
-.qna-card{
-    padding:11px 12px;
-    border-radius:12px;
-    background:rgba(15,23,42,.5);
-    border:1px solid var(--glass-border);
-}
+.qna-card{ padding:11px 12px; border-radius:12px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); }
 .qna-card.answered{ border-color:rgba(16,185,129,.4); background:rgba(16,185,129,.06); }
 .qna-card.pinned{ border-color:rgba(245,158,11,.5); }
 .qna-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:5px; }
 .qna-name{ font-size:11px; color:var(--ink-faint); }
 .qna-text{ font-size:13px; line-height:1.5; }
-.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:99px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
+.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:9px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
 .qna-answer b{ color:var(--sky); }
+.qna-actions{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.qna-mini-btn{ font-size:11px; padding:4px 9px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); display:flex; align-items:center; gap:4px; }
+.qna-mini-btn.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
+.qna-status-tag{ font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:6px; }
+.qna-status-tag.wait{ background:rgba(148,163,184,.18); color:var(--ink-dim); }
+.qna-status-tag.done{ background:rgba(16,185,129,.2); color:#6ee7b7; }
+.qna-filter-row{ display:flex; gap:6px; padding:10px 12px 0; }
+.qna-filter-row .qna-mini-btn{ flex:1; justify-content:center; }
 
-/* Poll / Quiz tab */
+/* Poll / Quiz */
 .pq-body{ flex:1; overflow-y:auto; padding:14px; }
 .pq-empty{ text-align:center; color:var(--ink-faint); font-size:12.5px; padding:30px 10px; }
+.pq-card{ padding:14px; border-radius:14px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); }
+.pq-question{ font-size:14px; font-weight:700; margin-bottom:12px; line-height:1.5; }
+.pq-timer{ font-size:11px; color:var(--rose); font-weight:700; margin-bottom:10px; }
+.pq-option{ display:flex; align-items:center; justify-content:space-between; padding:11px 13px; border-radius:11px; background:rgba(30,41,59,.6); border:1px solid var(--glass-border); margin-bottom:8px; font-size:13px; position:relative; overflow:hidden; }
+.pq-option-fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(56,189,248,.16); z-index:0; transition:width .4s; }
+.pq-option-label{ position:relative; z-index:1; }
+.pq-option-pct{ position:relative; z-index:1; font-weight:700; color:var(--sky); font-size:12px; }
+.pq-option.correct{ border-color:rgba(16,185,129,.55); }
+.pq-option.correct .pq-option-fill{ background:rgba(16,185,129,.22); }
+.pq-option.wrong-pick{ border-color:rgba(244,63,94,.55); }
+.pq-option.selectable{ cursor:pointer; }
+.pq-option.selectable:hover{ border-color:rgba(56,189,248,.4); }
+.pq-option.chosen{ border-color:var(--sky); }
+.pq-vote-note{ font-size:11px; color:var(--ink-faint); margin-top:6px; text-align:center; }
+.pq-result-note{ text-align:center; font-size:13px; font-weight:700; margin-top:8px; }
+.pq-result-note.correct{ color:var(--ok); }
+.pq-result-note.wrong{ color:var(--rose); }
 
-/* People tab */
+/* People / Leaderboard */
 .people-body{ flex:1; overflow-y:auto; padding:12px; }
-.people-row{
-    display:flex; align-items:center; gap:10px;
-    padding:9px 10px; border-radius:10px;
-    background:rgba(15,23,42,.4); margin-bottom:6px;
-}
+.people-sub-tabs{ display:flex; gap:6px; margin-bottom:10px; }
+.people-sub-tabs button{ flex:1; padding:7px; border-radius:9px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); font-size:11.5px; font-weight:600; }
+.people-sub-tabs button.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
+.people-row{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px; background:rgba(15,23,42,.4); margin-bottom:6px; }
 .people-avatar-sm{ width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#38bdf8,#0284c7); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#04121e; flex-shrink:0; }
 .people-name{ font-size:12.5px; flex:1; }
+.people-rank{ font-size:11px; color:var(--gold); font-weight:700; width:20px; }
+.people-score{ font-size:12px; color:var(--sky); font-weight:700; }
+.raise-row{ display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:10px; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); margin-bottom:6px; }
 
-/* Mobile chat FAB drawer */
-.chat-fab{
-    display:none;
-    position:fixed;
-    bottom:20px; right:18px;
-    z-index:230;
-    width:54px; height:54px;
-    border-radius:50%;
-    border:none;
-    background:linear-gradient(135deg,#38bdf8,#0284c7);
-    color:#04121e;
-    font-size:22px;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 10px 30px rgba(2,132,199,.5);
-}
+/* mobile chat drawer + fab */
+.chat-fab{ display:none; position:fixed; bottom:20px; right:18px; z-index:230; width:54px; height:54px; border-radius:50%; border:none; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-size:22px; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(2,132,199,.5); transition: opacity 0.2s, display 0.2s; }
+.chat-panel.open ~ .chat-fab, body.chat-is-open .chat-fab{ display:none !important; }
+.chat-fab .badge{ position:absolute; top:-4px; right:-4px; background:var(--rose); color:#fff; font-size:10px; font-weight:700; min-width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 4px; }
 
-.chat-panel.open ~ .chat-fab,
-body.chat-is-open .chat-fab {
-    display: none !important;
-}
-
-.chat-fab .badge{
-    position:absolute;
-    top:-4px; right:-4px;
-    background:var(--rose);
-    color:#fff;
-    font-size:10px;
-    font-weight:700;
-    min-width:18px; height:18px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    padding:0 4px;
-}
-
-/* NAME GATE */
-.gate-overlay{
-    position:fixed; inset:0;
-    z-index:500;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    background:rgba(4,7,15,.7);
-    backdrop-filter:blur(8px);
-}
-.gate-card{
-    width:100%; max-width:380px;
-    border-radius:var(--radius-lg);
-    padding:26px;
-}
-.gate-logo{ font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
+/* ============ GATE / LOBBY ============ */
+.gate-overlay{ position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,7,15,.7); backdrop-filter:blur(8px); }
+.gate-card{ width:100%; max-width:380px; border-radius:var(--radius-lg); padding:26px; }
+.gate-logo{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
 .gate-logo span{ color:var(--rose); }
 .gate-title{ text-align:center; margin-top:6px; font-size:13px; color:var(--ink-dim); margin-bottom:20px; }
-.gate-input{
-    width:100%;
-    padding:12px 14px;
-    border-radius:11px;
-    border:1px solid var(--glass-border);
-    background:rgba(15,23,42,.6);
-    color:#fff;
-    outline:none;
-    margin-bottom:12px;
-    font-size:14px;
-}
+.gate-input{ width:100%; padding:12px 14px; border-radius:11px; border:1px solid var(--glass-border); background:rgba(15,23,42,.6); color:#fff; outline:none; margin-bottom:12px; font-size:14px; }
 .gate-input:focus{ border-color:var(--sky); }
-.gate-btn{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:99px;
-    background:linear-gradient(135deg,#38bdf8,#0284c7);
-    color:#04121e;
-    font-weight:700;
-    font-size:14.5px;
-}
+.gate-btn{ width:100%; padding:12px; border:none; border-radius:99px; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; font-size:14.5px; }
 
-/* RESPONSIVE */
+.lobby-card{ display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; background:rgba(15,23,42,.55); border:1px solid var(--glass-border); }
+.lobby-card-info{ flex:1; min-width:0; }
+.lobby-card-title{ font-size:13.5px; font-weight:600; }
+.lobby-card-sub{ font-size:11.5px; color:var(--ink-dim); margin-top:2px; }
+.lobby-join-btn{ padding:8px 14px; border-radius:99px; border:none; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; font-size:12px; flex-shrink:0; }
+.lobby-empty{ text-align:center; color:var(--ink-faint); font-size:12.5px; padding:20px 10px; }
+.lobby-list{ display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; }
+.live-dot-sm{ width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0; box-shadow:0 0 0 0 rgba(239,68,68,.55); animation:pulse-dot 1.6s infinite; }
+
+/* ============ MORE (Resources & Homework) MODAL ============ */
+.modal-overlay{ position:fixed; inset:0; z-index:600; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(4,7,15,.72); backdrop-filter:blur(6px); }
+.modal-overlay.show{ display:flex; }
+.modal-card{ width:100%; max-width:520px; max-height:85vh; overflow-y:auto; border-radius:var(--radius-lg); padding:22px; }
+.modal-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.modal-top h3{ font-size:16px; color:var(--sky); }
+.modal-close{ background:none; border:none; color:var(--ink-dim); font-size:22px; }
+.tc-tabs{ display:flex; gap:4px; margin-bottom:16px; }
+.tc-tab-btn{ flex:1; padding:8px 12px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); font-size:12px; font-weight:600; }
+.tc-tab-btn.active{ color:#04121e; background:linear-gradient(135deg,#38bdf8,#0284c7); border-color:transparent; }
+.tc-pane{ display:none; }
+.tc-pane.active{ display:block; }
+
+/* ============ RESPONSIVE ============ */
 @media(max-width:980px){
     .stage{ grid-template-columns:1fr; padding:12px; }
-    .chat-panel{
-        position:fixed;
-        right:0; bottom:0; left:0;
-        top:auto;
-        height:70vh;
-        border-radius:20px 20px 0 0;
-        transform:translateY(105%);
-        transition:transform .28s ease;
-        z-index:240;
-    }
+    .video-block{ position:sticky; top:var(--mobile-topbar-h); z-index:130; }
+    .chat-panel{ position:fixed; right:0; bottom:0; left:0; top:auto; height:58vh; border-radius:20px 20px 0 0; transform:translateY(105%); transition:transform .28s ease; z-index:240; }
     .chat-panel.open{ transform:translateY(0); }
     .chat-fab{ display:flex; }
     .brand-tag{ display:none; }
     .banner-stack{ padding:0 12px; }
 }
-
 @media(max-width:520px){
     .topbar{ padding:12px 14px; }
     .brand-mark{ font-size:17px; }
@@ -808,21 +333,32 @@ body.chat-is-open .chat-fab {
     .live-pill{ font-size:10px; padding:5px 9px; }
     .video-controls{ bottom:10px; right:10px; }
     .ctrl-btn{ width:36px; height:36px; font-size:15px; }
+    .raise-hand-fab span.rh-label{ display:none; }
     .toast-stack{ left:12px; right:12px; max-width:none; }
+    .fs-chat-overlay{ width:66vw; }
 }
+@media (prefers-reduced-motion: reduce){ .live-dot, .float-emoji, .live-dot-sm{ animation:none!important; } }
 </style>
 </head>
 <body>
 
-<!-- NOTIFICATION TOASTS -->
 <div class="toast-stack" id="toastStack"></div>
 
+<!-- LOBBY: pick which live class to join -->
+<div id="lobbyOverlay" class="gate-overlay">
+    <div class="gate-card glass" style="max-width:460px;">
+        <div class="gate-logo">GAIVEX<span>.</span></div>
+        <div class="gate-title">Choose a live class to join</div>
+        <div class="lobby-list" id="lobbyList"><div class="lobby-empty">Loading classes…</div></div>
+    </div>
+</div>
+
 <!-- NAME GATE -->
-<div id="gateOverlay" class="gate-overlay">
+<div id="gateOverlay" class="gate-overlay hidden">
     <div class="gate-card glass">
         <div class="gate-logo">GAIVEX<span>.</span></div>
-        <div class="gate-title">Enter your name to join the class</div>
-        <input id="gateNameInput" class="gate-input" placeholder="Your Full Name" maxlength="40">
+        <div class="gate-title">Enter your name before joining the class</div>
+        <input id="gateNameInput" class="gate-input" placeholder="Your name" maxlength="40">
         <button class="gate-btn" onclick="enterClass()">🎬 Join Live Class</button>
     </div>
 </div>
@@ -831,43 +367,28 @@ body.chat-is-open .chat-fab {
 <div class="topbar">
     <div class="brand">
         <div class="brand-mark">GAIVEX<span>.</span></div>
-        <div class="brand-tag">LIVE CLASS</div>
+        <div class="brand-tag latin">LIVE CLASS</div>
     </div>
     <div class="topbar-right">
         <button class="icon-btn" title="Search" onclick="openTab('chat');document.getElementById('chatSearchInput').focus();openChatDrawer();">🔎</button>
-        <button class="icon-btn" title="Share Link" onclick="shareClassLink()">🔗</button>
-        <!-- 3-DOTS ACTION MENU -->
-        <button class="icon-btn" title="More Options" onclick="toggle3DotsMenu()">⋮</button>
-        
-        <div class="dropdown-menu glass" id="dotsMenu">
-            <div>
-                <h4>📚 Class Resources</h4>
-                <div id="resourceList"><div class="section-empty">No resources uploaded yet.</div></div>
-            </div>
-            <hr style="border:0; border-top:1px solid var(--glass-border);">
-            <div>
-                <h4>📝 Homework</h4>
-                <div id="homeworkList"><div class="section-empty">No homework assigned yet.</div></div>
-            </div>
-        </div>
+        <button class="icon-btn" title="Share class link" onclick="shareClassLink()">🔗</button>
+        <button class="icon-btn" title="Class materials" onclick="openMoreModal()">⋮</button>
     </div>
 </div>
 
-<!-- ANNOUNCEMENT / PINNED BANNERS -->
 <div class="banner-stack" id="bannerStack"></div>
 
-<!-- STAGE -->
 <div class="stage">
     <div>
         <div class="video-block">
             <div class="video-frame-wrap" id="videoWrap">
                 <div id="offlineScreen" class="offline-screen">
                     <div class="offline-icon">📡</div>
-                    <div class="offline-title">Live class has not started yet</div>
-                    <div class="offline-sub">The stream will begin automatically once the instructor starts the class. Please wait...</div>
+                    <div class="offline-title">Live class hasn't started yet</div>
+                    <div class="offline-sub">The video will appear here automatically as soon as the teacher starts the class. Please wait a moment.</div>
                 </div>
 
-                <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
 
                 <div class="reaction-layer" id="reactionLayer"></div>
 
@@ -875,43 +396,40 @@ body.chat-is-open .chat-fab {
 
                 <button class="raise-hand-fab hidden" id="raiseHandBtn" onclick="toggleRaiseHand()">🙋 <span class="rh-label">Raise Hand</span></button>
 
-                <!-- Fullscreen Landscape Floating Comment Layer -->
-                <div class="fs-comment-overlay" id="fsCommentOverlay">
-                    <div class="fs-comment-list" id="fsCommentList"></div>
-                    <div class="fs-comment-input">
-                        <input type="text" id="fsInput" placeholder="Comment in landscape..." onkeydown="if(event.key==='Enter') sendFsComment()">
-                        <button class="ctrl-btn" style="width:30px;height:26px;font-size:12px;" onclick="sendFsComment()">➤</button>
-                    </div>
+                <div class="video-controls hidden" id="videoControls">
+                    <button class="ctrl-btn hidden" id="fsChatToggleBtn" title="Chat" onclick="toggleFsChat()">💬</button>
+                    <button class="ctrl-btn" title="Refresh" onclick="reloadVideo()">🔄</button>
+                    <button class="ctrl-btn" id="fsBtn" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
                 </div>
 
-                <div class="video-controls hidden" id="videoControls">
-                    <button class="ctrl-btn" title="Landscape Comment Toggle" onclick="toggleFsComments()">💬</button>
-                    <button class="ctrl-btn" title="Refresh Video" onclick="reloadVideo()">🔄</button>
-                    <button class="ctrl-btn" id="fsBtn" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
+                <div class="fs-chat-overlay hidden" id="fsChatOverlay">
+                    <div class="fs-chat-body" id="fsChatBody"></div>
+                    <div class="fs-chat-foot">
+                        <input id="fsChatInput" placeholder="Type a message...">
+                        <button onclick="sendFsChatMessage()">➤</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- TEACHER & META BAR -->
         <div class="meta-outside-bar glass hidden" id="metaOutsideBar">
             <div class="teacher-meta-left">
                 <div class="teacher-chip" id="teacherChip">
                     <img id="teacherAvatar" class="teacher-avatar" src="" alt="">
                     <div class="teacher-meta">
-                        <div class="teacher-name" id="teacherNameEl">— <span class="verify-badge" title="Verified Instructor">✔️</span></div>
-                        <div class="teacher-role" id="teacherSubjectRole">Instructor</div>
+                        <div class="teacher-name" id="teacherNameEl">— <span class="verify-badge" title="Verified teacher">✔️</span></div>
+                        <div class="teacher-role" id="teacherSubjectRole">Teacher</div>
                     </div>
                 </div>
-                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span></div>
+                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span> watching</div>
             </div>
-
             <div class="meta-right-group">
                 <div class="live-pill hidden" id="livePill"><span class="live-dot"></span> LIVE · <span id="liveDurationEl">00:00</span></div>
             </div>
         </div>
 
         <div class="info-bar glass">
-            <div class="info-title" id="classTitle">Waiting for class stream...</div>
+            <div class="info-title" id="classTitle">Waiting for class</div>
             <span class="chip" id="chipSubject">—</span>
             <span class="chip" id="chipPaper">—</span>
             <span class="chip" id="chipChapter">—</span>
@@ -923,22 +441,20 @@ body.chat-is-open .chat-fab {
         <div class="chat-head">
             <div class="tab-row" id="tabRow">
                 <button class="tab-btn active" data-tab="chat" onclick="openTab('chat')">💬 Chat</button>
-                <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ Questions <span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
-                <button class="tab-btn" data-tab="poll" onclick="openTab('poll')">📊 Polls</button>
+                <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ Questions<span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
+                <button class="tab-btn" data-tab="poll" onclick="openTab('poll')">📊 Poll</button>
                 <button class="tab-btn" data-tab="quiz" onclick="openTab('quiz')">🧠 Quiz</button>
-                <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 Students</button>
+                <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 People</button>
             </div>
             <button class="icon-btn" onclick="closeChatDrawer()" style="display:none;flex-shrink:0;" id="chatCloseBtn">✕</button>
         </div>
 
-        <!-- CHAT TAB -->
         <div class="tab-content" id="tab-chat">
             <input class="search-mini" id="chatSearchInput" placeholder="Search messages..." oninput="renderChat(lastChatData||{})">
-            <div class="muted-banner hidden" id="mutedBanner">🔇 You are temporarily muted from sending chat messages.</div>
+            <div class="muted-banner hidden" id="mutedBanner">🔇 You have been temporarily muted from chat.</div>
             <div class="chat-body" id="chatBody">
-                <div class="chat-empty">No messages yet. Be the first to say hello! 👋</div>
+                <div class="chat-empty">No messages yet. Be the first to say hi 👋</div>
             </div>
-
             <div class="reactions-bar">
                 <button class="react-btn" onclick="sendReaction('❤️')">❤️</button>
                 <button class="react-btn" onclick="sendReaction('👏')">👏</button>
@@ -946,40 +462,47 @@ body.chat-is-open .chat-fab {
                 <button class="react-btn" onclick="sendReaction('😮')">😮</button>
                 <button class="react-btn" onclick="sendReaction('🙋')">🙋</button>
             </div>
-
             <div class="chat-foot">
                 <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
                 <button class="send-btn" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
-            </div>   
+            </div>
         </div>
 
-        <!-- Q&A TAB -->
         <div class="tab-content hidden" id="tab-qna">
-            <div class="qna-body" id="qnaBody"><div class="chat-empty">No questions asked yet. Be the first to ask! 🙋</div></div>
+            <div class="qna-filter-row">
+                <button class="qna-mini-btn active" data-qf="all" onclick="setQnaFilter('all')">All</button>
+                <button class="qna-mini-btn" data-qf="unanswered" onclick="setQnaFilter('unanswered')">Unanswered</button>
+                <button class="qna-mini-btn" data-qf="answered" onclick="setQnaFilter('answered')">Answered</button>
+            </div>
+            <div class="qna-body" id="qnaBody"><div class="chat-empty">No questions yet. Be the first to ask 🙋</div></div>
             <div class="chat-foot">
                 <textarea id="qnaInput" class="chat-input" placeholder="Type your question..." rows="1"></textarea>
                 <button class="send-btn" onclick="askQuestion()">➤</button>
             </div>
         </div>
 
-        <!-- POLL TAB -->
         <div class="tab-content hidden" id="tab-poll">
             <div class="pq-body" id="pollBody">
-                <div class="pq-empty">No active poll right now.</div>
+                <div class="pq-empty">No poll running right now. It will appear here once the teacher starts one.</div>
             </div>
         </div>
 
-        <!-- QUIZ TAB -->
         <div class="tab-content hidden" id="tab-quiz">
             <div class="pq-body" id="quizBody">
-                <div class="pq-empty">No active quiz right now.</div>
+                <div class="pq-empty">No quiz running right now. It will appear here once the teacher starts one.</div>
             </div>
         </div>
 
-        <!-- PEOPLE TAB -->
         <div class="tab-content hidden" id="tab-people">
             <div class="people-body">
+                <div class="people-sub-tabs">
+                    <button class="active" data-pf="online" onclick="setPeopleTab('online')">Online</button>
+                    <button data-pf="board" onclick="setPeopleTab('board')">🏆 Leaderboard</button>
+                    <button data-pf="hands" onclick="setPeopleTab('hands')">🙋 Raised Hands</button>
+                </div>
                 <div id="peopleOnlineList"></div>
+                <div id="peopleBoardList" class="hidden"></div>
+                <div id="peopleHandsList" class="hidden"></div>
             </div>
         </div>
     </div>
@@ -990,9 +513,31 @@ body.chat-is-open .chat-fab {
     <span class="badge hidden" id="chatFabBadge">0</span>
 </button>
 
+<!-- CLASS MATERIALS MODAL (Resources + Homework) -->
+<div class="modal-overlay" id="moreModal">
+    <div class="modal-card glass">
+        <div class="modal-top">
+            <h3>📚 Class Materials</h3>
+            <button class="modal-close" onclick="closeMoreModal()">&times;</button>
+        </div>
+        <div class="tc-tabs">
+            <button class="tc-tab-btn active" data-mt="resources" onclick="setMoreTab('resources')">📚 Resources</button>
+            <button class="tc-tab-btn" data-mt="homework" onclick="setMoreTab('homework')">📝 Homework</button>
+        </div>
+        <div class="tc-pane active" id="more-resources">
+            <div class="section-head"><h3>📚 Class Resources</h3></div>
+            <div id="resourceList"><div class="section-empty">No resources added yet.</div></div>
+        </div>
+        <div class="tc-pane" id="more-homework">
+            <div class="section-head"><h3>📝 Homework</h3></div>
+            <div id="homeworkList"><div class="section-empty">No homework assigned yet.</div></div>
+        </div>
+    </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, onChildAdded, set, push, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, onChildAdded, set, push, update, remove, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -1007,22 +552,41 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const SESSION_PATH = "live_class/session";
-const CHAT_PATH = "live_class/chat";
-const VIEWERS_PATH = "live_class/viewers";
-const REACTIONS_PATH = "live_class/reactions";
-const ANNOUNCE_PATH = "live_class/announcement";
-const QUESTIONS_PATH = "live_class/questions";
-const HANDS_PATH = "live_class/raisedHands";
-const RESOURCES_PATH = "live_class/resources";
-const HOMEWORK_PATH = "live_class/homework";
-const MUTED_PATH = "live_class/muted";
-
+/* ---------- student identity (shared across all classes) ---------- */
 let studentName = localStorage.getItem("gaivexLiveName") || "";
 let studentUid = localStorage.getItem("gaivexLiveUid");
 if(!studentUid){
     studentUid = "stu_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
     localStorage.setItem("gaivexLiveUid", studentUid);
+}
+
+/* ---------- multi-class support ----------
+   Every teacher's class lives under classes/<classId>/... in Firebase.
+   Students either open a direct link with ?class=<classId> (shared by a
+   teacher) or pick a currently-live class from the lobby below. This is
+   what lets several teachers run separate live classes at the same time. */
+let CLASS_ID = new URLSearchParams(location.search).get("class") || null;
+
+let SESSION_PATH, CHAT_PATH, VIEWERS_PATH, REACTIONS_PATH, ANNOUNCE_PATH,
+    QUESTIONS_PATH, HANDS_PATH, POLL_PATH, QUIZ_PATH, QUIZ_SCORES_PATH,
+    RESOURCES_PATH, HOMEWORK_PATH, MUTED_PATH, ATTENDANCE_PATH;
+
+function setClassPaths(classId){
+    const base = `classes/${classId}`;
+    SESSION_PATH = `${base}/session`;
+    CHAT_PATH = `${base}/chat`;
+    VIEWERS_PATH = `${base}/viewers`;
+    REACTIONS_PATH = `${base}/reactions`;
+    ANNOUNCE_PATH = `${base}/announcement`;
+    QUESTIONS_PATH = `${base}/questions`;
+    HANDS_PATH = `${base}/raisedHands`;
+    POLL_PATH = `${base}/poll`;
+    QUIZ_PATH = `${base}/quiz`;
+    QUIZ_SCORES_PATH = `${base}/quizScores`;
+    RESOURCES_PATH = `${base}/resources`;
+    HOMEWORK_PATH = `${base}/homework`;
+    MUTED_PATH = `${base}/muted`;
+    ATTENDANCE_PATH = `${base}/attendance`;
 }
 
 let currentSession = null;
@@ -1033,12 +597,19 @@ let lastChatKey = null;
 let lastChatData = {};
 let isMuted = false;
 let liveTimerInterval = null;
+let notifiedAnnounceTs = null;
+let notifiedPollKey = null;
+let notifiedQuizKey = null;
 let handRaised = false;
+let qnaFilter = "all";
+let peopleTab = "online";
+let allQuestions = {};
+let currentPoll = null;
+let currentQuiz = null;
+let currentPinnedQuestion = null;
+let pinnedAnnounceCache = null;
 
-window.toggle3DotsMenu = function(){
-    document.getElementById("dotsMenu").classList.toggle("show");
-};
-
+/* ============ TOAST ============ */
 function showToast(icon, text, kind){
     const stack = document.getElementById("toastStack");
     const el = document.createElement("div");
@@ -1049,39 +620,73 @@ function showToast(icon, text, kind){
     setTimeout(()=>{ el.style.transition="opacity .3s"; el.style.opacity="0"; setTimeout(()=>el.remove(),300); }, 4500);
 }
 
-function escapeHtml(str) {
-    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/* ============ CONNECTION STATUS (global, not class-specific) ============ */
+onValue(ref(db, ".info/connected"), (snap)=>{
+    const el = document.getElementById("connStatus");
+    const txt = document.getElementById("connStatusText");
+    if(snap.val() === true){ el.classList.remove("bad"); txt.innerText = "Connected"; }
+    else{ el.classList.add("bad"); txt.innerText = "Reconnecting..."; }
+});
+
+/* ============ LOBBY ============ */
+if(CLASS_ID){
+    document.getElementById("lobbyOverlay").classList.add("hidden");
+    startClassApp(CLASS_ID);
+}else{
+    onValue(ref(db, "classes"), (snap)=>{ renderLobby(snap.exists() ? snap.val() : {}); });
 }
 
-window.enterClass = function(){
-    const val = document.getElementById("gateNameInput").value.trim();
-    if(!val){
-        document.getElementById("gateNameInput").focus();
+function renderLobby(all){
+    const list = document.getElementById("lobbyList");
+    const liveIds = Object.keys(all).filter(id => all[id] && all[id].session && all[id].session.isLive);
+    if(liveIds.length === 0){
+        list.innerHTML = `<div class="lobby-empty">No classes are live right now. This page updates automatically when a class starts.</div>`;
         return;
     }
+    let html = "";
+    liveIds.forEach(id=>{
+        const s = all[id].session;
+        html += `<div class="lobby-card">
+            <span class="live-dot-sm"></span>
+            <div class="lobby-card-info">
+                <div class="lobby-card-title">${escapeHtml(s.title || "Live Class")}</div>
+                <div class="lobby-card-sub">${escapeHtml(s.teacherName || "Teacher")} · ${escapeHtml(subjectName(s.subject))}</div>
+            </div>
+            <button class="lobby-join-btn" onclick="joinClass('${id}')">Join</button>
+        </div>`;
+    });
+    list.innerHTML = html;
+}
+window.joinClass = function(id){
+    CLASS_ID = id;
+    history.replaceState(null, "", location.pathname + "?class=" + encodeURIComponent(id));
+    document.getElementById("lobbyOverlay").classList.add("hidden");
+    startClassApp(id);
+};
+
+function startClassApp(classId){
+    setClassPaths(classId);
+    if(studentName){
+        document.getElementById("gateOverlay").classList.add("hidden");
+        initPresence();
+    }else{
+        document.getElementById("gateOverlay").classList.remove("hidden");
+    }
+    registerClassListeners();
+}
+
+/* ============ NAME GATE ============ */
+window.enterClass = function(){
+    const val = document.getElementById("gateNameInput").value.trim();
+    if(!val){ document.getElementById("gateNameInput").focus(); return; }
     studentName = val;
     localStorage.setItem("gaivexLiveName", studentName);
     document.getElementById("gateOverlay").classList.add("hidden");
     initPresence();
 };
+document.getElementById("gateNameInput").addEventListener("keydown", (e)=>{ if(e.key === "Enter") window.enterClass(); });
 
-if(studentName){
-    document.getElementById("gateOverlay").classList.add("hidden");
-    initPresence();
-}
-
-onValue(ref(db, ".info/connected"), (snap)=>{
-    const el = document.getElementById("connStatus");
-    const txt = document.getElementById("connStatusText");
-    if(snap.val() === true){
-        el.classList.remove("bad");
-        txt.innerText = "Connected";
-    }else{
-        el.classList.add("bad");
-        txt.innerText = "Reconnecting...";
-    }
-});
-
+/* ============ TAB SWITCHING (side panel) ============ */
 window.openTab = function(name){
     document.querySelectorAll(".tab-btn").forEach(b=> b.classList.toggle("active", b.dataset.tab === name));
     document.querySelectorAll(".tab-content").forEach(c=> c.classList.add("hidden"));
@@ -1089,10 +694,86 @@ window.openTab = function(name){
     if(name === "chat"){ unreadCount = 0; updateChatBadge(); }
 };
 
-onValue(ref(db, SESSION_PATH), (snap)=>{
-    currentSession = snap.exists() ? snap.val() : null;
-    renderSession();
-});
+/* ============ CLASS MATERIALS MODAL ============ */
+window.openMoreModal = function(){ document.getElementById("moreModal").classList.add("show"); };
+window.closeMoreModal = function(){ document.getElementById("moreModal").classList.remove("show"); };
+window.setMoreTab = function(tab){
+    document.querySelectorAll("#moreModal [data-mt]").forEach(b=> b.classList.toggle("active", b.dataset.mt === tab));
+    document.querySelectorAll("#moreModal .tc-pane").forEach(p=> p.classList.remove("active"));
+    document.getElementById("more-" + tab).classList.add("active");
+};
+
+/* ============ CLASS LISTENERS (all Firebase subscriptions for the chosen class) ============ */
+function registerClassListeners(){
+    onValue(ref(db, SESSION_PATH), (snap)=>{
+        currentSession = snap.exists() ? snap.val() : null;
+        renderSession();
+    });
+
+    onValue(ref(db, ANNOUNCE_PATH), (snap)=>{
+        const a = snap.exists() ? snap.val() : null;
+        pinnedAnnounceCache = a;
+        renderBanners(a);
+        if(a && a.ts && a.ts !== notifiedAnnounceTs && notifiedAnnounceTs !== null && studentName){
+            showToast("📢", a.text, "gold");
+        }
+        if(a) notifiedAnnounceTs = a.ts; else if(notifiedAnnounceTs === null) notifiedAnnounceTs = 0;
+    });
+
+    onValue(ref(db, CHAT_PATH), (snap)=>{
+        lastChatData = snap.exists() ? snap.val() : {};
+        renderChat(lastChatData);
+        renderFsChat(lastChatData);
+    });
+
+    onValue(ref(db, HANDS_PATH), (snap)=>{
+        const data = snap.exists() ? snap.val() : {};
+        renderHandsPeople(data);
+        if(!data[studentUid] && handRaised){
+            handRaised = false;
+            document.getElementById("raiseHandBtn").classList.remove("active");
+        }
+    });
+
+    onValue(ref(db, QUESTIONS_PATH), (snap)=>{
+        allQuestions = snap.exists() ? snap.val() : {};
+        renderQna();
+        const unanswered = Object.values(allQuestions).filter(q=>!q.answered).length;
+        const badge = document.getElementById("qnaUnansweredBadge");
+        if(unanswered > 0){ badge.innerText = unanswered > 9 ? "9+" : unanswered; badge.classList.remove("hidden"); }
+        else{ badge.classList.add("hidden"); }
+        const pinned = Object.values(allQuestions).find(q=>q.pinned);
+        currentPinnedQuestion = pinned ? pinned.text : null;
+        renderBanners(pinnedAnnounceCache);
+    });
+
+    onValue(ref(db, POLL_PATH), (snap)=>{
+        currentPoll = snap.exists() ? snap.val() : null;
+        renderPoll();
+        if(currentPoll && currentPoll.active && currentPoll.startedAt !== notifiedPollKey && notifiedPollKey !== null && studentName){
+            showToast("📊", "A new poll has started!");
+            openTab("poll");
+        }
+        if(currentPoll) notifiedPollKey = currentPoll.startedAt; else if(notifiedPollKey===null) notifiedPollKey = 0;
+    });
+    setInterval(()=>{ if(currentPoll && currentPoll.active) renderPoll(); }, 1000);
+
+    onValue(ref(db, QUIZ_PATH), (snap)=>{
+        currentQuiz = snap.exists() ? snap.val() : null;
+        renderQuiz();
+        if(currentQuiz && currentQuiz.active && currentQuiz.startedAt !== notifiedQuizKey && notifiedQuizKey !== null && studentName){
+            showToast("🧠", "A new quiz has started!");
+            openTab("quiz");
+        }
+        if(currentQuiz) notifiedQuizKey = currentQuiz.startedAt; else if(notifiedQuizKey===null) notifiedQuizKey = 0;
+    });
+    setInterval(()=>{ if(currentQuiz && currentQuiz.active) renderQuiz(); }, 1000);
+
+    onValue(ref(db, QUIZ_SCORES_PATH), (snap)=>{ renderLeaderboard(snap.exists() ? snap.val() : {}); });
+
+    onValue(ref(db, RESOURCES_PATH), (snap)=>{ renderResources(snap.exists() ? snap.val() : {}); });
+    onValue(ref(db, HOMEWORK_PATH), (snap)=>{ renderHomework(snap.exists() ? snap.val() : {}); });
+}
 
 function renderSession(){
     const offlineScreen = document.getElementById("offlineScreen");
@@ -1104,13 +785,12 @@ function renderSession(){
     const metaOutsideBar = document.getElementById("metaOutsideBar");
     const raiseHandBtn = document.getElementById("raiseHandBtn");
 
+    const wasLive = !!(window.__wasLive);
     const isLive = !!(currentSession && currentSession.isLive && currentSession.youtubeId);
 
-    document.getElementById("classTitle").innerText = currentSession && currentSession.title
-        ? currentSession.title
-        : "Waiting for class stream...";
-    document.getElementById("chipSubject").innerText = "📚 " + (currentSession && currentSession.subject || "General");
-    document.getElementById("chipPaper").innerText = "📖 " + (currentSession && currentSession.paper || "Standard");
+    document.getElementById("classTitle").innerText = currentSession && currentSession.title ? currentSession.title : "Waiting for class";
+    document.getElementById("chipSubject").innerText = "📚 " + subjectName(currentSession && currentSession.subject);
+    document.getElementById("chipPaper").innerText = "📖 " + (currentSession && currentSession.paper === "paper2" ? "Paper 2" : currentSession && currentSession.paper === "paper1" ? "Paper 1" : "—");
     document.getElementById("chipChapter").innerText = "📌 " + ((currentSession && currentSession.chapter) || "—");
 
     if(isLive){
@@ -1124,6 +804,7 @@ function renderSession(){
         metaOutsideBar.classList.remove("hidden");
         raiseHandBtn.classList.remove("hidden");
         startLiveTimer(currentSession.startedAt);
+        if(!wasLive && studentName){ showToast("🔴", "Class is now live!"); }
     }else{
         currentYoutubeId = null;
         ytFrame.src = "";
@@ -1136,12 +817,13 @@ function renderSession(){
         raiseHandBtn.classList.add("hidden");
         stopLiveTimer();
     }
+    window.__wasLive = isLive;
 
     if(currentSession && currentSession.teacherName){
         teacherChip.classList.remove("hidden");
-        document.getElementById("teacherNameEl").innerHTML = escapeHtml(currentSession.teacherName) + ' <span class="verify-badge" title="Verified Instructor">✔️</span>';
+        document.getElementById("teacherNameEl").innerHTML = escapeHtml(currentSession.teacherName) + ' <span class="verify-badge" title="Verified teacher">✔️</span>';
         document.getElementById("teacherAvatar").src = currentSession.teacherPhoto || "https://api.dicebear.com/7.x/initials/svg?seed=" + encodeURIComponent(currentSession.teacherName);
-        document.getElementById("teacherSubjectRole").innerText = "Instructor";
+        document.getElementById("teacherSubjectRole").innerText = subjectName(currentSession.subject) + " Teacher";
     }else{
         teacherChip.classList.add("hidden");
     }
@@ -1159,48 +841,28 @@ function startLiveTimer(startedAt){
     tick();
     liveTimerInterval = setInterval(tick, 1000);
 }
-function stopLiveTimer(){
-    if(liveTimerInterval){ clearInterval(liveTimerInterval); liveTimerInterval = null; }
-}
+function stopLiveTimer(){ if(liveTimerInterval){ clearInterval(liveTimerInterval); liveTimerInterval = null; } }
 
 window.reloadVideo = function(){
-    if(currentYoutubeId){
-        const f = document.getElementById("ytFrame");
-        f.src = f.src;
-    }
+    if(currentYoutubeId){ const f = document.getElementById("ytFrame"); f.src = f.src; }
 };
 
-window.toggleFullscreen = function(){
-    const wrap = document.getElementById("videoWrap");
-    if(!document.fullscreenElement){
-        wrap.requestFullscreen().catch(err => alert("Fullscreen error: " + err.message));
-    } else {
-        document.exitFullscreen();
-    }
-};
+function subjectName(subject){
+    const names = { physics:"Physics", chemistry:"Chemistry", biology:"Biology", math:"Higher Math" };
+    return names[subject] || "—";
+}
 
-window.toggleFsComments = function(){
-    document.getElementById("fsCommentOverlay").classList.toggle("show");
-};
-
-window.sendFsComment = function(){
-    const inp = document.getElementById("fsInput");
-    const val = inp.value.trim();
-    if(!val) return;
-    push(ref(db, CHAT_PATH), {
-        uid: studentUid,
-        name: studentName,
-        role: "student",
-        text: val,
-        timestamp: Date.now()
-    });
-    inp.value = "";
-};
-
+/* ============ PRESENCE ============ */
 function initPresence(){
     const myRef = ref(db, `${VIEWERS_PATH}/${studentUid}`);
-    set(myRef, { name: studentName, ts: Date.now() });
+    const joinedAt = Date.now();
+    set(myRef, { name: studentName, ts: joinedAt });
     onDisconnect(myRef).remove();
+
+    const attRef = ref(db, `${ATTENDANCE_PATH}/${studentUid}`);
+    update(attRef, { name: studentName, joinedAt: joinedAt, lastSeen: joinedAt }).catch(()=>{});
+    onDisconnect(ref(db, `${ATTENDANCE_PATH}/${studentUid}/leftAt`)).set(Date.now());
+    setInterval(()=>{ update(attRef, { lastSeen: Date.now() }).catch(()=>{}); }, 20000);
 
     onValue(ref(db, VIEWERS_PATH), (snap)=>{
         const data = snap.exists() ? snap.val() : {};
@@ -1219,156 +881,442 @@ function initPresence(){
 function renderOnlinePeople(data){
     const list = document.getElementById("peopleOnlineList");
     const keys = Object.keys(data);
-    if(keys.length === 0){
-        list.innerHTML = `<div class="section-empty">No users online.</div>`;
-        return;
-    }
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">No one is online.</div>`; return; }
+    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
     let html = "";
     keys.forEach(k=>{
         const p = data[k];
         const initial = (p.name || "?").trim().charAt(0).toUpperCase();
-        html += `<div class="people-row"><div class="people-avatar-sm">${escapeHtml(initial)}</div><div class="people-name">${escapeHtml(p.name || "Student")}${k===studentUid ? ' (You)' : ''}</div></div>`;
+        html += `<div class="people-row"><div class="people-avatar-sm">${escapeHtml(initial)}</div><div class="people-name">${escapeHtml(p.name || "Student")}${k===studentUid ? ' (you)' : ''}</div></div>`;
     });
     list.innerHTML = html;
 }
 
-/* Resources & Homework in Menu */
-onValue(ref(db, RESOURCES_PATH), (snap)=>{
-    const res = snap.exists() ? snap.val() : {};
-    const el = document.getElementById("resourceList");
-    const keys = Object.keys(res);
-    if(keys.length === 0){ el.innerHTML = `<div class="section-empty">No resources available.</div>`; return; }
-    let html = "";
-    keys.forEach(k => {
-        html += `<div class="resource-card">
-            <b>${escapeHtml(res[k].title)}</b>
-            <div><a class="resource-open" href="${escapeHtml(res[k].url)}" target="_blank">Open Link 🔗</a></div>
-        </div>`;
-    });
-    el.innerHTML = html;
-});
+window.setPeopleTab = function(tab){
+    peopleTab = tab;
+    document.querySelectorAll(".people-sub-tabs button").forEach(b=> b.classList.toggle("active", b.dataset.pf === tab));
+    document.getElementById("peopleOnlineList").classList.toggle("hidden", tab!=="online");
+    document.getElementById("peopleBoardList").classList.toggle("hidden", tab!=="board");
+    document.getElementById("peopleHandsList").classList.toggle("hidden", tab!=="hands");
+};
 
-onValue(ref(db, HOMEWORK_PATH), (snap)=>{
-    const hw = snap.exists() ? snap.val() : {};
-    const el = document.getElementById("homeworkList");
-    const keys = Object.keys(hw);
-    if(keys.length === 0){ el.innerHTML = `<div class="section-empty">No homework assigned.</div>`; return; }
+/* ============ ANNOUNCEMENT / PINNED QUESTION BANNERS ============ */
+function renderBanners(announcement){
+    const stack = document.getElementById("bannerStack");
     let html = "";
-    keys.forEach(k => {
-        html += `<div class="homework-card">
-            <b>${escapeHtml(hw[k].title)}</b>
-            <p style="font-size:11px;color:var(--ink-dim);">${escapeHtml(hw[k].desc || '')}</p>
-        </div>`;
-    });
-    el.innerHTML = html;
-});
+    if(announcement && announcement.text){
+        html += `<div class="top-banner announcement glass"><span class="b-icon">📢</span><div class="b-body"><div class="b-label">Announcement</div>${escapeHtml(announcement.text)}</div></div>`;
+    }
+    if(currentPinnedQuestion){
+        html += `<div class="top-banner pinned glass"><span class="b-icon">📌</span><div class="b-body"><div class="b-label">Pinned Question</div>${escapeHtml(currentPinnedQuestion)}</div></div>`;
+    }
+    stack.innerHTML = html;
+}
 
-/* CHAT */
+/* ============ CHAT ============ */
 const chatBody = document.getElementById("chatBody");
-onValue(ref(db, CHAT_PATH), (snap)=>{
-    lastChatData = snap.exists() ? snap.val() : {};
-    renderChat(lastChatData);
-});
 
 window.renderChat = function(data){
+    const searchEl = document.getElementById("chatSearchInput");
+    const q = searchEl ? searchEl.value.trim().toLowerCase() : "";
     let keys = Object.keys(data);
     if(keys.length === 0){
-        chatBody.innerHTML = `<div class="chat-empty">No messages yet. Be the first to say hello! 👋</div>`;
+        chatBody.innerHTML = `<div class="chat-empty">No messages yet. Be the first to say hi 👋</div>`;
         return;
     }
     keys.sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
+    if(q){ keys = keys.filter(k => (data[k].text||"").toLowerCase().includes(q) || (data[k].name||"").toLowerCase().includes(q)); }
+    if(keys.length === 0){ chatBody.innerHTML = `<div class="chat-empty">No results found.</div>`; return; }
+
     let html = "";
-    let fsHtml = "";
     keys.forEach(k=>{
         const m = data[k];
         const isMe = m.uid === studentUid;
         const isTeacher = m.role === "teacher";
         const rowClass = isMe ? "me" : (isTeacher ? "teacher" : "other");
-        const senderLabel = isTeacher ? `<span class="teacher-tag">TEACHER</span> ${escapeHtml(m.name || "Instructor")}` : escapeHtml(m.name || "Student");
-
-        html += `
-        <div class="msg-row ${rowClass}">
-            <div class="msg-sender">${senderLabel}</div>
-            <div class="msg-bubble-wrap">
-                <div class="msg-bubble">${escapeHtml(m.text || "")}</div>
-            </div>
-        </div>`;
-
-        fsHtml += `<div><b>${escapeHtml(m.name)}:</b> ${escapeHtml(m.text)}</div>`;
+        const senderLabel = isTeacher ? `<span class="teacher-tag">TEACHER</span> ${escapeHtml(m.name || "Teacher")}` : escapeHtml(m.name || "Student");
+        const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) : "";
+        html += `<div class="msg-row ${rowClass}"><div class="msg-sender">${senderLabel}</div><div class="msg-bubble-wrap"><div class="msg-bubble">${escapeHtml(m.text || "")}</div></div><div class="msg-ts">${time}</div></div>`;
     });
-
     chatBody.innerHTML = html;
-    chatBody.scrollTop = chatBody.scrollHeight;
-    
-    const fsList = document.getElementById("fsCommentList");
-    if(fsList) {
-        fsList.innerHTML = fsHtml;
-        fsList.scrollTop = fsList.scrollHeight;
+    if(!q) chatBody.scrollTop = chatBody.scrollHeight;
+
+    const allKeysSorted = Object.keys(data).sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
+    const newestKey = allKeysSorted[allKeysSorted.length-1];
+    if(lastChatKey && newestKey !== lastChatKey && data[newestKey].uid !== studentUid && !chatDrawerOpen){
+        unreadCount++;
+        updateChatBadge();
     }
+    lastChatKey = newestKey;
 };
 
+function updateChatBadge(){
+    const badge = document.getElementById("chatFabBadge");
+    if(unreadCount > 0){ badge.innerText = unreadCount > 9 ? "9+" : unreadCount; badge.classList.remove("hidden"); }
+    else{ badge.classList.add("hidden"); }
+}
+
 window.sendChatMessage = async function(){
-    if(!studentName){
-        document.getElementById("gateOverlay").classList.remove("hidden");
-        return;
-    }
-    if(isMuted) return;
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    if(isMuted){ showToast("🔇", "You are currently muted from chat."); return; }
     const input = document.getElementById("chatInput");
     const text = input.value.trim();
     if(!text) return;
-
-    await push(ref(db, CHAT_PATH), {
-        uid: studentUid,
-        name: studentName,
-        role: "student",
-        text: text,
-        timestamp: Date.now()
-    });
-    input.value = "";
+    try{
+        await push(ref(db, CHAT_PATH), { uid: studentUid, name: studentName, role: "student", text: text, timestamp: Date.now() });
+        input.value = "";
+        autoGrow(input);
+    }catch(e){ alert("Message could not be sent: " + e.message); }
 };
+
+const chatInputEl = document.getElementById("chatInput");
+chatInputEl.addEventListener("keydown", (e)=>{ if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); window.sendChatMessage(); } });
+chatInputEl.addEventListener("input", ()=> autoGrow(chatInputEl));
+function autoGrow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,90)+"px"; }
 
 window.openChatDrawer = function(){
     document.getElementById("chatPanel").classList.add("open");
     document.getElementById("chatCloseBtn").style.display = "flex";
     document.body.classList.add("chat-is-open");
+    chatDrawerOpen = true;
+    unreadCount = 0;
+    updateChatBadge();
 };
-
 window.closeChatDrawer = function(){
     document.getElementById("chatPanel").classList.remove("open");
     document.body.classList.remove("chat-is-open");
+    chatDrawerOpen = false;
 };
 
+/* ============ FULLSCREEN CHAT OVERLAY (so students can comment in fullscreen/landscape) ============ */
+function renderFsChat(data){
+    const body = document.getElementById("fsChatBody");
+    if(!body) return;
+    const keys = Object.keys(data).sort((a,b)=>(data[a].timestamp||0)-(data[b].timestamp||0)).slice(-30);
+    if(keys.length === 0){ body.innerHTML = `<div class="fs-chat-empty">No messages yet.</div>`; return; }
+    let html = "";
+    keys.forEach(k=>{
+        const m = data[k];
+        const isTeacher = m.role === "teacher";
+        html += `<div class="fs-chat-msg"><b style="${isTeacher?'color:var(--rose)':''}">${escapeHtml(m.name||"")}</b>: ${escapeHtml(m.text||"")}</div>`;
+    });
+    body.innerHTML = html;
+    body.scrollTop = body.scrollHeight;
+}
+window.toggleFsChat = function(){
+    const el = document.getElementById("fsChatOverlay");
+    el.classList.toggle("hidden");
+    if(!el.classList.contains("hidden")) renderFsChat(lastChatData);
+};
+window.sendFsChatMessage = async function(){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    if(isMuted){ showToast("🔇", "You are currently muted from chat."); return; }
+    const input = document.getElementById("fsChatInput");
+    const text = input.value.trim();
+    if(!text) return;
+    try{
+        await push(ref(db, CHAT_PATH), { uid: studentUid, name: studentName, role: "student", text: text, timestamp: Date.now() });
+        input.value = "";
+    }catch(e){}
+};
+document.getElementById("fsChatInput").addEventListener("keydown", (e)=>{ if(e.key === "Enter"){ e.preventDefault(); window.sendFsChatMessage(); } });
+
+/* ============ REACTIONS ============ */
 window.sendReaction = async function(emoji){
     spawnFloatingEmoji(emoji);
-    const r = push(ref(db, REACTIONS_PATH));
-    await set(r, { emoji, uid: studentUid, ts: Date.now() });
+    try{
+        const r = push(ref(db, REACTIONS_PATH));
+        await set(r, { emoji, uid: studentUid, ts: Date.now() });
+        setTimeout(()=> remove(r).catch(()=>{}), 4000);
+    }catch(e){}
 };
-
 function spawnFloatingEmoji(emoji){
     const layer = document.getElementById("reactionLayer");
     const el = document.createElement("div");
     el.className = "float-emoji";
     el.innerText = emoji;
-    el.style.left = (20 + Math.random()*60) + "%";
+    const leftPos = 20 + Math.random()*60;
+    const drift = (Math.random()*80 - 40) + "px";
+    el.style.left = leftPos + "%";
+    el.style.setProperty("--drift", drift);
     layer.appendChild(el);
     setTimeout(()=> el.remove(), 3300);
 }
 
+/* ============ RAISE HAND ============ */
 window.toggleRaiseHand = async function(){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
     const btn = document.getElementById("raiseHandBtn");
     handRaised = !handRaised;
     btn.classList.toggle("active", handRaised);
     if(handRaised){
         await set(ref(db, `${HANDS_PATH}/${studentUid}`), { name: studentName, ts: Date.now() });
+        onDisconnect(ref(db, `${HANDS_PATH}/${studentUid}`)).remove();
     }else{
         await remove(ref(db, `${HANDS_PATH}/${studentUid}`));
     }
 };
+function renderHandsPeople(data){
+    const list = document.getElementById("peopleHandsList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">No one has raised their hand.</div>`; return; }
+    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
+    let html = "";
+    keys.forEach(k=>{ html += `<div class="raise-row">🙋 <span class="people-name">${escapeHtml(data[k].name||"")}</span></div>`; });
+    list.innerHTML = html;
+}
 
-window.shareClassLink = function(){
-    navigator.clipboard.writeText(window.location.href);
-    showToast("🔗", "Class link copied to clipboard!");
+/* ============ Q&A ============ */
+window.askQuestion = async function(){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    const input = document.getElementById("qnaInput");
+    const text = input.value.trim();
+    if(!text) return;
+    try{
+        await push(ref(db, QUESTIONS_PATH), { uid: studentUid, name: studentName, text, timestamp: Date.now(), answered: false, pinned: false, upvotes: {} });
+        input.value = "";
+    }catch(e){ alert("Question could not be sent: " + e.message); }
 };
+document.getElementById("qnaInput").addEventListener("keydown", (e)=>{ if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); window.askQuestion(); } });
+
+window.setQnaFilter = function(f){
+    qnaFilter = f;
+    document.querySelectorAll("[data-qf]").forEach(b=> b.classList.toggle("active", b.dataset.qf === f));
+    renderQna();
+};
+
+function renderQna(){
+    const body = document.getElementById("qnaBody");
+    let keys = Object.keys(allQuestions);
+    if(keys.length === 0){ body.innerHTML = `<div class="chat-empty">No questions yet. Be the first to ask 🙋</div>`; return; }
+    if(qnaFilter === "answered") keys = keys.filter(k=>allQuestions[k].answered);
+    if(qnaFilter === "unanswered") keys = keys.filter(k=>!allQuestions[k].answered);
+
+    keys.sort((a,b)=>{
+        const qa = allQuestions[a], qb = allQuestions[b];
+        if(!!qb.pinned !== !!qa.pinned) return (qb.pinned?1:0) - (qa.pinned?1:0);
+        const ua = qa.upvotes ? Object.keys(qa.upvotes).length : 0;
+        const ub = qb.upvotes ? Object.keys(qb.upvotes).length : 0;
+        if(ub !== ua) return ub - ua;
+        return (qa.timestamp||0) - (qb.timestamp||0);
+    });
+
+    let html = "";
+    keys.forEach(k=>{
+        const q = allQuestions[k];
+        const upvoteCount = q.upvotes ? Object.keys(q.upvotes).length : 0;
+        const iUpvoted = q.upvotes && q.upvotes[studentUid];
+        html += `<div class="qna-card ${q.answered?'answered':''} ${q.pinned?'pinned':''}">
+            <div class="qna-top"><span class="qna-name">${escapeHtml(q.name||"Student")}</span><span class="qna-status-tag ${q.answered?'done':'wait'}">${q.answered?'Answered':'Waiting'}</span></div>
+            <div class="qna-text">${q.pinned?'📌 ':''}${escapeHtml(q.text||"")}</div>
+            ${q.answered && q.answerText ? `<div class="qna-answer"><b>Teacher's answer:</b> ${escapeHtml(q.answerText)}</div>` : ""}
+            <div class="qna-actions"><button class="qna-mini-btn ${iUpvoted?'active':''}" onclick="upvoteQuestion('${k}')">👍 ${upvoteCount}</button></div>
+        </div>`;
+    });
+    body.innerHTML = html || `<div class="chat-empty">No questions found.</div>`;
+}
+
+window.upvoteQuestion = async function(key){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    const q = allQuestions[key];
+    if(!q) return;
+    const already = q.upvotes && q.upvotes[studentUid];
+    if(already){ await remove(ref(db, `${QUESTIONS_PATH}/${key}/upvotes/${studentUid}`)); }
+    else{ await set(ref(db, `${QUESTIONS_PATH}/${key}/upvotes/${studentUid}`), true); }
+};
+
+/* ============ POLL ============ */
+function renderPoll(){
+    const body = document.getElementById("pollBody");
+    if(!currentPoll || !currentPoll.active){
+        body.innerHTML = `<div class="pq-empty">No poll running right now. It will appear here once the teacher starts one.</div>`;
+        return;
+    }
+    const votes = currentPoll.votes || {};
+    const totalVotes = Object.keys(votes).length;
+    const myVoteEntry = votes[studentUid];
+    const myVote = myVoteEntry && typeof myVoteEntry === "object" ? myVoteEntry.idx : myVoteEntry;
+    const remaining = currentPoll.endsAt ? Math.max(0, Math.ceil((currentPoll.endsAt - Date.now())/1000)) : null;
+
+    let optsHtml = "";
+    (currentPoll.options||[]).forEach((opt, idx)=>{
+        const count = Object.values(votes).filter(v=> (typeof v === "object" ? v.idx : v) === idx).length;
+        const pct = totalVotes ? Math.round(count/totalVotes*100) : 0;
+        const chosen = myVote === idx;
+        const canVote = myVote === undefined && remaining !== 0;
+        optsHtml += `<div class="pq-option ${canVote?'selectable':''} ${chosen?'chosen':''}" ${canVote?`onclick="votePoll(${idx})"`:""}>
+            <div class="pq-option-fill" style="width:${myVote!==undefined || remaining===0 ? pct : 0}%"></div>
+            <span class="pq-option-label">${escapeHtml(opt)}</span>
+            <span class="pq-option-pct">${myVote!==undefined || remaining===0 ? pct+'%' : ''}</span>
+        </div>`;
+    });
+
+    body.innerHTML = `<div class="pq-card">
+        <div class="pq-question">${escapeHtml(currentPoll.question||"")}</div>
+        ${remaining !== null ? `<div class="pq-timer">⏳ ${remaining}s left</div>` : ""}
+        ${optsHtml}
+        <div class="pq-vote-note">${myVote!==undefined ? 'You voted ✓' : 'Pick an option'} · Total votes: ${totalVotes}</div>
+    </div>`;
+}
+
+window.votePoll = async function(idx){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    if(!currentPoll || !currentPoll.active) return;
+    await set(ref(db, `${POLL_PATH}/votes/${studentUid}`), { idx, name: studentName, ts: Date.now() });
+};
+
+/* ============ QUIZ ============ */
+function renderQuiz(){
+    const body = document.getElementById("quizBody");
+    if(!currentQuiz || !currentQuiz.active){
+        body.innerHTML = `<div class="pq-empty">No quiz running right now. It will appear here once the teacher starts one.</div>`;
+        return;
+    }
+    const answers = currentQuiz.answers || {};
+    const myEntry = answers[studentUid];
+    const my = myEntry && typeof myEntry === "object" ? myEntry.idx : myEntry;
+    const remaining = currentQuiz.endsAt ? Math.max(0, Math.ceil((currentQuiz.endsAt - Date.now())/1000)) : null;
+    const revealed = remaining === 0 || my !== undefined;
+
+    let optsHtml = "";
+    (currentQuiz.options||[]).forEach((opt, idx)=>{
+        let cls = "pq-option";
+        if(my===undefined && remaining!==0) cls += " selectable";
+        if(revealed && idx === currentQuiz.correctIndex) cls += " correct";
+        if(my===idx && idx !== currentQuiz.correctIndex && revealed) cls += " wrong-pick";
+        if(my===idx) cls += " chosen";
+        optsHtml += `<div class="${cls}" ${my===undefined && remaining!==0 ? `onclick="answerQuiz(${idx})"`:""}><span class="pq-option-label">${escapeHtml(opt)}</span></div>`;
+    });
+
+    let resultNote = "";
+    if(revealed && my !== undefined){
+        const correct = my === currentQuiz.correctIndex;
+        resultNote = `<div class="pq-result-note ${correct?'correct':'wrong'}">${correct?'✅ Correct! +10 points':'❌ Incorrect'}</div>`;
+    }
+
+    body.innerHTML = `<div class="pq-card">
+        <div class="pq-question">${escapeHtml(currentQuiz.question||"")}</div>
+        ${remaining !== null ? `<div class="pq-timer">⏳ ${remaining}s left</div>` : ""}
+        ${optsHtml}
+        ${resultNote}
+    </div>`;
+}
+
+window.answerQuiz = async function(idx){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    if(!currentQuiz || !currentQuiz.active) return;
+    const answers = currentQuiz.answers || {};
+    if(answers[studentUid] !== undefined) return;
+    await set(ref(db, `${QUIZ_PATH}/answers/${studentUid}`), { idx, name: studentName, ts: Date.now() });
+    if(idx === currentQuiz.correctIndex){
+        const scoreRef = ref(db, `${QUIZ_SCORES_PATH}/${studentUid}`);
+        const snap = await get(scoreRef);
+        const prev = snap.exists() ? (snap.val().score||0) : 0;
+        await set(scoreRef, { name: studentName, score: prev + 10 });
+    }
+};
+
+/* ============ LEADERBOARD ============ */
+function renderLeaderboard(data){
+    const list = document.getElementById("peopleBoardList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">No scores yet.</div>`; return; }
+    keys.sort((a,b)=> (data[b].score||0) - (data[a].score||0));
+    let html = "";
+    keys.slice(0,20).forEach((k,i)=>{
+        html += `<div class="people-row"><span class="people-rank">${i+1}</span><span class="people-name">${escapeHtml(data[k].name||"")}${k===studentUid?' (you)':''}</span><span class="people-score">🏅 ${data[k].score||0}</span></div>`;
+    });
+    list.innerHTML = html;
+}
+
+/* ============ RESOURCES ============ */
+const resIcons = { pdf:"📄", slide:"🖼️", sheet:"📝", drive:"🔗", bank:"❓" };
+const resNames = { pdf:"PDF Notes", slide:"Slides", sheet:"Practice Sheet", drive:"Google Drive", bank:"Question Bank" };
+
+function renderResources(data){
+    const list = document.getElementById("resourceList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">No resources added yet.</div>`; return; }
+    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
+    let html = "";
+    keys.forEach(k=>{
+        const r = data[k];
+        html += `<div class="resource-card"><span class="resource-icon">${resIcons[r.type]||"📎"}</span>
+            <div class="resource-info"><div class="resource-title">${escapeHtml(r.title||"")}</div><div class="resource-type">${resNames[r.type]||""}</div></div>
+            <a class="resource-open" href="${escapeAttr(r.url||"#")}" target="_blank" rel="noopener">Open</a></div>`;
+    });
+    list.innerHTML = html;
+}
+
+/* ============ HOMEWORK ============ */
+function renderHomework(data){
+    const list = document.getElementById("homeworkList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">No homework assigned yet.</div>`; return; }
+    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
+    const doneMap = JSON.parse(localStorage.getItem("gaivexHwDone_" + CLASS_ID) || "{}");
+    let html = "";
+    keys.forEach(k=>{
+        const h = data[k];
+        const done = !!doneMap[k];
+        html += `<div class="homework-card">
+            <div class="homework-title">${escapeHtml(h.title||"")}</div>
+            ${h.deadline ? `<div class="homework-deadline">⏰ Deadline: ${escapeHtml(h.deadline)}</div>` : ""}
+            ${h.desc ? `<div class="homework-desc">${escapeHtml(h.desc)}</div>` : ""}
+            <button class="homework-done-toggle ${done?'done':''}" onclick="toggleHwDone('${k}')">${done ? '✅ Marked done' : 'Mark as done'}</button>
+        </div>`;
+    });
+    list.innerHTML = html;
+}
+window.toggleHwDone = function(key){
+    const storeKey = "gaivexHwDone_" + CLASS_ID;
+    const doneMap = JSON.parse(localStorage.getItem(storeKey) || "{}");
+    doneMap[key] = !doneMap[key];
+    localStorage.setItem(storeKey, JSON.stringify(doneMap));
+    get(ref(db, HOMEWORK_PATH)).then(snap=> renderHomework(snap.exists()?snap.val():{}));
+};
+
+/* ============ FULLSCREEN / LANDSCAPE ============ */
+window.toggleFullscreen = async function(){
+    const wrap = document.getElementById("videoWrap");
+    if(!document.fullscreenElement){
+        try{
+            await wrap.requestFullscreen();
+            if(screen.orientation && screen.orientation.lock){ screen.orientation.lock("landscape").catch(()=>{}); }
+        }catch(e){}
+    }else{
+        try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+        document.exitFullscreen();
+    }
+};
+document.addEventListener("fullscreenchange", ()=>{
+    const btn = document.getElementById("fsBtn");
+    btn.innerText = document.fullscreenElement ? "⤢" : "⛶";
+    const chatToggle = document.getElementById("fsChatToggleBtn");
+    if(document.fullscreenElement){
+        chatToggle.classList.remove("hidden");
+    }else{
+        chatToggle.classList.add("hidden");
+        document.getElementById("fsChatOverlay").classList.add("hidden");
+    }
+});
+
+/* ============ SHARE ============ */
+window.shareClassLink = function(){
+    const url = location.href;
+    if(navigator.share){
+        navigator.share({ title: "GAIVEX Live Class", url }).catch(()=>{});
+    }else{
+        navigator.clipboard.writeText(url).then(()=>{ alert("✅ Link copied!"); }).catch(()=>{ prompt("Copy this link:", url); });
+    }
+};
+
+/* ============ UTIL ============ */
+function escapeHtml(value){
+    if(value === null || value === undefined) value = "";
+    return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+function escapeAttr(value){ return escapeHtml(value); }
 </script>
 </body>
 </html>
