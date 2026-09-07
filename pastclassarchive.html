@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GAIVEX - Class Archiver Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#080d1a;
+    --bg-glow-1: rgba(56,189,248,.14);
+    --bg-glow-2: rgba(244,63,94,.10);
+    --glass: rgba(22,32,52,.55);
+    --glass-border: rgba(148,163,184,.14);
+    --ink:#f1f5f9;
+    --ink-dim:#94a3b8;
+    --ink-faint:#64748b;
+    --sky:#38bdf8;
+    --sky-deep:#0284c7;
+    --rose:#f43f5e;
+    --ok:#10b981;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html,body{ height:100%; font-family:'Hind Siliguri', sans-serif; background:var(--bg); color:var(--ink); }
+.latin{ font-family:'Outfit',sans-serif; }
+
+body{
+    background:
+        radial-gradient(ellipse 900px 600px at 12% -5%, var(--bg-glow-1), transparent 55%),
+        radial-gradient(ellipse 800px 700px at 95% 15%, var(--bg-glow-2), transparent 50%),
+        var(--bg);
+    min-height:100vh;
+    padding-bottom: 50px;
+}
+
+button{ font-family:inherit; cursor:pointer; }
+input,select,textarea{ font-family:inherit; }
+
+.glass{
+    background:var(--glass);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid var(--glass-border);
+    box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+
+/* TOPBAR */
+.topbar{
+    position:sticky; top:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; border-bottom:1px solid var(--glass-border);
+    background:rgba(8,13,26,.75); backdrop-filter:blur(18px);
+}
+.brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); }
+.brand-mark span{ color:var(--rose); }
+
+/* CONTAINER & FORMS */
+.main-container{ max-width:850px; margin:30px auto; padding:0 18px; }
+
+.card{ border-radius:var(--radius-lg); padding:24px; margin-bottom:20px; }
+.card-title{ font-size:18px; font-weight:700; color:var(--sky); margin-bottom:18px; border-bottom:1px solid var(--glass-border); padding-bottom:10px; }
+
+.form-group{ margin-bottom:14px; }
+.form-label{ font-size:13px; font-weight:600; color:var(--ink-dim); margin-bottom:6px; display:block; }
+.form-control{
+    width:100%; padding:11px 14px; border-radius:var(--radius-sm); border:1px solid var(--glass-border);
+    background:rgba(15,23,42,.6); color:#fff; font-size:13.5px; outline:none; transition:.2s;
+}
+.form-control:focus{ border-color:var(--sky); box-shadow:0 0 10px rgba(56,189,248,.2); }
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.btn-primary{
+    padding:12px 20px; border-radius:var(--radius-sm); border:none;
+    background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e;
+    font-weight:700; font-size:14px; transition:.15s; display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%;
+}
+.btn-primary:hover{ opacity:.9; }
+
+.btn-secondary{
+    padding:8px 14px; border-radius:var(--radius-sm); border:1px solid var(--glass-border);
+    background:rgba(255,255,255,.05); color:var(--ink); font-size:12px; font-weight:600;
+}
+.btn-secondary:hover{ background:rgba(255,255,255,.1); }
+
+.res-item-row{ display:grid; grid-template-columns:140px 1fr 40px; gap:8px; margin-bottom:8px; align-items:center; }
+.btn-del{ background:rgba(244,63,94,.15); color:var(--rose); border:1px solid rgba(244,63,94,.3); border-radius:6px; height:38px; cursor:pointer; font-weight:700; }
+
+@media(max-width:600px){
+    .form-row{ grid-template-columns:1fr; }
+    .res-item-row{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="brand-mark">GAIVEX<span>.</span> ARCHIVE MANAGER</div>
+</div>
+
+<div class="main-container">
+    <div class="card glass">
+        <h2 class="card-title">📤 আর্কাইভ ক্লাস ও লেকচার শিট আপলোড</h2>
+
+        <!-- STEP 1: CATEGORY SELECTION -->
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">বিষয় (Subject)</label>
+                <select id="selSubject" class="form-control" onchange="onSubjectChange()">
+                    <option value="">বিষয় সিলেক্ট করুন...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">পত্র (Paper)</label>
+                <select id="selPaper" class="form-control" onchange="onPaperChange()">
+                    <option value="">আগে বিষয় সিলেক্ট করুন</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">অধ্যায় (Chapter)</label>
+            <select id="selChapter" class="form-control">
+                <option value="">আগে পত্র সিলেক্ট করুন</option>
+            </select>
+        </div>
+
+        <hr style="border-color:var(--glass-border); margin:18px 0;">
+
+        <!-- STEP 2: CLASS DETAILS -->
+        <div class="form-group">
+            <label class="form-label">ক্লাসের শিরোনাম (Class Title)</label>
+            <input id="classTitle" class="form-control" placeholder="যেমন: ভেক্টর - লেকচার ০১ (মৌলিক ধারণা ও যোগ)">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">শিক্ষকের নাম (Teacher Name)</label>
+                <input id="teacherName" class="form-control" placeholder="যেমন: Tanvir Sir" value="Tanvir Sir">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">ক্লাসের তারিখ (Date)</label>
+                <input id="classDate" type="date" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">ভিডিও লিংক (YouTube / Drive / Custom)</label>
+            <input id="videoUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=... বা Google Drive/Meet লিংক">
+        </div>
+
+        <hr style="border-color:var(--glass-border); margin:18px 0;">
+
+        <!-- STEP 3: RESOURCES (PDF & SHEETS) -->
+        <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <label class="form-label" style="margin:0;">📁 লেকচার শিট / নোটস / প্র্যাকটিস লিঙ্ক</label>
+                <button class="btn-secondary" onclick="addResourceRow()">+ রিসোর্স যোগ করুন</button>
+            </div>
+            
+            <div id="resourceContainer"></div>
+        </div>
+
+        <button class="btn-primary" style="margin-top:10px;" onclick="uploadClassArchive()">
+            💾 ডাটাবেসে সেভ ও আর্কাইভ করুন
+        </button>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+    authDomain: "gaivexexam.firebaseapp.com",
+    databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+    projectId: "gaivexexam",
+    storageBucket: "gaivexexam.firebasestorage.app",
+    messagingSenderId: "956204530190",
+    appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// DATA STRUCTURE EXACTLY MATCHING PASTCLASS.HTML
+const SUBJECT_DATA = {
+    physics: {
+        title: "পদার্থবিজ্ঞান (Physics)",
+        papers: {
+            paper1: { title: "১ম পত্র", chapters: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"] },
+            paper2: { title: "২য় পত্র", chapters: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"] }
+        }
+    },
+    chemistry: {
+        title: "রসায়ন (Chemistry)",
+        papers: {
+            paper1: { title: "১ম পত্র", chapters: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"] },
+            paper2: { title: "২য় পত্র", chapters: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"] }
+        }
+    },
+    biology: {
+        title: "জীববিজ্ঞান (Biology)",
+        papers: {
+            paper1: { title: "১ম পত্র (উদ্ভিদবিজ্ঞান)", chapters: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"] },
+            paper2: { title: "২য় পত্র (প্রাণীবিজ্ঞান)", chapters: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"] }
+        }
+    },
+    math: {
+        title: "উচ্চতর গণিত (Higher Math)",
+        papers: {
+            paper1: { title: "১ম পত্র", chapters: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"] },
+            paper2: { title: "২য় পত্র", chapters: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"] }
+        }
+    },
+    english: {
+        title: "ইংরেজি (English)",
+        papers: {
+            paper1: { title: "English 1st Paper", chapters: ["Unseen Passage & Grammar", "Flowchart & Summary", "Theme Writing", "Cloze Test with Clues", "Rearrange"] },
+            paper2: { title: "English 2nd Paper", chapters: ["Preposition", "Words & Phrases", "Completing Sentences", "Right Forms of Verbs", "Narrative Style", "Modifier", "Sentence Connectors", "Punctuation"] }
+        }
+    },
+    gk: {
+        title: "সাধারণ জ্ঞান (General Knowledge)",
+        papers: {
+            paper1: { title: "বাংলাদেশ বিষয়াবলী", chapters: ["প্রাচীনকাল হতে মুক্তিযুদ্ধ", "বাংলাদেশের সংবিধান", "ভৌগোলিক অবস্থান ও মানচিত্র", "অর্থনীতি ও মেগা প্রজেক্ট", "সংস্কৃতি ও সাহিত্য"] },
+            paper2: { title: "আন্তর্জাতিক বিষয়াবলী", chapters: ["বৈশ্বিক ইতিহাস ও যুদ্ধ", "আন্তর্জাতিক সংস্থা ও জোট", "সাম্প্রতিক বিশ্ব ও ভৌগোলিক তথ্য", "বিশ্ব অর্থনীতি ও বাণিজ্য"] }
+        }
+    }
+};
+
+// INITIALIZE DROPDOWNS
+window.onload = function(){
+    const selSub = document.getElementById("selSubject");
+    Object.keys(SUBJECT_DATA).forEach(key => {
+        selSub.innerHTML += `<option value="${key}">${SUBJECT_DATA[key].title}</option>`;
+    });
+    document.getElementById("classDate").valueAsDate = new Date();
+    addResourceRow(); // default 1 resource field
+};
+
+window.onSubjectChange = function(){
+    const subKey = document.getElementById("selSubject").value;
+    const selPaper = document.getElementById("selPaper");
+    const selChapter = document.getElementById("selChapter");
+
+    selPaper.innerHTML = '<option value="">পত্র সিলেক্ট করুন...</option>';
+    selChapter.innerHTML = '<option value="">আগে পত্র সিলেক্ট করুন</option>';
+
+    if(subKey && SUBJECT_DATA[subKey]){
+        const papers = SUBJECT_DATA[subKey].papers;
+        Object.keys(papers).forEach(pKey => {
+            selPaper.innerHTML += `<option value="${pKey}">${papers[pKey].title}</option>`;
+        });
+    }
+};
+
+window.onPaperChange = function(){
+    const subKey = document.getElementById("selSubject").value;
+    const paperKey = document.getElementById("selPaper").value;
+    const selChapter = document.getElementById("selChapter");
+
+    selChapter.innerHTML = '<option value="">অধ্যায় সিলেক্ট করুন...</option>';
+
+    if(subKey && paperKey && SUBJECT_DATA[subKey].papers[paperKey]){
+        const chapters = SUBJECT_DATA[subKey].papers[paperKey].chapters;
+        chapters.forEach(chap => {
+            selChapter.innerHTML += `<option value="${chap}">${chap}</option>`;
+        });
+    }
+};
+
+// RESOURCE ROW HANDLERS
+window.addResourceRow = function(){
+    const container = document.getElementById("resourceContainer");
+    const div = document.createElement("div");
+    div.className = "res-item-row";
+    div.innerHTML = `
+        <select class="form-control res-type">
+            <option value="Lecture Sheet">Lecture Sheet</option>
+            <option value="Practice Sheet">Practice Sheet</option>
+            <option value="Class Note">Class Note</option>
+            <option value="Exam Link">Exam Link</option>
+        </select>
+        <input class="form-control res-url" placeholder="Google Drive/PDF link (https://...)">
+        <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(div);
+};
+
+// FIREBASE UPLOAD
+window.uploadClassArchive = async function(){
+    const sub = document.getElementById("selSubject").value;
+    const paper = document.getElementById("selPaper").value;
+    const chapter = document.getElementById("selChapter").value;
+    const title = document.getElementById("classTitle").value.trim();
+    const teacher = document.getElementById("teacherName").value.trim();
+    const date = document.getElementById("classDate").value;
+    const videoUrl = document.getElementById("videoUrl").value.trim();
+
+    if(!sub || !paper || !chapter || !title || !videoUrl){
+        alert("⚠️ বিষয, পত্র, অধ্যায়, ক্লাসের শিরোনাম এবং ভিডিও লিংক দেওয়া বাধ্যতামূলক!");
+        return;
+    }
+
+    // Collect resources
+    const resources = [];
+    document.querySelectorAll(".res-item-row").forEach(row => {
+        const type = row.querySelector(".res-type").value;
+        const url = row.querySelector(".res-url").value.trim();
+        if(url){
+            resources.push({ title: type, type: type, url: url });
+        }
+    });
+
+    // Sanitized Firebase Key
+    const sanitizedChapter = chapter.replace(/[.#$\[\]]/g, "_");
+    const targetPath = `archives/${sub}/${paper}/${sanitizedChapter}`;
+
+    const payload = {
+        title: title,
+        teacher: teacher,
+        date: date,
+        videoUrl: videoUrl,
+        resources: resources,
+        timestamp: Date.now()
+    };
+
+    try {
+        await push(ref(db, targetPath), payload);
+        alert("✅ ক্লাসটি সফলভাবে আর্কাইভ করা হয়েছে!");
+        document.getElementById("classTitle").value = "";
+        document.getElementById("videoUrl").value = "";
+        document.getElementById("resourceContainer").innerHTML = "";
+        addResourceRow();
+    } catch(err) {
+        console.error(err);
+        alert("❌ আপলোড করতে সমস্যা হয়েছে! ইন্টারনেট ও কনফিগারেশন চেক করুন।");
+    }
+};
+</script>
+
+</body>
+</html>
