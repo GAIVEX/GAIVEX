@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>GAIVEX Teacher Console</title>
+<title>GAIVEX Teacher Dashboard</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -29,9 +29,12 @@
     --radius-md:14px;
     --radius-sm:9px;
 }
+
 *{ box-sizing:border-box; margin:0; padding:0; }
+
 html,body{ height:100%; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); overflow-x:hidden; }
 .latin{ font-family:'Outfit',sans-serif; }
+
 body{
     background:
         radial-gradient(ellipse 900px 600px at 12% -5%, var(--bg-glow-1), transparent 55%),
@@ -40,9 +43,11 @@ body{
         var(--bg);
     min-height:100vh;
 }
+
 button{ font-family:inherit; cursor:pointer; }
 input,textarea,select{ font-family:inherit; }
 .hidden{ display:none!important; }
+
 ::-webkit-scrollbar{ width:6px; height:6px; }
 ::-webkit-scrollbar-thumb{ background:rgba(148,163,184,.25); border-radius:10px; }
 
@@ -60,182 +65,128 @@ input,textarea,select{ font-family:inherit; }
     display:flex; align-items:center; justify-content:space-between;
     padding:14px 20px; border-bottom:1px solid var(--glass-border);
     background:rgba(8,13,26,.65); backdrop-filter:blur(18px);
-    flex-wrap:wrap; gap:10px;
 }
 .brand{ display:flex; align-items:center; gap:10px; }
 .brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; letter-spacing:.2px; color:var(--sky); }
 .brand-mark span{ color:var(--rose); }
-.brand-tag{ font-size:11px; color:var(--ink-faint); border-left:1px solid var(--glass-border); padding-left:10px; }
-.topbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-.class-id-pill{ display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:99px; background:rgba(15,23,42,.55); border:1px solid var(--glass-border); font-size:12px; color:var(--ink-dim); }
-.class-id-pill b{ color:var(--sky); font-family:'Outfit',sans-serif; }
-.icon-btn{
-    width:38px; height:38px; border-radius:11px; border:1px solid var(--glass-border);
-    background:var(--glass-soft); color:var(--ink-dim); display:flex; align-items:center; justify-content:center;
-    font-size:16px; transition:.15s;
+.brand-tag{ font-size:11px; color:var(--rose); border-left:1px solid var(--glass-border); padding-left:10px; font-weight:700; letter-spacing:1px; }
+
+.topbar-right{ display:flex; align-items:center; gap:10px; }
+.btn-primary{
+    padding:8px 16px; border-radius:var(--radius-sm); border:none;
+    background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e;
+    font-weight:700; font-size:13px; transition:.15s; display:inline-flex; align-items:center; gap:6px;
 }
-.icon-btn:hover{ color:var(--ink); border-color:rgba(56,189,248,.4); }
+.btn-primary:hover{ opacity:.9; }
+.btn-danger{
+    padding:8px 16px; border-radius:var(--radius-sm); border:none;
+    background:linear-gradient(135deg,#f43f5e,#be123c); color:#fff;
+    font-weight:700; font-size:13px; transition:.15s; display:inline-flex; align-items:center; gap:6px;
+}
+.btn-danger:hover{ opacity:.9; }
 
 /* ============ TOASTS ============ */
 .toast-stack{ position:fixed; top:70px; right:14px; z-index:700; display:flex; flex-direction:column; gap:8px; max-width:300px; }
 .toast{ padding:11px 14px; border-radius:12px; font-size:12.5px; line-height:1.5; animation:toast-in .25s ease; display:flex; gap:8px; align-items:flex-start; }
 @keyframes toast-in{ from{ opacity:0; transform:translateX(20px);} to{ opacity:1; transform:translateX(0);} }
+.toast-icon{ font-size:15px; }
 
 /* ============ LAYOUT ============ */
-.stage{ max-width:1400px; margin:0 auto; padding:18px; display:grid; grid-template-columns:380px 1fr; gap:16px; align-items:start; }
+.stage{ max-width:1400px; margin:0 auto; padding:18px; display:grid; grid-template-columns:1fr 380px; gap:16px; align-items:start; }
 
-/* ============ CONTROL COLUMN ============ */
-.panel{ border-radius:var(--radius-lg); padding:18px; margin-bottom:16px; }
-.panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-.panel-head h3{ font-size:14px; font-weight:700; display:flex; align-items:center; gap:7px; }
-.panel-sub{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; }
+/* ============ CARDS & FORMS ============ */
+.card{ border-radius:var(--radius-lg); padding:20px; margin-bottom:16px; }
+.card-title{ font-size:16px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; color:var(--sky); }
 
-.field{ margin-bottom:12px; }
-.field label{ display:block; font-size:11.5px; color:var(--ink-dim); margin-bottom:6px; font-weight:600; }
-.field input, .field select, .field textarea{
-    width:100%; padding:10px 12px; border-radius:11px; border:1px solid var(--glass-border);
+.form-group{ margin-bottom:12px; }
+.form-label{ font-size:12px; font-weight:600; color:var(--ink-dim); margin-bottom:5px; display:block; }
+.form-control{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--glass-border);
     background:rgba(15,23,42,.6); color:#fff; font-size:13px; outline:none;
 }
-.field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--sky); }
-.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.field textarea{ resize:vertical; min-height:60px; }
+.form-control:focus{ border-color:var(--sky); }
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 
-.btn{ padding:11px 16px; border-radius:99px; border:none; font-weight:700; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:6px; width:100%; transition:.15s; }
-.btn-primary{ background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; }
-.btn-primary:hover{ filter:brightness(1.08); }
-.btn-danger{ background:linear-gradient(135deg,#f43f5e,#be123c); color:#fff; }
-.btn-ghost{ background:rgba(15,23,42,.5); border:1px solid var(--glass-border); color:var(--ink); }
-.btn-sm{ padding:7px 12px; font-size:11.5px; width:auto; border-radius:99px; }
-.btn-row{ display:flex; gap:8px; }
-.btn-row .btn{ flex:1; }
+.live-indicator{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:99px; font-size:11px; font-weight:700; }
+.live-indicator.active{ background:rgba(239,68,68,.16); color:#fecaca; border:1px solid rgba(239,68,68,.4); }
+.live-indicator.off{ background:rgba(148,163,184,.16); color:var(--ink-dim); border:1px solid var(--glass-border); }
 
-.status-row{ display:flex; align-items:center; gap:8px; margin-bottom:14px; padding:10px 12px; border-radius:12px; background:rgba(15,23,42,.45); border:1px solid var(--glass-border); }
-.status-dot{ width:9px; height:9px; border-radius:50%; background:var(--ink-faint); flex-shrink:0; }
-.status-dot.live{ background:var(--live); box-shadow:0 0 0 0 rgba(239,68,68,.55); animation:pulse-dot 1.6s infinite; }
-@keyframes pulse-dot{ 0%{ box-shadow:0 0 0 0 rgba(239,68,68,.55);} 70%{ box-shadow:0 0 0 8px rgba(239,68,68,0);} 100%{ box-shadow:0 0 0 0 rgba(239,68,68,0);} }
-.status-text{ font-size:12.5px; color:var(--ink-dim); flex:1; }
-.status-text b{ color:var(--ink); }
-.stat-mini{ display:flex; gap:14px; font-size:12px; color:var(--ink-dim); flex-wrap:wrap; }
-.stat-mini b{ color:var(--sky); font-family:'Outfit',sans-serif; }
+.stats-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:16px; }
+.stat-box{ padding:12px; border-radius:var(--radius-md); background:rgba(15,23,42,.4); border:1px solid var(--glass-border); text-align:center; }
+.stat-val{ font-size:18px; font-weight:800; color:var(--sky); }
+.stat-lbl{ font-size:11px; color:var(--ink-faint); margin-top:2px; }
 
-/* ============ TABS (right column) ============ */
-.tab-panel{ border-radius:var(--radius-lg); display:flex; flex-direction:column; min-height:70vh; }
-.tab-row{ display:flex; gap:2px; overflow-x:auto; border-bottom:1px solid var(--glass-border); padding:0 8px; scrollbar-width:none; }
+/* ============ PREVIEW PLAYER ============ */
+.video-preview-wrap{ position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:var(--radius-md); overflow:hidden; margin-bottom:14px; }
+.video-preview-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.preview-placeholder{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; color:var(--ink-faint); font-size:13px; }
+
+/* ============ TAB CONTROL PANEL ============ */
+.panel-wrapper{ border-radius:var(--radius-lg); display:flex; flex-direction:column; height:calc(100vh - 110px); position:sticky; top:80px; overflow:hidden; }
+.panel-head{ padding:12px 12px 0; border-bottom:1px solid var(--glass-border); }
+.tab-row{ display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
 .tab-row::-webkit-scrollbar{ display:none; }
-.tab-btn{ flex-shrink:0; background:none; border:none; padding:14px 14px; font-size:12.5px; font-weight:600; color:var(--ink-faint); border-bottom:2px solid transparent; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+.tab-btn{ flex-shrink:0; background:none; border:none; padding:9px 11px; font-size:12px; font-weight:600; color:var(--ink-faint); border-bottom:2px solid transparent; display:flex; align-items:center; gap:5px; white-space:nowrap; }
 .tab-btn.active{ color:var(--sky); border-bottom-color:var(--sky); }
-.tab-count{ background:rgba(244,63,94,.85); color:#fff; font-size:9px; font-weight:700; min-width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; }
-.tab-content{ flex:1; display:flex; flex-direction:column; overflow:hidden; padding:16px; }
-.tab-content.hidden{ display:none; }
 
-/* Chat */
-.chat-body{ flex:1; overflow-y:auto; padding:4px 2px 12px; display:flex; flex-direction:column; gap:10px; max-height:56vh; }
-.msg-row{ display:flex; flex-direction:column; max-width:82%; }
-.msg-row.me{ align-self:flex-end; align-items:flex-end; }
-.msg-row.other{ align-self:flex-start; }
-.msg-sender{ font-size:10.5px; color:var(--ink-faint); margin-bottom:3px; padding:0 4px; display:flex; align-items:center; gap:6px; }
-.msg-bubble{ padding:9px 13px; border-radius:16px; font-size:13.5px; line-height:1.5; word-break:break-word; white-space:pre-wrap; }
-.msg-row.other .msg-bubble{ background:rgba(51,65,85,.6); border:1px solid var(--glass-border); border-top-left-radius:5px; }
-.msg-row.me .msg-bubble{ background:linear-gradient(135deg,#0284c7,#0369a1); border-top-right-radius:5px; color:#fff; }
-.msg-ts{ font-size:9.5px; color:var(--ink-faint); margin-top:2px; padding:0 4px; }
-.mute-inline{ font-size:10px; padding:1px 7px; border-radius:6px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-faint); }
-.mute-inline:hover{ color:var(--rose); border-color:rgba(244,63,94,.4); }
-.chat-empty{ margin:auto; text-align:center; color:var(--ink-faint); font-size:12.5px; padding:30px; }
-.chat-foot{ display:flex; gap:8px; align-items:flex-end; padding-top:10px; border-top:1px solid var(--glass-border); }
-.chat-input{ flex:1; resize:none; max-height:90px; min-height:42px; background:rgba(15,23,42,.6); border:1px solid var(--glass-border); border-radius:12px; padding:10px 12px; color:#fff; font-size:13.5px; outline:none; }
-.send-btn{ width:42px; height:42px; flex-shrink:0; border:none; border-radius:12px; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-size:16px; font-weight:700; }
+.panel-body{ flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:12px; }
+.panel-pane{ display:flex; flex-direction:column; gap:10px; flex:1; }
+.panel-pane.hidden{ display:none!important; }
 
-/* Q&A */
-.qna-filter-row{ display:flex; gap:6px; margin-bottom:12px; }
-.qna-mini-btn{ font-size:11px; padding:6px 12px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); flex:1; text-align:center; }
-.qna-mini-btn.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
-.qna-body{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:9px; max-height:60vh; }
-.qna-card{ padding:12px 13px; border-radius:12px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); }
-.qna-card.answered{ border-color:rgba(16,185,129,.4); background:rgba(16,185,129,.06); }
-.qna-card.pinned{ border-color:rgba(245,158,11,.5); }
-.qna-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:5px; }
-.qna-name{ font-size:11px; color:var(--ink-faint); }
-.qna-text{ font-size:13.5px; line-height:1.5; margin-bottom:6px; }
-.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:9px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
-.qna-answer b{ color:var(--sky); }
-.qna-actions{ display:flex; gap:6px; margin-top:9px; flex-wrap:wrap; }
-.qna-answer-form{ display:flex; gap:6px; margin-top:9px; }
-.qna-answer-form input{ flex:1; padding:8px 10px; border-radius:9px; border:1px solid var(--glass-border); background:rgba(8,13,26,.5); color:#fff; font-size:12.5px; outline:none; }
+/* Chat List in Teacher Side */
+.chat-list{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; max-height: 420px; }
+.chat-msg{ padding:8px 10px; border-radius:10px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); font-size:12.5px; }
+.chat-msg-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; }
+.chat-author{ font-weight:700; color:var(--sky); font-size:11px; }
+.chat-author.teacher{ color:var(--rose); }
+.chat-actions{ display:flex; gap:6px; }
+.action-btn-xs{ font-size:10px; padding:2px 6px; border-radius:4px; border:1px solid var(--glass-border); background:rgba(255,255,255,.05); color:var(--ink-dim); }
+.action-btn-xs:hover{ background:var(--rose); color:#fff; border-color:transparent; }
 
-/* Poll / Quiz builder */
-.pq-builder{ display:flex; flex-direction:column; gap:10px; }
-.opt-row{ display:flex; gap:8px; align-items:center; }
-.opt-row input[type=text]{ flex:1; }
-.opt-row input[type=radio]{ width:18px; height:18px; accent-color:var(--sky); flex-shrink:0; }
-.opt-remove{ background:none; border:none; color:var(--ink-faint); font-size:16px; flex-shrink:0; width:24px; }
-.opt-remove:hover{ color:var(--rose); }
-.pq-live-card{ padding:14px; border-radius:14px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); margin-top:14px; }
-.pq-live-q{ font-size:14px; font-weight:700; margin-bottom:10px; }
-.pq-live-opt{ display:flex; align-items:center; justify-content:space-between; padding:9px 12px; border-radius:10px; background:rgba(30,41,59,.6); border:1px solid var(--glass-border); margin-bottom:7px; font-size:12.5px; position:relative; overflow:hidden; }
-.pq-live-opt.correct{ border-color:rgba(16,185,129,.55); }
-.pq-live-fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(56,189,248,.16); z-index:0; }
-.pq-live-opt.correct .pq-live-fill{ background:rgba(16,185,129,.22); }
-.pq-live-label{ position:relative; z-index:1; }
-.pq-live-pct{ position:relative; z-index:1; font-weight:700; color:var(--sky); font-size:11.5px; }
-.pq-live-meta{ font-size:11.5px; color:var(--ink-dim); text-align:center; margin-top:6px; }
+/* Q&A Teacher Items */
+.qna-item{ padding:10px; border-radius:10px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); font-size:12.5px; }
+.qna-item.pinned{ border-color:var(--gold); }
+.qna-input-reply{ display:flex; gap:6px; margin-top:8px; }
 
-/* People */
-.people-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.people-block h4{ font-size:12.5px; margin-bottom:10px; color:var(--ink-dim); display:flex; align-items:center; gap:6px; }
-.people-row{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px; background:rgba(15,23,42,.4); margin-bottom:6px; }
-.people-avatar-sm{ width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#38bdf8,#0284c7); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#04121e; flex-shrink:0; }
-.people-name{ font-size:12.5px; flex:1; }
-.people-rank{ font-size:11px; color:var(--gold); font-weight:700; width:18px; }
-.people-score{ font-size:12px; color:var(--sky); font-weight:700; }
-.raise-row{ display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:10px; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); margin-bottom:6px; }
-.section-empty{ color:var(--ink-faint); font-size:12.5px; padding:8px 0; }
-.list-scroll{ max-height:32vh; overflow-y:auto; }
+/* Poll & Quiz Live Results */
+.result-bar-bg{ height:8px; border-radius:4px; background:rgba(255,255,255,.1); overflow:hidden; margin-top:4px; }
+.result-bar-fill{ height:100%; background:var(--sky); transition:width .3s; }
 
-/* Resources / Homework */
-.resource-card, .homework-card{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:11px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); margin-bottom:8px; }
-.homework-card{ align-items:flex-start; flex-direction:column; gap:6px; }
-.resource-icon{ font-size:18px; }
-.resource-info{ flex:1; min-width:0; }
-.resource-title{ font-size:13px; font-weight:600; }
-.resource-type{ font-size:10.5px; color:var(--ink-faint); }
-.hw-title-row{ display:flex; justify-content:space-between; width:100%; align-items:center; }
-.homework-title{ font-size:13px; font-weight:600; }
-.homework-deadline{ font-size:11px; color:var(--rose); }
-.homework-desc{ font-size:12px; color:var(--ink-dim); line-height:1.5; }
-.del-btn{ background:none; border:none; color:var(--ink-faint); font-size:14px; padding:4px; }
-.del-btn:hover{ color:var(--rose); }
-
-/* ============ GATE ============ */
-.gate-overlay{ position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,7,15,.7); backdrop-filter:blur(8px); }
-.gate-card{ width:100%; max-width:420px; border-radius:var(--radius-lg); padding:26px; }
-.gate-logo{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
-.gate-logo span{ color:var(--rose); }
-.gate-title{ text-align:center; margin-top:6px; font-size:13px; color:var(--ink-dim); margin-bottom:20px; }
-.gate-input{ width:100%; padding:12px 14px; border-radius:11px; border:1px solid var(--glass-border); background:rgba(15,23,42,.6); color:#fff; outline:none; margin-bottom:12px; font-size:14px; }
-.gate-input:focus{ border-color:var(--sky); }
-.gate-btn{ width:100%; padding:12px; border:none; border-radius:99px; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; font-size:14.5px; margin-bottom:10px; }
-.gate-or{ text-align:center; font-size:11px; color:var(--ink-faint); margin:14px 0; }
+/* Modal overlays */
+.gate-overlay{ position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,7,15,.8); backdrop-filter:blur(8px); }
+.gate-card{ width:100%; max-width:400px; border-radius:var(--radius-lg); padding:24px; }
 
 @media(max-width:980px){
-    .stage{ grid-template-columns:1fr; padding:12px; }
-    .people-cols{ grid-template-columns:1fr; }
+    .stage{ grid-template-columns:1fr; }
+    .panel-wrapper{ height:auto; position:static; }
 }
-@media (prefers-reduced-motion: reduce){ .status-dot.live{ animation:none!important; } }
 </style>
 </head>
 <body>
 
 <div class="toast-stack" id="toastStack"></div>
 
-<!-- GATE: teacher identifies / picks class id -->
-<div id="gateOverlay" class="gate-overlay">
+<!-- CLASS SELECTOR / SETUP OVERLAY -->
+<div id="classSelectOverlay" class="gate-overlay">
     <div class="gate-card glass">
-        <div class="gate-logo">GAIVEX<span>.</span></div>
-        <div class="gate-title">Teacher Console — sign in to manage your class</div>
-        <input id="gateNameInput" class="gate-input" placeholder="Your name" maxlength="40">
-        <input id="gateClassInput" class="gate-input" placeholder="Class ID (leave blank to create a new class)" maxlength="40">
-        <button class="gate-btn" onclick="enterConsole()">🎬 Open Console</button>
-        <div class="gate-or">Use the same Class ID next time to keep managing the same class.</div>
+        <div style="font-family:'Outfit',sans-serif; font-size:22px; font-weight:800; color:var(--sky); text-align:center;">
+            GAIVEX<span>.</span> TEACHER
+        </div>
+        <div style="font-size:12.5px; color:var(--ink-dim); text-align:center; margin-top:4px; margin-bottom:20px;">
+            Select or Create a Live Class Room
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Teacher Name</label>
+            <input id="setupTeacherName" class="form-control" placeholder="e.g. Tanvir Sir" value="Tanvir Sir">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Class Room ID</label>
+            <input id="setupClassId" class="form-control" placeholder="e.g. physics-ch1-live">
+        </div>
+        <button class="btn-primary" style="width:100%; justify-content:center; padding:12px; margin-top:10px;" onclick="initTeacherSession()">
+            🚀 Enter Control Room
+        </button>
     </div>
 </div>
 
@@ -243,211 +194,213 @@ input,textarea,select{ font-family:inherit; }
 <div class="topbar">
     <div class="brand">
         <div class="brand-mark">GAIVEX<span>.</span></div>
-        <div class="brand-tag latin">TEACHER CONSOLE</div>
+        <div class="brand-tag latin">TEACHER PANEL</div>
     </div>
     <div class="topbar-right">
-        <div class="class-id-pill">Class ID: <b id="classIdDisplay">—</b></div>
-        <button class="icon-btn" title="Copy student link" onclick="copyStudentLink()">🔗</button>
-        <button class="icon-btn" title="Switch class" onclick="switchClass()">↺</button>
+        <div id="topStatusPill" class="live-indicator off"><span class="conn-dot"></span> Offline</div>
+        <button class="btn-primary" onclick="copyStudentLink()">🔗 Copy Student Link</button>
     </div>
 </div>
 
 <div class="stage">
-    <!-- LEFT: CONTROL COLUMN -->
+    <!-- LEFT COLUMN: CONTROL & PREVIEW -->
     <div>
-        <div class="panel glass">
-            <div class="status-row">
-                <span class="status-dot" id="statusDot"></span>
-                <span class="status-text" id="statusText">Class is <b>offline</b></span>
+        <!-- LIVE SESSION CONTROL -->
+        <div class="card glass">
+            <div class="card-title">
+                <span>📹 Live Class Control</span>
+                <span id="sessionStatusBadge" class="live-indicator off">OFFLINE</span>
             </div>
-            <div class="stat-mini">
-                <span>👁️ <b id="statViewers">0</b> watching</span>
-                <span>⏱️ <b id="statDuration">00:00</b></span>
-                <span>🙋 <b id="statHands">0</b> hands</span>
-            </div>
-        </div>
 
-        <div class="panel glass">
-            <div class="panel-head">
-                <div>
-                    <h3>🎥 Session Setup</h3>
-                    <div class="panel-sub">Configure and start the live broadcast</div>
+            <div class="video-preview-wrap" id="previewWrap">
+                <div class="preview-placeholder" id="previewPlaceholder">
+                    <span style="font-size:32px;">📡</span>
+                    <span>No Live Stream Broadcasted Yet</span>
                 </div>
+                <iframe id="previewIframe" class="hidden" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
-            <div class="field">
-                <label>Class Title</label>
-                <input id="fTitle" type="text" placeholder="e.g. Electromagnetic Induction — Live Q&A">
+
+            <div class="form-group">
+                <label class="form-label">YouTube Video ID or Live Link</label>
+                <input id="ytInput" class="form-control" placeholder="Paste YouTube link or ID (e.g. dQw4w9WgXcQ)">
             </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Subject</label>
-                    <select id="fSubject">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Class Title</label>
+                    <input id="classTitleInput" class="form-control" placeholder="e.g. Physics Chapter 3: Dynamics">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select id="subjectSelect" class="form-control">
                         <option value="physics">Physics</option>
                         <option value="chemistry">Chemistry</option>
                         <option value="biology">Biology</option>
                         <option value="math">Higher Math</option>
                     </select>
                 </div>
-                <div class="field">
-                    <label>Paper</label>
-                    <select id="fPaper">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Paper</label>
+                    <select id="paperSelect" class="form-control">
                         <option value="paper1">Paper 1</option>
                         <option value="paper2">Paper 2</option>
                     </select>
                 </div>
-            </div>
-            <div class="field">
-                <label>Chapter</label>
-                <input id="fChapter" type="text" placeholder="e.g. Chapter 10">
-            </div>
-            <div class="field">
-                <label>YouTube Video ID (live stream)</label>
-                <input id="fYoutube" type="text" placeholder="e.g. dQw4w9WgXcQ">
-            </div>
-            <div class="field">
-                <label>Your Photo URL (optional)</label>
-                <input id="fPhoto" type="text" placeholder="https://...">
-            </div>
-            <div class="btn-row">
-                <button class="btn btn-primary" id="goLiveBtn" onclick="goLive()">🔴 Go Live</button>
-                <button class="btn btn-danger hidden" id="endLiveBtn" onclick="endLive()">⏹ End Class</button>
-            </div>
-            <div style="margin-top:8px;">
-                <button class="btn btn-ghost btn-sm" onclick="updateSessionMeta()">Save details without changing live status</button>
-            </div>
-        </div>
-
-        <div class="panel glass">
-            <div class="panel-head">
-                <div><h3>📢 Announcement</h3><div class="panel-sub">Pinned banner shown to all students</div></div>
-            </div>
-            <div class="field">
-                <textarea id="announceInput" placeholder="Type an announcement for your students..."></textarea>
-            </div>
-            <div class="btn-row">
-                <button class="btn btn-primary" onclick="postAnnouncement()">Post</button>
-                <button class="btn btn-ghost" onclick="clearAnnouncement()">Clear</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- RIGHT: TAB PANEL -->
-    <div class="tab-panel glass">
-        <div class="tab-row">
-            <button class="tab-btn active" data-tab="chat" onclick="openTab('chat')">💬 Chat</button>
-            <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ Questions<span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
-            <button class="tab-btn" data-tab="poll" onclick="openTab('poll')">📊 Poll</button>
-            <button class="tab-btn" data-tab="quiz" onclick="openTab('quiz')">🧠 Quiz</button>
-            <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 People</button>
-            <button class="tab-btn" data-tab="resources" onclick="openTab('resources')">📚 Resources</button>
-            <button class="tab-btn" data-tab="homework" onclick="openTab('homework')">📝 Homework</button>
-        </div>
-
-        <!-- CHAT -->
-        <div class="tab-content" id="tab-chat">
-            <div class="chat-body" id="chatBody"><div class="chat-empty">No messages yet.</div></div>
-            <div class="chat-foot">
-                <textarea id="chatInput" class="chat-input" placeholder="Message your class..." rows="1"></textarea>
-                <button class="send-btn" onclick="sendChatMessage()">➤</button>
-            </div>
-        </div>
-
-        <!-- Q&A -->
-        <div class="tab-content hidden" id="tab-qna">
-            <div class="qna-filter-row">
-                <button class="qna-mini-btn active" data-qf="all" onclick="setQnaFilter('all')">All</button>
-                <button class="qna-mini-btn" data-qf="unanswered" onclick="setQnaFilter('unanswered')">Unanswered</button>
-                <button class="qna-mini-btn" data-qf="answered" onclick="setQnaFilter('answered')">Answered</button>
-            </div>
-            <div class="qna-body" id="qnaBody"><div class="chat-empty">No questions yet.</div></div>
-        </div>
-
-        <!-- POLL -->
-        <div class="tab-content hidden" id="tab-poll">
-            <div id="pollBuilderWrap">
-                <div class="panel-sub" style="margin-bottom:10px;">Create a quick poll for your students</div>
-                <div class="pq-builder">
-                    <div class="field"><label>Question</label><input id="pollQuestion" type="text" placeholder="Ask something..."></div>
-                    <div id="pollOptions"></div>
-                    <button class="btn btn-ghost btn-sm" onclick="addPollOption()">+ Add option</button>
-                    <div class="field"><label>Duration (seconds, optional)</label><input id="pollDuration" type="number" min="5" placeholder="e.g. 30"></div>
-                    <button class="btn btn-primary" onclick="startPoll()">📊 Start Poll</button>
+                <div class="form-group">
+                    <label class="form-label">Chapter</label>
+                    <input id="chapterInput" class="form-control" placeholder="e.g. Chapter 3">
                 </div>
             </div>
-            <div id="pollLiveWrap" class="hidden"></div>
-        </div>
 
-        <!-- QUIZ -->
-        <div class="tab-content hidden" id="tab-quiz">
-            <div id="quizBuilderWrap">
-                <div class="panel-sub" style="margin-bottom:10px;">Create a scored quiz question (+10 pts for a correct answer)</div>
-                <div class="pq-builder">
-                    <div class="field"><label>Question</label><input id="quizQuestion" type="text" placeholder="Ask something..."></div>
-                    <div id="quizOptions"></div>
-                    <button class="btn btn-ghost btn-sm" onclick="addQuizOption()">+ Add option</button>
-                    <div class="panel-sub" style="margin-top:4px;">Select the radio button next to the correct answer</div>
-                    <div class="field"><label>Duration (seconds, optional)</label><input id="quizDuration" type="number" min="5" placeholder="e.g. 30"></div>
-                    <button class="btn btn-primary" onclick="startQuiz()">🧠 Start Quiz</button>
-                </div>
-            </div>
-            <div id="quizLiveWrap" class="hidden"></div>
-        </div>
-
-        <!-- PEOPLE -->
-        <div class="tab-content hidden" id="tab-people">
-            <div class="people-cols">
-                <div class="people-block">
-                    <h4>👁️ Online (<span id="onlineCount">0</span>)</h4>
-                    <div class="list-scroll" id="peopleOnlineList"><div class="section-empty">No one online.</div></div>
-                </div>
-                <div class="people-block">
-                    <h4>🙋 Raised Hands (<span id="handsCount">0</span>)</h4>
-                    <div class="list-scroll" id="peopleHandsList"><div class="section-empty">No hands raised.</div></div>
-                </div>
-                <div class="people-block">
-                    <h4>🏆 Leaderboard</h4>
-                    <div class="list-scroll" id="peopleBoardList"><div class="section-empty">No scores yet.</div></div>
-                </div>
-                <div class="people-block">
-                    <h4>📋 Attendance (all-time)</h4>
-                    <div class="list-scroll" id="peopleAttendanceList"><div class="section-empty">No attendance recorded.</div></div>
-                </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button id="btnStartLive" class="btn-primary" style="flex:1; justify-content:center; padding:12px;" onclick="startLive()">
+                    🔴 GO LIVE NOW
+                </button>
+                <button id="btnEndLive" class="btn-danger hidden" style="flex:1; justify-content:center; padding:12px;" onclick="endLive()">
+                    ⏹ END LIVE CLASS
+                </button>
             </div>
         </div>
 
-        <!-- RESOURCES -->
-        <div class="tab-content hidden" id="tab-resources">
-            <div class="field-row">
-                <div class="field"><label>Title</label><input id="resTitle" type="text" placeholder="e.g. Chapter 10 Notes"></div>
-                <div class="field"><label>Type</label>
-                    <select id="resType">
+        <!-- STATS OVERVIEW -->
+        <div class="stats-grid">
+            <div class="stat-box glass">
+                <div class="stat-val" id="statViewers">0</div>
+                <div class="stat-lbl">Live Viewers</div>
+            </div>
+            <div class="stat-box glass">
+                <div class="stat-val" id="statRaisedHands">0</div>
+                <div class="stat-lbl">Raised Hands</div>
+            </div>
+            <div class="stat-box glass">
+                <div class="stat-val" id="statQuestions">0</div>
+                <div class="stat-lbl">Questions</div>
+            </div>
+        </div>
+
+        <!-- ANNOUNCEMENT MANAGEMENT -->
+        <div class="card glass">
+            <div class="card-title">📢 Announcement Control</div>
+            <div class="form-group">
+                <textarea id="announceInput" class="form-control" rows="2" placeholder="Write a banner notice for all students..."></textarea>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-primary" onclick="postAnnouncement()">Publish Announcement</button>
+                <button class="btn-danger" style="background:rgba(244,63,94,.15); color:var(--rose);" onclick="clearAnnouncement()">Clear Notice</button>
+            </div>
+        </div>
+
+        <!-- RESOURCE & HOMEWORK UPLOAD -->
+        <div class="card glass">
+            <div class="card-title">📚 Materials & Assignments</div>
+            
+            <div style="margin-bottom:14px;">
+                <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:var(--sky);">+ Add Resource (Note/PDF)</div>
+                <div class="form-row">
+                    <input id="resTitle" class="form-control" placeholder="Title (e.g. Lecture Sheet PDF)">
+                    <select id="resType" class="form-control">
                         <option value="pdf">PDF Notes</option>
                         <option value="slide">Slides</option>
                         <option value="sheet">Practice Sheet</option>
                         <option value="drive">Google Drive</option>
-                        <option value="bank">Question Bank</option>
                     </select>
                 </div>
+                <input id="resUrl" class="form-control" placeholder="Resource Link (https://...)" style="margin-top:8px;">
+                <button class="btn-primary" style="margin-top:8px;" onclick="addResource()">Add Material</button>
             </div>
-            <div class="field"><label>URL</label><input id="resUrl" type="text" placeholder="https://..."></div>
-            <button class="btn btn-primary" style="margin-bottom:16px;" onclick="addResource()">+ Add Resource</button>
-            <div id="resourceList"><div class="section-empty">No resources added yet.</div></div>
+
+            <hr style="border-color:var(--glass-border); margin:14px 0;">
+
+            <div>
+                <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:var(--sky);">+ Assign Homework</div>
+                <input id="hwTitle" class="form-control" placeholder="Homework Title">
+                <div class="form-row" style="margin-top:8px;">
+                    <input id="hwDeadline" class="form-control" placeholder="Deadline (e.g. Tomorrow 10 PM)">
+                    <input id="hwDesc" class="form-control" placeholder="Brief description">
+                </div>
+                <button class="btn-primary" style="margin-top:8px;" onclick="addHomework()">Assign Homework</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN: INTERACTIVE TABS CONTROL -->
+    <div class="panel-wrapper glass">
+        <div class="panel-head">
+            <div class="tab-row">
+                <button class="tab-btn active" data-ptab="chat" onclick="openPanelTab('chat')">💬 Chat</button>
+                <button class="tab-btn" data-ptab="qna" onclick="openPanelTab('qna')">❓ Questions</button>
+                <button class="tab-btn" data-ptab="poll" onclick="openPanelTab('poll')">📊 Poll</button>
+                <button class="tab-btn" data-ptab="quiz" onclick="openPanelTab('quiz')">🧠 Quiz</button>
+                <button class="tab-btn" data-ptab="hands" onclick="openPanelTab('hands')">🙋 Hands</button>
+            </div>
         </div>
 
-        <!-- HOMEWORK -->
-        <div class="tab-content hidden" id="tab-homework">
-            <div class="field"><label>Title</label><input id="hwTitle" type="text" placeholder="e.g. Problem Set 4"></div>
-            <div class="field"><label>Deadline</label><input id="hwDeadline" type="text" placeholder="e.g. Friday, 8 PM"></div>
-            <div class="field"><label>Description</label><textarea id="hwDesc" placeholder="Details for students..."></textarea></div>
-            <button class="btn btn-primary" style="margin-bottom:16px;" onclick="addHomework()">+ Assign Homework</button>
-            <div id="homeworkList"><div class="section-empty">No homework assigned yet.</div></div>
+        <div class="panel-body">
+            <!-- CHAT MANAGEMENT -->
+            <div class="panel-pane" id="pane-chat">
+                <div class="chat-list" id="teacherChatList"></div>
+                <div style="display:flex; gap:6px; margin-top:auto;">
+                    <input id="teacherChatInput" class="form-control" placeholder="Send official reply...">
+                    <button class="btn-primary" onclick="sendTeacherChat()">➤</button>
+                </div>
+            </div>
+
+            <!-- Q&A MANAGEMENT -->
+            <div class="panel-pane hidden" id="pane-qna">
+                <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px;" id="teacherQnaList"></div>
+            </div>
+
+            <!-- POLL CREATOR & LIVE RESULTS -->
+            <div class="panel-pane hidden" id="pane-poll">
+                <div class="card glass" style="padding:12px; margin-bottom:0;">
+                    <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Create Quick Poll</div>
+                    <input id="pollQ" class="form-control" placeholder="Poll Question" style="margin-bottom:8px;">
+                    <input id="pollOpt1" class="form-control" placeholder="Option 1" style="margin-bottom:4px;">
+                    <input id="pollOpt2" class="form-control" placeholder="Option 2" style="margin-bottom:4px;">
+                    <input id="pollOpt3" class="form-control" placeholder="Option 3 (Optional)" style="margin-bottom:8px;">
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-primary" style="flex:1;" onclick="launchPoll()">Launch Poll</button>
+                        <button class="btn-danger" onclick="stopPoll()">Stop</button>
+                    </div>
+                </div>
+                <div id="livePollResults" style="margin-top:10px;"></div>
+            </div>
+
+            <!-- QUIZ CREATOR & LIVE RESULTS -->
+            <div class="panel-pane hidden" id="pane-quiz">
+                <div class="card glass" style="padding:12px; margin-bottom:0;">
+                    <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Create Quiz Test</div>
+                    <input id="quizQ" class="form-control" placeholder="Quiz Question" style="margin-bottom:8px;">
+                    <input id="quizOpt0" class="form-control" placeholder="Option 1 (Correct)" style="margin-bottom:4px; border-color:var(--ok);">
+                    <input id="quizOpt1" class="form-control" placeholder="Option 2" style="margin-bottom:4px;">
+                    <input id="quizOpt2" class="form-control" placeholder="Option 3" style="margin-bottom:4px;">
+                    <input id="quizOpt3" class="form-control" placeholder="Option 4" style="margin-bottom:8px;">
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-primary" style="flex:1;" onclick="launchQuiz()">Launch Quiz</button>
+                        <button class="btn-danger" onclick="stopQuiz()">Stop</button>
+                    </div>
+                </div>
+                <div id="liveQuizResults" style="margin-top:10px;"></div>
+            </div>
+
+            <!-- RAISED HANDS LIST -->
+            <div class="panel-pane hidden" id="pane-hands">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:12px; color:var(--ink-dim);">Students seeking attention</span>
+                    <button class="action-btn-xs" onclick="clearAllHands()">Clear All</button>
+                </div>
+                <div id="teacherHandsList" style="display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, update, remove, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, push, update, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -458,20 +411,16 @@ const firebaseConfig = {
     messagingSenderId: "956204530190",
     appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-/* ---------- teacher identity ---------- */
-let teacherName = localStorage.getItem("gaivexTeacherName") || "";
-let teacherUid = localStorage.getItem("gaivexTeacherUid");
-if(!teacherUid){
-    teacherUid = "tch_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
-    localStorage.setItem("gaivexTeacherUid", teacherUid);
-}
-let CLASS_ID = localStorage.getItem("gaivexTeacherClassId") || "";
+let CLASS_ID = new URLSearchParams(location.search).get("class") || null;
+let teacherName = "Teacher";
 
-let SESSION_PATH, CHAT_PATH, VIEWERS_PATH, ANNOUNCE_PATH, QUESTIONS_PATH, HANDS_PATH,
-    POLL_PATH, QUIZ_PATH, QUIZ_SCORES_PATH, RESOURCES_PATH, HOMEWORK_PATH, MUTED_PATH, ATTENDANCE_PATH;
+let SESSION_PATH, CHAT_PATH, VIEWERS_PATH, ANNOUNCE_PATH,
+    QUESTIONS_PATH, HANDS_PATH, POLL_PATH, QUIZ_PATH,
+    RESOURCES_PATH, HOMEWORK_PATH, MUTED_PATH;
 
 function setClassPaths(classId){
     const base = `classes/${classId}`;
@@ -483,558 +432,465 @@ function setClassPaths(classId){
     HANDS_PATH = `${base}/raisedHands`;
     POLL_PATH = `${base}/poll`;
     QUIZ_PATH = `${base}/quiz`;
-    QUIZ_SCORES_PATH = `${base}/quizScores`;
     RESOURCES_PATH = `${base}/resources`;
     HOMEWORK_PATH = `${base}/homework`;
     MUTED_PATH = `${base}/muted`;
-    ATTENDANCE_PATH = `${base}/attendance`;
 }
 
-let currentSession = null;
-let liveTimerInterval = null;
-let qnaFilter = "all";
-let allQuestions = {};
-let currentPoll = null;
-let currentQuiz = null;
-let viewersData = {};
-let mutedData = {};
-let lastChatKey = null;
+/* ============ INITIALIZATION ============ */
+if(CLASS_ID){
+    document.getElementById("setupClassId").value = CLASS_ID;
+}
 
+window.initTeacherSession = function(){
+    const cid = document.getElementById("setupClassId").value.trim();
+    const name = document.getElementById("setupTeacherName").value.trim();
+    if(!cid || !name){ alert("Please fill up all setup details!"); return; }
+    
+    CLASS_ID = cid;
+    teacherName = name;
+    setClassPaths(CLASS_ID);
+    
+    history.replaceState(null, "", location.pathname + "?class=" + encodeURIComponent(CLASS_ID));
+    document.getElementById("classSelectOverlay").classList.add("hidden");
+    
+    bindFirebaseListeners();
+    showToast("⚙️", "Dashboard initialized for class: " + CLASS_ID);
+};
+
+/* Auto-trigger if URL has class ID */
+if(CLASS_ID){
+    document.getElementById("classSelectOverlay").classList.remove("hidden");
+}
+
+/* ============ TOAST ============ */
 function showToast(icon, text){
     const stack = document.getElementById("toastStack");
     const el = document.createElement("div");
     el.className = "toast glass";
-    el.innerHTML = `<span>${icon}</span><span>${escapeHtml(text)}</span>`;
+    el.innerHTML = `<span class="toast-icon">${icon}</span><span>${escapeHtml(text)}</span>`;
     stack.appendChild(el);
-    setTimeout(()=>{ el.style.transition="opacity .3s"; el.style.opacity="0"; setTimeout(()=>el.remove(),300); }, 3800);
+    setTimeout(()=>{ el.style.opacity="0"; setTimeout(()=>el.remove(),300); }, 3500);
 }
 
-/* ============ GATE ============ */
-if(teacherName && CLASS_ID){
-    document.getElementById("gateOverlay").classList.add("hidden");
-    bootConsole();
-}else{
-    document.getElementById("gateNameInput").value = teacherName;
-    document.getElementById("gateClassInput").value = CLASS_ID;
-}
-window.enterConsole = function(){
-    const name = document.getElementById("gateNameInput").value.trim();
-    let cid = document.getElementById("gateClassInput").value.trim();
-    if(!name){ document.getElementById("gateNameInput").focus(); return; }
-    if(!cid){ cid = "cls_" + Math.random().toString(36).slice(2,9); }
-    teacherName = name;
-    CLASS_ID = cid;
-    localStorage.setItem("gaivexTeacherName", teacherName);
-    localStorage.setItem("gaivexTeacherClassId", CLASS_ID);
-    document.getElementById("gateOverlay").classList.add("hidden");
-    bootConsole();
-};
-document.getElementById("gateClassInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") window.enterConsole(); });
-window.switchClass = function(){
-    document.getElementById("gateNameInput").value = teacherName;
-    document.getElementById("gateClassInput").value = "";
-    document.getElementById("gateOverlay").classList.remove("hidden");
+/* ============ TAB NAVIGATION ============ */
+window.openPanelTab = function(tabName){
+    document.querySelectorAll("[data-ptab]").forEach(b => b.classList.toggle("active", b.dataset.ptab === tabName));
+    document.querySelectorAll(".panel-pane").forEach(p => p.classList.add("hidden"));
+    document.getElementById("pane-" + tabName).classList.remove("hidden");
 };
 
-function bootConsole(){
-    setClassPaths(CLASS_ID);
-    document.getElementById("classIdDisplay").innerText = CLASS_ID;
-    initPollOptions();
-    initQuizOptions();
-    registerListeners();
-    registerPresence();
-}
-
-window.copyStudentLink = function(){
-    const url = location.origin + location.pathname.replace("classteacher.html","classroom.html") + "?class=" + encodeURIComponent(CLASS_ID);
-    navigator.clipboard.writeText(url).then(()=> showToast("✅","Student link copied!")).catch(()=> prompt("Copy this link:", url));
-};
-
-/* ============ SESSION ============ */
-function registerListeners(){
+/* ============ FIREBASE READ LISTENERS ============ */
+function bindFirebaseListeners(){
+    // Session State
     onValue(ref(db, SESSION_PATH), (snap)=>{
-        currentSession = snap.exists() ? snap.val() : null;
-        renderSessionStatus();
-        fillFormFromSession();
+        const data = snap.exists() ? snap.val() : null;
+        updateSessionUI(data);
     });
+
+    // Viewers
     onValue(ref(db, VIEWERS_PATH), (snap)=>{
-        viewersData = snap.exists() ? snap.val() : {};
-        document.getElementById("statViewers").innerText = Object.keys(viewersData).length;
-        document.getElementById("onlineCount").innerText = Object.keys(viewersData).length;
-        renderOnlinePeople();
-        renderChat(lastChatCache);
+        const viewers = snap.exists() ? snap.val() : {};
+        document.getElementById("statViewers").innerText = Object.keys(viewers).length;
     });
-    onValue(ref(db, MUTED_PATH), (snap)=>{
-        mutedData = snap.exists() ? snap.val() : {};
-        renderOnlinePeople();
-    });
-    onValue(ref(db, HANDS_PATH), (snap)=>{
-        const data = snap.exists() ? snap.val() : {};
-        document.getElementById("statHands").innerText = Object.keys(data).length;
-        document.getElementById("handsCount").innerText = Object.keys(data).length;
-        renderHandsPeople(data);
-    });
-    let lastChatCache = {};
+
+    // Chat
     onValue(ref(db, CHAT_PATH), (snap)=>{
-        lastChatCache = snap.exists() ? snap.val() : {};
-        window.lastChatCache = lastChatCache;
-        renderChat(lastChatCache);
+        renderTeacherChat(snap.exists() ? snap.val() : {});
     });
+
+    // Questions
     onValue(ref(db, QUESTIONS_PATH), (snap)=>{
-        allQuestions = snap.exists() ? snap.val() : {};
-        renderQna();
-        const unanswered = Object.values(allQuestions).filter(q=>!q.answered).length;
-        const badge = document.getElementById("qnaUnansweredBadge");
-        if(unanswered>0){ badge.innerText = unanswered>9?"9+":unanswered; badge.classList.remove("hidden"); }
-        else{ badge.classList.add("hidden"); }
+        const qData = snap.exists() ? snap.val() : {};
+        document.getElementById("statQuestions").innerText = Object.keys(qData).length;
+        renderTeacherQna(qData);
     });
+
+    // Raised Hands
+    onValue(ref(db, HANDS_PATH), (snap)=>{
+        const hands = snap.exists() ? snap.val() : {};
+        document.getElementById("statRaisedHands").innerText = Object.keys(hands).length;
+        renderTeacherHands(hands);
+    });
+
+    // Live Poll Monitor
     onValue(ref(db, POLL_PATH), (snap)=>{
-        currentPoll = snap.exists() ? snap.val() : null;
-        renderPollPanel();
+        renderLivePollResults(snap.exists() ? snap.val() : null);
     });
-    setInterval(()=>{ if(currentPoll && currentPoll.active) renderPollPanel(); }, 1000);
 
+    // Live Quiz Monitor
     onValue(ref(db, QUIZ_PATH), (snap)=>{
-        currentQuiz = snap.exists() ? snap.val() : null;
-        renderQuizPanel();
-    });
-    setInterval(()=>{ if(currentQuiz && currentQuiz.active) renderQuizPanel(); }, 1000);
-
-    onValue(ref(db, QUIZ_SCORES_PATH), (snap)=> renderLeaderboard(snap.exists()?snap.val():{}));
-    onValue(ref(db, RESOURCES_PATH), (snap)=> renderResources(snap.exists()?snap.val():{}));
-    onValue(ref(db, HOMEWORK_PATH), (snap)=> renderHomework(snap.exists()?snap.val():{}));
-    onValue(ref(db, ATTENDANCE_PATH), (snap)=> renderAttendance(snap.exists()?snap.val():{}));
-    onValue(ref(db, ANNOUNCE_PATH), (snap)=>{
-        const a = snap.exists() ? snap.val() : null;
-        document.getElementById("announceInput").value = a && a.text ? a.text : document.getElementById("announceInput").value;
+        renderLiveQuizResults(snap.exists() ? snap.val() : null);
     });
 }
 
-function registerPresence(){
-    const myRef = ref(db, `${VIEWERS_PATH}/teacher_${teacherUid}`);
-    // Teacher presence is tracked separately from the viewer count students see is fine to omit;
-    // instead just keep a lightweight "last seen" for reconnect diagnostics.
-    onDisconnect(ref(db, `${SESSION_PATH}/teacherOnline`)).set(false);
-    set(ref(db, `${SESSION_PATH}/teacherOnline`), true).catch(()=>{});
+/* ============ LIVE CONTROL ACTIONS ============ */
+function parseYoutubeId(urlOrId){
+    if(!urlOrId) return "";
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = urlOrId.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : urlOrId.trim();
 }
 
-function fillFormFromSession(){
-    if(!currentSession) return;
-    if(document.activeElement && document.activeElement.tagName === "INPUT") return;
-    document.getElementById("fTitle").value = currentSession.title || "";
-    document.getElementById("fSubject").value = currentSession.subject || "physics";
-    document.getElementById("fPaper").value = currentSession.paper || "paper1";
-    document.getElementById("fChapter").value = currentSession.chapter || "";
-    document.getElementById("fYoutube").value = currentSession.youtubeId || "";
-    document.getElementById("fPhoto").value = currentSession.teacherPhoto || "";
-}
+window.startLive = async function(){
+    const rawYt = document.getElementById("ytInput").value;
+    const ytId = parseYoutubeId(rawYt);
+    const title = document.getElementById("classTitleInput").value.trim() || "Live Class";
+    const subject = document.getElementById("subjectSelect").value;
+    const paper = document.getElementById("paperSelect").value;
+    const chapter = document.getElementById("chapterInput").value.trim() || "—";
 
-function renderSessionStatus(){
-    const isLive = !!(currentSession && currentSession.isLive);
-    document.getElementById("statusDot").classList.toggle("live", isLive);
-    document.getElementById("statusText").innerHTML = isLive
-        ? `Class is <b>live</b> — ${escapeHtml(currentSession.title||"Untitled")}`
-        : `Class is <b>offline</b>`;
-    document.getElementById("goLiveBtn").classList.toggle("hidden", isLive);
-    document.getElementById("endLiveBtn").classList.toggle("hidden", !isLive);
-    if(isLive && currentSession.startedAt) startLiveTimer(currentSession.startedAt);
-    else stopLiveTimer();
-}
-function startLiveTimer(startedAt){
-    stopLiveTimer();
-    function tick(){
-        const secs = Math.max(0, Math.floor((Date.now()-startedAt)/1000));
-        const m = String(Math.floor(secs/60)).padStart(2,"0");
-        const s = String(secs%60).padStart(2,"0");
-        document.getElementById("statDuration").innerText = m+":"+s;
-    }
-    tick();
-    liveTimerInterval = setInterval(tick, 1000);
-}
-function stopLiveTimer(){ if(liveTimerInterval){ clearInterval(liveTimerInterval); liveTimerInterval=null; document.getElementById("statDuration").innerText="00:00"; } }
+    if(!ytId){ alert("Please enter a valid YouTube Video ID or URL!"); return; }
 
-function readSessionForm(){
-    return {
-        title: document.getElementById("fTitle").value.trim() || "Live Class",
-        subject: document.getElementById("fSubject").value,
-        paper: document.getElementById("fPaper").value,
-        chapter: document.getElementById("fChapter").value.trim(),
-        youtubeId: document.getElementById("fYoutube").value.trim(),
+    const sessionPayload = {
+        isLive: true,
+        youtubeId: ytId,
+        title: title,
+        subject: subject,
+        paper: paper,
+        chapter: chapter,
         teacherName: teacherName,
-        teacherPhoto: document.getElementById("fPhoto").value.trim()
+        startedAt: Date.now()
     };
+
+    await set(ref(db, SESSION_PATH), sessionPayload);
+    showToast("🔴", "Live class started successfully!");
+};
+
+window.endLive = async function(){
+    if(!confirm("Are you sure you want to end this live class?")) return;
+    await update(ref(db, SESSION_PATH), { isLive: false });
+    showToast("⏹", "Live class ended.");
+};
+
+function updateSessionUI(s){
+    const statusBadge = document.getElementById("sessionStatusBadge");
+    const topPill = document.getElementById("topStatusPill");
+    const btnStart = document.getElementById("btnStartLive");
+    const btnEnd = document.getElementById("btnEndLive");
+    const iframe = document.getElementById("previewIframe");
+    const placeholder = document.getElementById("previewPlaceholder");
+
+    if(s && s.isLive){
+        statusBadge.className = "live-indicator active";
+        statusBadge.innerText = "🔴 LIVE";
+        topPill.className = "live-indicator active";
+        topPill.innerText = "🔴 LIVE";
+        btnStart.classList.add("hidden");
+        btnEnd.classList.remove("hidden");
+
+        iframe.src = `https://www.youtube.com/embed/${s.youtubeId}?autoplay=1`;
+        iframe.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+    }else{
+        statusBadge.className = "live-indicator off";
+        statusBadge.innerText = "OFFLINE";
+        topPill.className = "live-indicator off";
+        topPill.innerText = "Offline";
+        btnStart.classList.remove("hidden");
+        btnEnd.classList.add("hidden");
+
+        iframe.src = "";
+        iframe.classList.add("hidden");
+        placeholder.classList.remove("hidden");
+    }
 }
 
-window.goLive = async function(){
-    const data = readSessionForm();
-    if(!data.youtubeId){ showToast("⚠️","Add a YouTube video ID before going live."); return; }
-    await update(ref(db, SESSION_PATH), { ...data, isLive: true, startedAt: Date.now() });
-    showToast("🔴","You're live!");
-};
-window.endLive = async function(){
-    if(!confirm("End the live class for all students?")) return;
-    await update(ref(db, SESSION_PATH), { isLive: false });
-    showToast("⏹","Class ended.");
-};
-window.updateSessionMeta = async function(){
-    const data = readSessionForm();
-    await update(ref(db, SESSION_PATH), data);
-    showToast("💾","Details saved.");
-};
-
-/* ============ ANNOUNCEMENT ============ */
+/* ============ ANNOUNCEMENTS ============ */
 window.postAnnouncement = async function(){
     const text = document.getElementById("announceInput").value.trim();
     if(!text) return;
-    await set(ref(db, ANNOUNCE_PATH), { text, ts: Date.now() });
-    showToast("📢","Announcement posted.");
+    await set(ref(db, ANNOUNCE_PATH), { text: text, ts: Date.now() });
+    showToast("📢", "Announcement published!");
 };
+
 window.clearAnnouncement = async function(){
     await remove(ref(db, ANNOUNCE_PATH));
     document.getElementById("announceInput").value = "";
-    showToast("🧹","Announcement cleared.");
+    showToast("🧹", "Announcement cleared.");
 };
 
-/* ============ TABS ============ */
-window.openTab = function(name){
-    document.querySelectorAll(".tab-btn").forEach(b=> b.classList.toggle("active", b.dataset.tab===name));
-    document.querySelectorAll(".tab-content").forEach(c=> c.classList.add("hidden"));
-    document.getElementById("tab-"+name).classList.remove("hidden");
-};
+/* ============ CHAT MANAGEMENT ============ */
+function renderTeacherChat(data){
+    const container = document.getElementById("teacherChatList");
+    const keys = Object.keys(data).sort((a,b)=>(data[a].timestamp||0)-(data[b].timestamp||0));
+    if(keys.length === 0){ container.innerHTML = `<div style="font-size:12px; color:var(--ink-faint); text-align:center;">No chat messages yet.</div>`; return; }
 
-/* ============ CHAT ============ */
-function renderChat(data){
-    data = data || {};
-    const body = document.getElementById("chatBody");
-    const keys = Object.keys(data);
-    if(keys.length===0){ body.innerHTML = `<div class="chat-empty">No messages yet.</div>`; return; }
-    keys.sort((a,b)=> (data[a].timestamp||0)-(data[b].timestamp||0));
     let html = "";
     keys.forEach(k=>{
         const m = data[k];
-        const isMe = m.role === "teacher";
-        const rowClass = isMe ? "me" : "other";
-        const isMuted = !!mutedData[m.uid];
-        const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) : "";
-        const muteBtn = !isMe && m.uid ? `<button class="mute-inline" onclick="toggleMute('${m.uid}')">${isMuted?'unmute':'mute'}</button>` : "";
-        html += `<div class="msg-row ${rowClass}"><div class="msg-sender">${escapeHtml(m.name||"")} ${muteBtn}</div><div class="msg-bubble">${escapeHtml(m.text||"")}</div><div class="msg-ts">${time}</div></div>`;
+        const isTeacher = m.role === "teacher";
+        html += `<div class="chat-msg">
+            <div class="chat-msg-top">
+                <span class="chat-author ${isTeacher?'teacher':''}">${escapeHtml(m.name||"Student")}</span>
+                <div class="chat-actions">
+                    ${!isTeacher ? `<button class="action-btn-xs" onclick="toggleMute('${m.uid}')">Mute</button>` : ''}
+                    <button class="action-btn-xs" onclick="deleteChat('${k}')">🗑</button>
+                </div>
+            </div>
+            <div>${escapeHtml(m.text||"")}</div>
+        </div>`;
     });
-    body.innerHTML = html;
-    const newestKey = keys[keys.length-1];
-    if(lastChatKey !== newestKey){ body.scrollTop = body.scrollHeight; lastChatKey = newestKey; }
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
 }
-window.sendChatMessage = async function(){
-    const input = document.getElementById("chatInput");
+
+window.sendTeacherChat = async function(){
+    const input = document.getElementById("teacherChatInput");
     const text = input.value.trim();
     if(!text) return;
-    await push(ref(db, CHAT_PATH), { uid: "teacher_"+teacherUid, name: teacherName, role: "teacher", text, timestamp: Date.now() });
+    await push(ref(db, CHAT_PATH), {
+        uid: "teacher_admin",
+        name: teacherName,
+        role: "teacher",
+        text: text,
+        timestamp: Date.now()
+    });
     input.value = "";
 };
-document.getElementById("chatInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); window.sendChatMessage(); } });
+
+window.deleteChat = async function(key){
+    await remove(ref(db, `${CHAT_PATH}/${key}`));
+};
 
 window.toggleMute = async function(uid){
-    if(mutedData[uid]) await remove(ref(db, `${MUTED_PATH}/${uid}`));
-    else await set(ref(db, `${MUTED_PATH}/${uid}`), true);
+    const mRef = ref(db, `${MUTED_PATH}/${uid}`);
+    const snap = await get(mRef);
+    if(snap.exists()){
+        await remove(mRef);
+        showToast("🔊", "Student unmuted");
+    }else{
+        await set(mRef, true);
+        showToast("🔇", "Student muted");
+    }
 };
 
-/* ============ Q&A ============ */
-window.setQnaFilter = function(f){
-    qnaFilter = f;
-    document.querySelectorAll("[data-qf]").forEach(b=> b.classList.toggle("active", b.dataset.qf===f));
-    renderQna();
-};
-function renderQna(){
-    const body = document.getElementById("qnaBody");
-    let keys = Object.keys(allQuestions);
-    if(keys.length===0){ body.innerHTML = `<div class="chat-empty">No questions yet.</div>`; return; }
-    if(qnaFilter==="answered") keys = keys.filter(k=>allQuestions[k].answered);
-    if(qnaFilter==="unanswered") keys = keys.filter(k=>!allQuestions[k].answered);
-    keys.sort((a,b)=>{
-        const qa=allQuestions[a], qb=allQuestions[b];
-        if(!!qb.pinned !== !!qa.pinned) return (qb.pinned?1:0)-(qa.pinned?1:0);
-        const ua = qa.upvotes?Object.keys(qa.upvotes).length:0;
-        const ub = qb.upvotes?Object.keys(qb.upvotes).length:0;
-        if(ub!==ua) return ub-ua;
-        return (qa.timestamp||0)-(qb.timestamp||0);
-    });
+/* ============ Q&A MANAGEMENT ============ */
+function renderTeacherQna(data){
+    const container = document.getElementById("teacherQnaList");
+    const keys = Object.keys(data).sort((a,b)=>(data[b].timestamp||0)-(data[a].timestamp||0));
+    if(keys.length === 0){ container.innerHTML = `<div style="font-size:12px; color:var(--ink-faint); text-align:center;">No questions asked yet.</div>`; return; }
+
     let html = "";
     keys.forEach(k=>{
-        const q = allQuestions[k];
-        const upvoteCount = q.upvotes?Object.keys(q.upvotes).length:0;
-        html += `<div class="qna-card ${q.answered?'answered':''} ${q.pinned?'pinned':''}">
-            <div class="qna-top"><span class="qna-name">${escapeHtml(q.name||"Student")} · 👍 ${upvoteCount}</span></div>
-            <div class="qna-text">${q.pinned?'📌 ':''}${escapeHtml(q.text||"")}</div>
-            ${q.answered && q.answerText ? `<div class="qna-answer"><b>Your answer:</b> ${escapeHtml(q.answerText)}</div>` : ""}
-            <div class="qna-actions">
-                <button class="qna-mini-btn ${q.pinned?'active':''}" onclick="togglePin('${k}')">${q.pinned?'📌 Unpin':'📌 Pin'}</button>
-                <button class="qna-mini-btn ${q.answered?'active':''}" onclick="toggleAnswered('${k}')">${q.answered?'✅ Answered':'Mark answered'}</button>
-                <button class="qna-mini-btn" onclick="deleteQuestion('${k}')">🗑 Delete</button>
+        const q = data[k];
+        html += `<div class="qna-item ${q.pinned?'pinned':''}">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--ink-dim); margin-bottom:4px;">
+                <span><b>${escapeHtml(q.name||"")}</b> asked:</span>
+                <div>
+                    <button class="action-btn-xs" onclick="togglePinQna('${k}', ${!q.pinned})">${q.pinned?'Unpin':'Pin'}</button>
+                    <button class="action-btn-xs" onclick="deleteQna('${k}')">🗑</button>
+                </div>
             </div>
-            <div class="qna-answer-form">
-                <input type="text" id="ans_${k}" placeholder="Write an answer..." value="${escapeAttr(q.answerText||'')}">
-                <button class="btn btn-primary btn-sm" onclick="submitAnswer('${k}')">Send</button>
+            <div style="font-weight:600; margin-bottom:6px;">${escapeHtml(q.text||"")}</div>
+            ${q.answerText ? `<div style="color:var(--sky); font-size:11.5px;">Ans: ${escapeHtml(q.answerText)}</div>` : ''}
+            <div class="qna-input-reply">
+                <input id="reply_${k}" class="form-control" style="padding:4px 8px; font-size:11.5px;" placeholder="Type answer...">
+                <button class="btn-primary" style="padding:4px 10px; font-size:11px;" onclick="answerQna('${k}')">Reply</button>
             </div>
         </div>`;
     });
-    body.innerHTML = html;
+    container.innerHTML = html;
 }
-window.togglePin = async function(key){
-    const q = allQuestions[key];
-    await update(ref(db, `${QUESTIONS_PATH}/${key}`), { pinned: !q.pinned });
+
+window.answerQna = async function(key){
+    const input = document.getElementById(`reply_${key}`);
+    const ans = input.value.trim();
+    if(!ans) return;
+    await update(ref(db, `${QUESTIONS_PATH}/${key}`), { answered: true, answerText: ans });
+    showToast("✅", "Answer published!");
 };
-window.toggleAnswered = async function(key){
-    const q = allQuestions[key];
-    await update(ref(db, `${QUESTIONS_PATH}/${key}`), { answered: !q.answered });
+
+window.togglePinQna = async function(key, pinStatus){
+    await update(ref(db, `${QUESTIONS_PATH}/${key}`), { pinned: pinStatus });
 };
-window.deleteQuestion = async function(key){
+
+window.deleteQna = async function(key){
     await remove(ref(db, `${QUESTIONS_PATH}/${key}`));
 };
-window.submitAnswer = async function(key){
-    const input = document.getElementById("ans_"+key);
-    const text = input.value.trim();
-    if(!text) return;
-    await update(ref(db, `${QUESTIONS_PATH}/${key}`), { answerText: text, answered: true });
-    showToast("✅","Answer sent.");
+
+/* ============ POLL CREATION ============ */
+window.launchPoll = async function(){
+    const q = document.getElementById("pollQ").value.trim();
+    const o1 = document.getElementById("pollOpt1").value.trim();
+    const o2 = document.getElementById("pollOpt2").value.trim();
+    const o3 = document.getElementById("pollOpt3").value.trim();
+
+    if(!q || !o1 || !o2){ alert("Please enter question and at least 2 options!"); return; }
+
+    const options = [o1, o2];
+    if(o3) options.push(o3);
+
+    const pollData = {
+        active: true,
+        question: q,
+        options: options,
+        startedAt: Date.now(),
+        endsAt: Date.now() + 60000 // 60s default
+    };
+
+    await set(ref(db, POLL_PATH), pollData);
+    showToast("📊", "Poll launched for 60 seconds!");
 };
 
-/* ============ POLL ============ */
-function initPollOptions(){
-    const wrap = document.getElementById("pollOptions");
-    wrap.innerHTML = "";
-    addPollOption(); addPollOption();
-}
-window.addPollOption = function(){
-    const wrap = document.getElementById("pollOptions");
-    if(wrap.children.length>=6) return;
-    const row = document.createElement("div");
-    row.className = "opt-row";
-    row.innerHTML = `<input type="text" placeholder="Option ${wrap.children.length+1}"><button class="opt-remove" onclick="this.parentElement.remove()">✕</button>`;
-    wrap.appendChild(row);
-};
-window.startPoll = async function(){
-    const question = document.getElementById("pollQuestion").value.trim();
-    const opts = [...document.querySelectorAll("#pollOptions input[type=text]")].map(i=>i.value.trim()).filter(Boolean);
-    if(!question || opts.length<2){ showToast("⚠️","Add a question and at least 2 options."); return; }
-    const durationSec = parseInt(document.getElementById("pollDuration").value) || null;
-    const payload = { question, options: opts, active: true, startedAt: Date.now(), votes: {} };
-    if(durationSec) payload.endsAt = Date.now() + durationSec*1000;
-    await set(ref(db, POLL_PATH), payload);
-    showToast("📊","Poll started.");
-};
-window.endPoll = async function(){
+window.stopPoll = async function(){
     await update(ref(db, POLL_PATH), { active: false });
-    showToast("⏹","Poll ended.");
+    showToast("⏹", "Poll stopped.");
 };
-window.clearPoll = async function(){
-    await remove(ref(db, POLL_PATH));
-};
-function renderPollPanel(){
-    const builder = document.getElementById("pollBuilderWrap");
-    const live = document.getElementById("pollLiveWrap");
-    if(!currentPoll){ builder.classList.remove("hidden"); live.classList.add("hidden"); return; }
-    builder.classList.add("hidden");
-    live.classList.remove("hidden");
-    const votes = currentPoll.votes || {};
+
+function renderLivePollResults(poll){
+    const container = document.getElementById("livePollResults");
+    if(!poll || !poll.active){ container.innerHTML = `<div style="font-size:11.5px; color:var(--ink-faint);">No active poll currently.</div>`; return; }
+
+    const votes = poll.votes || {};
     const total = Object.keys(votes).length;
-    const remaining = currentPoll.endsAt ? Math.max(0, Math.ceil((currentPoll.endsAt-Date.now())/1000)) : null;
-    let optsHtml = "";
-    (currentPoll.options||[]).forEach((opt,idx)=>{
-        const count = Object.values(votes).filter(v=>(typeof v==="object"?v.idx:v)===idx).length;
-        const pct = total? Math.round(count/total*100) : 0;
-        optsHtml += `<div class="pq-live-opt"><div class="pq-live-fill" style="width:${pct}%"></div><span class="pq-live-label">${escapeHtml(opt)}</span><span class="pq-live-pct">${pct}% (${count})</span></div>`;
+
+    let html = `<div style="font-size:12.5px; font-weight:700; margin-bottom:6px;">Live Poll: ${escapeHtml(poll.question)}</div>`;
+    (poll.options||[]).forEach((opt, idx)=>{
+        const count = Object.values(votes).filter(v => (typeof v === "object" ? v.idx : v) === idx).length;
+        const pct = total ? Math.round((count/total)*100) : 0;
+        html += `<div style="margin-bottom:6px; font-size:11.5px;">
+            <div style="display:flex; justify-content:space-between;">
+                <span>${escapeHtml(opt)}</span>
+                <span><b>${count}</b> (${pct}%)</span>
+            </div>
+            <div class="result-bar-bg"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
     });
-    live.innerHTML = `<div class="pq-live-card">
-        <div class="pq-live-q">${escapeHtml(currentPoll.question||"")}</div>
-        ${optsHtml}
-        <div class="pq-live-meta">${currentPoll.active ? (remaining!==null?`⏳ ${remaining}s left · `:'') + `Total votes: ${total}` : 'Poll ended'}</div>
-        <div class="btn-row" style="margin-top:12px;">
-            ${currentPoll.active ? `<button class="btn btn-danger" onclick="endPoll()">⏹ End Poll</button>` : `<button class="btn btn-ghost" onclick="clearPoll()">New Poll</button>`}
-        </div>
-    </div>`;
+    container.innerHTML = html;
 }
 
-/* ============ QUIZ ============ */
-function initQuizOptions(){
-    const wrap = document.getElementById("quizOptions");
-    wrap.innerHTML = "";
-    addQuizOption(); addQuizOption();
-    wrap.children[0].querySelector("input[type=radio]").checked = true;
-}
-window.addQuizOption = function(){
-    const wrap = document.getElementById("quizOptions");
-    if(wrap.children.length>=6) return;
-    const idx = wrap.children.length;
-    const row = document.createElement("div");
-    row.className = "opt-row";
-    row.innerHTML = `<input type="radio" name="quizCorrect" value="${idx}"><input type="text" placeholder="Option ${idx+1}"><button class="opt-remove" onclick="this.parentElement.remove()">✕</button>`;
-    wrap.appendChild(row);
+/* ============ QUIZ CREATION ============ */
+window.launchQuiz = async function(){
+    const q = document.getElementById("quizQ").value.trim();
+    const o0 = document.getElementById("quizOpt0").value.trim();
+    const o1 = document.getElementById("quizOpt1").value.trim();
+    const o2 = document.getElementById("quizOpt2").value.trim();
+    const o3 = document.getElementById("quizOpt3").value.trim();
+
+    if(!q || !o0 || !o1){ alert("Question and at least 2 options required!"); return; }
+
+    const options = [o0, o1];
+    if(o2) options.push(o2);
+    if(o3) options.push(o3);
+
+    const quizData = {
+        active: true,
+        question: q,
+        options: options,
+        correctIndex: 0, // Option 1 is correct
+        startedAt: Date.now(),
+        endsAt: Date.now() + 45000
+    };
+
+    await set(ref(db, QUIZ_PATH), quizData);
+    showToast("🧠", "Quiz test launched!");
 };
-window.startQuiz = async function(){
-    const question = document.getElementById("quizQuestion").value.trim();
-    const rows = [...document.querySelectorAll("#quizOptions .opt-row")];
-    const opts = rows.map(r=>r.querySelector("input[type=text]").value.trim());
-    const checked = document.querySelector("#quizOptions input[type=radio]:checked");
-    if(!question || opts.filter(Boolean).length<2 || !checked){ showToast("⚠️","Add a question, 2+ options, and mark the correct one."); return; }
-    const correctIndex = parseInt(checked.value);
-    const durationSec = parseInt(document.getElementById("quizDuration").value) || null;
-    const payload = { question, options: opts, correctIndex, active: true, startedAt: Date.now(), answers: {} };
-    if(durationSec) payload.endsAt = Date.now() + durationSec*1000;
-    await set(ref(db, QUIZ_PATH), payload);
-    showToast("🧠","Quiz started.");
-};
-window.endQuiz = async function(){
+
+window.stopQuiz = async function(){
     await update(ref(db, QUIZ_PATH), { active: false });
-    showToast("⏹","Quiz ended.");
+    showToast("⏹", "Quiz test ended.");
 };
-window.clearQuiz = async function(){
-    await remove(ref(db, QUIZ_PATH));
-};
-function renderQuizPanel(){
-    const builder = document.getElementById("quizBuilderWrap");
-    const live = document.getElementById("quizLiveWrap");
-    if(!currentQuiz){ builder.classList.remove("hidden"); live.classList.add("hidden"); return; }
-    builder.classList.add("hidden");
-    live.classList.remove("hidden");
-    const answers = currentQuiz.answers || {};
+
+function renderLiveQuizResults(quiz){
+    const container = document.getElementById("liveQuizResults");
+    if(!quiz || !quiz.active){ container.innerHTML = `<div style="font-size:11.5px; color:var(--ink-faint);">No active quiz currently.</div>`; return; }
+
+    const answers = quiz.answers || {};
     const total = Object.keys(answers).length;
-    const correctCount = Object.values(answers).filter(a=>(typeof a==="object"?a.idx:a)===currentQuiz.correctIndex).length;
-    const remaining = currentQuiz.endsAt ? Math.max(0, Math.ceil((currentQuiz.endsAt-Date.now())/1000)) : null;
-    let optsHtml = "";
-    (currentQuiz.options||[]).forEach((opt,idx)=>{
-        const count = Object.values(answers).filter(a=>(typeof a==="object"?a.idx:a)===idx).length;
-        const pct = total? Math.round(count/total*100) : 0;
-        const isCorrect = idx === currentQuiz.correctIndex;
-        optsHtml += `<div class="pq-live-opt ${isCorrect?'correct':''}"><div class="pq-live-fill" style="width:${pct}%"></div><span class="pq-live-label">${isCorrect?'✅ ':''}${escapeHtml(opt)}</span><span class="pq-live-pct">${pct}% (${count})</span></div>`;
+
+    let html = `<div style="font-size:12.5px; font-weight:700; margin-bottom:6px;">Live Quiz: ${escapeHtml(quiz.question)}</div>`;
+    (quiz.options||[]).forEach((opt, idx)=>{
+        const count = Object.values(answers).filter(a => (typeof a === "object" ? a.idx : a) === idx).length;
+        const pct = total ? Math.round((count/total)*100) : 0;
+        const isCorrect = idx === quiz.correctIndex;
+        html += `<div style="margin-bottom:6px; font-size:11.5px;">
+            <div style="display:flex; justify-content:space-between; ${isCorrect?'color:var(--ok);font-weight:700;':''}">
+                <span>${escapeHtml(opt)} ${isCorrect?'✓':''}</span>
+                <span><b>${count}</b> (${pct}%)</span>
+            </div>
+            <div class="result-bar-bg"><div class="result-bar-fill" style="width:${pct}%; ${isCorrect?'background:var(--ok)':''}"></div></div>
+        </div>`;
     });
-    live.innerHTML = `<div class="pq-live-card">
-        <div class="pq-live-q">${escapeHtml(currentQuiz.question||"")}</div>
-        ${optsHtml}
-        <div class="pq-live-meta">${currentQuiz.active ? (remaining!==null?`⏳ ${remaining}s left · `:'') + `Answered: ${total} · Correct: ${correctCount}` : 'Quiz ended'}</div>
-        <div class="btn-row" style="margin-top:12px;">
-            ${currentQuiz.active ? `<button class="btn btn-danger" onclick="endQuiz()">⏹ End Quiz</button>` : `<button class="btn btn-ghost" onclick="clearQuiz()">New Quiz</button>`}
-        </div>
-    </div>`;
+    container.innerHTML = html;
 }
 
-/* ============ PEOPLE ============ */
-function renderOnlinePeople(){
-    const list = document.getElementById("peopleOnlineList");
-    const keys = Object.keys(viewersData);
-    if(keys.length===0){ list.innerHTML = `<div class="section-empty">No one online.</div>`; return; }
-    keys.sort((a,b)=>(viewersData[a].ts||0)-(viewersData[b].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        const p = viewersData[k];
-        const isMuted = !!mutedData[k];
-        const initial = (p.name||"?").trim().charAt(0).toUpperCase();
-        html += `<div class="people-row"><div class="people-avatar-sm">${escapeHtml(initial)}</div><div class="people-name">${escapeHtml(p.name||"Student")}</div><button class="qna-mini-btn ${isMuted?'active':''}" onclick="toggleMute('${k}')">${isMuted?'Unmute':'Mute'}</button></div>`;
-    });
-    list.innerHTML = html;
-}
-function renderHandsPeople(data){
-    const list = document.getElementById("peopleHandsList");
+/* ============ RAISED HANDS ============ */
+function renderTeacherHands(data){
+    const container = document.getElementById("teacherHandsList");
     const keys = Object.keys(data);
-    if(keys.length===0){ list.innerHTML = `<div class="section-empty">No hands raised.</div>`; return; }
-    keys.sort((a,b)=>(data[a].ts||0)-(data[b].ts||0));
+    if(keys.length === 0){ container.innerHTML = `<div style="font-size:12px; color:var(--ink-faint);">No raised hands.</div>`; return; }
+
     let html = "";
-    keys.forEach(k=>{
-        html += `<div class="raise-row">🙋 <span class="people-name">${escapeHtml(data[k].name||"")}</span><button class="qna-mini-btn" onclick="lowerHand('${k}')">Lower</button></div>`;
+    keys.forEach(k => {
+        html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-radius:8px; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); font-size:12px;">
+            <span>🙋 <b>${escapeHtml(data[k].name||"Student")}</b></span>
+            <button class="action-btn-xs" onclick="lowerHand('${k}')">Lower</button>
+        </div>`;
     });
-    list.innerHTML = html;
+    container.innerHTML = html;
 }
+
 window.lowerHand = async function(uid){
     await remove(ref(db, `${HANDS_PATH}/${uid}`));
 };
-function renderLeaderboard(data){
-    const list = document.getElementById("peopleBoardList");
-    const keys = Object.keys(data);
-    if(keys.length===0){ list.innerHTML = `<div class="section-empty">No scores yet.</div>`; return; }
-    keys.sort((a,b)=>(data[b].score||0)-(data[a].score||0));
-    let html = "";
-    keys.slice(0,20).forEach((k,i)=>{
-        html += `<div class="people-row"><span class="people-rank">${i+1}</span><span class="people-name">${escapeHtml(data[k].name||"")}</span><span class="people-score">🏅 ${data[k].score||0}</span></div>`;
-    });
-    list.innerHTML = html;
-}
-function renderAttendance(data){
-    const list = document.getElementById("peopleAttendanceList");
-    const keys = Object.keys(data);
-    if(keys.length===0){ list.innerHTML = `<div class="section-empty">No attendance recorded.</div>`; return; }
-    keys.sort((a,b)=>(data[b].joinedAt||0)-(data[a].joinedAt||0));
-    let html = "";
-    keys.forEach(k=>{
-        const a = data[k];
-        const joined = a.joinedAt ? new Date(a.joinedAt).toLocaleString([], {month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"}) : "—";
-        html += `<div class="people-row"><div class="people-name">${escapeHtml(a.name||"Student")}</div><span class="resource-type">${joined}</span></div>`;
-    });
-    list.innerHTML = html;
-}
 
-/* ============ RESOURCES ============ */
-const resIcons = { pdf:"📄", slide:"🖼️", sheet:"📝", drive:"🔗", bank:"❓" };
-const resNames = { pdf:"PDF Notes", slide:"Slides", sheet:"Practice Sheet", drive:"Google Drive", bank:"Question Bank" };
+window.clearAllHands = async function(){
+    await remove(ref(db, HANDS_PATH));
+};
+
+/* ============ RESOURCES & HOMEWORK ============ */
 window.addResource = async function(){
     const title = document.getElementById("resTitle").value.trim();
     const type = document.getElementById("resType").value;
     const url = document.getElementById("resUrl").value.trim();
-    if(!title || !url){ showToast("⚠️","Add a title and URL."); return; }
-    await push(ref(db, RESOURCES_PATH), { title, type, url, ts: Date.now() });
+
+    if(!title || !url){ alert("Resource title & valid URL are required!"); return; }
+
+    await push(ref(db, RESOURCES_PATH), {
+        title: title,
+        type: type,
+        url: url,
+        ts: Date.now()
+    });
     document.getElementById("resTitle").value = "";
     document.getElementById("resUrl").value = "";
-    showToast("📚","Resource added.");
+    showToast("📚", "Resource added for students!");
 };
-function renderResources(data){
-    const list = document.getElementById("resourceList");
-    const keys = Object.keys(data);
-    if(keys.length===0){ list.innerHTML = `<div class="section-empty">No resources added yet.</div>`; return; }
-    keys.sort((a,b)=>(data[b].ts||0)-(data[a].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        const r = data[k];
-        html += `<div class="resource-card"><span class="resource-icon">${resIcons[r.type]||"📎"}</span>
-            <div class="resource-info"><div class="resource-title">${escapeHtml(r.title||"")}</div><div class="resource-type">${resNames[r.type]||""}</div></div>
-            <button class="del-btn" onclick="deleteResource('${k}')">🗑</button></div>`;
-    });
-    list.innerHTML = html;
-}
-window.deleteResource = async function(key){ await remove(ref(db, `${RESOURCES_PATH}/${key}`)); };
 
-/* ============ HOMEWORK ============ */
 window.addHomework = async function(){
     const title = document.getElementById("hwTitle").value.trim();
     const deadline = document.getElementById("hwDeadline").value.trim();
     const desc = document.getElementById("hwDesc").value.trim();
-    if(!title){ showToast("⚠️","Add a title."); return; }
-    await push(ref(db, HOMEWORK_PATH), { title, deadline, desc, ts: Date.now() });
+
+    if(!title){ alert("Homework title is required!"); return; }
+
+    await push(ref(db, HOMEWORK_PATH), {
+        title: title,
+        deadline: deadline,
+        desc: desc,
+        ts: Date.now()
+    });
     document.getElementById("hwTitle").value = "";
     document.getElementById("hwDeadline").value = "";
     document.getElementById("hwDesc").value = "";
-    showToast("📝","Homework assigned.");
+    showToast("📝", "Homework assigned!");
 };
-function renderHomework(data){
-    const list = document.getElementById("homeworkList");
-    const keys = Object.keys(data);
-    if(keys.length===0){ list.innerHTML = `<div class="section-empty">No homework assigned yet.</div>`; return; }
-    keys.sort((a,b)=>(data[b].ts||0)-(data[a].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        const h = data[k];
-        html += `<div class="homework-card">
-            <div class="hw-title-row"><div class="homework-title">${escapeHtml(h.title||"")}</div><button class="del-btn" onclick="deleteHomework('${k}')">🗑</button></div>
-            ${h.deadline?`<div class="homework-deadline">⏰ ${escapeHtml(h.deadline)}</div>`:""}
-            ${h.desc?`<div class="homework-desc">${escapeHtml(h.desc)}</div>`:""}
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-window.deleteHomework = async function(key){ await remove(ref(db, `${HOMEWORK_PATH}/${key}`)); };
 
-/* ============ UTIL ============ */
-function escapeHtml(value){
-    if(value===null||value===undefined) value="";
-    return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+/* ============ UTILS ============ */
+window.copyStudentLink = function(){
+    const studentUrl = location.origin + location.pathname.replace("classteacher.html", "liveclass.html") + "?class=" + encodeURIComponent(CLASS_ID);
+    navigator.clipboard.writeText(studentUrl).then(()=>{
+        showToast("🔗", "Student link copied to clipboard!");
+    }).catch(()=>{
+        prompt("Copy Student Link:", studentUrl);
+    });
+};
+
+function escapeHtml(str){
+    if(!str) return "";
+    return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
-function escapeAttr(value){ return escapeHtml(value); }
 </script>
 </body>
 </html>
