@@ -159,21 +159,32 @@ input,textarea{ font-family:inherit; }
 .video-frame-wrap:fullscreen{ border-radius:0; }
 .video-frame-wrap:fullscreen iframe{ width:100%; height:100%; }
 
-/* teacher floating card, top-left over video */
+/* Teacher & Meta Bar Outside Video */
+.meta-outside-bar{
+    margin-top:12px;
+    padding:12px 16px;
+    border-radius:var(--radius-md);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.teacher-meta-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
 .teacher-chip{
-    position:absolute;
-    top:14px; left:14px;
-    z-index:20;
     display:flex;
     align-items:center;
     gap:10px;
-    padding:8px 14px 8px 8px;
-    border-radius:99px;
-    pointer-events:none;
 }
 
 .teacher-avatar{
-    width:36px; height:36px;
+    width:40px; height:40px;
     border-radius:50%;
     object-fit:cover;
     border:2px solid rgba(56,189,248,.55);
@@ -181,13 +192,23 @@ input,textarea{ font-family:inherit; }
 }
 
 .teacher-meta{ line-height:1.25; }
-.teacher-name{ font-size:13px; font-weight:600; color:#fff; }
-.teacher-role{ font-size:10.5px; color:var(--ink-dim); }
+.teacher-name{ font-size:14px; font-weight:600; color:#fff; }
+.teacher-role{ font-size:11px; color:var(--ink-dim); }
+
+.viewer-pill{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 12px;
+    border-radius:99px;
+    background:rgba(8,13,26,.55);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(10px);
+    font-size:12px;
+    color:var(--ink-dim);
+}
 
 .live-pill{
-    position:absolute;
-    top:14px; right:14px;
-    z-index:20;
     display:flex;
     align-items:center;
     gap:6px;
@@ -214,22 +235,6 @@ input,textarea{ font-family:inherit; }
     100%{ box-shadow:0 0 0 0 rgba(239,68,68,0); }
 }
 
-.viewer-pill{
-    position:absolute;
-    bottom:14px; left:14px;
-    z-index:20;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:6px 11px;
-    border-radius:99px;
-    background:rgba(8,13,26,.55);
-    border:1px solid var(--glass-border);
-    backdrop-filter:blur(10px);
-    font-size:11.5px;
-    color:var(--ink-dim);
-}
-
 .video-controls{
     position:absolute;
     bottom:14px; right:14px;
@@ -239,7 +244,7 @@ input,textarea{ font-family:inherit; }
 }
 
 .ctrl-btn{
-    width:40px; height:40px;
+    width:38px; height:38px;
     border-radius:11px;
     border:1px solid rgba(255,255,255,.18);
     background:rgba(8,13,26,.55);
@@ -248,7 +253,7 @@ input,textarea{ font-family:inherit; }
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:17px;
+    font-size:16px;
     transition:.15s;
 }
 .ctrl-btn:hover{ background:rgba(56,189,248,.35); }
@@ -300,7 +305,7 @@ input,textarea{ font-family:inherit; }
 
 /* class info bar */
 .info-bar{
-    margin-top:14px;
+    margin-top:10px;
     padding:14px 16px;
     border-radius:var(--radius-md);
     display:flex;
@@ -706,18 +711,6 @@ body.chat-is-open .chat-fab {
 
                 <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
 
-                <div class="teacher-chip glass hidden" id="teacherChip">
-                    <img id="teacherAvatar" class="teacher-avatar" src="" alt="">
-                    <div class="teacher-meta">
-                        <div class="teacher-name" id="teacherNameEl">—</div>
-                        <div class="teacher-role">শিক্ষক</div>
-                    </div>
-                </div>
-
-                <div class="live-pill hidden" id="livePill"><span class="live-dot"></span> LIVE</div>
-
-                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span> জন দেখছে</div>
-
                 <div class="reaction-layer" id="reactionLayer"></div>
 
                 <div class="video-controls hidden" id="videoControls">
@@ -725,6 +718,22 @@ body.chat-is-open .chat-fab {
                     <button class="ctrl-btn" id="fsBtn" title="ফুলস্ক্রিন" onclick="toggleFullscreen()">⛶</button>
                 </div>
             </div>
+        </div>
+
+        <!-- NEW OUTSIDE TEACHER & STATUS BAR -->
+        <div class="meta-outside-bar glass hidden" id="metaOutsideBar">
+            <div class="teacher-meta-left">
+                <div class="teacher-chip" id="teacherChip">
+                    <img id="teacherAvatar" class="teacher-avatar" src="" alt="">
+                    <div class="teacher-meta">
+                        <div class="teacher-name" id="teacherNameEl">—</div>
+                        <div class="teacher-role">শিক্ষক</div>
+                    </div>
+                </div>
+                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span> জন দেখছে</div>
+            </div>
+
+            <div class="live-pill hidden" id="livePill"><span class="live-dot"></span> LIVE</div>
         </div>
 
         <div class="info-bar glass">
@@ -778,7 +787,7 @@ body.chat-is-open .chat-fab {
         </div>
         <div class="field">
             <label>Teacher No.</label>
-            <input type="text" id="tlTeacherNo" placeholder="GVX-001098">
+            <input type="text" id="tlTeacherNo" placeholder="Teacher No.">
         </div>
         <div class="field">
             <label>Teacher Password</label>
@@ -786,7 +795,7 @@ body.chat-is-open .chat-fab {
         </div>
         <div class="field">
             <label>Admin Email</label>
-            <input type="email" id="tlEmail" placeholder="gaiyumtamim@gmail.com">
+            <input type="email" id="tlEmail" placeholder="Admin e-mail">
         </div>
         <button class="btn btn-save" onclick="submitTeacherLogin()">প্রবেশ করুন</button>
         <div id="tlError" class="login-error"></div>
@@ -945,6 +954,7 @@ function renderSession(){
     const livePill = document.getElementById("livePill");
     const viewerPill = document.getElementById("viewerPill");
     const videoControls = document.getElementById("videoControls");
+    const metaOutsideBar = document.getElementById("metaOutsideBar");
 
     const isLive = currentSession && currentSession.isLive && currentSession.youtubeId;
 
@@ -963,6 +973,7 @@ function renderSession(){
         livePill.classList.remove("hidden");
         viewerPill.classList.remove("hidden");
         videoControls.classList.remove("hidden");
+        metaOutsideBar.classList.remove("hidden");
     }else{
         currentYoutubeId = null;
         ytFrame.src = "";
@@ -971,6 +982,7 @@ function renderSession(){
         livePill.classList.add("hidden");
         viewerPill.classList.add("hidden");
         videoControls.classList.add("hidden");
+        metaOutsideBar.classList.add("hidden");
     }
 
     if(currentSession && currentSession.teacherName){
@@ -1304,14 +1316,10 @@ window.teacherGoLive = async function(){
     }
 };
 
-/* ক্লাস শেষ করলে মেসেজ, বিষয় ও লাইভ সম্পর্কিত সমস্ত ডেটা ডাটাবেজ থেকে মুছে ফেলার সমাধান */
 window.teacherEndLive = async function(){
     if(!confirm("আপনি কি নিশ্চিত লাইভ ক্লাস শেষ করতে চান? লাইভ ক্লাসের সমস্ত বিষয় এবং চ্যাট মুছে যাবে।")) return;
     try{
-        // ১. চ্যাট ডাটা রিভুম বা ডিলিট করা
         await remove(ref(db, CHAT_PATH));
-        
-        // ২. সেশন ডাটা রিমুভ করা
         await remove(ref(db, SESSION_PATH));
 
         alert("⏹ লাইভ ক্লাস শেষ হয়েছে এবং সমস্ত তথ্য মুছে ফেলা হয়েছে।");
