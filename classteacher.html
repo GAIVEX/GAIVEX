@@ -222,21 +222,21 @@ input,textarea,select{ font-family:inherit; }
 
             <div class="form-group">
                 <label class="form-label">YouTube Video ID or Live Link</label>
-                <input id="ytInput" class="form-control" placeholder="Paste YouTube link or ID (e.g. dQw4w9WgXcQ)">
+                <input id="ytInput" class="form-control" placeholder="Paste YouTube link or ID (e.g. https://www.youtube.com/live/2W5d_8RExJU)">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Class Title</label>
-                    <input id="classTitleInput" class="form-control" placeholder="e.g. Physics Chapter 3: Dynamics">
+                    <input id="classTitleInput" class="form-control" placeholder="e.g. Complex Number Lecture">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Subject</label>
                     <select id="subjectSelect" class="form-control">
+                        <option value="math">Higher Math</option>
                         <option value="physics">Physics</option>
                         <option value="chemistry">Chemistry</option>
                         <option value="biology">Biology</option>
-                        <option value="math">Higher Math</option>
                     </select>
                 </div>
             </div>
@@ -524,14 +524,21 @@ function bindFirebaseListeners(){
     });
 }
 
-/* ============ LIVE CONTROL ACTIONS ============ */
+/* ============ ADVANCED YOUTUBE ID PARSER ============ */
 function parseYoutubeId(urlOrId){
     if(!urlOrId) return "";
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = urlOrId.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : urlOrId.trim();
+    const text = urlOrId.trim();
+    // Handles normal watch, live, embed, short links, etc.
+    const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = text.match(regExp);
+    if (match && match[1]) {
+        return match[1];
+    }
+    // If user provided a raw 11-char ID
+    return text.length === 11 ? text : text;
 }
 
+/* ============ LIVE CONTROL ACTIONS ============ */
 window.startLive = async function(){
     const rawYt = document.getElementById("ytInput").value;
     const ytId = parseYoutubeId(rawYt);
@@ -579,7 +586,16 @@ function updateSessionUI(s){
         btnStart.classList.add("hidden");
         btnEnd.classList.remove("hidden");
 
-        iframe.src = `https://www.youtube.com/embed/${s.youtubeId}?autoplay=1`;
+        // Restore Input Fields and Iframe Preview if Teacher Rejoins
+        if(s.youtubeId) {
+            document.getElementById("ytInput").value = s.youtubeId;
+            iframe.src = `https://www.youtube.com/embed/${s.youtubeId}?autoplay=1`;
+        }
+        if(s.title) document.getElementById("classTitleInput").value = s.title;
+        if(s.subject) document.getElementById("subjectSelect").value = s.subject;
+        if(s.paper) document.getElementById("paperSelect").value = s.paper;
+        if(s.chapter) document.getElementById("chapterInput").value = s.chapter;
+
         iframe.classList.remove("hidden");
         placeholder.classList.add("hidden");
     }else{
@@ -726,7 +742,7 @@ window.launchPoll = async function(){
         question: q,
         options: options,
         startedAt: Date.now(),
-        endsAt: Date.now() + 60000 // 60s default
+        endsAt: Date.now() + 60000
     };
 
     await set(ref(db, POLL_PATH), pollData);
@@ -778,7 +794,7 @@ window.launchQuiz = async function(){
         active: true,
         question: q,
         options: options,
-        correctIndex: 0, // Option 1 is correct
+        correctIndex: 0,
         startedAt: Date.now(),
         endsAt: Date.now() + 45000
     };
