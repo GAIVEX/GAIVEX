@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>GAIVEX Live Class</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -34,13 +34,11 @@
 
 html,body{
     height:100%;
-    font-family:'Hind Siliguri',sans-serif;
+    font-family:'Outfit',sans-serif;
     background:var(--bg);
     color:var(--ink);
     overflow-x:hidden;
 }
-
-.latin{ font-family:'Outfit',sans-serif; }
 
 body{
     background:
@@ -59,7 +57,7 @@ input,textarea{ font-family:inherit; }
 ::-webkit-scrollbar{ width:6px; height:6px; }
 ::-webkit-scrollbar-thumb{ background:rgba(148,163,184,.25); border-radius:10px; }
 
-/* ============ GLASS PRIMITIVE ============ */
+/* GLASS PRIMITIVE */
 .glass{
     background:var(--glass);
     backdrop-filter:blur(22px) saturate(160%);
@@ -68,7 +66,7 @@ input,textarea{ font-family:inherit; }
     box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
 }
 
-/* ============ TOPBAR ============ */
+/* TOPBAR */
 .topbar{
     position:sticky;
     top:0;
@@ -89,7 +87,6 @@ input,textarea{ font-family:inherit; }
 }
 
 .brand-mark{
-    font-family:'Outfit',sans-serif;
     font-weight:800;
     font-size:20px;
     letter-spacing:.2px;
@@ -102,13 +99,13 @@ input,textarea{ font-family:inherit; }
     color:var(--ink-faint);
     border-left:1px solid var(--glass-border);
     padding-left:10px;
-    display:none;
 }
 
 .topbar-right{
     display:flex;
     align-items:center;
     gap:10px;
+    position:relative;
 }
 
 .icon-btn{
@@ -126,20 +123,25 @@ input,textarea{ font-family:inherit; }
 }
 .icon-btn:hover{ color:var(--ink); border-color:rgba(56,189,248,.4); }
 
-.icon-btn .mini-badge{
+/* 3-DOTS DROPDOWN MENU */
+.dropdown-menu{
     position:absolute;
-    top:-4px; right:-4px;
-    background:var(--rose);
-    color:#fff;
-    font-size:9px;
-    font-weight:700;
-    min-width:15px; height:15px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    padding:0 3px;
+    top:48px;
+    right:0;
+    width:320px;
+    max-height:450px;
+    overflow-y:auto;
+    border-radius:var(--radius-md);
+    padding:12px;
+    z-index:300;
+    display:none;
+    flex-direction:column;
+    gap:12px;
 }
+.dropdown-menu.show{ display:flex; }
+.dropdown-menu h4{ font-size:13px; color:var(--sky); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
 
-/* ============ NOTIFICATION TOASTS ============ */
+/* NOTIFICATION TOASTS */
 .toast-stack{
     position:fixed;
     top:70px; right:14px;
@@ -162,7 +164,7 @@ input,textarea{ font-family:inherit; }
 @keyframes toast-in{ from{ opacity:0; transform:translateX(20px);} to{ opacity:1; transform:translateX(0);} }
 .toast-icon{ font-size:15px; }
 
-/* ============ ANNOUNCEMENT / PINNED BANNER ============ */
+/* ANNOUNCEMENT / PINNED BANNER */
 .banner-stack{
     max-width:1400px;
     margin:12px auto 0;
@@ -186,9 +188,8 @@ input,textarea{ font-family:inherit; }
 .top-banner .b-body{ flex:1; }
 .top-banner .b-label{ font-weight:700; font-size:11px; color:var(--gold); margin-bottom:2px; }
 .top-banner.pinned .b-label{ color:var(--sky); }
-.top-banner .b-close{ background:none; border:none; color:var(--ink-faint); font-size:16px; flex-shrink:0; }
 
-/* ============ LAYOUT ============ */
+/* LAYOUT */
 .stage{
     max-width:1400px;
     margin:0 auto;
@@ -199,7 +200,7 @@ input,textarea{ font-family:inherit; }
     align-items:start;
 }
 
-/* ============ VIDEO BLOCK ============ */
+/* VIDEO BLOCK */
 .video-block{
     border-radius:var(--radius-lg);
     overflow:hidden;
@@ -301,7 +302,6 @@ input,textarea{ font-family:inherit; }
     border-radius:99px;
     background:rgba(239,68,68,.16);
     border:1px solid rgba(239,68,68,.45);
-    font-family:'Outfit',sans-serif;
     font-weight:700;
     font-size:11.5px;
     letter-spacing:.5px;
@@ -343,7 +343,26 @@ input,textarea{ font-family:inherit; }
 }
 .ctrl-btn:hover{ background:rgba(56,189,248,.35); }
 
-/* raise hand floating button on video */
+/* Landscape Comment Toggle */
+.fs-comment-overlay{
+    display:none;
+    position:absolute;
+    bottom:60px; right:14px;
+    width:280px; height:180px;
+    background:rgba(8,13,26,.75);
+    backdrop-filter:blur(10px);
+    border-radius:12px;
+    border:1px solid var(--glass-border);
+    z-index:30;
+    flex-direction:column;
+    padding:8px;
+}
+.video-frame-wrap:fullscreen .fs-comment-overlay.show{ display:flex; }
+.fs-comment-list{ flex:1; overflow-y:auto; font-size:11px; display:flex; flex-direction:column; gap:4px; margin-bottom:6px; }
+.fs-comment-input{ display:flex; gap:4px; }
+.fs-comment-input input{ flex:1; padding:4px 8px; border-radius:6px; border:1px solid var(--glass-border); background:rgba(0,0,0,.5); color:#fff; font-size:11px; }
+
+/* Raise hand floating button */
 .raise-hand-fab{
     position:absolute;
     bottom:14px; left:14px;
@@ -364,7 +383,7 @@ input,textarea{ font-family:inherit; }
 .raise-hand-fab:hover{ background:rgba(56,189,248,.3); }
 .raise-hand-fab.active{ background:linear-gradient(135deg,#f59e0b,#d97706); border-color:transparent; }
 
-/* reactions layer */
+/* Reactions layer */
 .reaction-layer{
     position:absolute; inset:0;
     pointer-events:none;
@@ -383,7 +402,7 @@ input,textarea{ font-family:inherit; }
     100%{ transform:translateY(-260px) translateX(var(--drift,20px)) scale(1.05); opacity:0; }
 }
 
-/* waiting / offline state */
+/* Offline state */
 .offline-screen{
     position:absolute; inset:0;
     display:flex;
@@ -409,7 +428,7 @@ input,textarea{ font-family:inherit; }
 .offline-title{ font-size:18px; font-weight:700; }
 .offline-sub{ font-size:13px; color:var(--ink-dim); max-width:320px; line-height:1.6; }
 
-/* class info bar */
+/* Class info bar */
 .info-bar{
     margin-top:10px;
     padding:14px 16px;
@@ -432,71 +451,31 @@ input,textarea{ font-family:inherit; }
     padding:5px 10px;
     border-radius:99px;
 }
-/* ============ BELOW-VIDEO PANELS (resources / homework / smart summary) ============ */
-.section-block{
-    margin-top:12px;
-    border-radius:var(--radius-md);
-    padding:16px;
-}
-.section-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:10px;
-}
-.section-head h3{ font-size:14px; font-weight:700; display:flex; align-items:center; gap:7px; }
-.section-empty{ color:var(--ink-faint); font-size:12.5px; padding:8px 0; }
 
-.resource-card{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:10px 12px;
-    border-radius:11px;
-    background:rgba(15,23,42,.5);
+/* RESOURCES / HOMEWORK ITEMS inside Dropdown */
+.section-empty{ color:var(--ink-faint); font-size:12px; padding:6px 0; }
+.resource-card, .homework-card{
+    padding:8px 10px;
+    border-radius:8px;
+    background:rgba(15,23,42,.6);
     border:1px solid var(--glass-border);
-    margin-bottom:8px;
+    margin-bottom:6px;
+    font-size:12px;
 }
-.resource-card:last-child{ margin-bottom:0; }
-.resource-icon{ font-size:18px; }
-.resource-info{ flex:1; min-width:0; }
-.resource-title{ font-size:13px; font-weight:600; }
-.resource-type{ font-size:10.5px; color:var(--ink-faint); }
 .resource-open{
-    padding:6px 12px;
+    display:inline-block;
+    margin-top:4px;
+    padding:3px 8px;
     border-radius:99px;
     background:rgba(56,189,248,.16);
     border:1px solid rgba(56,189,248,.4);
     color:var(--sky);
-    font-size:11.5px;
+    font-size:10.5px;
     font-weight:700;
     text-decoration:none;
-    white-space:nowrap;
 }
 
-.homework-card{
-    padding:12px;
-    border-radius:11px;
-    background:rgba(15,23,42,.5);
-    border:1px solid var(--glass-border);
-    margin-bottom:8px;
-}
-.homework-card:last-child{ margin-bottom:0; }
-.homework-title{ font-size:13px; font-weight:600; margin-bottom:4px; }
-.homework-deadline{ font-size:11px; color:var(--rose); margin-bottom:5px; }
-.homework-desc{ font-size:12px; color:var(--ink-dim); line-height:1.5; margin-bottom:8px; }
-.homework-done-toggle{
-    padding:6px 12px;
-    border-radius:99px;
-    border:1px solid var(--glass-border);
-    background:rgba(16,185,129,.08);
-    color:var(--ok);
-    font-size:11.5px;
-    font-weight:700;
-}
-.homework-done-toggle.done{ background:rgba(16,185,129,.25); }
-
-/* ============ CHAT / TAB PANEL ============ */
+/* CHAT / TAB PANEL */
 .chat-panel{
     border-radius:var(--radius-lg);
     display:flex;
@@ -583,16 +562,10 @@ input,textarea{ font-family:inherit; }
     font-size:9px;
     padding:1.5px 6px;
     border-radius:6px;
-    font-family:'Outfit',sans-serif;
 }
 
 .msg-bubble-wrap{ display:flex; align-items:flex-end; gap:5px; }
 .msg-row.me .msg-bubble-wrap{ flex-direction:row-reverse; }
-.msg-del-btn{
-    background:none; border:none; color:var(--ink-faint); font-size:11px;
-    opacity:.6; flex-shrink:0;
-}
-.msg-del-btn:hover{ opacity:1; color:var(--rose); }
 
 .msg-bubble{
     padding:9px 13px;
@@ -702,7 +675,7 @@ input,textarea{ font-family:inherit; }
     font-size:11.5px;
 }
 
-/* ---- Q&A tab ---- */
+/* Q&A tab */
 .qna-body{ flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:9px; }
 .qna-card{
     padding:11px 12px;
@@ -715,58 +688,15 @@ input,textarea{ font-family:inherit; }
 .qna-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:5px; }
 .qna-name{ font-size:11px; color:var(--ink-faint); }
 .qna-text{ font-size:13px; line-height:1.5; }
-.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:9px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
+.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:99px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
 .qna-answer b{ color:var(--sky); }
-.qna-actions{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
-.qna-mini-btn{
-    font-size:11px;
-    padding:4px 9px;
-    border-radius:99px;
-    border:1px solid var(--glass-border);
-    background:rgba(15,23,42,.5);
-    color:var(--ink-dim);
-    display:flex; align-items:center; gap:4px;
-}
-.qna-mini-btn.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
-.qna-status-tag{ font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:6px; }
-.qna-status-tag.wait{ background:rgba(148,163,184,.18); color:var(--ink-dim); }
-.qna-status-tag.done{ background:rgba(16,185,129,.2); color:#6ee7b7; }
-.qna-filter-row{ display:flex; gap:6px; padding:10px 12px 0; }
-.qna-filter-row .qna-mini-btn{ flex:1; justify-content:center; }
 
-/* ---- Poll / Quiz tab ---- */
+/* Poll / Quiz tab */
 .pq-body{ flex:1; overflow-y:auto; padding:14px; }
 .pq-empty{ text-align:center; color:var(--ink-faint); font-size:12.5px; padding:30px 10px; }
-.pq-card{ padding:14px; border-radius:14px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); }
-.pq-question{ font-size:14px; font-weight:700; margin-bottom:12px; line-height:1.5; }
-.pq-timer{ font-size:11px; color:var(--rose); font-weight:700; margin-bottom:10px; }
-.pq-option{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:11px 13px; border-radius:11px;
-    background:rgba(30,41,59,.6); border:1px solid var(--glass-border);
-    margin-bottom:8px; font-size:13px; position:relative; overflow:hidden;
-}
-.pq-option-fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(56,189,248,.16); z-index:0; transition:width .4s; }
-.pq-option-label{ position:relative; z-index:1; }
-.pq-option-pct{ position:relative; z-index:1; font-weight:700; color:var(--sky); font-size:12px; }
-.pq-option.correct{ border-color:rgba(16,185,129,.55); }
-.pq-option.correct .pq-option-fill{ background:rgba(16,185,129,.22); }
-.pq-option.wrong-pick{ border-color:rgba(244,63,94,.55); }
-.pq-option.selectable{ cursor:pointer; }
-.pq-option.selectable:hover{ border-color:rgba(56,189,248,.4); }
-.pq-option.chosen{ border-color:var(--sky); }
-.pq-vote-note{ font-size:11px; color:var(--ink-faint); margin-top:6px; text-align:center; }
-.pq-result-note{ text-align:center; font-size:13px; font-weight:700; margin-top:8px; }
-.pq-result-note.correct{ color:var(--ok); }
-.pq-result-note.wrong{ color:var(--rose); }
-.pq-close-btn{ width:100%; margin-top:12px; padding:10px; border-radius:11px; border:none; background:rgba(239,68,68,.16); color:#fca5a5; font-weight:700; font-size:12.5px; }
-.pq-history-item{ padding:9px 11px; border-radius:10px; background:rgba(15,23,42,.4); border:1px solid var(--glass-border); margin-top:8px; font-size:11.5px; color:var(--ink-dim); }
 
-/* ---- People / Leaderboard tab ---- */
+/* People tab */
 .people-body{ flex:1; overflow-y:auto; padding:12px; }
-.people-sub-tabs{ display:flex; gap:6px; margin-bottom:10px; }
-.people-sub-tabs button{ flex:1; padding:7px; border-radius:9px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); font-size:11.5px; font-weight:600; }
-.people-sub-tabs button.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
 .people-row{
     display:flex; align-items:center; gap:10px;
     padding:9px 10px; border-radius:10px;
@@ -774,13 +704,8 @@ input,textarea{ font-family:inherit; }
 }
 .people-avatar-sm{ width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#38bdf8,#0284c7); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#04121e; flex-shrink:0; }
 .people-name{ font-size:12.5px; flex:1; }
-.people-rank{ font-size:11px; color:var(--gold); font-weight:700; width:20px; }
-.people-score{ font-size:12px; color:var(--sky); font-weight:700; }
-.raise-row{ display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:10px; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); margin-bottom:6px; }
-.raise-row .allow-btn{ margin-left:auto; padding:5px 10px; border-radius:99px; border:none; background:var(--gold); color:#1a0f00; font-size:11px; font-weight:700; }
-.raise-row .dismiss-btn{ padding:5px 8px; border-radius:99px; border:1px solid var(--glass-border); background:none; color:var(--ink-faint); font-size:11px; }
 
-/* mobile chat drawer */
+/* Mobile chat FAB drawer */
 .chat-fab{
     display:none;
     position:fixed;
@@ -795,10 +720,8 @@ input,textarea{ font-family:inherit; }
     align-items:center;
     justify-content:center;
     box-shadow:0 10px 30px rgba(2,132,199,.5);
-    transition: opacity 0.2s, display 0.2s;
 }
 
-/* চ্যাট ওপেন থাকলে চ্যাট বাটন পুরোপুরি হাইড রাখার জন্য CSS নিয়ম */
 .chat-panel.open ~ .chat-fab,
 body.chat-is-open .chat-fab {
     display: none !important;
@@ -816,7 +739,8 @@ body.chat-is-open .chat-fab {
     display:flex; align-items:center; justify-content:center;
     padding:0 4px;
 }
-/* ============ NAME GATE ============ */
+
+/* NAME GATE */
 .gate-overlay{
     position:fixed; inset:0;
     z-index:500;
@@ -832,7 +756,7 @@ body.chat-is-open .chat-fab {
     border-radius:var(--radius-lg);
     padding:26px;
 }
-.gate-logo{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
+.gate-logo{ font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
 .gate-logo span{ color:var(--rose); }
 .gate-title{ text-align:center; margin-top:6px; font-size:13px; color:var(--ink-dim); margin-bottom:20px; }
 .gate-input{
@@ -858,164 +782,14 @@ body.chat-is-open .chat-fab {
     font-size:14.5px;
 }
 
-/* ============ TEACHER CONTROL MODAL ============ */
-.modal-overlay{
-    position:fixed; inset:0;
-    z-index:600;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:16px;
-    background:rgba(4,7,15,.72);
-    backdrop-filter:blur(6px);
-}
-.modal-overlay.show{ display:flex; }
-
-.modal-card{
-    width:100%; max-width:600px;
-    max-height:90vh;
-    overflow-y:auto;
-    border-radius:var(--radius-lg);
-    padding:22px;
-}
-
-.modal-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:14px;
-}
-.modal-top h3{ font-size:16px; color:var(--sky); }
-.modal-close{ background:none; border:none; color:var(--ink-dim); font-size:22px; }
-
-.tc-tabs{ display:flex; gap:4px; overflow-x:auto; margin-bottom:16px; padding-bottom:2px; scrollbar-width:none; }
-.tc-tabs::-webkit-scrollbar{ display:none; }
-.tc-tab-btn{
-    flex-shrink:0;
-    padding:8px 12px;
-    border-radius:99px;
-    border:1px solid var(--glass-border);
-    background:rgba(15,23,42,.5);
-    color:var(--ink-dim);
-    font-size:12px;
-    font-weight:600;
-}
-.tc-tab-btn.active{ color:#04121e; background:linear-gradient(135deg,#38bdf8,#0284c7); border-color:transparent; }
-.tc-pane{ display:none; }
-.tc-pane.active{ display:block; }
-
-.field{ margin-bottom:12px; }
-.field label{ display:block; font-size:12px; color:var(--ink-dim); margin-bottom:5px; font-weight:600; }
-.field input, .field select, .field textarea{
-    width:100%;
-    padding:10px 12px;
-    border-radius:99px;
-    border:1px solid var(--glass-border);
-    background:rgba(15,23,42,.6);
-    color:#fff;
-    outline:none;
-    font-size:13.5px;
-}
-.field textarea{ border-radius:14px; resize:vertical; }
-.field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--sky); }
-.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-.status-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 14px;
-    border-radius:11px;
-    background:rgba(15,23,42,.5);
-    border:1px solid var(--glass-border);
-    margin:14px 0;
-}
-.status-text{ font-size:13px; font-weight:600; }
-.status-text.on{ color:#34d399; }
-.status-text.off{ color:var(--ink-faint); }
-
-.btn{
-    border:none;
-    border-radius:11px;
-    padding:12px;
-    font-weight:700;
-    font-size:14px;
-    width:100%;
-}
-.btn-go-live{ background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; }
-.btn-end-live{ background:rgba(239,68,68,.14); color:#fca5a5; border:1px solid rgba(239,68,68,.4); }
-.btn-save{ background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; margin-top:6px; }
-.btn-secondary{ background:rgba(56,189,248,.12); color:var(--sky); border:1px solid rgba(56,189,248,.35); margin-top:6px; }
-.btn-danger{ background:rgba(239,68,68,.14); color:#fca5a5; border:1px solid rgba(239,68,68,.4); }
-.btn-gold{ background:linear-gradient(135deg,#f59e0b,#d97706); color:#1a0f00; }
-.btn-sm{ padding:9px; font-size:12.5px; }
-
-.divider{ height:1px; background:var(--glass-border); margin:18px 0; }
-
-.teacher-chat-mini{
-    max-height:220px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    padding:10px;
-    border-radius:10px;
-    background:rgba(15,23,42,.5);
-    border:1px solid var(--glass-border);
-    margin-bottom:10px;
-}
-
-.tc-mini-list{
-    max-height:260px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.tc-list-item{
-    padding:9px 11px;
-    border-radius:10px;
-    background:rgba(15,23,42,.5);
-    border:1px solid var(--glass-border);
-    font-size:12.5px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-}
-.tc-list-item .grow{ flex:1; min-width:0; }
-.tc-list-item .row-actions{ display:flex; gap:5px; }
-.tc-tiny-btn{ font-size:10.5px; padding:4px 8px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(30,41,59,.6); color:var(--ink-dim); }
-.tc-tiny-btn.gold{ color:var(--gold); border-color:rgba(245,158,11,.4); }
-.tc-tiny-btn.rose{ color:var(--rose); border-color:rgba(244,63,94,.4); }
-.tc-tiny-btn.ok{ color:var(--ok); border-color:rgba(16,185,129,.4); }
-
-.opt-row{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-.opt-row input[type=text]{ flex:1; }
-.opt-row input[type=radio]{ width:18px; height:18px; accent-color:var(--sky); }
-
-.login-error{
-    margin-top:10px;
-    padding:9px 11px;
-    border-radius:8px;
-    background:rgba(239,68,68,.12);
-    border:1px solid rgba(239,68,68,.3);
-    color:#fca5a5;
-    font-size:12.5px;
-    display:none;
-}
-
-.helper-text{ font-size:11px; color:var(--ink-faint); margin-top:-6px; margin-bottom:12px; line-height:1.5; }
-
-/* ============ RESPONSIVE ============ */
+/* RESPONSIVE */
 @media(max-width:980px){
     .stage{ grid-template-columns:1fr; padding:12px; }
     .chat-panel{
         position:fixed;
         right:0; bottom:0; left:0;
         top:auto;
-        height:78vh;
+        height:70vh;
         border-radius:20px 20px 0 0;
         transform:translateY(105%);
         transition:transform .28s ease;
@@ -1034,13 +808,7 @@ body.chat-is-open .chat-fab {
     .live-pill{ font-size:10px; padding:5px 9px; }
     .video-controls{ bottom:10px; right:10px; }
     .ctrl-btn{ width:36px; height:36px; font-size:15px; }
-    .raise-hand-fab span.rh-label{ display:none; }
     .toast-stack{ left:12px; right:12px; max-width:none; }
-}
-
-/* reduced motion */
-@media (prefers-reduced-motion: reduce){
-    .live-dot, .float-emoji{ animation:none!important; }
 }
 </style>
 </head>
@@ -1053,9 +821,9 @@ body.chat-is-open .chat-fab {
 <div id="gateOverlay" class="gate-overlay">
     <div class="gate-card glass">
         <div class="gate-logo">GAIVEX<span>.</span></div>
-        <div class="gate-title">ক্লাসে যোগ দেওয়ার আগে আপনার নাম লিখুন</div>
-        <input id="gateNameInput" class="gate-input" placeholder="আপনার নাম" maxlength="40">
-        <button class="gate-btn" onclick="enterClass()">🎬 লাইভ ক্লাসে প্রবেশ করুন</button>
+        <div class="gate-title">Enter your name to join the class</div>
+        <input id="gateNameInput" class="gate-input" placeholder="Your Full Name" maxlength="40">
+        <button class="gate-btn" onclick="enterClass()">🎬 Join Live Class</button>
     </div>
 </div>
 
@@ -1063,12 +831,25 @@ body.chat-is-open .chat-fab {
 <div class="topbar">
     <div class="brand">
         <div class="brand-mark">GAIVEX<span>.</span></div>
-        <div class="brand-tag latin">LIVE CLASS</div>
+        <div class="brand-tag">LIVE CLASS</div>
     </div>
     <div class="topbar-right">
-        <button class="icon-btn" title="সার্চ" onclick="openTab('chat');document.getElementById('chatSearchInput').focus();openChatDrawer();">🔎</button>
-        <button class="icon-btn" title="শেয়ার করুন" onclick="shareClassLink()">🔗</button>
-        <button class="icon-btn" title="Teacher Access" onclick="openTeacherLogin()">⚙️</button>
+        <button class="icon-btn" title="Search" onclick="openTab('chat');document.getElementById('chatSearchInput').focus();openChatDrawer();">🔎</button>
+        <button class="icon-btn" title="Share Link" onclick="shareClassLink()">🔗</button>
+        <!-- 3-DOTS ACTION MENU -->
+        <button class="icon-btn" title="More Options" onclick="toggle3DotsMenu()">⋮</button>
+        
+        <div class="dropdown-menu glass" id="dotsMenu">
+            <div>
+                <h4>📚 Class Resources</h4>
+                <div id="resourceList"><div class="section-empty">No resources uploaded yet.</div></div>
+            </div>
+            <hr style="border:0; border-top:1px solid var(--glass-border);">
+            <div>
+                <h4>📝 Homework</h4>
+                <div id="homeworkList"><div class="section-empty">No homework assigned yet.</div></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1082,37 +863,46 @@ body.chat-is-open .chat-fab {
             <div class="video-frame-wrap" id="videoWrap">
                 <div id="offlineScreen" class="offline-screen">
                     <div class="offline-icon">📡</div>
-                    <div class="offline-title">লাইভ ক্লাস এখনো শুরু হয়নি</div>
-                    <div class="offline-sub">শিক্ষক ক্লাস শুরু করলেই এখানে সরাসরি ভিডিও চালু হয়ে যাবে। একটু অপেক্ষা করুন।</div>
+                    <div class="offline-title">Live class has not started yet</div>
+                    <div class="offline-sub">The stream will begin automatically once the instructor starts the class. Please wait...</div>
                 </div>
 
-                <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
                 <div class="reaction-layer" id="reactionLayer"></div>
 
-                <div class="conn-status" id="connStatus"><span class="conn-dot"></span><span id="connStatusText">সংযুক্ত</span></div>
+                <div class="conn-status" id="connStatus"><span class="conn-dot"></span><span id="connStatusText">Connected</span></div>
 
-                <button class="raise-hand-fab hidden" id="raiseHandBtn" onclick="toggleRaiseHand()">🙋 <span class="rh-label">হাত তুলুন</span></button>
+                <button class="raise-hand-fab hidden" id="raiseHandBtn" onclick="toggleRaiseHand()">🙋 <span class="rh-label">Raise Hand</span></button>
+
+                <!-- Fullscreen Landscape Floating Comment Layer -->
+                <div class="fs-comment-overlay" id="fsCommentOverlay">
+                    <div class="fs-comment-list" id="fsCommentList"></div>
+                    <div class="fs-comment-input">
+                        <input type="text" id="fsInput" placeholder="Comment in landscape..." onkeydown="if(event.key==='Enter') sendFsComment()">
+                        <button class="ctrl-btn" style="width:30px;height:26px;font-size:12px;" onclick="sendFsComment()">➤</button>
+                    </div>
+                </div>
 
                 <div class="video-controls hidden" id="videoControls">
-                    <button class="ctrl-btn" title="রিফ্রেশ" onclick="reloadVideo()">🔄</button>
-                    <button class="ctrl-btn" id="pipBtn" title="Picture-in-Picture" onclick="togglePip()">⧉</button>
-                    <button class="ctrl-btn" id="fsBtn" title="ফুলস্ক্রিন" onclick="toggleFullscreen()">⛶</button>
+                    <button class="ctrl-btn" title="Landscape Comment Toggle" onclick="toggleFsComments()">💬</button>
+                    <button class="ctrl-btn" title="Refresh Video" onclick="reloadVideo()">🔄</button>
+                    <button class="ctrl-btn" id="fsBtn" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
                 </div>
             </div>
         </div>
 
-        <!-- NEW OUTSIDE TEACHER & STATUS BAR -->
+        <!-- TEACHER & META BAR -->
         <div class="meta-outside-bar glass hidden" id="metaOutsideBar">
             <div class="teacher-meta-left">
                 <div class="teacher-chip" id="teacherChip">
                     <img id="teacherAvatar" class="teacher-avatar" src="" alt="">
                     <div class="teacher-meta">
-                        <div class="teacher-name" id="teacherNameEl">— <span class="verify-badge" title="যাচাইকৃত শিক্ষক">✔️</span></div>
-                        <div class="teacher-role" id="teacherSubjectRole">শিক্ষক</div>
+                        <div class="teacher-name" id="teacherNameEl">— <span class="verify-badge" title="Verified Instructor">✔️</span></div>
+                        <div class="teacher-role" id="teacherSubjectRole">Instructor</div>
                     </div>
                 </div>
-                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span> জন দেখছে</div>
+                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span></div>
             </div>
 
             <div class="meta-right-group">
@@ -1121,26 +911,10 @@ body.chat-is-open .chat-fab {
         </div>
 
         <div class="info-bar glass">
-            <div class="info-title" id="classTitle">ক্লাসের জন্য অপেক্ষা করুন</div>
+            <div class="info-title" id="classTitle">Waiting for class stream...</div>
             <span class="chip" id="chipSubject">—</span>
             <span class="chip" id="chipPaper">—</span>
             <span class="chip" id="chipChapter">—</span>
-        </div>
-
-        <!-- CLASS RESOURCES -->
-        <div class="section-block glass">
-            <div class="section-head">
-                <h3>📚 ক্লাস রিসোর্স</h3>
-            </div>
-            <div id="resourceList"><div class="section-empty">এখনো কোনো রিসোর্স যোগ করা হয়নি।</div></div>
-        </div>
-
-        <!-- HOMEWORK -->
-        <div class="section-block glass">
-            <div class="section-head">
-                <h3>📝 হোমওয়ার্ক</h3>
-            </div>
-            <div id="homeworkList"><div class="section-empty">এখনো কোনো হোমওয়ার্ক দেওয়া হয়নি।</div></div>
         </div>
     </div>
 
@@ -1148,21 +922,21 @@ body.chat-is-open .chat-fab {
     <div class="chat-panel glass" id="chatPanel">
         <div class="chat-head">
             <div class="tab-row" id="tabRow">
-                <button class="tab-btn active" data-tab="chat" onclick="openTab('chat')">💬 চ্যাট</button>
-                <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ প্রশ্ন<span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
-                <button class="tab-btn" data-tab="poll" onclick="openTab('poll')">📊 পোল</button>
-                <button class="tab-btn" data-tab="quiz" onclick="openTab('quiz')">🧠 কুইজ</button>
-                <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 জনরা</button>
+                <button class="tab-btn active" data-tab="chat" onclick="openTab('chat')">💬 Chat</button>
+                <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ Questions <span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
+                <button class="tab-btn" data-tab="poll" onclick="openTab('poll')">📊 Polls</button>
+                <button class="tab-btn" data-tab="quiz" onclick="openTab('quiz')">🧠 Quiz</button>
+                <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 Students</button>
             </div>
             <button class="icon-btn" onclick="closeChatDrawer()" style="display:none;flex-shrink:0;" id="chatCloseBtn">✕</button>
         </div>
 
         <!-- CHAT TAB -->
         <div class="tab-content" id="tab-chat">
-            <input class="search-mini" id="chatSearchInput" placeholder="মেসেজ খুঁজুন..." oninput="renderChat(lastChatData||{})">
-            <div class="muted-banner hidden" id="mutedBanner">🔇 আপনাকে চ্যাটে মেসেজ পাঠানো থেকে সাময়িকভাবে বিরত রাখা হয়েছে।</div>
+            <input class="search-mini" id="chatSearchInput" placeholder="Search messages..." oninput="renderChat(lastChatData||{})">
+            <div class="muted-banner hidden" id="mutedBanner">🔇 You are temporarily muted from sending chat messages.</div>
             <div class="chat-body" id="chatBody">
-                <div class="chat-empty">এখনো কোনো মেসেজ নেই। প্রথম মেসেজটি আপনিই লিখুন 👋</div>
+                <div class="chat-empty">No messages yet. Be the first to say hello! 👋</div>
             </div>
 
             <div class="reactions-bar">
@@ -1174,21 +948,16 @@ body.chat-is-open .chat-fab {
             </div>
 
             <div class="chat-foot">
-                <textarea id="chatInput" class="chat-input" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
+                <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
                 <button class="send-btn" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
             </div>   
- </div>
+        </div>
 
         <!-- Q&A TAB -->
         <div class="tab-content hidden" id="tab-qna">
-            <div class="qna-filter-row">
-                <button class="qna-mini-btn active" data-qf="all" onclick="setQnaFilter('all')">সব</button>
-                <button class="qna-mini-btn" data-qf="unanswered" onclick="setQnaFilter('unanswered')">উত্তরহীন</button>
-                <button class="qna-mini-btn" data-qf="answered" onclick="setQnaFilter('answered')">উত্তরিত</button>
-            </div>
-            <div class="qna-body" id="qnaBody"><div class="chat-empty">এখনো কোনো প্রশ্ন নেই। প্রথম প্রশ্নটি জিজ্ঞাসা করুন 🙋</div></div>
+            <div class="qna-body" id="qnaBody"><div class="chat-empty">No questions asked yet. Be the first to ask! 🙋</div></div>
             <div class="chat-foot">
-                <textarea id="qnaInput" class="chat-input" placeholder="আপনার প্রশ্ন লিখুন..." rows="1"></textarea>
+                <textarea id="qnaInput" class="chat-input" placeholder="Type your question..." rows="1"></textarea>
                 <button class="send-btn" onclick="askQuestion()">➤</button>
             </div>
         </div>
@@ -1196,28 +965,21 @@ body.chat-is-open .chat-fab {
         <!-- POLL TAB -->
         <div class="tab-content hidden" id="tab-poll">
             <div class="pq-body" id="pollBody">
-                <div class="pq-empty">এখন কোনো পোল চলছে না। শিক্ষক পোল শুরু করলে এখানে দেখা যাবে।</div>
+                <div class="pq-empty">No active poll right now.</div>
             </div>
         </div>
 
         <!-- QUIZ TAB -->
         <div class="tab-content hidden" id="tab-quiz">
             <div class="pq-body" id="quizBody">
-                <div class="pq-empty">এখন কোনো কুইজ চলছে না। শিক্ষক কুইজ শুরু করলে এখানে দেখা যাবে।</div>
+                <div class="pq-empty">No active quiz right now.</div>
             </div>
         </div>
 
-        <!-- PEOPLE / LEADERBOARD TAB -->
+        <!-- PEOPLE TAB -->
         <div class="tab-content hidden" id="tab-people">
             <div class="people-body">
-                <div class="people-sub-tabs">
-                    <button class="active" data-pf="online" onclick="setPeopleTab('online')">অনলাইন</button>
-                    <button data-pf="board" onclick="setPeopleTab('board')">🏆 লিডারবোর্ড</button>
-                    <button data-pf="hands" onclick="setPeopleTab('hands')">🙋 হাত তোলা</button>
-                </div>
                 <div id="peopleOnlineList"></div>
-                <div id="peopleBoardList" class="hidden"></div>
-                <div id="peopleHandsList" class="hidden"></div>
             </div>
         </div>
     </div>
@@ -1228,251 +990,9 @@ body.chat-is-open .chat-fab {
     <span class="badge hidden" id="chatFabBadge">0</span>
 </button>
 
-<!-- TEACHER LOGIN MODAL -->
-<div class="modal-overlay" id="teacherLoginModal">
-    <div class="modal-card glass">
-        <div class="modal-top">
-            <h3>🔐 Teacher Access</h3>
-            <button class="modal-close" onclick="closeTeacherLogin()">&times;</button>
-        </div>
-        <div class="field">
-            <label>Teacher No.</label>
-            <input type="text" id="tlTeacherNo" placeholder="Teacher No.">
-        </div>
-        <div class="field">
-            <label>Teacher Password</label>
-            <input type="password" id="tlPassword" placeholder="Teacher Password">
-        </div>
-        <div class="field">
-            <label>Admin Email</label>
-            <input type="email" id="tlEmail" placeholder="Admin e-mail">
-        </div>
-        <button class="btn btn-save" onclick="submitTeacherLogin()">প্রবেশ করুন</button>
-        <div id="tlError" class="login-error"></div>
-    </div>
-</div>
-
-<!-- TEACHER CONTROL MODAL -->
-<div class="modal-overlay" id="teacherControlModal">
-    <div class="modal-card glass">
-        <div class="modal-top">
-            <h3>🎛️ Live Class Control</h3>
-            <button class="modal-close" onclick="closeTeacherControl()">&times;</button>
-        </div>
-
-        <div class="status-row">
-            <span class="status-text off" id="tcStatusText">● বর্তমানে অফলাইন</span>
-            <span class="chip" id="tcViewerChip">👁️ 0</span>
-        </div>
-
-        <div class="tc-tabs" id="tcTabs">
-            <button class="tc-tab-btn active" data-tct="stream" onclick="setTcTab('stream')">🎥 স্ট্রিম</button>
-            <button class="tc-tab-btn" data-tct="announce" onclick="setTcTab('announce')">📢 ঘোষণা</button>
-            <button class="tc-tab-btn" data-tct="qna" onclick="setTcTab('qna')">❓ প্রশ্ন</button>
-            <button class="tc-tab-btn" data-tct="hands" onclick="setTcTab('hands')">🙋 হাত</button>
-            <button class="tc-tab-btn" data-tct="poll" onclick="setTcTab('poll')">📊 পোল</button>
-            <button class="tc-tab-btn" data-tct="quiz" onclick="setTcTab('quiz')">🧠 কুইজ</button>
-            <button class="tc-tab-btn" data-tct="resources" onclick="setTcTab('resources')">📚 রিসোর্স</button>
-            <button class="tc-tab-btn" data-tct="homework" onclick="setTcTab('homework')">📝 হোমওয়ার্ক</button>
-            <button class="tc-tab-btn" data-tct="chat" onclick="setTcTab('chat')">💬 চ্যাট</button>
-            <button class="tc-tab-btn" data-tct="attendance" onclick="setTcTab('attendance')">📈 অ্যানালিটিক্স</button>
-        </div>
-
-        <!-- STREAM PANE -->
-        <div class="tc-pane active" id="tcp-stream">
-            <div class="field">
-                <label>YouTube Video লিংক (Unlisted)</label>
-                <input type="text" id="tcYoutubeUrl" placeholder="https://youtu.be/xxxxxxxxxxx">
-            </div>
-
-            <div class="field">
-                <label>ক্লাসের শিরোনাম</label>
-                <input type="text" id="tcClassTitle" placeholder="উদাহরণ: বেগ ও ত্বরণ — লাইভ আলোচনা">
-            </div>
-
-            <div class="field-row">
-                <div class="field">
-                    <label>বিষয়</label>
-                    <select id="tcSubject">
-                        <option value="">নির্বাচন করুন</option>
-                        <option value="physics">পদার্থবিজ্ঞান</option>
-                        <option value="chemistry">রসায়ন</option>
-                        <option value="biology">জীববিজ্ঞান</option>
-                        <option value="math">উচ্চতর গণিত</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>পত্র</label>
-                    <select id="tcPaper">
-                        <option value="">নির্বাচন করুন</option>
-                        <option value="paper1">১ম পত্র</option>
-                        <option value="paper2">২য় পত্র</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="field">
-                <label>অধ্যায়</label>
-                <input type="text" id="tcChapter" placeholder="উদাহরণ: অধ্যায় ৩: গতিবিদ্যা">
-            </div>
-
-            <div class="field-row">
-                <div class="field">
-                    <label>শিক্ষকের নাম</label>
-                    <input type="text" id="tcTeacherName" placeholder="যেমন: রফিক স্যার">
-                </div>
-                <div class="field">
-                    <label>শিক্ষকের ছবির লিংক</label>
-                    <input type="text" id="tcTeacherPhoto" placeholder="https://...">
-                </div>
-            </div>
-
-            <button class="btn btn-go-live" id="tcGoLiveBtn" onclick="teacherGoLive()">🔴 লাইভ শুরু করুন</button>
-            <button class="btn btn-end-live hidden" id="tcEndLiveBtn" onclick="teacherEndLive()" style="margin-top:8px;">⏹ লাইভ বন্ধ করুন</button>
-        </div>
-
-        <!-- ANNOUNCEMENT PANE -->
-        <div class="tc-pane" id="tcp-announce">
-            <div class="field">
-                <label>ঘোষণা লিখুন</label>
-                <textarea id="tcAnnounceText" rows="3" placeholder="উদাহরণ: আগামীকাল একটি বিশেষ মডেল টেস্ট নেওয়া হবে।"></textarea>
-            </div>
-            <button class="btn btn-gold" onclick="postAnnouncement()">📢 ঘোষণা প্রকাশ করুন</button>
-            <button class="btn btn-danger btn-sm" onclick="clearAnnouncement()" style="margin-top:8px;">ঘোষণা মুছুন</button>
-        </div>
-
-        <!-- Q&A MODERATION PANE -->
-        <div class="tc-pane" id="tcp-qna">
-            <div class="helper-text">শিক্ষার্থীদের প্রশ্নগুলো এখানে দেখুন, উত্তর দিন বা পিন করুন।</div>
-            <div class="tc-mini-list" id="tcQnaList"></div>
-        </div>
-
-        <!-- RAISE HAND PANE -->
-        <div class="tc-pane" id="tcp-hands">
-            <div class="helper-text">যেসব শিক্ষার্থী হাত তুলেছে তাদের তালিকা।</div>
-            <div class="tc-mini-list" id="tcHandsList"></div>
-        </div>
-
-        <!-- POLL PANE -->
-        <div class="tc-pane" id="tcp-poll">
-            <div id="tcPollActiveBox"></div>
-            <div class="divider"></div>
-            <div class="field">
-                <label>পোল প্রশ্ন</label>
-                <input type="text" id="tcPollQuestion" placeholder="উদাহরণ: নিউটনের কোন সূত্র বল-ভরের সম্পর্ক দেয়?">
-            </div>
-            <div id="tcPollOptions">
-                <div class="opt-row"><input type="text" class="tc-poll-opt" placeholder="অপশন ১"></div>
-                <div class="opt-row"><input type="text" class="tc-poll-opt" placeholder="অপশন ২"></div>
-            </div>
-            <button class="btn-secondary btn btn-sm" onclick="addPollOption()">+ অপশন যোগ করুন</button>
-            <div class="field" style="margin-top:12px;">
-                <label>সময় (সেকেন্ড)</label>
-                <input type="text" id="tcPollDuration" placeholder="৩০" value="30">
-            </div>
-            <button class="btn btn-gold" onclick="startPoll()">📊 পোল শুরু করুন</button>
-        </div>
-
-        <!-- QUIZ PANE -->
-        <div class="tc-pane" id="tcp-quiz">
-            <div id="tcQuizActiveBox"></div>
-            <div class="divider"></div>
-            <div class="field">
-                <label>কুইজ প্রশ্ন</label>
-                <input type="text" id="tcQuizQuestion" placeholder="উদাহরণ: g এর মান কত?">
-            </div>
-            <div id="tcQuizOptions">
-                <div class="opt-row"><input type="radio" name="tcQuizCorrect" value="0" checked><input type="text" class="tc-quiz-opt" placeholder="অপশন ১ (সঠিক হলে বাম বাটন বাছুন)"></div>
-                <div class="opt-row"><input type="radio" name="tcQuizCorrect" value="1"><input type="text" class="tc-quiz-opt" placeholder="অপশন ২"></div>
-            </div>
-            <button class="btn-secondary btn btn-sm" onclick="addQuizOption()">+ অপশন যোগ করুন</button>
-            <div class="field" style="margin-top:12px;">
-                <label>সময় (সেকেন্ড)</label>
-                <input type="text" id="tcQuizDuration" placeholder="২০" value="20">
-            </div>
-            <button class="btn btn-gold" onclick="startQuiz()">🧠 কুইজ শুরু করুন</button>
-        </div>
-
-        <!-- RESOURCES PANE -->
-        <div class="tc-pane" id="tcp-resources">
-            <div class="field">
-                <label>রিসোর্সের শিরোনাম</label>
-                <input type="text" id="tcResTitle" placeholder="উদাহরণ: অধ্যায় ৩ - স্লাইড">
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>ধরন</label>
-                    <select id="tcResType">
-                        <option value="pdf">📄 PDF নোট</option>
-                        <option value="slide">🖼️ স্লাইড</option>
-                        <option value="sheet">📝 প্র্যাকটিস শিট</option>
-                        <option value="drive">🔗 Google Drive</option>
-                        <option value="bank">❓ প্রশ্নব্যাংক</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>লিংক</label>
-                    <input type="text" id="tcResUrl" placeholder="https://...">
-                </div>
-            </div>
-            <button class="btn btn-save" onclick="addResource()">📚 রিসোর্স যোগ করুন</button>
-            <div class="divider"></div>
-            <div class="tc-mini-list" id="tcResList"></div>
-        </div>
-
-        <!-- HOMEWORK PANE -->
-        <div class="tc-pane" id="tcp-homework">
-            <div class="field">
-                <label>হোমওয়ার্কের শিরোনাম</label>
-                <input type="text" id="tcHwTitle" placeholder="উদাহরণ: অধ্যায় ৩ এর ৫টি অঙ্ক">
-            </div>
-            <div class="field">
-                <label>নির্দেশনা</label>
-                <textarea id="tcHwDesc" rows="2" placeholder="বিস্তারিত নির্দেশনা লিখুন"></textarea>
-            </div>
-            <div class="field">
-                <label>ডেডলাইন</label>
-                <input type="text" id="tcHwDeadline" placeholder="উদাহরণ: আগামীকাল রাত ১০টা">
-            </div>
-            <button class="btn btn-save" onclick="addHomework()">📝 হোমওয়ার্ক যোগ করুন</button>
-            <div class="divider"></div>
-            <div class="tc-mini-list" id="tcHwList"></div>
-        </div>
-
-        <!-- CHAT MODERATION PANE -->
-        <div class="tc-pane" id="tcp-chat">
-<div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink-dim);">💬 স্টুডেন্টদের লাইভ চ্যাট</div>
-            <div class="teacher-chat-mini" id="teacherChatMini"></div>
-            <div style="display:flex;gap:8px;">
-                <input type="text" id="tcReplyInput" placeholder="উত্তর লিখুন..." style="flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--glass-border);background:rgba(15,23,42,.6);color:#fff;outline:none;font-size:13px;">
-                <button class="send-btn" onclick="teacherSendChat()">➤</button>
-            </div>
-            <div class="divider"></div>
-            <div class="helper-text">নির্দিষ্ট শিক্ষার্থীকে মিউট করতে অংশগ্রহণকারীদের তালিকা থেকে বাছাই করুন।</div>
-            <div class="tc-mini-list" id="tcMuteList"></div>
-        </div>
-
-        <!-- ATTENDANCE / ANALYTICS PANE -->
-        <div class="tc-pane" id="tcp-attendance">
-            <div class="field-row" style="margin-bottom:10px;">
-                <div class="chip">💬 মোট মেসেজ: <span id="anaMsgCount">0</span></div>
-                <div class="chip">❓ প্রশ্ন: <span id="anaQCount">0</span></div>
-            </div>
-            <div class="field-row" style="margin-bottom:14px;">
-                <div class="chip">📊 পোল অংশগ্রহণ: <span id="anaPollCount">0</span></div>
-                <div class="chip">🧠 কুইজ অংশগ্রহণ: <span id="anaQuizCount">0</span></div>
-            </div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink-dim);">📝 উপস্থিতি তালিকা</div>
-            <div class="tc-mini-list" id="tcAttendanceList"></div>
-        </div>
-
-        <div id="tcErrorGeneric" class="login-error"></div>
-    </div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, onChildAdded, set, push, update, remove, onDisconnect, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, onChildAdded, set, push, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -1487,10 +1007,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const TEACHER_NO = "GVX-001098";
-const TEACHER_PASSWORD = "GAIVEX#@014265";
-const ADMIN_EMAIL = "gaiyumtamim@gmail.com";
-
 const SESSION_PATH = "live_class/session";
 const CHAT_PATH = "live_class/chat";
 const VIEWERS_PATH = "live_class/viewers";
@@ -1498,15 +1014,10 @@ const REACTIONS_PATH = "live_class/reactions";
 const ANNOUNCE_PATH = "live_class/announcement";
 const QUESTIONS_PATH = "live_class/questions";
 const HANDS_PATH = "live_class/raisedHands";
-const POLL_PATH = "live_class/poll";
-const QUIZ_PATH = "live_class/quiz";
-const QUIZ_SCORES_PATH = "live_class/quizScores";
 const RESOURCES_PATH = "live_class/resources";
 const HOMEWORK_PATH = "live_class/homework";
 const MUTED_PATH = "live_class/muted";
-const ATTENDANCE_PATH = "live_class/attendance";
 
-/* ---------- student identity ---------- */
 let studentName = localStorage.getItem("gaivexLiveName") || "";
 let studentUid = localStorage.getItem("gaivexLiveUid");
 if(!studentUid){
@@ -1522,15 +1033,12 @@ let lastChatKey = null;
 let lastChatData = {};
 let isMuted = false;
 let liveTimerInterval = null;
-let notifiedAnnounceTs = null;
-let notifiedPollKey = null;
-let notifiedQuizKey = null;
 let handRaised = false;
-let currentActivePane = "stream";
-let qnaFilter = "all";
-let peopleTab = "online";
 
-/* ============ TOAST NOTIFICATIONS ============ */
+window.toggle3DotsMenu = function(){
+    document.getElementById("dotsMenu").classList.toggle("show");
+};
+
 function showToast(icon, text, kind){
     const stack = document.getElementById("toastStack");
     const el = document.createElement("div");
@@ -1541,7 +1049,10 @@ function showToast(icon, text, kind){
     setTimeout(()=>{ el.style.transition="opacity .3s"; el.style.opacity="0"; setTimeout(()=>el.remove(),300); }, 4500);
 }
 
-/* ============ NAME GATE ============ */
+function escapeHtml(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 window.enterClass = function(){
     const val = document.getElementById("gateNameInput").value.trim();
     if(!val){
@@ -1554,28 +1065,23 @@ window.enterClass = function(){
     initPresence();
 };
 
-document.getElementById("gateNameInput").addEventListener("keydown", (e)=>{
-    if(e.key === "Enter") window.enterClass();
-});
-
 if(studentName){
     document.getElementById("gateOverlay").classList.add("hidden");
+    initPresence();
 }
 
-/* ============ CONNECTION STATUS ============ */
 onValue(ref(db, ".info/connected"), (snap)=>{
     const el = document.getElementById("connStatus");
     const txt = document.getElementById("connStatusText");
     if(snap.val() === true){
         el.classList.remove("bad");
-        txt.innerText = "সংযুক্ত";
+        txt.innerText = "Connected";
     }else{
         el.classList.add("bad");
-        txt.innerText = "পুনঃসংযোগ হচ্ছে...";
+        txt.innerText = "Reconnecting...";
     }
 });
 
-/* ============ TAB SWITCHING (side panel) ============ */
 window.openTab = function(name){
     document.querySelectorAll(".tab-btn").forEach(b=> b.classList.toggle("active", b.dataset.tab === name));
     document.querySelectorAll(".tab-content").forEach(c=> c.classList.add("hidden"));
@@ -1583,13 +1089,9 @@ window.openTab = function(name){
     if(name === "chat"){ unreadCount = 0; updateChatBadge(); }
 };
 
-/* ============ SESSION LISTENER ============ */
 onValue(ref(db, SESSION_PATH), (snap)=>{
     currentSession = snap.exists() ? snap.val() : null;
     renderSession();
-    if(document.getElementById("teacherControlModal").classList.contains("show")){
-        fillTeacherControlForm();
-    }
 });
 
 function renderSession(){
@@ -1602,14 +1104,13 @@ function renderSession(){
     const metaOutsideBar = document.getElementById("metaOutsideBar");
     const raiseHandBtn = document.getElementById("raiseHandBtn");
 
-    const wasLive = !!(window.__wasLive);
     const isLive = !!(currentSession && currentSession.isLive && currentSession.youtubeId);
 
     document.getElementById("classTitle").innerText = currentSession && currentSession.title
         ? currentSession.title
-        : "ক্লাসের জন্য অপেক্ষা করুন";
-    document.getElementById("chipSubject").innerText = "📚 " + subjectName(currentSession && currentSession.subject);
-    document.getElementById("chipPaper").innerText = "📖 " + (currentSession && currentSession.paper === "paper2" ? "২য় পত্র" : currentSession && currentSession.paper === "paper1" ? "১ম পত্র" : "—");
+        : "Waiting for class stream...";
+    document.getElementById("chipSubject").innerText = "📚 " + (currentSession && currentSession.subject || "General");
+    document.getElementById("chipPaper").innerText = "📖 " + (currentSession && currentSession.paper || "Standard");
     document.getElementById("chipChapter").innerText = "📌 " + ((currentSession && currentSession.chapter) || "—");
 
     if(isLive){
@@ -1623,7 +1124,6 @@ function renderSession(){
         metaOutsideBar.classList.remove("hidden");
         raiseHandBtn.classList.remove("hidden");
         startLiveTimer(currentSession.startedAt);
-        if(!wasLive && studentName){ showToast("🔴", "ক্লাস লাইভ শুরু হয়েছে!"); }
     }else{
         currentYoutubeId = null;
         ytFrame.src = "";
@@ -1636,13 +1136,12 @@ function renderSession(){
         raiseHandBtn.classList.add("hidden");
         stopLiveTimer();
     }
-    window.__wasLive = isLive;
 
     if(currentSession && currentSession.teacherName){
         teacherChip.classList.remove("hidden");
-        document.getElementById("teacherNameEl").innerHTML = escapeHtml(currentSession.teacherName) + ' <span class="verify-badge" title="যাচাইকৃত শিক্ষক">✔️</span>';
+        document.getElementById("teacherNameEl").innerHTML = escapeHtml(currentSession.teacherName) + ' <span class="verify-badge" title="Verified Instructor">✔️</span>';
         document.getElementById("teacherAvatar").src = currentSession.teacherPhoto || "https://api.dicebear.com/7.x/initials/svg?seed=" + encodeURIComponent(currentSession.teacherName);
-        document.getElementById("teacherSubjectRole").innerText = subjectName(currentSession.subject) + " শিক্ষক";
+        document.getElementById("teacherSubjectRole").innerText = "Instructor";
     }else{
         teacherChip.classList.add("hidden");
     }
@@ -1671,151 +1170,121 @@ window.reloadVideo = function(){
     }
 };
 
-window.togglePip = async function(){
+window.toggleFullscreen = function(){
     const wrap = document.getElementById("videoWrap");
-    showToast("ℹ️", "ইউটিউব এমবেড ফ্রেমে Picture-in-Picture সরাসরি সমর্থিত নয় — ভিডিওতে ডাবল-ট্যাপ করে মিনি প্লেয়ার ব্যবহার করুন।");
+    if(!document.fullscreenElement){
+        wrap.requestFullscreen().catch(err => alert("Fullscreen error: " + err.message));
+    } else {
+        document.exitFullscreen();
+    }
 };
 
-function subjectName(subject){
-    const names = { physics:"পদার্থবিজ্ঞান", chemistry:"রসায়ন", biology:"জীববিজ্ঞান", math:"উচ্চতর গণিত" };
-    return names[subject] || "—";
-}
+window.toggleFsComments = function(){
+    document.getElementById("fsCommentOverlay").classList.toggle("show");
+};
 
-/* ============ PRESENCE (viewer count + attendance) ============ */
+window.sendFsComment = function(){
+    const inp = document.getElementById("fsInput");
+    const val = inp.value.trim();
+    if(!val) return;
+    push(ref(db, CHAT_PATH), {
+        uid: studentUid,
+        name: studentName,
+        role: "student",
+        text: val,
+        timestamp: Date.now()
+    });
+    inp.value = "";
+};
+
 function initPresence(){
     const myRef = ref(db, `${VIEWERS_PATH}/${studentUid}`);
-    const joinedAt = Date.now();
-    set(myRef, { name: studentName, ts: joinedAt });
+    set(myRef, { name: studentName, ts: Date.now() });
     onDisconnect(myRef).remove();
-
-    // attendance log
-    const attRef = ref(db, `${ATTENDANCE_PATH}/${studentUid}`);
-    update(attRef, { name: studentName, joinedAt: joinedAt, lastSeen: joinedAt }).catch(()=>{});
-    onDisconnect(ref(db, `${ATTENDANCE_PATH}/${studentUid}/leftAt`)).set(Date.now());
-    setInterval(()=>{
-        update(attRef, { lastSeen: Date.now() }).catch(()=>{});
-    }, 20000);
 
     onValue(ref(db, VIEWERS_PATH), (snap)=>{
         const data = snap.exists() ? snap.val() : {};
         const count = Object.keys(data).length;
         document.getElementById("viewerCount").innerText = count;
-        document.getElementById("tcViewerChip").innerText = "👁️ " + count;
         renderOnlinePeople(data);
     });
 
-    // muted check
     onValue(ref(db, `${MUTED_PATH}/${studentUid}`), (snap)=>{
         isMuted = !!snap.val();
         document.getElementById("mutedBanner").classList.toggle("hidden", !isMuted);
         document.getElementById("chatSendBtn").disabled = isMuted;
     });
 }
-if(studentName) initPresence();
 
 function renderOnlinePeople(data){
     const list = document.getElementById("peopleOnlineList");
     const keys = Object.keys(data);
     if(keys.length === 0){
-        list.innerHTML = `<div class="section-empty">কেউ অনলাইনে নেই।</div>`;
+        list.innerHTML = `<div class="section-empty">No users online.</div>`;
         return;
     }
     let html = "";
-    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
     keys.forEach(k=>{
         const p = data[k];
         const initial = (p.name || "?").trim().charAt(0).toUpperCase();
-        html += `<div class="people-row"><div class="people-avatar-sm">${escapeHtml(initial)}</div><div class="people-name">${escapeHtml(p.name || "শিক্ষার্থী")}${k===studentUid ? ' (আপনি)' : ''}</div></div>`;
+        html += `<div class="people-row"><div class="people-avatar-sm">${escapeHtml(initial)}</div><div class="people-name">${escapeHtml(p.name || "Student")}${k===studentUid ? ' (You)' : ''}</div></div>`;
     });
     list.innerHTML = html;
 }
 
-window.setPeopleTab = function(tab){
-    peopleTab = tab;
-    document.querySelectorAll(".people-sub-tabs button").forEach(b=> b.classList.toggle("active", b.dataset.pf === tab));
-    document.getElementById("peopleOnlineList").classList.toggle("hidden", tab!=="online");
-    document.getElementById("peopleBoardList").classList.toggle("hidden", tab!=="board");
-    document.getElementById("peopleHandsList").classList.toggle("hidden", tab!=="hands");
-};
-
-/* ============ ANNOUNCEMENT ============ */
-onValue(ref(db, ANNOUNCE_PATH), (snap)=>{
-    const a = snap.exists() ? snap.val() : null;
-    renderBanners(a);
-    if(a && a.ts && a.ts !== notifiedAnnounceTs && notifiedAnnounceTs !== null && studentName){
-        showToast("📢", a.text, "gold");
-    }
-    if(a) notifiedAnnounceTs = a.ts; else if(notifiedAnnounceTs === null) notifiedAnnounceTs = 0;
+/* Resources & Homework in Menu */
+onValue(ref(db, RESOURCES_PATH), (snap)=>{
+    const res = snap.exists() ? snap.val() : {};
+    const el = document.getElementById("resourceList");
+    const keys = Object.keys(res);
+    if(keys.length === 0){ el.innerHTML = `<div class="section-empty">No resources available.</div>`; return; }
+    let html = "";
+    keys.forEach(k => {
+        html += `<div class="resource-card">
+            <b>${escapeHtml(res[k].title)}</b>
+            <div><a class="resource-open" href="${escapeHtml(res[k].url)}" target="_blank">Open Link 🔗</a></div>
+        </div>`;
+    });
+    el.innerHTML = html;
 });
 
-let currentPinnedQuestion = null;
-function renderBanners(announcement){
-    const stack = document.getElementById("bannerStack");
+onValue(ref(db, HOMEWORK_PATH), (snap)=>{
+    const hw = snap.exists() ? snap.val() : {};
+    const el = document.getElementById("homeworkList");
+    const keys = Object.keys(hw);
+    if(keys.length === 0){ el.innerHTML = `<div class="section-empty">No homework assigned.</div>`; return; }
     let html = "";
-    if(announcement && announcement.text){
-        html += `<div class="top-banner announcement glass">
-            <span class="b-icon">📢</span>
-            <div class="b-body"><div class="b-label">ঘোষণা</div>${escapeHtml(announcement.text)}</div>
+    keys.forEach(k => {
+        html += `<div class="homework-card">
+            <b>${escapeHtml(hw[k].title)}</b>
+            <p style="font-size:11px;color:var(--ink-dim);">${escapeHtml(hw[k].desc || '')}</p>
         </div>`;
-    }
-    if(currentPinnedQuestion){
-        html += `<div class="top-banner pinned glass">
-            <span class="b-icon">📌</span>
-            <div class="b-body"><div class="b-label">গুরুত্বপূর্ণ প্রশ্ন</div>${escapeHtml(currentPinnedQuestion)}</div>
-        </div>`;
-    }
-    stack.innerHTML = html;
-}
+    });
+    el.innerHTML = html;
+});
 
-window.postAnnouncement = async function(){
-    const text = document.getElementById("tcAnnounceText").value.trim();
-    if(!text) return;
-    await set(ref(db, ANNOUNCE_PATH), { text, ts: Date.now() });
-    document.getElementById("tcAnnounceText").value = "";
-};
-window.clearAnnouncement = async function(){
-    await remove(ref(db, ANNOUNCE_PATH));
-};
-
-/* ============ CHAT ============ */
+/* CHAT */
 const chatBody = document.getElementById("chatBody");
-
 onValue(ref(db, CHAT_PATH), (snap)=>{
     lastChatData = snap.exists() ? snap.val() : {};
     renderChat(lastChatData);
-    document.getElementById("anaMsgCount").innerText = Object.keys(lastChatData).length;
 });
 
 window.renderChat = function(data){
-    const searchEl = document.getElementById("chatSearchInput");
-    const q = searchEl ? searchEl.value.trim().toLowerCase() : "";
     let keys = Object.keys(data);
     if(keys.length === 0){
-        chatBody.innerHTML = `<div class="chat-empty">এখনো কোনো মেসেজ নেই। প্রথম মেসেজটি আপনিই লিখুন 👋</div>`;
-        renderTeacherMini(data);
+        chatBody.innerHTML = `<div class="chat-empty">No messages yet. Be the first to say hello! 👋</div>`;
         return;
     }
-
     keys.sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
-
-    if(q){
-        keys = keys.filter(k => (data[k].text||"").toLowerCase().includes(q) || (data[k].name||"").toLowerCase().includes(q));
-    }
-
-    if(keys.length === 0){
-        chatBody.innerHTML = `<div class="chat-empty">কোনো ফলাফল পাওয়া যায়নি।</div>`;
-        renderTeacherMini(data);
-        return;
-    }
-
     let html = "";
+    let fsHtml = "";
     keys.forEach(k=>{
         const m = data[k];
         const isMe = m.uid === studentUid;
         const isTeacher = m.role === "teacher";
         const rowClass = isMe ? "me" : (isTeacher ? "teacher" : "other");
-        const senderLabel = isTeacher ? `<span class="teacher-tag">TEACHER</span> ${escapeHtml(m.name || "শিক্ষক")}` : escapeHtml(m.name || "শিক্ষার্থী");
-        const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString("bn-BD",{hour:"2-digit",minute:"2-digit"}) : "";
+        const senderLabel = isTeacher ? `<span class="teacher-tag">TEACHER</span> ${escapeHtml(m.name || "Instructor")}` : escapeHtml(m.name || "Student");
 
         html += `
         <div class="msg-row ${rowClass}">
@@ -1823,923 +1292,83 @@ window.renderChat = function(data){
             <div class="msg-bubble-wrap">
                 <div class="msg-bubble">${escapeHtml(m.text || "")}</div>
             </div>
-            <div class="msg-ts">${time}</div>
         </div>`;
+
+        fsHtml += `<div><b>${escapeHtml(m.name)}:</b> ${escapeHtml(m.text)}</div>`;
     });
 
     chatBody.innerHTML = html;
-    if(!q) chatBody.scrollTop = chatBody.scrollHeight;
-
-    const allKeysSorted = Object.keys(data).sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
-    const newestKey = allKeysSorted[allKeysSorted.length-1];
-    if(lastChatKey && newestKey !== lastChatKey && data[newestKey].uid !== studentUid && !chatDrawerOpen){
-        unreadCount++;
-        updateChatBadge();
+    chatBody.scrollTop = chatBody.scrollHeight;
+    
+    const fsList = document.getElementById("fsCommentList");
+    if(fsList) {
+        fsList.innerHTML = fsHtml;
+        fsList.scrollTop = fsList.scrollHeight;
     }
-    lastChatKey = newestKey;
-
-    renderTeacherMini(data);
 };
-
-function renderTeacherMini(data){
-    const mini = document.getElementById("teacherChatMini");
-    if(!mini) return;
-    const keys = Object.keys(data);
-    if(keys.length === 0){
-        mini.innerHTML = `<div style="text-align:center;color:var(--ink-faint);font-size:12px;padding:10px;">কোনো মেসেজ নেই।</div>`;
-        return;
-    }
-    keys.sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
-    let html = "";
-    keys.forEach(k=>{
-        const m = data[k];
-        const isTeacher = m.role === "teacher";
-        html += `<div style="font-size:12.5px;padding:6px 8px;border-radius:8px;background:${isTeacher ? 'rgba(56,189,248,.12)' : 'rgba(51,65,85,.4)'};display:flex;justify-content:space-between;gap:6px;align-items:center;">
-            <span><b style="color:${isTeacher ? '#38bdf8' : '#cbd5e1'}">${escapeHtml(m.name || "")}</b>: ${escapeHtml(m.text || "")}</span>
-            <button class="msg-del-btn" onclick="teacherDeleteMessage('${k}')" title="মুছুন">🗑️</button>
-        </div>`;
-    });
-    mini.innerHTML = html;
-    mini.scrollTop = mini.scrollHeight;
-}
-
-window.teacherDeleteMessage = async function(key){
-    try{ await remove(ref(db, `${CHAT_PATH}/${key}`)); }catch(e){}
-};
-
-function updateChatBadge(){
-    const badge = document.getElementById("chatFabBadge");
-    if(unreadCount > 0){
-        badge.innerText = unreadCount > 9 ? "9+" : unreadCount;
-        badge.classList.remove("hidden");
-    }else{
-        badge.classList.add("hidden");
-    }
-}
 
 window.sendChatMessage = async function(){
     if(!studentName){
         document.getElementById("gateOverlay").classList.remove("hidden");
         return;
     }
-    if(isMuted){
-        showToast("🔇", "আপনাকে চ্যাটে বিরত রাখা হয়েছে।");
-        return;
-    }
+    if(isMuted) return;
     const input = document.getElementById("chatInput");
     const text = input.value.trim();
     if(!text) return;
 
-    try{
-        await push(ref(db, CHAT_PATH), {
-            uid: studentUid,
-            name: studentName,
-            role: "student",
-            text: text,
-            timestamp: Date.now()
-        });
-        input.value = "";
-        autoGrow(input);
-    }catch(e){
-        alert("মেসেজ পাঠানো যায়নি: " + e.message);
-    }
+    await push(ref(db, CHAT_PATH), {
+        uid: studentUid,
+        name: studentName,
+        role: "student",
+        text: text,
+        timestamp: Date.now()
+    });
+    input.value = "";
 };
 
-const chatInputEl = document.getElementById("chatInput");
-chatInputEl.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter" && !e.shiftKey){
-        e.preventDefault();
-        window.sendChatMessage();
-    }
-});
-chatInputEl.addEventListener("input", ()=> autoGrow(chatInputEl));
-function autoGrow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,90)+"px"; }
-
-/* mobile chat drawer */
 window.openChatDrawer = function(){
     document.getElementById("chatPanel").classList.add("open");
     document.getElementById("chatCloseBtn").style.display = "flex";
     document.body.classList.add("chat-is-open");
-    chatDrawerOpen = true;
-    unreadCount = 0;
-    updateChatBadge();
 };
 
 window.closeChatDrawer = function(){
     document.getElementById("chatPanel").classList.remove("open");
     document.body.classList.remove("chat-is-open");
-    chatDrawerOpen = false;
 };
 
-/* ============ REACTIONS ============ */
 window.sendReaction = async function(emoji){
     spawnFloatingEmoji(emoji);
-    try{
-        const r = push(ref(db, REACTIONS_PATH));
-        await set(r, { emoji, uid: studentUid, ts: Date.now() });
-        setTimeout(()=> remove(r).catch(()=>{}), 4000);
-    }catch(e){}
+    const r = push(ref(db, REACTIONS_PATH));
+    await set(r, { emoji, uid: studentUid, ts: Date.now() });
 };
-
-onChildAdded(ref(db, REACTIONS_PATH), (snap)=>{
-    const val = snap.val();
-    if(val && val.uid !== studentUid){
-        spawnFloatingEmoji(val.emoji);
-    }
-});
 
 function spawnFloatingEmoji(emoji){
     const layer = document.getElementById("reactionLayer");
     const el = document.createElement("div");
     el.className = "float-emoji";
     el.innerText = emoji;
-    const leftPos = 20 + Math.random()*60;
-    const drift = (Math.random()*80 - 40) + "px";
-    el.style.left = leftPos + "%";
-    el.style.setProperty("--drift", drift);
+    el.style.left = (20 + Math.random()*60) + "%";
     layer.appendChild(el);
     setTimeout(()=> el.remove(), 3300);
 }
 
-/* ============ RAISE HAND ============ */
 window.toggleRaiseHand = async function(){
-    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
     const btn = document.getElementById("raiseHandBtn");
     handRaised = !handRaised;
     btn.classList.toggle("active", handRaised);
     if(handRaised){
         await set(ref(db, `${HANDS_PATH}/${studentUid}`), { name: studentName, ts: Date.now() });
-        onDisconnect(ref(db, `${HANDS_PATH}/${studentUid}`)).remove();
     }else{
         await remove(ref(db, `${HANDS_PATH}/${studentUid}`));
     }
 };
 
-onValue(ref(db, HANDS_PATH), (snap)=>{
-    const data = snap.exists() ? snap.val() : {};
-    renderHandsPeople(data);
-    renderTcHands(data);
-    if(!data[studentUid] && handRaised){
-        handRaised = false;
-        document.getElementById("raiseHandBtn").classList.remove("active");
-    }
-});
-
-function renderHandsPeople(data){
-    const list = document.getElementById("peopleHandsList");
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কেউ হাত তোলেনি।</div>`; return; }
-    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        html += `<div class="raise-row">🙋 <span class="people-name">${escapeHtml(data[k].name||"")}</span></div>`;
-    });
-    list.innerHTML = html;
-}
-
-function renderTcHands(data){
-    const list = document.getElementById("tcHandsList");
-    if(!list) return;
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কেউ হাত তোলেনি।</div>`; return; }
-    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
-    let html = "";
-    keys.forEach((k,i)=>{
-        html += `<div class="tc-list-item"><span>${i===0?'⭐':'🙋'}</span><span class="grow">${escapeHtml(data[k].name||"")}</span>
-            <div class="row-actions">
-                <button class="tc-tiny-btn ok" onclick="lowerHand('${k}')">নামান</button>
-            </div>
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-window.lowerHand = async function(uid){
-    await remove(ref(db, `${HANDS_PATH}/${uid}`));
-};
-
-/* ============ Q&A ============ */
-let allQuestions = {};
-onValue(ref(db, QUESTIONS_PATH), (snap)=>{
-    allQuestions = snap.exists() ? snap.val() : {};
-    renderQna();
-    renderTcQna();
-    const unanswered = Object.values(allQuestions).filter(q=>!q.answered).length;
-    document.getElementById("anaQCount").innerText = Object.keys(allQuestions).length;
-    const badge = document.getElementById("qnaUnansweredBadge");
-    if(unanswered > 0){ badge.innerText = unanswered > 9 ? "9+" : unanswered; badge.classList.remove("hidden"); }
-    else{ badge.classList.add("hidden"); }
-
-    // pinned question banner
-    const pinned = Object.values(allQuestions).find(q=>q.pinned);
-    currentPinnedQuestion = pinned ? pinned.text : null;
-    renderBanners(pinnedAnnounceCache);
-});
-let pinnedAnnounceCache = null;
-onValue(ref(db, ANNOUNCE_PATH), (snap)=>{ pinnedAnnounceCache = snap.exists() ? snap.val() : null; });
-
-window.askQuestion = async function(){
-    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
-    const input = document.getElementById("qnaInput");
-    const text = input.value.trim();
-    if(!text) return;
-    try{
-        await push(ref(db, QUESTIONS_PATH), {
-            uid: studentUid, name: studentName, text, timestamp: Date.now(),
-            answered: false, pinned: false, upvotes: {}
-        });
-        input.value = "";
-    }catch(e){ alert("প্রশ্ন পাঠানো যায়নি: " + e.message); }
-};
-document.getElementById("qnaInput").addEventListener("keydown", (e)=>{
-    if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); window.askQuestion(); }
-});
-
-window.setQnaFilter = function(f){
-    qnaFilter = f;
-    document.querySelectorAll("[data-qf]").forEach(b=> b.classList.toggle("active", b.dataset.qf === f));
-    renderQna();
-};
-
-function renderQna(){
-    const body = document.getElementById("qnaBody");
-    let keys = Object.keys(allQuestions);
-    if(keys.length === 0){
-        body.innerHTML = `<div class="chat-empty">এখনো কোনো প্রশ্ন নেই। প্রথম প্রশ্নটি জিজ্ঞাসা করুন 🙋</div>`;
-        return;
-    }
-    if(qnaFilter === "answered") keys = keys.filter(k=>allQuestions[k].answered);
-    if(qnaFilter === "unanswered") keys = keys.filter(k=>!allQuestions[k].answered);
-
-    keys.sort((a,b)=>{
-        const qa = allQuestions[a], qb = allQuestions[b];
-        if(!!qb.pinned !== !!qa.pinned) return (qb.pinned?1:0) - (qa.pinned?1:0);
-        const ua = qa.upvotes ? Object.keys(qa.upvotes).length : 0;
-        const ub = qb.upvotes ? Object.keys(qb.upvotes).length : 0;
-        if(ub !== ua) return ub - ua;
-        return (qa.timestamp||0) - (qb.timestamp||0);
-    });
-
-    let html = "";
-    keys.forEach(k=>{
-        const q = allQuestions[k];
-        const upvoteCount = q.upvotes ? Object.keys(q.upvotes).length : 0;
-        const iUpvoted = q.upvotes && q.upvotes[studentUid];
-        html += `<div class="qna-card ${q.answered?'answered':''} ${q.pinned?'pinned':''}">
-            <div class="qna-top">
-                <span class="qna-name">${escapeHtml(q.name||"শিক্ষার্থী")}</span>
-                <span class="qna-status-tag ${q.answered?'done':'wait'}">${q.answered?'উত্তরিত':'অপেক্ষমাণ'}</span>
-            </div>
-            <div class="qna-text">${q.pinned?'📌 ':''}${escapeHtml(q.text||"")}</div>
-            ${q.answered && q.answerText ? `<div class="qna-answer"><b>শিক্ষকের উত্তর:</b> ${escapeHtml(q.answerText)}</div>` : ""}
-            <div class="qna-actions">
-                <button class="qna-mini-btn ${iUpvoted?'active':''}" onclick="upvoteQuestion('${k}')">👍 ${upvoteCount}</button>
-            </div>
-        </div>`;
-    });
-    body.innerHTML = html || `<div class="chat-empty">কোনো প্রশ্ন পাওয়া যায়নি।</div>`;
-}
-
-window.upvoteQuestion = async function(key){
-    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
-    const q = allQuestions[key];
-    if(!q) return;
-    const already = q.upvotes && q.upvotes[studentUid];
-    if(already){
-        await remove(ref(db, `${QUESTIONS_PATH}/${key}/upvotes/${studentUid}`));
-    }else{
-        await set(ref(db, `${QUESTIONS_PATH}/${key}/upvotes/${studentUid}`), true);
-    }
-};
-
-function renderTcQna(){
-    const list = document.getElementById("tcQnaList");
-    if(!list) return;
-    const keys = Object.keys(allQuestions);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কোনো প্রশ্ন নেই।</div>`; return; }
-    keys.sort((a,b)=> (allQuestions[b].timestamp||0) - (allQuestions[a].timestamp||0));
-    let html = "";
-    keys.forEach(k=>{
-        const q = allQuestions[k];
-        html += `<div class="tc-list-item" style="flex-direction:column;align-items:stretch;">
-            <div style="display:flex;justify-content:space-between;gap:6px;">
-                <span class="grow"><b>${escapeHtml(q.name||"")}</b>: ${escapeHtml(q.text||"")}</span>
-            </div>
-            <div class="row-actions" style="margin-top:6px;">
-                <button class="tc-tiny-btn gold" onclick="pinQuestion('${k}')">${q.pinned?'আনপিন':'📌 পিন'}</button>
-                <button class="tc-tiny-btn ok" onclick="answerQuestionPrompt('${k}')">${q.answered?'উত্তর সম্পাদনা':'✅ উত্তর দিন'}</button>
-                <button class="tc-tiny-btn rose" onclick="deleteQuestion('${k}')">🗑️ মুছুন</button>
-            </div>
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-
-window.pinQuestion = async function(key){
-    const q = allQuestions[key];
-    // unpin others first
-    const updates = {};
-    Object.keys(allQuestions).forEach(k=>{ updates[`${QUESTIONS_PATH}/${k}/pinned`] = false; });
-    updates[`${QUESTIONS_PATH}/${key}/pinned`] = !(q && q.pinned);
-    await update(ref(db), updates);
-};
-window.answerQuestionPrompt = async function(key){
-    const q = allQuestions[key];
-    const ans = prompt("উত্তর লিখুন:", (q && q.answerText) || "");
-    if(ans === null) return;
-    await update(ref(db, `${QUESTIONS_PATH}/${key}`), { answered: true, answerText: ans });
-    showToast("✅", "প্রশ্নের উত্তর দেওয়া হয়েছে।");
-};
-window.deleteQuestion = async function(key){
-    await remove(ref(db, `${QUESTIONS_PATH}/${key}`));
-};
-
-/* ============ POLL ============ */
-let currentPoll = null;
-onValue(ref(db, POLL_PATH), (snap)=>{
-    currentPoll = snap.exists() ? snap.val() : null;
-    renderPoll();
-    renderTcPollBox();
-    if(currentPoll && currentPoll.active && currentPoll.startedAt !== notifiedPollKey && notifiedPollKey !== null && studentName){
-        showToast("📊", "নতুন পোল শুরু হয়েছে!");
-        openTab("poll");
-    }
-    if(currentPoll) notifiedPollKey = currentPoll.startedAt; else if(notifiedPollKey===null) notifiedPollKey = 0;
-});
-
-function renderPoll(){
-    const body = document.getElementById("pollBody");
-    if(!currentPoll || !currentPoll.active){
-        body.innerHTML = `<div class="pq-empty">এখন কোনো পোল চলছে না। শিক্ষক পোল শুরু করলে এখানে দেখা যাবে।</div>`;
-        return;
-    }
-    const votes = currentPoll.votes || {};
-    const totalVotes = Object.keys(votes).length;
-    const myVote = votes[studentUid];
-    const remaining = currentPoll.endsAt ? Math.max(0, Math.ceil((currentPoll.endsAt - Date.now())/1000)) : null;
-
-    let optsHtml = "";
-    (currentPoll.options||[]).forEach((opt, idx)=>{
-        const count = Object.values(votes).filter(v=>v===idx).length;
-        const pct = totalVotes ? Math.round(count/totalVotes*100) : 0;
-        const chosen = myVote === idx;
-        const canVote = myVote === undefined && remaining !== 0;
-        optsHtml += `<div class="pq-option ${canVote?'selectable':''} ${chosen?'chosen':''}" ${canVote?`onclick="votePoll(${idx})"`:""}>
-            <div class="pq-option-fill" style="width:${myVote!==undefined || remaining===0 ? pct : 0}%"></div>
-            <span class="pq-option-label">${escapeHtml(opt)}</span>
-            <span class="pq-option-pct">${myVote!==undefined || remaining===0 ? pct+'%' : ''}</span>
-        </div>`;
-    });
-
-    body.innerHTML = `<div class="pq-card">
-        <div class="pq-question">${escapeHtml(currentPoll.question||"")}</div>
-        ${remaining !== null ? `<div class="pq-timer" id="pollTimerText">⏳ ${remaining} সেকেন্ড বাকি</div>` : ""}
-        ${optsHtml}
-        <div class="pq-vote-note">${myVote!==undefined ? 'আপনি ভোট দিয়েছেন ✓' : 'একটি অপশন বেছে নিন'} · মোট ভোট: ${totalVotes}</div>
-    </div>`;
-}
-setInterval(()=>{ if(currentPoll && currentPoll.active) renderPoll(); }, 1000);
-
-window.votePoll = async function(idx){
-    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
-    if(!currentPoll || !currentPoll.active) return;
-    await set(ref(db, `${POLL_PATH}/votes/${studentUid}`), idx);
-};
-
-window.addPollOption = function(){
-    const wrap = document.getElementById("tcPollOptions");
-    const div = document.createElement("div");
-    div.className = "opt-row";
-    div.innerHTML = `<input type="text" class="tc-poll-opt" placeholder="নতুন অপশন">`;
-    wrap.appendChild(div);
-};
-
-window.startPoll = async function(){
-    const question = document.getElementById("tcPollQuestion").value.trim();
-    const opts = Array.from(document.querySelectorAll(".tc-poll-opt")).map(i=>i.value.trim()).filter(Boolean);
-    const duration = parseInt(document.getElementById("tcPollDuration").value) || 30;
-    if(!question || opts.length < 2){ alert("প্রশ্ন এবং কমপক্ষে ২টি অপশন দিন।"); return; }
-    await set(ref(db, POLL_PATH), {
-        question, options: opts, active: true, votes: {},
-        startedAt: Date.now(), endsAt: Date.now() + duration*1000
-    });
-    document.getElementById("tcPollQuestion").value = "";
-    document.querySelectorAll(".tc-poll-opt").forEach(i=>i.value="");
-    showToast("📊", "পোল শুরু হয়েছে।");
-};
-
-window.closePoll = async function(){
-    if(currentPoll) await update(ref(db, POLL_PATH), { active:false });
-};
-
-function renderTcPollBox(){
-    const box = document.getElementById("tcPollActiveBox");
-    if(!box) return;
-    if(currentPoll && currentPoll.active){
-        const votes = currentPoll.votes || {};
-        box.innerHTML = `<div class="pq-card"><div class="pq-question">${escapeHtml(currentPoll.question)}</div>
-        <div class="pq-vote-note">চলমান পোল · মোট ভোট: ${Object.keys(votes).length}</div>
-        <button class="pq-close-btn" onclick="closePoll()">⏹ পোল বন্ধ করুন</button></div>`;
-    }else{
-        box.innerHTML = "";
-    }
-}
-
-/* ============ QUIZ ============ */
-let currentQuiz = null;
-onValue(ref(db, QUIZ_PATH), (snap)=>{
-    currentQuiz = snap.exists() ? snap.val() : null;
-    renderQuiz();
-    renderTcQuizBox();
-    if(currentQuiz && currentQuiz.active && currentQuiz.startedAt !== notifiedQuizKey && notifiedQuizKey !== null && studentName){
-        showToast("🧠", "নতুন কুইজ শুরু হয়েছে!");
-        openTab("quiz");
-    }
-    if(currentQuiz) notifiedQuizKey = currentQuiz.startedAt; else if(notifiedQuizKey===null) notifiedQuizKey = 0;
-});
-
-let myQuizAnswer = null;
-function renderQuiz(){
-    const body = document.getElementById("quizBody");
-    if(!currentQuiz || !currentQuiz.active){
-        body.innerHTML = `<div class="pq-empty">এখন কোনো কুইজ চলছে না। শিক্ষক কুইজ শুরু করলে এখানে দেখা যাবে।</div>`;
-        return;
-    }
-    const answers = currentQuiz.answers || {};
-    const my = answers[studentUid];
-    const remaining = currentQuiz.endsAt ? Math.max(0, Math.ceil((currentQuiz.endsAt - Date.now())/1000)) : null;
-    const revealed = remaining === 0 || my !== undefined;
-
-    let optsHtml = "";
-    (currentQuiz.options||[]).forEach((opt, idx)=>{
-        let cls = "pq-option";
-        if(my===undefined && remaining!==0) cls += " selectable";
-        if(revealed && idx === currentQuiz.correctIndex) cls += " correct";
-        if(my===idx && idx !== currentQuiz.correctIndex && revealed) cls += " wrong-pick";
-        if(my===idx) cls += " chosen";
-        optsHtml += `<div class="${cls}" ${my===undefined && remaining!==0 ? `onclick="answerQuiz(${idx})"`:""}>
-            <span class="pq-option-label">${escapeHtml(opt)}</span>
-        </div>`;
-    });
-
-    let resultNote = "";
-    if(revealed && my !== undefined){
-        const correct = my === currentQuiz.correctIndex;
-        resultNote = `<div class="pq-result-note ${correct?'correct':'wrong'}">${correct?'✅ সঠিক উত্তর! +10 পয়েন্ট':'❌ ভুল উত্তর'}</div>`;
-    }
-
-    body.innerHTML = `<div class="pq-card">
-        <div class="pq-question">${escapeHtml(currentQuiz.question||"")}</div>
-        ${remaining !== null ? `<div class="pq-timer">⏳ ${remaining} সেকেন্ড বাকি</div>` : ""}
-        ${optsHtml}
-        ${resultNote}
-    </div>`;
-}
-setInterval(()=>{ if(currentQuiz && currentQuiz.active) renderQuiz(); }, 1000);
-
-window.answerQuiz = async function(idx){
-    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
-    if(!currentQuiz || !currentQuiz.active) return;
-    const answers = currentQuiz.answers || {};
-    if(answers[studentUid] !== undefined) return;
-    await set(ref(db, `${QUIZ_PATH}/answers/${studentUid}`), idx);
-    if(idx === currentQuiz.correctIndex){
-        const scoreRef = ref(db, `${QUIZ_SCORES_PATH}/${studentUid}`);
-        const snap = await get(scoreRef);
-        const prev = snap.exists() ? (snap.val().score||0) : 0;
-        await set(scoreRef, { name: studentName, score: prev + 10 });
-    }
-};
-
-window.addQuizOption = function(){
-    const wrap = document.getElementById("tcQuizOptions");
-    const idx = wrap.children.length;
-    const div = document.createElement("div");
-    div.className = "opt-row";
-    div.innerHTML = `<input type="radio" name="tcQuizCorrect" value="${idx}"><input type="text" class="tc-quiz-opt" placeholder="নতুন অপশন">`;
-    wrap.appendChild(div);
-};
-
-window.startQuiz = async function(){
-    const question = document.getElementById("tcQuizQuestion").value.trim();
-    const opts = Array.from(document.querySelectorAll(".tc-quiz-opt")).map(i=>i.value.trim());
-    const correctRadio = document.querySelector('input[name="tcQuizCorrect"]:checked');
-    const correctIndex = correctRadio ? parseInt(correctRadio.value) : 0;
-    const duration = parseInt(document.getElementById("tcQuizDuration").value) || 20;
-    if(!question || opts.filter(Boolean).length < 2){ alert("প্রশ্ন এবং কমপক্ষে ২টি অপশন দিন।"); return; }
-    await set(ref(db, QUIZ_PATH), {
-        question, options: opts, correctIndex, active: true, answers: {},
-        startedAt: Date.now(), endsAt: Date.now() + duration*1000
-    });
-    document.getElementById("tcQuizQuestion").value = "";
-    document.querySelectorAll(".tc-quiz-opt").forEach(i=>i.value="");
-    showToast("🧠", "কুইজ শুরু হয়েছে।");
-};
-
-window.closeQuiz = async function(){
-    if(currentQuiz) await update(ref(db, QUIZ_PATH), { active:false });
-};
-
-function renderTcQuizBox(){
-    const box = document.getElementById("tcQuizActiveBox");
-    if(!box) return;
-    if(currentQuiz && currentQuiz.active){
-        const answers = currentQuiz.answers || {};
-        box.innerHTML = `<div class="pq-card"><div class="pq-question">${escapeHtml(currentQuiz.question)}</div>
-        <div class="pq-vote-note">চলমান কুইজ · উত্তর দিয়েছে: ${Object.keys(answers).length}</div>
-        <button class="pq-close-btn" onclick="closeQuiz()">⏹ কুইজ বন্ধ করুন</button></div>`;
-        document.getElementById("anaQuizCount").innerText = Object.keys(answers).length;
-    }else{
-        box.innerHTML = "";
-    }
-}
-
-/* ============ LEADERBOARD ============ */
-onValue(ref(db, QUIZ_SCORES_PATH), (snap)=>{
-    const data = snap.exists() ? snap.val() : {};
-    renderLeaderboard(data);
-});
-function renderLeaderboard(data){
-    const list = document.getElementById("peopleBoardList");
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো স্কোর নেই।</div>`; return; }
-    keys.sort((a,b)=> (data[b].score||0) - (data[a].score||0));
-    let html = "";
-    keys.slice(0,20).forEach((k,i)=>{
-        html += `<div class="people-row"><span class="people-rank">${i+1}</span><span class="people-name">${escapeHtml(data[k].name||"")}${k===studentUid?' (আপনি)':''}</span><span class="people-score">🏅 ${data[k].score||0}</span></div>`;
-    });
-    list.innerHTML = html;
-}
-
-/* ============ RESOURCES ============ */
-const resIcons = { pdf:"📄", slide:"🖼️", sheet:"📝", drive:"🔗", bank:"❓" };
-const resNames = { pdf:"PDF নোট", slide:"স্লাইড", sheet:"প্র্যাকটিস শিট", drive:"Google Drive", bank:"প্রশ্নব্যাংক" };
-
-onValue(ref(db, RESOURCES_PATH), (snap)=>{
-    const data = snap.exists() ? snap.val() : {};
-    renderResources(data);
-    renderTcResources(data);
-});
-
-function renderResources(data){
-    const list = document.getElementById("resourceList");
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো রিসোর্স যোগ করা হয়নি।</div>`; return; }
-    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        const r = data[k];
-        html += `<div class="resource-card">
-            <span class="resource-icon">${resIcons[r.type]||"📎"}</span>
-            <div class="resource-info"><div class="resource-title">${escapeHtml(r.title||"")}</div><div class="resource-type">${resNames[r.type]||""}</div></div>
-            <a class="resource-open" href="${escapeAttr(r.url||"#")}" target="_blank" rel="noopener">খুলুন</a>
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-
-function renderTcResources(data){
-    const list = document.getElementById("tcResList");
-    if(!list) return;
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কোনো রিসোর্স নেই।</div>`; return; }
-    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        const r = data[k];
-        html += `<div class="tc-list-item"><span>${resIcons[r.type]||"📎"}</span><span class="grow">${escapeHtml(r.title||"")}</span>
-        <div class="row-actions"><button class="tc-tiny-btn rose" onclick="deleteResource('${k}')">🗑️</button></div></div>`;
-    });
-    list.innerHTML = html;
-}
-
-window.addResource = async function(){
-    const title = document.getElementById("tcResTitle").value.trim();
-    const type = document.getElementById("tcResType").value;
-    const url = document.getElementById("tcResUrl").value.trim();
-    if(!title || !url){ alert("শিরোনাম ও লিংক দিন।"); return; }
-    await push(ref(db, RESOURCES_PATH), { title, type, url, ts: Date.now() });
-    document.getElementById("tcResTitle").value = "";
-    document.getElementById("tcResUrl").value = "";
-    showToast("📚", "রিসোর্স যোগ করা হয়েছে।");
-};
-window.deleteResource = async function(key){
-    await remove(ref(db, `${RESOURCES_PATH}/${key}`));
-};
-
-/* ============ HOMEWORK ============ */
-onValue(ref(db, HOMEWORK_PATH), (snap)=>{
-    const data = snap.exists() ? snap.val() : {};
-    renderHomework(data);
-    renderTcHomework(data);
-});
-
-function renderHomework(data){
-    const list = document.getElementById("homeworkList");
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো হোমওয়ার্ক দেওয়া হয়নি।</div>`; return; }
-    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
-    const doneMap = JSON.parse(localStorage.getItem("gaivexHwDone") || "{}");
-    let html = "";
-    keys.forEach(k=>{
-        const h = data[k];
-        const done = !!doneMap[k];
-        html += `<div class="homework-card">
-            <div class="homework-title">${escapeHtml(h.title||"")}</div>
-            ${h.deadline ? `<div class="homework-deadline">⏰ ডেডলাইন: ${escapeHtml(h.deadline)}</div>` : ""}
-            ${h.desc ? `<div class="homework-desc">${escapeHtml(h.desc)}</div>` : ""}
-            <button class="homework-done-toggle ${done?'done':''}" onclick="toggleHwDone('${k}')">${done ? '✅ সম্পন্ন হয়েছে' : 'সম্পন্ন হিসেবে চিহ্নিত করুন'}</button>
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-window.toggleHwDone = function(key){
-    const doneMap = JSON.parse(localStorage.getItem("gaivexHwDone") || "{}");
-    doneMap[key] = !doneMap[key];
-    localStorage.setItem("gaivexHwDone", JSON.stringify(doneMap));
-    onValue(ref(db, HOMEWORK_PATH), (snap)=> renderHomework(snap.exists()?snap.val():{}), { onlyOnce:true });
-};
-
-function renderTcHomework(data){
-    const list = document.getElementById("tcHwList");
-    if(!list) return;
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কোনো হোমওয়ার্ক নেই।</div>`; return; }
-    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
-    let html = "";
-    keys.forEach(k=>{
-        const h = data[k];
-        html += `<div class="tc-list-item"><span>📝</span><span class="grow">${escapeHtml(h.title||"")}</span>
-        <div class="row-actions"><button class="tc-tiny-btn rose" onclick="deleteHomework('${k}')">🗑️</button></div></div>`;
-    });
-    list.innerHTML = html;
-}
-window.addHomework = async function(){
-    const title = document.getElementById("tcHwTitle").value.trim();
-    const desc = document.getElementById("tcHwDesc").value.trim();
-    const deadline = document.getElementById("tcHwDeadline").value.trim();
-    if(!title){ alert("শিরোনাম দিন।"); return; }
-    await push(ref(db, HOMEWORK_PATH), { title, desc, deadline, ts: Date.now() });
-    document.getElementById("tcHwTitle").value = "";
-    document.getElementById("tcHwDesc").value = "";
-    document.getElementById("tcHwDeadline").value = "";
-    showToast("📝", "হোমওয়ার্ক যোগ করা হয়েছে।");
-};
-window.deleteHomework = async function(key){
-    await remove(ref(db, `${HOMEWORK_PATH}/${key}`));
-};
-
-/* ============ MODERATION (mute) ============ */
-onValue(ref(db, MUTED_PATH), (snap)=>{
-    const data = snap.exists() ? snap.val() : {};
-    renderMuteList(data);
-});
-function renderMuteList(mutedData){
-    const list = document.getElementById("tcMuteList");
-    if(!list) return;
-    get(ref(db, VIEWERS_PATH)).then(snap=>{
-        const viewers = snap.exists() ? snap.val() : {};
-        const keys = Object.keys(viewers);
-        if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কোনো শিক্ষার্থী অনলাইনে নেই।</div>`; return; }
-        let html = "";
-        keys.forEach(k=>{
-            const muted = !!mutedData[k];
-            html += `<div class="tc-list-item"><span class="grow">${escapeHtml(viewers[k].name||"")}</span>
-            <div class="row-actions"><button class="tc-tiny-btn ${muted?'rose':'gold'}" onclick="toggleMute('${k}',${!muted})">${muted?'🔊 আনমিউট':'🔇 মিউট'}</button></div></div>`;
-        });
-        list.innerHTML = html;
-    }).catch(()=>{});
-}
-window.toggleMute = async function(uid, mute){
-    if(mute) await set(ref(db, `${MUTED_PATH}/${uid}`), true);
-    else await remove(ref(db, `${MUTED_PATH}/${uid}`));
-    renderMuteList((await get(ref(db, MUTED_PATH))).val() || {});
-};
-
-/* ============ ATTENDANCE LIST (teacher) ============ */
-onValue(ref(db, ATTENDANCE_PATH), (snap)=>{
-    const data = snap.exists() ? snap.val() : {};
-    renderAttendance(data);
-});
-function renderAttendance(data){
-    const list = document.getElementById("tcAttendanceList");
-    if(!list) return;
-    const keys = Object.keys(data);
-    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো উপস্থিতি রেকর্ড নেই।</div>`; return; }
-    keys.sort((a,b)=> (data[a].joinedAt||0) - (data[b].joinedAt||0));
-    let html = "";
-    keys.forEach(k=>{
-        const a = data[k];
-        const joinT = a.joinedAt ? new Date(a.joinedAt).toLocaleTimeString("bn-BD",{hour:"2-digit",minute:"2-digit"}) : "—";
-        const lastT = a.lastSeen ? new Date(a.lastSeen).toLocaleTimeString("bn-BD",{hour:"2-digit",minute:"2-digit"}) : "—";
-        const durMin = a.joinedAt && a.lastSeen ? Math.max(0, Math.round((a.lastSeen - a.joinedAt)/60000)) : 0;
-        html += `<div class="tc-list-item"><span class="grow">${escapeHtml(a.name||"")} · প্রবেশ ${joinT} · সর্বশেষ ${lastT} · ${durMin} মিনিট</span></div>`;
-    });
-    list.innerHTML = html;
-}
-
-/* ============ FULLSCREEN / LANDSCAPE ============ */
-window.toggleFullscreen = async function(){
-    const wrap = document.getElementById("videoWrap");
-    if(!document.fullscreenElement){
-        try{
-            await wrap.requestFullscreen();
-            if(screen.orientation && screen.orientation.lock){
-                screen.orientation.lock("landscape").catch(()=>{});
-            }
-        }catch(e){}
-    }else{
-        try{
-            if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-        }catch(e){}
-        document.exitFullscreen();
-    }
-};
-
-document.addEventListener("fullscreenchange", ()=>{
-    const btn = document.getElementById("fsBtn");
-    btn.innerText = document.fullscreenElement ? "⤢" : "⛶";
-});
-
-/* ============ SHARE ============ */
 window.shareClassLink = function(){
-    const url = location.href.split("?")[0];
-    if(navigator.share){
-        navigator.share({ title: "GAIVEX Live Class", url }).catch(()=>{});
-    }else{
-        navigator.clipboard.writeText(url).then(()=>{
-            alert("✅ লিংক কপি করা হয়েছে!");
-        }).catch(()=>{
-            prompt("লিংক কপি করুন:", url);
-        });
-    }
+    navigator.clipboard.writeText(window.location.href);
+    showToast("🔗", "Class link copied to clipboard!");
 };
-
-/* ============ TEACHER LOGIN ============ */
-let teacherAuthed = sessionStorage.getItem("gaivexLiveTeacher") === "true";
-
-window.openTeacherLogin = function(){
-    if(teacherAuthed){
-        openTeacherControl();
-    }else{
-        document.getElementById("teacherLoginModal").classList.add("show");
-    }
-};
-window.closeTeacherLogin = function(){
-    document.getElementById("teacherLoginModal").classList.remove("show");
-};
-
-window.submitTeacherLogin = function(){
-    const no = document.getElementById("tlTeacherNo").value.trim();
-    const pw = document.getElementById("tlPassword").value;
-    const email = document.getElementById("tlEmail").value.trim().toLowerCase();
-
-    if(no === TEACHER_NO && pw === TEACHER_PASSWORD && email === ADMIN_EMAIL){
-        teacherAuthed = true;
-        sessionStorage.setItem("gaivexLiveTeacher", "true");
-        closeTeacherLogin();
-        openTeacherControl();
-    }else{
-        const err = document.getElementById("tlError");
-        err.style.display = "block";
-        err.innerText = "তথ্য সঠিক নয়। আবার চেষ্টা করুন।";
-    }
-};
-
-/* ============ TEACHER CONTROL PANEL ============ */
-window.openTeacherControl = function(){
-    fillTeacherControlForm();
-    document.getElementById("teacherControlModal").classList.add("show");
-    renderTcQna();
-    get(ref(db, HANDS_PATH)).then(s=> renderTcHands(s.exists()?s.val():{}));
-    get(ref(db, RESOURCES_PATH)).then(s=> renderTcResources(s.exists()?s.val():{}));
-    get(ref(db, HOMEWORK_PATH)).then(s=> renderTcHomework(s.exists()?s.val():{}));
-    get(ref(db, MUTED_PATH)).then(s=> renderMuteList(s.exists()?s.val():{}));
-    get(ref(db, ATTENDANCE_PATH)).then(s=> renderAttendance(s.exists()?s.val():{}));
-};
-window.closeTeacherControl = function(){
-    document.getElementById("teacherControlModal").classList.remove("show");
-};
-
-window.setTcTab = function(tab){
-    currentActivePane = tab;
-    document.querySelectorAll(".tc-tab-btn").forEach(b=> b.classList.toggle("active", b.dataset.tct === tab));
-    document.querySelectorAll(".tc-pane").forEach(p=> p.classList.remove("active"));
-    document.getElementById("tcp-" + tab).classList.add("active");
-};
-
-function fillTeacherControlForm(){
-    const s = currentSession || {};
-    document.getElementById("tcClassTitle").value = s.title || "";
-    document.getElementById("tcSubject").value = s.subject || "";
-    document.getElementById("tcPaper").value = s.paper || "";
-    document.getElementById("tcChapter").value = s.chapter || "";
-    document.getElementById("tcTeacherName").value = s.teacherName || "";
-    document.getElementById("tcTeacherPhoto").value = s.teacherPhoto || "";
-    document.getElementById("tcYoutubeUrl").value = s.youtubeId ? ("https://youtu.be/" + s.youtubeId) : "";
-
-    const isLive = s.isLive;
-    document.getElementById("tcStatusText").innerText = isLive ? "● বর্তমানে লাইভ চলছে" : "● বর্তমানে অফলাইন";
-    document.getElementById("tcStatusText").className = "status-text " + (isLive ? "on" : "off");
-    document.getElementById("tcGoLiveBtn").classList.toggle("hidden", !!isLive);
-    document.getElementById("tcEndLiveBtn").classList.toggle("hidden", !isLive);
-}
-
-function extractYoutubeId(url){
-    if(!url) return null;
-    url = url.trim();
-    const patterns = [
-        /youtu\.be\/([a-zA-Z0-9_-]{6,})/,
-        /youtube\.com\/watch\?v=([a-zA-Z0-9_-]{6,})/,
-        /youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/,
-        /youtube\.com\/live\/([a-zA-Z0-9_-]{6,})/
-    ];
-    for(const p of patterns){
-        const m = url.match(p);
-        if(m) return m[1];
-    }
-    if(/^[a-zA-Z0-9_-]{6,}$/.test(url)) return url;
-    return null;
-}
-
-window.teacherGoLive = async function(){
-    const ytUrl = document.getElementById("tcYoutubeUrl").value.trim();
-    const ytId = extractYoutubeId(ytUrl);
-    if(!ytId){
-        alert("সঠিক YouTube লিংক বা ভিডিও আইডি দিন।");
-        return;
-    }
-
-    const payload = {
-        isLive: true,
-        youtubeId: ytId,
-        title: document.getElementById("tcClassTitle").value.trim() || "লাইভ ক্লাস",
-        subject: document.getElementById("tcSubject").value,
-        paper: document.getElementById("tcPaper").value,
-        chapter: document.getElementById("tcChapter").value.trim(),
-        teacherName: document.getElementById("tcTeacherName").value.trim() || "শিক্ষক",
-        teacherPhoto: document.getElementById("tcTeacherPhoto").value.trim(),
-        startedAt: Date.now()
-    };
-
-    try{
-        await set(ref(db, SESSION_PATH), payload);
-        alert("🔴 লাইভ ক্লাস শুরু হয়েছে!");
-        fillTeacherControlForm();
-    }catch(e){
-        alert("সমস্যা হয়েছে: " + e.message);
-    }
-};
-
-window.teacherEndLive = async function(){
-    if(!confirm("আপনি কি নিশ্চিত লাইভ ক্লাস শেষ করতে চান? লাইভ ক্লাসের সমস্ত বিষয় এবং চ্যাট মুছে যাবে।")) return;
-    try{
-        await remove(ref(db, CHAT_PATH));
-        await remove(ref(db, SESSION_PATH));
-        await remove(ref(db, QUESTIONS_PATH));
-        await remove(ref(db, HANDS_PATH));
-        await remove(ref(db, POLL_PATH));
-        await remove(ref(db, QUIZ_PATH));
-        await remove(ref(db, ANNOUNCE_PATH));
-
-        alert("⏹ লাইভ ক্লাস শেষ হয়েছে এবং সমস্ত তথ্য মুছে ফেলা হয়েছে।");
-        fillTeacherControlForm();
-    }catch(e){
-        alert("সমস্যা হয়েছে: " + e.message);
-    }
-};
-
-window.teacherSendChat = async function(){
-    const input = document.getElementById("tcReplyInput");
-    const text = input.value.trim();
-    if(!text) return;
-    try{
-        await push(ref(db, CHAT_PATH), {
-            uid: "teacher_" + TEACHER_NO,
-            name: (currentSession && currentSession.teacherName) || "শিক্ষক",
-            role: "teacher",
-            text: text,
-            timestamp: Date.now()
-        });
-        input.value = "";
-    }catch(e){
-        alert("পাঠানো যায়নি: " + e.message);
-    }
-};
-document.getElementById("tcReplyInput").addEventListener("keydown", (e)=>{
-    if(e.key === "Enter") window.teacherSendChat();
-});
-
-/* ============ UTIL ============ */
-function escapeHtml(value){
-    if(value === null || value === undefined) value = "";
-    return String(value)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-}
-function escapeAttr(value){ return escapeHtml(value); }
 </script>
 </body>
 </html>
