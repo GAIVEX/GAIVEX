@@ -1,1347 +1,1427 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লাইভ পরীক্ষা — GAIVEX Smart Exam System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- KaTeX CSS/JS for Math & Equations -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GAIVEX Live Class</title>
 
-    <style>
-        :root {
-            --q-font-size: 16px;
-        }
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Hind Siliguri', sans-serif; 
-            /* Anti-Copy and Text Selection Disable */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
-        
-        body { 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            position: relative;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-        /* Screen capture / Blur Protection Overlay */
-        .secure-blur {
-            filter: blur(15px) grayscale(100%) !important;
-            pointer-events: none !important;
-        }
+<style>
+:root{
+    --bg:#080d1a;
+    --bg-glow-1: rgba(56,189,248,.16);
+    --bg-glow-2: rgba(244,63,94,.12);
+    --glass: rgba(22,32,52,.55);
+    --glass-soft: rgba(22,32,52,.35);
+    --glass-border: rgba(148,163,184,.14);
+    --ink:#f1f5f9;
+    --ink-dim:#94a3b8;
+    --ink-faint:#64748b;
+    --sky:#38bdf8;
+    --sky-deep:#0284c7;
+    --rose:#f43f5e;
+    --live:#ef4444;
+    --ok:#10b981;
+    --gold:#f59e0b;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:9px;
+}
 
-        #screenProtectOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.98);
-            z-index: 99999;
-            color: #f43f5e;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
-        .logo span { color: #f43f5e; }
-        .nav-right { display: flex; align-items: center; gap: 12px; }
-        .user-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; background: #0f172a; padding: 4px 10px; border-radius: 20px; border: 1px solid #334155; }
-        .user-avatar { width: 22px; height: 22px; border-radius: 50%; background: #38bdf8; color: #0f172a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; }
+*{ box-sizing:border-box; margin:0; padding:0; }
 
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
-        
-        /* Timer Header */
-        .timer-header { position: sticky; top: 60px; z-index: 900; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; flex-wrap: nowrap; }
-        .timer-info { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-        #examTitle { font-size: 14px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; font-weight: 600; }
-        .timer-box { font-size: 16px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #f43f5e; white-space: nowrap; }
-        .btn-top-submit { background: #10b981; color: white; border: none; padding: 8px 16px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
-        .btn-top-submit:hover { background: #059669; }
+html,body{
+    height:100%;
+    font-family:'Hind Siliguri',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    overflow-x:hidden;
+}
 
-        /* Banner Warnings */
-        .warning-toast { display: none; background: #f59e0b; color: #0f172a; padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-align: center; }
-        
-        /* Control Toolbar */
-        .exam-toolbar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .mode-toggle { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .tool-btn { background: #0f172a; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
-        .tool-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
-        
-        /* Font Controls & Auto Advance Toggle */
-        .ctrl-group { display: flex; align-items: center; gap: 6px; background: #0f172a; padding: 3px 8px; border-radius: 6px; border: 1px solid #475569; }
-        .ctrl-label { font-size: 11px; color: #94a3b8; font-weight: 600; }
-        .font-btn { background: #1e293b; border: 1px solid #334155; color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
+.latin{ font-family:'Outfit',sans-serif; }
 
-        /* Question Search & Quick Jump */
-        .search-box { display: flex; gap: 6px; }
-        .search-box input { background: #0f172a; border: 1px solid #475569; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; width: 70px; text-align: center; }
+body{
+    background:
+        radial-gradient(ellipse 900px 600px at 12% -5%, var(--bg-glow-1), transparent 55%),
+        radial-gradient(ellipse 800px 700px at 95% 15%, var(--bg-glow-2), transparent 50%),
+        radial-gradient(ellipse 1000px 800px at 50% 120%, rgba(56,189,248,.08), transparent 60%),
+        var(--bg);
+    min-height:100vh;
+}
 
-        /* Question Cards */
-        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
-        .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
-        .question-title { font-size: var(--q-font-size); font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
-        .question-meta { display: flex; gap: 6px; margin-bottom: 10px; }
-        .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #0f172a; border: 1px solid #334155; color: #94a3b8; }
-        .tag.hard { border-color: #f43f5e; color: #f43f5e; }
-        .tag.medium { border-color: #facc15; color: #facc15; }
-        .tag.easy { border-color: #10b981; color: #10b981; }
+button{ font-family:inherit; cursor:pointer; }
+input,textarea{ font-family:inherit; }
+.hidden{ display:none!important; }
 
-        .action-btns { display: flex; gap: 6px; }
-        .action-icon-btn { background: #0f172a; border: 1px solid #334155; cursor: pointer; font-size: 16px; color: #64748b; transition: 0.2s; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-        .action-icon-btn.bookmark-btn.active { color: #facc15; border-color: #facc15; }
-        .action-icon-btn.review-btn.active { color: #a855f7; border-color: #a855f7; }
-        .action-icon-btn:hover { background: #334155; }
-        
-        /* Options */
-        .options-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: var(--q-font-size); display: flex; align-items: center; gap: 12px; color: #f8fafc; }
-        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
-        .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
+::-webkit-scrollbar{ width:6px; height:6px; }
+::-webkit-scrollbar-thumb{ background:rgba(148,163,184,.25); border-radius:10px; }
 
-        .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; transform: scale(1.01); }
-        .option-item.locked-option { cursor: not-allowed; opacity: 0.8; }
-        .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
-        .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
+.glass{
+    background:var(--glass);
+    backdrop-filter:blur(22px) saturate(160%);
+    -webkit-backdrop-filter:blur(22px) saturate(160%);
+    border:1px solid var(--glass-border);
+    box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+}
 
-        /* Review Details Cards */
-        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 14px; margin-top: 15px; border-radius: 0 8px 8px 0; font-size: 14px; color: #cbd5e1; line-height: 1.6; }
-        .review-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
-        .insight-card { background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
-        .insight-card strong { display: block; color: #38bdf8; margin-bottom: 2px; }
-        .q-time-badge { font-size: 11px; color: #38bdf8; background: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; display: inline-block; margin-top: 8px; }
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:200;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 20px;
+    border-bottom:1px solid var(--glass-border);
+    background:rgba(8,13,26,.65);
+    backdrop-filter:blur(18px);
+}
 
-        /* Single Mode Nav Footer */
-        .single-nav-footer { display: none; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
-        .nav-btn { background: #38bdf8; color: #0f172a; border: none; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; }
-        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.brand{ display:flex; align-items:center; gap:10px; }
+.brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; letter-spacing:.2px; color:var(--sky); }
+.brand-mark span{ color:var(--rose); }
+.brand-tag{ font-size:11px; color:var(--ink-faint); border-left:1px solid var(--glass-border); padding-left:10px; display:none; }
+.topbar-right{ display:flex; align-items:center; gap:10px; }
 
-        /* Palette Section */
-        .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 25px; margin-bottom: 30px; }
-        .palette-title { font-size: 15px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; max-height: 220px; overflow-y: auto; padding: 4px; }
-        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; position: relative; }
-        .palette-btn.active-current { ring: 2px solid #38bdf8; border-color: #38bdf8; font-size: 15px; }
-        .palette-btn.answered { background: #1e3a8a; border-color: #38bdf8; color: #fff; }
-        .palette-btn.bookmarked { background: #854d0e; border-color: #facc15; color: #fff; }
-        .palette-btn.review { background: #581c87; border-color: #a855f7; color: #fff; }
+.icon-btn{
+    width:38px; height:38px;
+    border-radius:11px;
+    border:1px solid var(--glass-border);
+    background:var(--glass-soft);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    transition:.15s;
+    position:relative;
+}
+.icon-btn:hover{ color:var(--ink); border-color:rgba(56,189,248,.4); }
 
-        .palette-legend { display: flex; gap: 15px; font-size: 12px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 12px; margin-top: 15px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .legend-box { width: 12px; height: 12px; border-radius: 3px; }
+.toast-stack{
+    position:fixed;
+    top:70px; right:14px;
+    z-index:700;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-width:300px;
+}
+.toast{
+    padding:11px 14px;
+    border-radius:12px;
+    font-size:12.5px;
+    line-height:1.5;
+    animation:toast-in .25s ease;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+}
+@keyframes toast-in{ from{ opacity:0; transform:translateX(20px);} to{ opacity:1; transform:translateX(0);} }
+.toast-icon{ font-size:15px; }
 
-        /* Result Dashboard */
-        .result-dashboard { display: none; margin-bottom: 30px; }
-        .dash-header { background: #1e293b; border: 1px solid #38bdf8; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
-        .stat-card { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; text-align: center; }
-        .stat-card .num { font-size: 20px; font-weight: bold; color: #38bdf8; }
-        .stat-card .lbl { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+.banner-stack{
+    max-width:1400px;
+    margin:12px auto 0;
+    padding:0 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.top-banner{
+    border-radius:var(--radius-md);
+    padding:11px 14px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:13px;
+    line-height:1.55;
+}
+.top-banner.announcement{ background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.35); }
+.top-banner.pinned{ background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.3); }
+.top-banner .b-icon{ font-size:16px; flex-shrink:0; }
+.top-banner .b-body{ flex:1; }
+.top-banner .b-label{ font-weight:700; font-size:11px; color:var(--gold); margin-bottom:2px; }
+.top-banner.pinned .b-label{ color:var(--sky); }
 
-        /* Accuracy Chart Bar */
-        .chart-box { background: #0f172a; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #334155; }
-        .progress-bar-wrap { height: 16px; background: #334155; border-radius: 10px; overflow: hidden; display: flex; margin-top: 8px; }
-        .prog-seg { height: 100%; transition: width 0.5s ease; }
-        .prog-correct { background: #10b981; }
-        .prog-wrong { background: #f43f5e; }
-        .prog-skip { background: #64748b; }
+.stage{
+    max-width:1400px;
+    margin:0 auto;
+    padding:18px;
+    display:grid;
+    grid-template-columns:1fr 340px;
+    gap:16px;
+    align-items:start;
+}
 
-        /* AI Analysis Section */
-        .ai-box { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #6366f1; border-radius: 12px; padding: 20px; margin-top: 20px; position: relative; text-align: left; }
-        .ai-badge { position: absolute; top: 12px; right: 15px; background: #6366f1; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
-        .topic-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .topic-pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .topic-pill.weak { background: rgba(244, 63, 94, 0.2); border: 1px solid #f43f5e; color: #f43f5e; }
-        .topic-pill.strong { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
+.video-block{ border-radius:var(--radius-lg); overflow:hidden; position:relative; }
 
-        /* Leaderboard & Tabs */
-        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        .leaderboard-table th, .leaderboard-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; }
-        .leaderboard-table th { background: #0f172a; color: #38bdf8; }
-        .leaderboard-table tr.my-rank { background: rgba(56, 189, 248, 0.15); font-weight: bold; }
+.video-frame-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#000;
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+}
+.video-frame-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.video-frame-wrap:fullscreen{ border-radius:0; }
+.video-frame-wrap:fullscreen iframe{ width:100%; height:100%; }
 
-        /* Filters */
-        .filter-bar { display: none; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .filter-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s; }
-        .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+.conn-status{
+    position:absolute;
+    top:14px; left:14px;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 10px;
+    border-radius:99px;
+    background:rgba(8,13,26,.6);
+    border:1px solid rgba(148,163,184,.2);
+    font-size:11px;
+    color:var(--ink-dim);
+    backdrop-filter:blur(8px);
+}
+.conn-dot{ width:6px; height:6px; border-radius:50%; background:var(--ok); }
+.conn-status.bad .conn-dot{ background:var(--rose); animation:pulse-dot 1.2s infinite; }
 
-        /* Modals */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 480px; width: 90%; text-align: center; }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-        .modal-btn { padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 13px; }
-        .btn-confirm { background: #10b981; color: white; }
-        .btn-cancel { background: #475569; color: white; }
+.meta-outside-bar{
+    margin-top:12px;
+    padding:12px 16px;
+    border-radius:var(--radius-md);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+.teacher-meta-left{ display:flex; align-items:center; gap:12px; }
+.teacher-chip{ display:flex; align-items:center; gap:10px; }
+.teacher-avatar{ width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid rgba(56,189,248,.55); background:#1e293b; }
+.teacher-meta{ line-height:1.25; }
+.teacher-name{ font-size:14px; font-weight:600; color:#fff; display:flex; align-items:center; gap:5px; }
+.verify-badge{ color:var(--sky); font-size:12px; }
+.teacher-role{ font-size:11px; color:var(--ink-dim); }
+.viewer-pill{ display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px; background:rgba(8,13,26,.55); border:1px solid var(--glass-border); backdrop-filter:blur(10px); font-size:12px; color:var(--ink-dim); }
+.meta-right-group{ display:flex; align-items:center; gap:8px; }
+.live-pill{
+    display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px;
+    background:rgba(239,68,68,.16); border:1px solid rgba(239,68,68,.45);
+    font-family:'Outfit',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.5px; color:#fecaca;
+}
+.live-dot{ width:7px; height:7px; border-radius:50%; background:var(--live); box-shadow:0 0 0 0 rgba(239,68,68,.6); animation:pulse-dot 1.6s infinite; }
+@keyframes pulse-dot{
+    0%{ box-shadow:0 0 0 0 rgba(239,68,68,.55); }
+    70%{ box-shadow:0 0 0 8px rgba(239,68,68,0); }
+    100%{ box-shadow:0 0 0 0 rgba(239,68,68,0); }
+}
 
-        /* Printable Certificate Template */
-        .certificate-card { background: #fff; color: #000; padding: 30px; border: 10px double #1e3a8a; border-radius: 8px; text-align: center; display: none; }
-        .certificate-card h1 { color: #1e3a8a; font-size: 28px; margin-bottom: 5px; }
-        .certificate-card h3 { color: #d97706; font-size: 18px; margin-bottom: 20px; }
+.video-controls{ position:absolute; bottom:14px; right:14px; z-index:20; display:flex; gap:8px; }
+.ctrl-btn{
+    width:38px; height:38px; border-radius:11px; border:1px solid rgba(255,255,255,.18);
+    background:rgba(8,13,26,.55); backdrop-filter:blur(10px); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:16px; transition:.15s;
+}
+.ctrl-btn:hover{ background:rgba(56,189,248,.35); }
 
-        /* Footer */
-        .site-footer { background: #1e293b; border-top: 1px solid #334155; padding: 25px 20px 20px; margin-top: auto; text-align: center; }
-        .footer-logo { font-size: 20px; font-weight: 700; color: #38bdf8; }
-        .footer-logo span { color: #f43f5e; }
-        .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 10px; }
-        .social-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
-        .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .social-btn svg { width: 18px; height: 18px; }
+.raise-hand-fab{
+    position:absolute; bottom:14px; left:14px; z-index:20;
+    display:flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px;
+    border:1px solid rgba(255,255,255,.18); background:rgba(8,13,26,.6); backdrop-filter:blur(10px);
+    color:#fff; font-size:12.5px; font-weight:600; transition:.15s;
+}
+.raise-hand-fab:hover{ background:rgba(56,189,248,.3); }
+.raise-hand-fab.active{ background:linear-gradient(135deg,#f59e0b,#d97706); border-color:transparent; }
 
-        /* Print Media Security CSS */
-        @media print {
-            body { display: none !important; }
-        }
+.reaction-layer{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:15; }
+.float-emoji{ position:absolute; bottom:60px; font-size:26px; animation:float-up 3.2s ease-out forwards; }
+@keyframes float-up{
+    0%{ transform:translateY(0) translateX(0) scale(.6); opacity:0; }
+    12%{ opacity:1; transform:translateY(-20px) scale(1); }
+    100%{ transform:translateY(-260px) translateX(var(--drift,20px)) scale(1.05); opacity:0; }
+}
 
-        @media (max-width: 640px) {
-          .timer-header { flex-wrap: wrap; }
-          #examTitle { max-width: 140px; }
-          .exam-toolbar { flex-direction: column; align-items: stretch; }
-          .search-box { justify-content: space-between; }
-        }
-    </style>
+.offline-screen{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:14px; padding:30px;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(56,189,248,.10), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(244,63,94,.08), transparent 55%),
+        #0b1120;
+}
+.offline-icon{ width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; background:rgba(56,189,248,.10); border:1px solid rgba(56,189,248,.3); }
+.offline-title{ font-size:18px; font-weight:700; }
+.offline-sub{ font-size:13px; color:var(--ink-dim); max-width:320px; line-height:1.6; }
+
+.info-bar{ margin-top:10px; padding:14px 16px; border-radius:var(--radius-md); display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.info-title{ font-size:15px; font-weight:600; margin-right:auto; }
+.chip{ font-size:11.5px; color:var(--ink-dim); background:rgba(15,23,42,.55); border:1px solid var(--glass-border); padding:5px 10px; border-radius:99px; }
+
+.section-block{ margin-top:12px; border-radius:var(--radius-md); padding:16px; }
+.section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.section-head h3{ font-size:14px; font-weight:700; display:flex; align-items:center; gap:7px; }
+.section-empty{ color:var(--ink-faint); font-size:12.5px; padding:8px 0; }
+
+.resource-card{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:11px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); margin-bottom:8px; }
+.resource-card:last-child{ margin-bottom:0; }
+.resource-icon{ font-size:18px; }
+.resource-info{ flex:1; min-width:0; }
+.resource-title{ font-size:13px; font-weight:600; }
+.resource-type{ font-size:10.5px; color:var(--ink-faint); }
+.resource-open{ padding:6px 12px; border-radius:99px; background:rgba(56,189,248,.16); border:1px solid rgba(56,189,248,.4); color:var(--sky); font-size:11.5px; font-weight:700; text-decoration:none; white-space:nowrap; }
+
+.homework-card{ padding:12px; border-radius:11px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); margin-bottom:8px; }
+.homework-card:last-child{ margin-bottom:0; }
+.homework-title{ font-size:13px; font-weight:600; margin-bottom:4px; }
+.homework-deadline{ font-size:11px; color:var(--rose); margin-bottom:5px; }
+.homework-desc{ font-size:12px; color:var(--ink-dim); line-height:1.5; margin-bottom:8px; }
+.homework-done-toggle{ padding:6px 12px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(16,185,129,.08); color:var(--ok); font-size:11.5px; font-weight:700; }
+.homework-done-toggle.done{ background:rgba(16,185,129,.25); }
+
+.chat-panel{ border-radius:var(--radius-lg); display:flex; flex-direction:column; height:calc(100vh - 110px); position:sticky; top:80px; overflow:hidden; }
+.chat-head{ padding:12px 12px 0; border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; gap:6px; }
+
+.tab-row{ display:flex; gap:2px; overflow-x:auto; flex:1; scrollbar-width:none; }
+.tab-row::-webkit-scrollbar{ display:none; }
+.tab-btn{ flex-shrink:0; background:none; border:none; padding:9px 11px; font-size:12px; font-weight:600; color:var(--ink-faint); border-bottom:2px solid transparent; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+.tab-btn.active{ color:var(--sky); border-bottom-color:var(--sky); }
+.tab-count{ background:rgba(244,63,94,.85); color:#fff; font-size:9px; font-weight:700; min-width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+
+.tab-content{ flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.tab-content.hidden{ display:none; }
+
+.chat-body{ flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
+
+.msg-row{ display:flex; flex-direction:column; max-width:88%; }
+.msg-row.me{ align-self:flex-end; align-items:flex-end; }
+.msg-row.teacher{ align-self:flex-start; }
+.msg-row.other{ align-self:flex-start; }
+
+.msg-sender{ font-size:10.5px; color:var(--ink-faint); margin-bottom:3px; padding:0 4px; display:flex; align-items:center; gap:5px; }
+.teacher-tag{ background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; font-size:9px; padding:1.5px 6px; border-radius:6px; font-family:'Outfit',sans-serif; }
+
+.msg-bubble-wrap{ display:flex; align-items:flex-end; gap:5px; }
+.msg-row.me .msg-bubble-wrap{ flex-direction:row-reverse; }
+
+.msg-bubble{ padding:9px 13px; border-radius:16px; font-size:13.5px; line-height:1.5; word-break:break-word; white-space:pre-wrap; }
+.msg-row.other .msg-bubble{ background:rgba(51,65,85,.6); border:1px solid var(--glass-border); border-top-left-radius:5px; color:#f1f5f9; }
+.msg-row.me .msg-bubble{ background:linear-gradient(135deg,#0284c7,#0369a1); border-top-right-radius:5px; color:#fff; }
+.msg-row.teacher .msg-bubble{ background:rgba(244,63,94,.14); border:1px solid rgba(244,63,94,.35); border-top-left-radius:5px; }
+.msg-ts{ font-size:9.5px; color:var(--ink-faint); margin-top:2px; padding:0 4px; }
+
+.chat-empty{ margin:auto; text-align:center; color:var(--ink-faint); font-size:12.5px; padding:20px; }
+
+.chat-foot{ padding:10px 12px; border-top:1px solid var(--glass-border); display:flex; gap:8px; align-items:flex-end; }
+
+.chat-input{
+    flex:1; resize:none; max-height:90px; min-height:40px;
+    background:rgba(15,23,42,.6); border:1px solid var(--glass-border); border-radius:12px;
+    padding:10px 12px; color:#fff; font-size:13.5px; outline:none;
+}
+.chat-input:focus{ border-color:rgba(56,189,248,.5); }
+
+.send-btn{
+    width:42px; height:42px; flex-shrink:0; border:none; border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-size:16px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+}
+.send-btn:disabled{ opacity:.4; }
+
+.reactions-bar{ display:flex; gap:6px; padding:0 12px 10px; }
+.react-btn{ border:1px solid var(--glass-border); background:rgba(15,23,42,.5); border-radius:10px; padding:5px 9px; font-size:15px; }
+.react-btn:hover{ background:rgba(56,189,248,.18); }
+
+.search-mini{ margin:0 12px 8px; padding:8px 11px; border-radius:10px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:#fff; font-size:12.5px; outline:none; width:calc(100% - 24px); }
+
+.muted-banner{ margin:0 12px 8px; padding:8px 11px; border-radius:10px; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#fca5a5; font-size:11.5px; }
+
+.qna-body{ flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:9px; }
+.qna-card{ padding:11px 12px; border-radius:12px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); }
+.qna-card.answered{ border-color:rgba(16,185,129,.4); background:rgba(16,185,129,.06); }
+.qna-card.pinned{ border-color:rgba(245,158,11,.5); }
+.qna-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:5px; }
+.qna-name{ font-size:11px; color:var(--ink-faint); }
+.qna-text{ font-size:13px; line-height:1.5; }
+.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:9px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
+.qna-answer b{ color:var(--sky); }
+.qna-actions{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.qna-mini-btn{ font-size:11px; padding:4px 9px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); display:flex; align-items:center; gap:4px; }
+.qna-mini-btn.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
+.qna-status-tag{ font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:6px; }
+.qna-status-tag.wait{ background:rgba(148,163,184,.18); color:var(--ink-dim); }
+.qna-status-tag.done{ background:rgba(16,185,129,.2); color:#6ee7b7; }
+.qna-filter-row{ display:flex; gap:6px; padding:10px 12px 0; }
+.qna-filter-row .qna-mini-btn{ flex:1; justify-content:center; }
+
+.pq-body{ flex:1; overflow-y:auto; padding:14px; }
+.pq-empty{ text-align:center; color:var(--ink-faint); font-size:12.5px; padding:30px 10px; }
+.pq-card{ padding:14px; border-radius:14px; background:rgba(15,23,42,.5); border:1px solid var(--glass-border); }
+.pq-question{ font-size:14px; font-weight:700; margin-bottom:12px; line-height:1.5; }
+.pq-timer{ font-size:11px; color:var(--rose); font-weight:700; margin-bottom:10px; }
+.pq-option{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 13px; border-radius:11px;
+    background:rgba(30,41,59,.6); border:1px solid var(--glass-border);
+    margin-bottom:8px; font-size:13px; position:relative; overflow:hidden;
+}
+.pq-option-fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(56,189,248,.16); z-index:0; transition:width .4s; }
+.pq-option-label{ position:relative; z-index:1; }
+.pq-option-pct{ position:relative; z-index:1; font-weight:700; color:var(--sky); font-size:12px; }
+.pq-option.correct{ border-color:rgba(16,185,129,.55); }
+.pq-option.correct .pq-option-fill{ background:rgba(16,185,129,.22); }
+.pq-option.wrong-pick{ border-color:rgba(244,63,94,.55); }
+.pq-option.selectable{ cursor:pointer; }
+.pq-option.selectable:hover{ border-color:rgba(56,189,248,.4); }
+.pq-option.chosen{ border-color:var(--sky); }
+.pq-vote-note{ font-size:11px; color:var(--ink-faint); margin-top:6px; text-align:center; }
+.pq-result-note{ text-align:center; font-size:13px; font-weight:700; margin-top:8px; }
+.pq-result-note.correct{ color:var(--ok); }
+.pq-result-note.wrong{ color:var(--rose); }
+
+.people-body{ flex:1; overflow-y:auto; padding:12px; }
+.people-sub-tabs{ display:flex; gap:6px; margin-bottom:10px; }
+.people-sub-tabs button{ flex:1; padding:7px; border-radius:9px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); font-size:11.5px; font-weight:600; }
+.people-sub-tabs button.active{ color:var(--sky); border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
+.people-row{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px; background:rgba(15,23,42,.4); margin-bottom:6px; }
+.people-avatar-sm{ width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#38bdf8,#0284c7); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#04121e; flex-shrink:0; }
+.people-name{ font-size:12.5px; flex:1; }
+.people-rank{ font-size:11px; color:var(--gold); font-weight:700; width:20px; }
+.people-score{ font-size:12px; color:var(--sky); font-weight:700; }
+.raise-row{ display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:10px; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); margin-bottom:6px; }
+
+.chat-fab{
+    display:none; position:fixed; bottom:20px; right:18px; z-index:230;
+    width:54px; height:54px; border-radius:50%; border:none;
+    background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-size:22px;
+    align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(2,132,199,.5);
+    transition: opacity 0.2s, display 0.2s;
+}
+.chat-panel.open ~ .chat-fab,
+body.chat-is-open .chat-fab { display: none !important; }
+
+.chat-fab .badge{
+    position:absolute; top:-4px; right:-4px; background:var(--rose); color:#fff;
+    font-size:10px; font-weight:700; min-width:18px; height:18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; padding:0 4px;
+}
+
+.gate-overlay{ position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,7,15,.7); backdrop-filter:blur(8px); }
+.gate-card{ width:100%; max-width:380px; border-radius:var(--radius-lg); padding:26px; }
+.gate-logo{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); text-align:center; }
+.gate-logo span{ color:var(--rose); }
+.gate-title{ text-align:center; margin-top:6px; font-size:13px; color:var(--ink-dim); margin-bottom:20px; }
+.gate-input{ width:100%; padding:12px 14px; border-radius:11px; border:1px solid var(--glass-border); background:rgba(15,23,42,.6); color:#fff; outline:none; margin-bottom:12px; font-size:14px; }
+.gate-input:focus{ border-color:var(--sky); }
+.gate-btn{ width:100%; padding:12px; border:none; border-radius:99px; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#04121e; font-weight:700; font-size:14.5px; }
+
+@media(max-width:980px){
+    .stage{ grid-template-columns:1fr; padding:12px; }
+    .chat-panel{
+        position:fixed; right:0; bottom:0; left:0; top:auto; height:78vh;
+        border-radius:20px 20px 0 0; transform:translateY(105%); transition:transform .28s ease; z-index:240;
+    }
+    .chat-panel.open{ transform:translateY(0); }
+    .chat-fab{ display:flex; }
+    .brand-tag{ display:none; }
+    .banner-stack{ padding:0 12px; }
+}
+
+@media(max-width:520px){
+    .topbar{ padding:12px 14px; }
+    .brand-mark{ font-size:17px; }
+    .teacher-name{ font-size:12px; }
+    .live-pill{ font-size:10px; padding:5px 9px; }
+    .video-controls{ bottom:10px; right:10px; }
+    .ctrl-btn{ width:36px; height:36px; font-size:15px; }
+    .raise-hand-fab span.rh-label{ display:none; }
+    .toast-stack{ left:12px; right:12px; max-width:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .live-dot, .float-emoji{ animation:none!important; }
+}
+</style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <!-- Anti-Screenshot / Blur Protection Screen Overlay -->
-    <div id="screenProtectOverlay">
-        <h2>🔒 সিকিউরিটি অ্যালার্ট!</h2>
-        <p style="margin-top: 10px; font-size: 16px; color: #cbd5e1;">পরীক্ষা চলাকালীন স্ক্রিনশট নেওয়া, উইন্ডো পরিবর্তন করা বা প্রিন্ট করা নিষিদ্ধ!</p>
-        <p style="margin-top: 5px; font-size: 13px; color: #38bdf8;">পরীক্ষার স্ক্রিনে ফিরে আসতে এখানে ক্লিক করুন...</p>
+<div class="toast-stack" id="toastStack"></div>
+
+<div id="gateOverlay" class="gate-overlay">
+    <div class="gate-card glass">
+        <div class="gate-logo">GAIVEX<span>.</span></div>
+        <div class="gate-title">ক্লাসে যোগ দেওয়ার আগে আপনার নাম লিখুন</div>
+        <input id="gateNameInput" class="gate-input" placeholder="আপনার নাম" maxlength="40">
+        <button class="gate-btn" onclick="enterClass()">🎬 লাইভ ক্লাসে প্রবেশ করুন</button>
     </div>
+</div>
 
-    <!-- Header / Navbar -->
-    <header class="navbar" id="mainHeader">
-        <a href="index.html" class="logo">GAIVEX<span>.</span></a>
-        <div class="nav-right">
-            <div class="user-badge" id="userProfileBadge">
-                <div class="user-avatar" id="uAvatar">S</div>
-                <span id="uName">Student</span>
-            </div>
-            <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 13px;">🏠 হোম</a>
-        </div>
-    </header>
+<div class="topbar">
+    <div class="brand">
+        <div class="brand-mark">GAIVEX<span>.</span></div>
+        <div class="brand-tag latin">LIVE CLASS</div>
+    </div>
+    <div class="topbar-right">
+        <button class="icon-btn" title="সার্চ" onclick="openTab('chat');document.getElementById('chatSearchInput').focus();openChatDrawer();">🔎</button>
+        <button class="icon-btn" title="শেয়ার করুন" onclick="shareClassLink()">🔗</button>
+    </div>
+</div>
 
-    <div class="container" id="mainExamContainer">
-        <!-- Anti-cheat / System Warning Toast -->
-        <div class="warning-toast" id="warningToast">⚠️ সতর্কতা: স্ক্রিনশট, ক্যাপচার বা ট্যাব পরিবর্তন করার চেষ্টা করলে পরীক্ষা বাতিল হতে পারে!</div>
+<div class="banner-stack" id="bannerStack"></div>
 
-        <!-- Sticky Timer Bar -->
-        <div class="timer-header">
-            <div class="timer-info">
-                <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
-                <div class="timer-box" id="timerDisplay">00:00</div>
-            </div>
-            <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
-        </div>
-
-        <!-- Result Dashboard (Hidden during exam) -->
-        <div class="result-dashboard" id="resultDashboard">
-            <div class="dash-header">
-                <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড</h2>
-                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Plant Breeding (উদ্ভিদ প্রজনন) — Live Exam Result</p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="num" id="resScore">0.00</div><div class="lbl">মোট নম্বর</div></div>
-                    <div class="stat-card"><div class="num" id="resAccuracy">0%</div><div class="lbl">Accuracy</div></div>
-                    <div class="stat-card"><div class="num" id="resCorrect" style="color: #10b981;">0</div><div class="lbl">সঠিক ( Correct )</div></div>
-                    <div class="stat-card"><div class="num" id="resWrong" style="color: #f43f5e;">0</div><div class="lbl">ভুল ( Wrong )</div></div>
-                    <div class="stat-card"><div class="num" id="resSkipped" style="color: #64748b;">0</div><div class="lbl">স্কিপড ( Skipped )</div></div>
-                    <div class="stat-card"><div class="num" id="resTime">0m 0s</div><div class="lbl">সময় ব্যয়</div></div>
+<div class="stage">
+    <div>
+        <div class="video-block">
+            <div class="video-frame-wrap" id="videoWrap">
+                <div id="offlineScreen" class="offline-screen">
+                    <div class="offline-icon">📡</div>
+                    <div class="offline-title">লাইভ ক্লাস এখনো শুরু হয়নি</div>
+                    <div class="offline-sub">শিক্ষক ক্লাস শুরু করলেই এখানে সরাসরি ভিডিও চালু হয়ে যাবে। একটু অপেক্ষা করুন।</div>
                 </div>
 
-                <!-- Accuracy Visual Bar -->
-                <div class="chart-box">
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1;">
-                        <span>📈 Accuracy Breakup</span>
-                        <span id="resAttemptRate">Attempt Rate: 0%</span>
+                <iframe id="ytFrame" class="hidden" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+
+                <div class="reaction-layer" id="reactionLayer"></div>
+
+                <div class="conn-status" id="connStatus"><span class="conn-dot"></span><span id="connStatusText">সংযুক্ত</span></div>
+
+                <button class="raise-hand-fab hidden" id="raiseHandBtn" onclick="toggleRaiseHand()">🙋 <span class="rh-label">হাত তুলুন</span></button>
+
+                <div class="video-controls hidden" id="videoControls">
+                    <button class="ctrl-btn" title="রিফ্রেশ" onclick="reloadVideo()">🔄</button>
+                    <button class="ctrl-btn" id="pipBtn" title="Picture-in-Picture" onclick="togglePip()">⧉</button>
+                    <button class="ctrl-btn" id="fsBtn" title="ফুলস্ক্রিন" onclick="toggleFullscreen()">⛶</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="meta-outside-bar glass hidden" id="metaOutsideBar">
+            <div class="teacher-meta-left">
+                <div class="teacher-chip" id="teacherChip">
+                    <img id="teacherAvatar" class="teacher-avatar" src="" alt="">
+                    <div class="teacher-meta">
+                        <div class="teacher-name" id="teacherNameEl">— <span class="verify-badge" title="যাচাইকৃত শিক্ষক">✔️</span></div>
+                        <div class="teacher-role" id="teacherSubjectRole">শিক্ষক</div>
                     </div>
-                    <div class="progress-bar-wrap">
-                        <div class="prog-seg prog-correct" id="barCorrect" style="width: 0%;"></div>
-                        <div class="prog-seg prog-wrong" id="barWrong" style="width: 0%;"></div>
-                        <div class="prog-seg prog-skip" id="barSkip" style="width: 0%;"></div>
-                    </div>
                 </div>
-
-                <!-- GAIVEX AI Weakness Analysis -->
-                <div class="ai-box">
-                    <span class="ai-badge">GAIVEX AI 🧠</span>
-                    <h4 style="color: #cbd5e1; margin-bottom: 6px;">🤖 AI Performance & Weakness Analysis</h4>
-                    <p style="color: #94a3b8; font-size: 13px;" id="aiAnalysisText">বিশ্লেষণ প্রস্তুত করা হচ্ছে...</p>
-                    
-                    <div style="margin-top: 12px;">
-                        <span style="font-size: 12px; color: #64748b; font-weight: bold;">টপিক পারফরম্যান্স:</span>
-                        <div class="topic-list" id="aiTopicList"></div>
-                    </div>
-
-                    <button class="tool-btn" style="margin-top: 15px; background: #6366f1; color: white; border: none;" onclick="generateAIPractice()">⚡ দুর্বল টপিকের ওপর ২০টি AI রিভিশন এমসিকিউ পান</button>
-                </div>
-
-                <!-- Action Toolbar for Results -->
-                <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button class="tool-btn" onclick="toggleTabs('leaderboard')">🏆 Live Leaderboard দেখুন</button>
-                    <button class="tool-btn" onclick="toggleTabs('history')">📈 Performance History</button>
-                    <button class="tool-btn" onclick="printCertificate()">📜 Certificate</button>
-                    <button class="tool-btn" style="background:#1877F2; border-color:#1877F2; color:#fff;" onclick="shareResultOnFacebook()">🌐 Share Score</button>
-                </div>
+                <div class="viewer-pill hidden" id="viewerPill">👁️ <span id="viewerCount">0</span> জন দেখছে</div>
             </div>
 
-            <!-- Dynamic Tab Content -->
-            <div id="tabLeaderboard" style="display: none; background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
-                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">🏆 আজকের Live Ranking</h3>
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr><th>Rank</th><th>Student Name</th><th>Score</th><th>Time</th></tr>
-                    </thead>
-                    <tbody id="leaderboardBody">
-                        <tr><td colspan="4" style="text-align:center; color:#64748b;">লোড হচ্ছে...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="tabHistory" style="display: none; background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
-                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">📊 আপনার গত পরীক্ষার পারফরম্যান্স ট্র্যাকার</h3>
-                <div id="historyList" style="font-size: 13px; color: #cbd5e1;"></div>
+            <div class="meta-right-group">
+                <div class="live-pill hidden" id="livePill"><span class="live-dot"></span> LIVE · <span id="liveDurationEl">00:00</span></div>
             </div>
         </div>
 
-        <!-- Exam Controls & Navigation Toolbar -->
-        <div class="exam-toolbar" id="examToolbar">
-            <div class="mode-toggle">
-                <button type="button" class="tool-btn active" id="btnModeAll" onclick="switchViewMode('all')">📄 All Questions</button>
-                <button type="button" class="tool-btn" id="btnModeSingle" onclick="switchViewMode('single')">📱 One Question</button>
-                
-                <!-- Font Size Controls -->
-                <div class="ctrl-group">
-                    <span class="ctrl-label">Font:</span>
-                    <button type="button" class="font-btn" onclick="changeFontSize(-1)">A-</button>
-                    <button type="button" class="font-btn" onclick="changeFontSize(1)">A+</button>
-                </div>
-
-                <!-- Auto Advance Toggle -->
-                <div class="ctrl-group">
-                    <input type="checkbox" id="autoAdvanceCheck" style="accent-color: #38bdf8; cursor: pointer;">
-                    <label for="autoAdvanceCheck" class="ctrl-label" style="cursor: pointer;">Auto Next</label>
-                </div>
-
-                <button type="button" class="tool-btn" onclick="openShortcutModal()">⌨️ Help</button>
-            </div>
-            
-            <div class="search-box">
-                <input type="number" id="jumpQInput" placeholder="Q. No" min="1">
-                <button type="button" class="tool-btn" onclick="jumpToQuestion()">Go 🚀</button>
-                <button type="button" class="tool-btn" onclick="goToNextUnanswered()" style="background:#0284c7; border-color:#0284c7; color:#fff;">বাকি প্রশ্ন ➔</button>
-            </div>
+        <div class="info-bar glass">
+            <div class="info-title" id="classTitle">ক্লাসের জন্য অপেক্ষা করুন</div>
+            <span class="chip" id="chipSubject">—</span>
+            <span class="chip" id="chipPaper">—</span>
+            <span class="chip" id="chipChapter">—</span>
         </div>
 
-        <!-- Filter Bar (Post-Exam) -->
-        <div class="filter-bar" id="filterBar">
-            <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
-            <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
-            <button class="filter-btn" onclick="filterQuestions('wrong')">ভুল উত্তর</button>
-            <button class="filter-btn" onclick="filterQuestions('skipped')">স্কিপড</button>
-            <button class="filter-btn" onclick="filterQuestions('bookmarked')">বুকমার্কড ⭐</button>
-            <button class="filter-btn" onclick="filterQuestions('review')">Review 🔖</button>
+        <div class="section-block glass">
+            <div class="section-head">
+                <h3>📚 ক্লাস রিসোর্স</h3>
+            </div>
+            <div id="resourceList"><div class="section-empty">এখনো কোনো রিসোর্স যোগ করা হয়নি।</div></div>
         </div>
 
-        <!-- Form & Container -->
-        <form id="examForm" onsubmit="event.preventDefault();">
-            <div id="questionsContainer"></div>
-        </form>
-
-        <!-- Single Question Navigation Buttons -->
-        <div class="single-nav-footer" id="singleNavFooter">
-            <button type="button" class="nav-btn" id="prevQBtn" onclick="navigateSingle(-1)">← Previous</button>
-            <span id="singleProgress" style="font-size: 13px; font-weight: bold; color: #38bdf8;">Question 1 / 50</span>
-            <button type="button" class="nav-btn" id="nextQBtn" onclick="navigateSingle(1)">Next →</button>
-        </div>
-
-        <!-- Advanced 4-Status Question Palette -->
-        <div class="palette-section" id="paletteSection">
-            <div class="palette-title">
-                <span>প্রশ্ন প্যালেট (Smart Navigation)</span>
-                <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
+        <div class="section-block glass">
+            <div class="section-head">
+                <h3>📝 হোমওয়ার্ক</h3>
             </div>
-            <div class="palette-grid" id="paletteGrid"></div>
-            <div class="palette-legend">
-                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> 🟦 Answered</div>
-                <div class="legend-item"><div class="legend-box" style="background:#854d0e;"></div> 🟨 Bookmarked</div>
-                <div class="legend-item"><div class="legend-box" style="background:#581c87;"></div> 🟪 Review</div>
-                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> ⬜ Unanswered</div>
-            </div>
+            <div id="homeworkList"><div class="section-empty">এখনো কোনো হোমওয়ার্ক দেওয়া হয়নি।</div></div>
         </div>
     </div>
 
-    <!-- Submit Confirmation Modal -->
-    <div class="modal-overlay" id="confirmModal">
-        <div class="modal-box">
-            <h3 style="color: #38bdf8; margin-bottom: 10px;">Are you sure you want to submit?</h3>
-            <p id="modalStatsText" style="color: #cbd5e1; font-size: 15px; line-height: 1.6;"></p>
-            <div class="modal-buttons">
-                <button type="button" class="modal-btn btn-cancel" onclick="closeConfirmModal()">ফিরে যান</button>
-                <button type="button" class="modal-btn btn-confirm" onclick="confirmAndSubmit()">Yes, Submit 🚀</button>
+    <div class="chat-panel glass" id="chatPanel">
+        <div class="chat-head">
+            <div class="tab-row" id="tabRow">
+                <button class="tab-btn active" data-tab="chat" onclick="openTab('chat')">💬 চ্যাট</button>
+                <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ প্রশ্ন<span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
+                <button class="tab-btn" data-tab="poll" onclick="openTab('poll')">📊 পোল</button>
+                <button class="tab-btn" data-tab="quiz" onclick="openTab('quiz')">🧠 কুইজ</button>
+                <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 জনরা</button>
+            </div>
+            <button class="icon-btn" onclick="closeChatDrawer()" style="display:none;flex-shrink:0;" id="chatCloseBtn">✕</button>
+        </div>
+
+        <div class="tab-content" id="tab-chat">
+            <input class="search-mini" id="chatSearchInput" placeholder="মেসেজ খুঁজুন..." oninput="renderChat(lastChatData||{})">
+            <div class="muted-banner hidden" id="mutedBanner">🔇 আপনাকে চ্যাটে মেসেজ পাঠানো থেকে সাময়িকভাবে বিরত রাখা হয়েছে।</div>
+            <div class="chat-body" id="chatBody">
+                <div class="chat-empty">এখনো কোনো মেসেজ নেই। প্রথম মেসেজটি আপনিই লিখুন 👋</div>
+            </div>
+
+            <div class="reactions-bar">
+                <button class="react-btn" onclick="sendReaction('❤️')">❤️</button>
+                <button class="react-btn" onclick="sendReaction('👏')">👏</button>
+                <button class="react-btn" onclick="sendReaction('🔥')">🔥</button>
+                <button class="react-btn" onclick="sendReaction('😮')">😮</button>
+                <button class="react-btn" onclick="sendReaction('🙋')">🙋</button>
+            </div>
+
+            <div class="chat-foot">
+                <textarea id="chatInput" class="chat-input" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
+                <button class="send-btn" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-qna">
+            <div class="qna-filter-row">
+                <button class="qna-mini-btn active" data-qf="all" onclick="setQnaFilter('all')">সব</button>
+                <button class="qna-mini-btn" data-qf="unanswered" onclick="setQnaFilter('unanswered')">উত্তরহীন</button>
+                <button class="qna-mini-btn" data-qf="answered" onclick="setQnaFilter('answered')">উত্তরিত</button>
+            </div>
+            <div class="qna-body" id="qnaBody"><div class="chat-empty">এখনো কোনো প্রশ্ন নেই। প্রথম প্রশ্নটি জিজ্ঞাসা করুন 🙋</div></div>
+            <div class="chat-foot">
+                <textarea id="qnaInput" class="chat-input" placeholder="আপনার প্রশ্ন লিখুন..." rows="1"></textarea>
+                <button class="send-btn" onclick="askQuestion()">➤</button>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-poll">
+            <div class="pq-body" id="pollBody">
+                <div class="pq-empty">এখন কোনো পোল চলছে না। শিক্ষক পোল শুরু করলে এখানে দেখা যাবে।</div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-quiz">
+            <div class="pq-body" id="quizBody">
+                <div class="pq-empty">এখন কোনো কুইজ চলছে না। শিক্ষক কুইজ শুরু করলে এখানে দেখা যাবে।</div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-people">
+            <div class="people-body">
+                <div class="people-sub-tabs">
+                    <button class="active" data-pf="online" onclick="setPeopleTab('online')">অনলাইন</button>
+                    <button data-pf="board" onclick="setPeopleTab('board')">🏆 লিডারবোর্ড</button>
+                    <button data-pf="hands" onclick="setPeopleTab('hands')">🙋 হাত তোলা</button>
+                </div>
+                <div id="peopleOnlineList"></div>
+                <div id="peopleBoardList" class="hidden"></div>
+                <div id="peopleHandsList" class="hidden"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Question Issue Report Modal -->
-    <div class="modal-overlay" id="reportModal">
-        <div class="modal-box">
-            <h3 style="color: #f43f5e; margin-bottom: 10px;">🚩 প্রশ্ন রিপোর্ট করুন</h3>
-            <input type="hidden" id="reportQIndex">
-            <select id="reportReason" style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; margin-bottom: 10px;">
-                <option value="Wrong Answer">❌ ভুল উত্তর (Wrong Answer)</option>
-                <option value="Question Error">⚠️ প্রশ্নে ভুল (Question Error)</option>
-                <option value="Explanation Error">📖 ব্যাখ্যা ভুল (Explanation Error)</option>
-                <option value="Typo">📝 বানানে ভুল (Typo)</option>
-            </select>
-            <textarea id="reportDetails" placeholder="বিস্তারিত লিখুন (ঐচ্ছিক)..." style="width:100%; height:70px; background:#0f172a; border:1px solid #475569; color:#fff; padding:8px; border-radius:6px; font-size:12px;"></textarea>
-            <div class="modal-buttons">
-                <button type="button" class="modal-btn btn-cancel" onclick="closeReportModal()">বাতিল</button>
-                <button type="button" class="modal-btn btn-confirm" onclick="submitQuestionReport()">জমা দিন</button>
+<button class="chat-fab" id="chatFab" onclick="openChatDrawer()">
+    💬
+    <span class="badge hidden" id="chatFabBadge">0</span>
+</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, onChildAdded, set, push, update, remove, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+    authDomain: "gaivexexam.firebaseapp.com",
+    databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+    projectId: "gaivexexam",
+    storageBucket: "gaivexexam.firebasestorage.app",
+    messagingSenderId: "956204530190",
+    appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const SESSION_PATH = "live_class/session";
+const CHAT_PATH = "live_class/chat";
+const VIEWERS_PATH = "live_class/viewers";
+const REACTIONS_PATH = "live_class/reactions";
+const ANNOUNCE_PATH = "live_class/announcement";
+const QUESTIONS_PATH = "live_class/questions";
+const HANDS_PATH = "live_class/raisedHands";
+const POLL_PATH = "live_class/poll";
+const QUIZ_PATH = "live_class/quiz";
+const QUIZ_SCORES_PATH = "live_class/quizScores";
+const RESOURCES_PATH = "live_class/resources";
+const HOMEWORK_PATH = "live_class/homework";
+const MUTED_PATH = "live_class/muted";
+const ATTENDANCE_PATH = "live_class/attendance";
+
+/* ---------- student identity ---------- */
+let studentName = localStorage.getItem("gaivexLiveName") || "";
+let studentUid = localStorage.getItem("gaivexLiveUid");
+if(!studentUid){
+    studentUid = "stu_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+    localStorage.setItem("gaivexLiveUid", studentUid);
+}
+
+let currentSession = null;
+let currentYoutubeId = null;
+let chatDrawerOpen = false;
+let unreadCount = 0;
+let lastChatKey = null;
+let lastChatData = {};
+let isMuted = false;
+let liveTimerInterval = null;
+let notifiedAnnounceTs = null;
+let notifiedPollKey = null;
+let notifiedQuizKey = null;
+let handRaised = false;
+let qnaFilter = "all";
+let peopleTab = "online";
+
+/* ============ TOAST NOTIFICATIONS ============ */
+function showToast(icon, text, kind){
+    const stack = document.getElementById("toastStack");
+    const el = document.createElement("div");
+    el.className = "toast glass";
+    if(kind === "gold") el.style.borderColor = "rgba(245,158,11,.4)";
+    el.innerHTML = `<span class="toast-icon">${icon}</span><span>${escapeHtml(text)}</span>`;
+    stack.appendChild(el);
+    setTimeout(()=>{ el.style.transition="opacity .3s"; el.style.opacity="0"; setTimeout(()=>el.remove(),300); }, 4500);
+}
+
+/* ============ NAME GATE ============ */
+window.enterClass = function(){
+    const val = document.getElementById("gateNameInput").value.trim();
+    if(!val){
+        document.getElementById("gateNameInput").focus();
+        return;
+    }
+    studentName = val;
+    localStorage.setItem("gaivexLiveName", studentName);
+    document.getElementById("gateOverlay").classList.add("hidden");
+    initPresence();
+};
+
+document.getElementById("gateNameInput").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") window.enterClass();
+});
+
+if(studentName){
+    document.getElementById("gateOverlay").classList.add("hidden");
+}
+
+/* ============ CONNECTION STATUS ============ */
+onValue(ref(db, ".info/connected"), (snap)=>{
+    const el = document.getElementById("connStatus");
+    const txt = document.getElementById("connStatusText");
+    if(snap.val() === true){
+        el.classList.remove("bad");
+        txt.innerText = "সংযুক্ত";
+    }else{
+        el.classList.add("bad");
+        txt.innerText = "পুনঃসংযোগ হচ্ছে...";
+    }
+});
+
+/* ============ TAB SWITCHING (side panel) ============ */
+window.openTab = function(name){
+    document.querySelectorAll(".tab-btn").forEach(b=> b.classList.toggle("active", b.dataset.tab === name));
+    document.querySelectorAll(".tab-content").forEach(c=> c.classList.add("hidden"));
+    document.getElementById("tab-" + name).classList.remove("hidden");
+    if(name === "chat"){ unreadCount = 0; updateChatBadge(); }
+};
+
+/* ============ SESSION LISTENER ============ */
+onValue(ref(db, SESSION_PATH), (snap)=>{
+    currentSession = snap.exists() ? snap.val() : null;
+    renderSession();
+});
+
+function renderSession(){
+    const offlineScreen = document.getElementById("offlineScreen");
+    const ytFrame = document.getElementById("ytFrame");
+    const teacherChip = document.getElementById("teacherChip");
+    const livePill = document.getElementById("livePill");
+    const viewerPill = document.getElementById("viewerPill");
+    const videoControls = document.getElementById("videoControls");
+    const metaOutsideBar = document.getElementById("metaOutsideBar");
+    const raiseHandBtn = document.getElementById("raiseHandBtn");
+
+    const wasLive = !!(window.__wasLive);
+    const isLive = !!(currentSession && currentSession.isLive && currentSession.youtubeId);
+
+    document.getElementById("classTitle").innerText = currentSession && currentSession.title
+        ? currentSession.title
+        : "ক্লাসের জন্য অপেক্ষা করুন";
+    document.getElementById("chipSubject").innerText = "📚 " + subjectName(currentSession && currentSession.subject);
+    document.getElementById("chipPaper").innerText = "📖 " + (currentSession && currentSession.paper === "paper2" ? "২য় পত্র" : currentSession && currentSession.paper === "paper1" ? "১ম পত্র" : "—");
+    document.getElementById("chipChapter").innerText = "📌 " + ((currentSession && currentSession.chapter) || "—");
+
+    if(isLive){
+        currentYoutubeId = currentSession.youtubeId;
+        ytFrame.src = "https://www.youtube.com/embed/" + currentYoutubeId + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+        ytFrame.classList.remove("hidden");
+        offlineScreen.classList.add("hidden");
+        livePill.classList.remove("hidden");
+        viewerPill.classList.remove("hidden");
+        videoControls.classList.remove("hidden");
+        metaOutsideBar.classList.remove("hidden");
+        raiseHandBtn.classList.remove("hidden");
+        startLiveTimer(currentSession.startedAt);
+        if(!wasLive && studentName){ showToast("🔴", "ক্লাস লাইভ শুরু হয়েছে!"); }
+    }else{
+        currentYoutubeId = null;
+        ytFrame.src = "";
+        ytFrame.classList.add("hidden");
+        offlineScreen.classList.remove("hidden");
+        livePill.classList.add("hidden");
+        viewerPill.classList.add("hidden");
+        videoControls.classList.add("hidden");
+        metaOutsideBar.classList.add("hidden");
+        raiseHandBtn.classList.add("hidden");
+        stopLiveTimer();
+    }
+    window.__wasLive = isLive;
+
+    if(currentSession && currentSession.teacherName){
+        teacherChip.classList.remove("hidden");
+        document.getElementById("teacherNameEl").innerHTML = escapeHtml(currentSession.teacherName) + ' <span class="verify-badge" title="যাচাইকৃত শিক্ষক">✔️</span>';
+        document.getElementById("teacherAvatar").src = currentSession.teacherPhoto || "https://api.dicebear.com/7.x/initials/svg?seed=" + encodeURIComponent(currentSession.teacherName);
+        document.getElementById("teacherSubjectRole").innerText = subjectName(currentSession.subject) + " শিক্ষক";
+    }else{
+        teacherChip.classList.add("hidden");
+    }
+}
+
+function startLiveTimer(startedAt){
+    stopLiveTimer();
+    if(!startedAt) return;
+    function tick(){
+        const secs = Math.max(0, Math.floor((Date.now() - startedAt)/1000));
+        const m = String(Math.floor(secs/60)).padStart(2,"0");
+        const s = String(secs%60).padStart(2,"0");
+        document.getElementById("liveDurationEl").innerText = m + ":" + s;
+    }
+    tick();
+    liveTimerInterval = setInterval(tick, 1000);
+}
+function stopLiveTimer(){
+    if(liveTimerInterval){ clearInterval(liveTimerInterval); liveTimerInterval = null; }
+}
+
+window.reloadVideo = function(){
+    if(currentYoutubeId){
+        const f = document.getElementById("ytFrame");
+        f.src = f.src;
+    }
+};
+
+window.togglePip = async function(){
+    showToast("ℹ️", "ইউটিউব এমবেড ফ্রেমে Picture-in-Picture সরাসরি সমর্থিত নয় — ভিডিওতে ডাবল-ট্যাপ করে মিনি প্লেয়ার ব্যবহার করুন।");
+};
+
+function subjectName(subject){
+    const names = { physics:"পদার্থবিজ্ঞান", chemistry:"রসায়ন", biology:"জীববিজ্ঞান", math:"উচ্চতর গণিত" };
+    return names[subject] || "—";
+}
+
+/* ============ PRESENCE (viewer count + attendance) ============ */
+function initPresence(){
+    const myRef = ref(db, `${VIEWERS_PATH}/${studentUid}`);
+    const joinedAt = Date.now();
+    set(myRef, { name: studentName, ts: joinedAt });
+    onDisconnect(myRef).remove();
+
+    const attRef = ref(db, `${ATTENDANCE_PATH}/${studentUid}`);
+    update(attRef, { name: studentName, joinedAt: joinedAt, lastSeen: joinedAt }).catch(()=>{});
+    onDisconnect(ref(db, `${ATTENDANCE_PATH}/${studentUid}/leftAt`)).set(Date.now());
+    setInterval(()=>{
+        update(attRef, { lastSeen: Date.now() }).catch(()=>{});
+    }, 20000);
+
+    onValue(ref(db, VIEWERS_PATH), (snap)=>{
+        const data = snap.exists() ? snap.val() : {};
+        const count = Object.keys(data).length;
+        document.getElementById("viewerCount").innerText = count;
+        renderOnlinePeople(data);
+    });
+
+    onValue(ref(db, `${MUTED_PATH}/${studentUid}`), (snap)=>{
+        isMuted = !!snap.val();
+        document.getElementById("mutedBanner").classList.toggle("hidden", !isMuted);
+        document.getElementById("chatSendBtn").disabled = isMuted;
+    });
+}
+if(studentName) initPresence();
+
+function renderOnlinePeople(data){
+    const list = document.getElementById("peopleOnlineList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){
+        list.innerHTML = `<div class="section-empty">কেউ অনলাইনে নেই।</div>`;
+        return;
+    }
+    let html = "";
+    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
+    keys.forEach(k=>{
+        const p = data[k];
+        const initial = (p.name || "?").trim().charAt(0).toUpperCase();
+        html += `<div class="people-row"><div class="people-avatar-sm">${escapeHtml(initial)}</div><div class="people-name">${escapeHtml(p.name || "শিক্ষার্থী")}${k===studentUid ? ' (আপনি)' : ''}</div></div>`;
+    });
+    list.innerHTML = html;
+}
+
+window.setPeopleTab = function(tab){
+    peopleTab = tab;
+    document.querySelectorAll(".people-sub-tabs button").forEach(b=> b.classList.toggle("active", b.dataset.pf === tab));
+    document.getElementById("peopleOnlineList").classList.toggle("hidden", tab!=="online");
+    document.getElementById("peopleBoardList").classList.toggle("hidden", tab!=="board");
+    document.getElementById("peopleHandsList").classList.toggle("hidden", tab!=="hands");
+};
+
+/* ============ ANNOUNCEMENT + PINNED QUESTION BANNER ============ */
+let latestAnnouncement = null;
+let currentPinnedQuestion = null;
+
+onValue(ref(db, ANNOUNCE_PATH), (snap)=>{
+    const a = snap.exists() ? snap.val() : null;
+    latestAnnouncement = a;
+    if(a && a.ts && a.ts !== notifiedAnnounceTs && notifiedAnnounceTs !== null && studentName){
+        showToast("📢", a.text, "gold");
+    }
+    if(a) notifiedAnnounceTs = a.ts; else if(notifiedAnnounceTs === null) notifiedAnnounceTs = 0;
+    renderBanners();
+});
+
+function renderBanners(){
+    const stack = document.getElementById("bannerStack");
+    let html = "";
+    if(latestAnnouncement && latestAnnouncement.text){
+        html += `<div class="top-banner announcement glass">
+            <span class="b-icon">📢</span>
+            <div class="b-body"><div class="b-label">ঘোষণা</div>${escapeHtml(latestAnnouncement.text)}</div>
+        </div>`;
+    }
+    if(currentPinnedQuestion){
+        html += `<div class="top-banner pinned glass">
+            <span class="b-icon">📌</span>
+            <div class="b-body"><div class="b-label">গুরুত্বপূর্ণ প্রশ্ন</div>${escapeHtml(currentPinnedQuestion)}</div>
+        </div>`;
+    }
+    stack.innerHTML = html;
+}
+
+/* ============ CHAT ============ */
+const chatBody = document.getElementById("chatBody");
+
+onValue(ref(db, CHAT_PATH), (snap)=>{
+    lastChatData = snap.exists() ? snap.val() : {};
+    renderChat(lastChatData);
+});
+
+window.renderChat = function(data){
+    const searchEl = document.getElementById("chatSearchInput");
+    const q = searchEl ? searchEl.value.trim().toLowerCase() : "";
+    let keys = Object.keys(data);
+    if(keys.length === 0){
+        chatBody.innerHTML = `<div class="chat-empty">এখনো কোনো মেসেজ নেই। প্রথম মেসেজটি আপনিই লিখুন 👋</div>`;
+        return;
+    }
+
+    keys.sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
+
+    if(q){
+        keys = keys.filter(k => (data[k].text||"").toLowerCase().includes(q) || (data[k].name||"").toLowerCase().includes(q));
+    }
+
+    if(keys.length === 0){
+        chatBody.innerHTML = `<div class="chat-empty">কোনো ফলাফল পাওয়া যায়নি।</div>`;
+        return;
+    }
+
+    let html = "";
+    keys.forEach(k=>{
+        const m = data[k];
+        const isMe = m.uid === studentUid;
+        const isTeacher = m.role === "teacher";
+        const rowClass = isMe ? "me" : (isTeacher ? "teacher" : "other");
+        const senderLabel = isTeacher ? `<span class="teacher-tag">TEACHER</span> ${escapeHtml(m.name || "শিক্ষক")}` : escapeHtml(m.name || "শিক্ষার্থী");
+        const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString("bn-BD",{hour:"2-digit",minute:"2-digit"}) : "";
+
+        html += `
+        <div class="msg-row ${rowClass}">
+            <div class="msg-sender">${senderLabel}</div>
+            <div class="msg-bubble-wrap">
+                <div class="msg-bubble">${escapeHtml(m.text || "")}</div>
             </div>
-        </div>
-    </div>
+            <div class="msg-ts">${time}</div>
+        </div>`;
+    });
 
-    <!-- Keyboard Shortcuts Modal -->
-    <div class="modal-overlay" id="shortcutModal">
-        <div class="modal-box" style="text-align: left;">
-            <h3 style="color: #38bdf8; margin-bottom: 15px; text-align: center;">⌨️ Keyboard Shortcuts</h3>
-            <ul style="color: #cbd5e1; font-size: 13px; line-height: 2; list-style: none;">
-                <li>➡️ <b>Right Arrow:</b> পরবর্তী প্রশ্ন</li>
-                <li>⬅️ <b>Left Arrow:</b> পূর্ববর্তী প্রশ্ন</li>
-                <li>1️⃣, 2️⃣, 3️⃣, 4️⃣: <b>ক, খ, গ, ঘ</b> সিলেক্ট করুন</li>
-                <li>🔤 <b>A, B, C, D:</b> অপশন প্রেস করুন</li>
-                <li>🔖 <b>M Key:</b> Mark for Review</li>
-                <li>⭐ <b>B Key:</b> Bookmark</li>
-            </ul>
-            <div class="modal-buttons" style="margin-top: 15px;">
-                <button type="button" class="modal-btn btn-cancel" onclick="closeShortcutModal()">বন্ধ করুন</button>
+    chatBody.innerHTML = html;
+    if(!q) chatBody.scrollTop = chatBody.scrollHeight;
+
+    const allKeysSorted = Object.keys(data).sort((a,b)=> (data[a].timestamp||0) - (data[b].timestamp||0));
+    const newestKey = allKeysSorted[allKeysSorted.length-1];
+    if(lastChatKey && newestKey !== lastChatKey && data[newestKey].uid !== studentUid && !chatDrawerOpen){
+        unreadCount++;
+        updateChatBadge();
+    }
+    lastChatKey = newestKey;
+};
+
+function updateChatBadge(){
+    const badge = document.getElementById("chatFabBadge");
+    if(unreadCount > 0){
+        badge.innerText = unreadCount > 9 ? "9+" : unreadCount;
+        badge.classList.remove("hidden");
+    }else{
+        badge.classList.add("hidden");
+    }
+}
+
+window.sendChatMessage = async function(){
+    if(!studentName){
+        document.getElementById("gateOverlay").classList.remove("hidden");
+        return;
+    }
+    if(isMuted){
+        showToast("🔇", "আপনাকে চ্যাটে বিরত রাখা হয়েছে।");
+        return;
+    }
+    const input = document.getElementById("chatInput");
+    const text = input.value.trim();
+    if(!text) return;
+
+    try{
+        await push(ref(db, CHAT_PATH), {
+            uid: studentUid,
+            name: studentName,
+            role: "student",
+            text: text,
+            timestamp: Date.now()
+        });
+        input.value = "";
+        autoGrow(input);
+    }catch(e){
+        alert("মেসেজ পাঠানো যায়নি: " + e.message);
+    }
+};
+
+const chatInputEl = document.getElementById("chatInput");
+chatInputEl.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        window.sendChatMessage();
+    }
+});
+chatInputEl.addEventListener("input", ()=> autoGrow(chatInputEl));
+function autoGrow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,90)+"px"; }
+
+/* mobile chat drawer */
+window.openChatDrawer = function(){
+    document.getElementById("chatPanel").classList.add("open");
+    document.getElementById("chatCloseBtn").style.display = "flex";
+    document.body.classList.add("chat-is-open");
+    chatDrawerOpen = true;
+    unreadCount = 0;
+    updateChatBadge();
+};
+
+window.closeChatDrawer = function(){
+    document.getElementById("chatPanel").classList.remove("open");
+    document.body.classList.remove("chat-is-open");
+    chatDrawerOpen = false;
+};
+
+/* ============ REACTIONS ============ */
+window.sendReaction = async function(emoji){
+    spawnFloatingEmoji(emoji);
+    try{
+        const r = push(ref(db, REACTIONS_PATH));
+        await set(r, { emoji, uid: studentUid, ts: Date.now() });
+        setTimeout(()=> remove(r).catch(()=>{}), 4000);
+    }catch(e){}
+};
+
+onChildAdded(ref(db, REACTIONS_PATH), (snap)=>{
+    const val = snap.val();
+    if(val && val.uid !== studentUid){
+        spawnFloatingEmoji(val.emoji);
+    }
+});
+
+function spawnFloatingEmoji(emoji){
+    const layer = document.getElementById("reactionLayer");
+    const el = document.createElement("div");
+    el.className = "float-emoji";
+    el.innerText = emoji;
+    const leftPos = 20 + Math.random()*60;
+    const drift = (Math.random()*80 - 40) + "px";
+    el.style.left = leftPos + "%";
+    el.style.setProperty("--drift", drift);
+    layer.appendChild(el);
+    setTimeout(()=> el.remove(), 3300);
+}
+
+/* ============ RAISE HAND ============ */
+window.toggleRaiseHand = async function(){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    const btn = document.getElementById("raiseHandBtn");
+    handRaised = !handRaised;
+    btn.classList.toggle("active", handRaised);
+    if(handRaised){
+        await set(ref(db, `${HANDS_PATH}/${studentUid}`), { name: studentName, ts: Date.now() });
+        onDisconnect(ref(db, `${HANDS_PATH}/${studentUid}`)).remove();
+    }else{
+        await remove(ref(db, `${HANDS_PATH}/${studentUid}`));
+    }
+};
+
+onValue(ref(db, HANDS_PATH), (snap)=>{
+    const data = snap.exists() ? snap.val() : {};
+    renderHandsPeople(data);
+    if(!data[studentUid] && handRaised){
+        handRaised = false;
+        document.getElementById("raiseHandBtn").classList.remove("active");
+    }
+});
+
+function renderHandsPeople(data){
+    const list = document.getElementById("peopleHandsList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">কেউ হাত তোলেনি।</div>`; return; }
+    keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
+    let html = "";
+    keys.forEach(k=>{
+        html += `<div class="raise-row">🙋 <span class="people-name">${escapeHtml(data[k].name||"")}</span></div>`;
+    });
+    list.innerHTML = html;
+}
+
+/* ============ Q&A ============ */
+let allQuestions = {};
+onValue(ref(db, QUESTIONS_PATH), (snap)=>{
+    allQuestions = snap.exists() ? snap.val() : {};
+    renderQna();
+    const unanswered = Object.values(allQuestions).filter(q=>!q.answered).length;
+    const badge = document.getElementById("qnaUnansweredBadge");
+    if(unanswered > 0){ badge.innerText = unanswered > 9 ? "9+" : unanswered; badge.classList.remove("hidden"); }
+    else{ badge.classList.add("hidden"); }
+
+    const pinned = Object.values(allQuestions).find(q=>q.pinned);
+    currentPinnedQuestion = pinned ? pinned.text : null;
+    renderBanners();
+});
+
+window.askQuestion = async function(){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    const input = document.getElementById("qnaInput");
+    const text = input.value.trim();
+    if(!text) return;
+    try{
+        await push(ref(db, QUESTIONS_PATH), {
+            uid: studentUid, name: studentName, text, timestamp: Date.now(),
+            answered: false, pinned: false, upvotes: {}
+        });
+        input.value = "";
+    }catch(e){ alert("প্রশ্ন পাঠানো যায়নি: " + e.message); }
+};
+document.getElementById("qnaInput").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); window.askQuestion(); }
+});
+
+window.setQnaFilter = function(f){
+    qnaFilter = f;
+    document.querySelectorAll("[data-qf]").forEach(b=> b.classList.toggle("active", b.dataset.qf === f));
+    renderQna();
+};
+
+function renderQna(){
+    const body = document.getElementById("qnaBody");
+    let keys = Object.keys(allQuestions);
+    if(keys.length === 0){
+        body.innerHTML = `<div class="chat-empty">এখনো কোনো প্রশ্ন নেই। প্রথম প্রশ্নটি জিজ্ঞাসা করুন 🙋</div>`;
+        return;
+    }
+    if(qnaFilter === "answered") keys = keys.filter(k=>allQuestions[k].answered);
+    if(qnaFilter === "unanswered") keys = keys.filter(k=>!allQuestions[k].answered);
+
+    keys.sort((a,b)=>{
+        const qa = allQuestions[a], qb = allQuestions[b];
+        if(!!qb.pinned !== !!qa.pinned) return (qb.pinned?1:0) - (qa.pinned?1:0);
+        const ua = qa.upvotes ? Object.keys(qa.upvotes).length : 0;
+        const ub = qb.upvotes ? Object.keys(qb.upvotes).length : 0;
+        if(ub !== ua) return ub - ua;
+        return (qa.timestamp||0) - (qb.timestamp||0);
+    });
+
+    let html = "";
+    keys.forEach(k=>{
+        const q = allQuestions[k];
+        const upvoteCount = q.upvotes ? Object.keys(q.upvotes).length : 0;
+        const iUpvoted = q.upvotes && q.upvotes[studentUid];
+        html += `<div class="qna-card ${q.answered?'answered':''} ${q.pinned?'pinned':''}">
+            <div class="qna-top">
+                <span class="qna-name">${escapeHtml(q.name||"শিক্ষার্থী")}</span>
+                <span class="qna-status-tag ${q.answered?'done':'wait'}">${q.answered?'উত্তরিত':'অপেক্ষমাণ'}</span>
             </div>
-        </div>
-    </div>
+            <div class="qna-text">${q.pinned?'📌 ':''}${escapeHtml(q.text||"")}</div>
+            ${q.answered && q.answerText ? `<div class="qna-answer"><b>শিক্ষকের উত্তর:</b> ${escapeHtml(q.answerText)}</div>` : ""}
+            <div class="qna-actions">
+                <button class="qna-mini-btn ${iUpvoted?'active':''}" onclick="upvoteQuestion('${k}')">👍 ${upvoteCount}</button>
+            </div>
+        </div>`;
+    });
+    body.innerHTML = html || `<div class="chat-empty">কোনো প্রশ্ন পাওয়া যায়নি।</div>`;
+}
 
-    <!-- Printable Certificate Template (Hidden) -->
-    <div id="certificateContainer" class="certificate-card">
-        <h1>GAIVEX Digital Certificate</h1>
-        <h3>Certificate of Participation & Performance</h3>
-        <p>This is awarded to</p>
-        <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Student Name</h2>
-        <p>for completing the live examination <b><span id="certExam">Plant Breeding</span></b></p>
-        <br>
-        <p>Score Obtained: <b><span id="certScore">00</span></b> | Accuracy: <b><span id="certAcc">00%</span></b></p>
-        <p>Date: <span id="certDate">02/09/2026</span></p>
-    </div>
+window.upvoteQuestion = async function(key){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    const q = allQuestions[key];
+    if(!q) return;
+    const already = q.upvotes && q.upvotes[studentUid];
+    if(already){
+        await remove(ref(db, `${QUESTIONS_PATH}/${key}/upvotes/${studentUid}`));
+    }else{
+        await set(ref(db, `${QUESTIONS_PATH}/${key}/upvotes/${studentUid}`), true);
+    }
+};
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-logo">GAIVEX<span>.</span></div>
-        <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
-        <div class="social-links">
-            <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
-                <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-            <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
-                <svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
-            <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube">
-                <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-        </div>
-        <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
-    </footer>
+/* ============ POLL ============ */
+/* Vote format: votes/{studentUid} = { idx, name, ts } — needed so the teacher
+   panel can show per-option counts AND the order in which students answered. */
+let currentPoll = null;
+onValue(ref(db, POLL_PATH), (snap)=>{
+    currentPoll = snap.exists() ? snap.val() : null;
+    renderPoll();
+    if(currentPoll && currentPoll.active && currentPoll.startedAt !== notifiedPollKey && notifiedPollKey !== null && studentName){
+        showToast("📊", "নতুন পোল শুরু হয়েছে!");
+        openTab("poll");
+    }
+    if(currentPoll) notifiedPollKey = currentPoll.startedAt; else if(notifiedPollKey===null) notifiedPollKey = 0;
+});
 
-    <!-- Firebase Modular SDK Integration -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+function renderPoll(){
+    const body = document.getElementById("pollBody");
+    if(!currentPoll || !currentPoll.active){
+        body.innerHTML = `<div class="pq-empty">এখন কোনো পোল চলছে না। শিক্ষক পোল শুরু করলে এখানে দেখা যাবে।</div>`;
+        return;
+    }
+    const votes = currentPoll.votes || {};
+    const totalVotes = Object.keys(votes).length;
+    const myVoteEntry = votes[studentUid];
+    const myVote = myVoteEntry !== undefined ? myVoteEntry.idx : undefined;
+    const remaining = currentPoll.endsAt ? Math.max(0, Math.ceil((currentPoll.endsAt - Date.now())/1000)) : null;
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
-        authDomain: "gaivexexam.firebaseapp.com",
-        databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
-        projectId: "gaivexexam",
-        storageBucket: "gaivexexam.firebasestorage.app",
-        messagingSenderId: "956204530190",
-        appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
-      };
+    let optsHtml = "";
+    (currentPoll.options||[]).forEach((opt, idx)=>{
+        const count = Object.values(votes).filter(v=>v.idx===idx).length;
+        const pct = totalVotes ? Math.round(count/totalVotes*100) : 0;
+        const chosen = myVote === idx;
+        const canVote = myVote === undefined && remaining !== 0;
+        optsHtml += `<div class="pq-option ${canVote?'selectable':''} ${chosen?'chosen':''}" ${canVote?`onclick="votePoll(${idx})"`:""}>
+            <div class="pq-option-fill" style="width:${myVote!==undefined || remaining===0 ? pct : 0}%"></div>
+            <span class="pq-option-label">${escapeHtml(opt)}</span>
+            <span class="pq-option-pct">${myVote!==undefined || remaining===0 ? pct+'%' : ''}</span>
+        </div>`;
+    });
 
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      const auth = getAuth(app);
+    body.innerHTML = `<div class="pq-card">
+        <div class="pq-question">${escapeHtml(currentPoll.question||"")}</div>
+        ${remaining !== null ? `<div class="pq-timer" id="pollTimerText">⏳ ${remaining} সেকেন্ড বাকি</div>` : ""}
+        ${optsHtml}
+        <div class="pq-vote-note">${myVote!==undefined ? 'আপনি ভোট দিয়েছেন ✓' : 'একটি অপশন বেছে নিন'} · মোট ভোট: ${totalVotes}</div>
+    </div>`;
+}
+setInterval(()=>{ if(currentPoll && currentPoll.active) renderPoll(); }, 1000);
 
-      // Global State Management
-      let currentUser = null;
-      let timerInterval = null;
-      let totalDurationSeconds = 1500;
-      let timeRemaining = 1500;
-      let startTimeStamp = Date.now();
-      let activeExamKey = "gaivex_exam_default";
-      let examTimerKey = "gaivex_timer_default";
-      let autoSaveKey = "gaivex_autosave_answers";
-      let userSelections = {};
-      let bookmarkedQuestions = {};
-      let reviewQuestions = {};
-      let isSubmitted = false;
-      let viewMode = 'all'; 
-      let currentSingleIndex = 0;
-      let currentFontSize = 16;
+window.votePoll = async function(idx){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    if(!currentPoll || !currentPoll.active) return;
+    await set(ref(db, `${POLL_PATH}/votes/${studentUid}`), { idx, name: studentName, ts: Date.now() });
+};
 
-      // Audio & Analytics Tracking
-      let perQuestionTime = {};
-      let currentQuestionStartTime = Date.now();
+/* ============ QUIZ ============ */
+/* Answer format: answers/{studentUid} = { idx, name, ts } — same reason as poll. */
+let currentQuiz = null;
+onValue(ref(db, QUIZ_PATH), (snap)=>{
+    currentQuiz = snap.exists() ? snap.val() : null;
+    renderQuiz();
+    if(currentQuiz && currentQuiz.active && currentQuiz.startedAt !== notifiedQuizKey && notifiedQuizKey !== null && studentName){
+        showToast("🧠", "নতুন কুইজ শুরু হয়েছে!");
+        openTab("quiz");
+    }
+    if(currentQuiz) notifiedQuizKey = currentQuiz.startedAt; else if(notifiedQuizKey===null) notifiedQuizKey = 0;
+});
 
-      // Audio Synthesizer (Web Audio API)
-      function playAudioFeedback(type) {
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
+function renderQuiz(){
+    const body = document.getElementById("quizBody");
+    if(!currentQuiz || !currentQuiz.active){
+        body.innerHTML = `<div class="pq-empty">এখন কোনো কুইজ চলছে না। শিক্ষক কুইজ শুরু করলে এখানে দেখা যাবে।</div>`;
+        return;
+    }
+    const answers = currentQuiz.answers || {};
+    const myEntry = answers[studentUid];
+    const my = myEntry !== undefined ? myEntry.idx : undefined;
+    const remaining = currentQuiz.endsAt ? Math.max(0, Math.ceil((currentQuiz.endsAt - Date.now())/1000)) : null;
+    const revealed = remaining === 0 || my !== undefined;
 
-          if (type === 'click') {
-            osc.frequency.setValueAtTime(600, ctx.currentTime);
-            gain.gain.setValueAtTime(0.05, ctx.currentTime);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.05);
-          } else if (type === 'warning') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(440, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.2);
-          }
-        } catch(e){}
-      }
+    let optsHtml = "";
+    (currentQuiz.options||[]).forEach((opt, idx)=>{
+        let cls = "pq-option";
+        if(my===undefined && remaining!==0) cls += " selectable";
+        if(revealed && idx === currentQuiz.correctIndex) cls += " correct";
+        if(my===idx && idx !== currentQuiz.correctIndex && revealed) cls += " wrong-pick";
+        if(my===idx) cls += " chosen";
+        optsHtml += `<div class="${cls}" ${my===undefined && remaining!==0 ? `onclick="answerQuiz(${idx})"`:""}>
+            <span class="pq-option-label">${escapeHtml(opt)}</span>
+        </div>`;
+    });
 
-      function triggerHaptic() {
-        if (navigator.vibrate) navigator.vibrate(30);
-      }
+    let resultNote = "";
+    if(revealed && my !== undefined){
+        const correct = my === currentQuiz.correctIndex;
+        resultNote = `<div class="pq-result-note ${correct?'correct':'wrong'}">${correct?'✅ সঠিক উত্তর! +10 পয়েন্ট':'❌ ভুল উত্তর'}</div>`;
+    }
 
-      // 🌾 50 Plant Breeding (উদ্ভিদ প্রজনন) Exam Questions
-      const defaultExamData = {
-        id: "plant_breeding_mcq_50_v1",
-        title: "🌾 উদ্ভিদ প্রজনন (Plant Breeding) — ৫০টি গুরুত্বপূর্ণ MCQ",
-        duration: 25,
-        marking: { correct: 1, wrong: 0.25 },
-        questions: [
-          { question: "উদ্ভিদ প্রজননের মূল লক্ষ্য কোনটি?", options: ["উদ্ভিদের রূপ বৃদ্ধি করা", "উচ্চ ফলনশীল ও রোগপ্রতিরোধী জাত উদ্ভাবন", "উদ্ভিদের আয়ু কমানো", "উদ্ভিদের আকার ছোট করা"], correct: 1, topic: "Introduction to Plant Breeding", difficulty: "easy", explanation: "উদ্ভিদ প্রজননের প্রধান উদ্দেশ্য হলো ফসলের ফলন বৃদ্ধি, গুণগত মান উন্নয়ন এবং প্রতিকূল পরিবেশ ও রোগ সহ্য করার ক্ষমতা বাড়ানো।", concept: "Plant Breeding Goals", shortcut: "High Yield + Resistance", mistake: "শুধুমাত্র আকৃতি বৃদ্ধি মনে করা", tip: "উদ্ভিদের অর্থনৈতিক বৈশিষ্ট্য উন্নয়নই মূল উদ্দেশ্য।" },
-          { question: "ফুলের পরাগরেণু একই ফুলের গর্ভমুণ্ডে পতিত হওয়াকে কী বলে?", options: ["পরপরাগযোগ (Cross Pollination)", "স্বসংকরায়ন", "স্ব-পরাগযোগ (Self Pollination)", "এপোমিক্সিস"], correct: 2, topic: "Pollination Biology", difficulty: "easy", explanation: "একই ফুল বা একই গাছের অন্য ফুলের মধ্যে পরাগযোগ ঘটলে তাকে স্ব-পরাগযোগ বলে।", concept: "Pollination Modes", shortcut: "Same Flower/Plant = Self", mistake: "পরপরাগযোগের সাথে গুটিয়ে ফেলা", tip: "ধান, গম, মটরশুঁটি স্ব-পরাগায়িত উদ্ভিদ।" },
-          { question: "নিচের কোনটি স্ব-পরাগায়িত (Self-pollinated) উদ্ভিদ?", options: ["ভুট্টা", "ধান", "পেঁপে", "সরিষা"], correct: 1, topic: "Pollination Biology", difficulty: "easy", explanation: "ধান, গম, টমেটো, মটরশুঁটি ইত্যাদি প্রধানত স্ব-পরাগায়িত ফসল।", concept: "Crop Selfing", shortcut: "Paddy = Self Pollinated", mistake: "ভুট্টাকে স্ব-পরাগায়িত ভাবা", tip: "ভুট্টা একটি প্রধান পর-পরাগায়িত উদ্ভিদ।" },
-          { question: "উভলিঙ্গ ফুল থেকে কচি অবস্থায় পুংকেশর কেটে ফেলে দেওয়াকে কী বলা হয়?", options: ["ইমাসকুলেশন (Emasculation)", "ব্যাগিং (Bagging)", "ট্যাগিং (Tagging)", "ক্রসিং"], correct: 0, topic: "Hybridization Technique", difficulty: "easy", explanation: "কৃত্রিম সংকরায়ণে অवांছিত স্ব-পরাগযোগ রোধে ফুল ফোটার আগে পরাগধানী বা পুংকেশর অপসারণ করাকে ইমাসকুলেশন বলে।", concept: "Emasculation Definition", shortcut: "Anther Removal = Emasculation", mistake: "ব্যাগিংয়ের সাথে গুলিয়ে ফেলা", tip: "ইমাসকুলেশন কেবল স্ত্রী-প্যারেন্ট উদ্ভিদে করা হয়।" },
-          { question: "ইমাসকুলেশনের পর ফুলকে বাটার পেপার দিয়ে ঢেকে দেওয়াকে কী বলে?", options: ["ট্যাগিং", "ইমাসকুলেশন", "ব্যাগিং (Bagging)", "আইসোলেশন"], correct: 2, topic: "Hybridization Technique", difficulty: "easy", explanation: "বাইরের অনিচ্ছাকৃত পরাগরেণু এসে যেন গর্ভমুণ্ডে না পড়ে, সেজন্য ইমাসকুলেটেড ফুলকে বাটার পেপার ব্যাগ দিয়ে ঢেকে রাখা হয়।", concept: "Bagging Technique", shortcut: "Covering = Bagging", mistake: "ট্যাগিং মনে করা", tip: "ব্যাগিং পরাগরেণুর দূষণ রোধ করে।" },
-          { question: "সংকরায়ণে প্রাপ্ত প্রথম বংশধরকে কী বলা হয়?", options: ["F2 জনু", "F1 জনু (First Filial Generation)", "P1 জনু", "প্যারেন্টাল জেনারেশন"], correct: 1, topic: "Hybridization Concepts", difficulty: "easy", explanation: "দুইটি বিশুদ্ধ মা-বাবার (Parents) মধ্যে সংকরায়ণের ফলে সৃষ্ট প্রথম অপত্য বংশধরকে F1 জেনারেশন বলে।", concept: "Filial Generations", shortcut: "First Cross = F1", mistake: "P1 ভেবে ভুল করা", tip: "F এর পূর্ণরূপ Filial।" },
-          { question: "সঙ্করায়নের ফলে সৃষ্ট অপত্য উদ্ভিদ যদি মা-বাবা উভয়ের চেয়ে শ্রেষ্ঠ গুণসম্পন্ন হয়, তবে তাকে কী বলে?", options: ["হেটেরোসিস (Heterosis / Hybrid Vigour)", "ইনব্রিডিং ডিপ্রেশন", "জিনোটাইপ", "পলিপ্রোয়েডি"], correct: 0, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "সংকর উদ্ভিদের বর্ধন, জীবনীশক্তি ও ফলন বাবা-মা উভয় অপেক্ষা বৃদ্ধি পাওয়াকে হেটেরোসিস বা হাইব্রিড ভিগর বলে।", concept: "Heterosis Definition", shortcut: "Hybrid > Parents = Heterosis", mistake: "ইনব্রিডিং ভাবা", tip: "G.H. Shull ১৯১৪ সালে Heterosis শব্দটি প্রবর্তন করেন।" },
-          { question: "পরপর কয়েক বংশধর ধরে স্ব-পরাগযোগের মাধ্যমে হেটেরোসিস হ্রাস পাওয়াকে কী বলে?", options: ["জিন ড্রাফট", "ইনব্রিডিং ডিপ্রেশন (Inbreeding Depression)", "এপোমিক্সিস", "জিন মিউটেশন"], correct: 1, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "স্ব-পরাগায়নের ফলে ক্ষতিকর প্রচ্ছন্ন জিনগুলো হোমোজাইগাস হয়ে আত্মপ্রকাশ করায় উদ্ভিদের তেজ ও ফলন হ্রাস পায়, একে ইনব্রিডিং ডিপ্রেশন বলে।", concept: "Inbreeding Effect", shortcut: "Continuous Selfing = Inbreeding Depression", mistake: "হেটেরোসিস বৃদ্ধি ভাবা", tip: "পর-পরাগায়িত উদ্ভিদে এটি বেশি স্পষ্ট।" },
-          { question: "উদ্ভিদের কোনো কোষ বা টিস্যু থেকে পূর্ণাঙ্গ উদ্ভিদ পুনরুৎপাদনের ক্ষমতাকে কী বলা হয়?", options: ["টোটিপোটেন্সি (Totipotency)", "প্লুরিপোটেন্সি", "ক্যালোজেনেসিস", "এমব্রায়োজেনেসিস"], correct: 0, topic: "Tissue Culture & Biotechnology", difficulty: "easy", explanation: "উদ্ভিদ কোষের একটি পূর্ণাঙ্গ উদ্ভিদে পরিণত হওয়ার অন্তর্নিহিত জিনগত ক্ষমতাকে টোটিপোটেন্সি বলে।", concept: "Cell Totipotency", shortcut: "Single Cell to Plant = Totipotency", mistake: "প্লুরিপোটেন্সির সাথে মেলানো", tip: "G. Haberlandt কে টিস্যু কালচারের জনক বলা হয়।" },
-          { question: "উদ্ভিদ প্রজননে কৃত্রিমভাবে মিউটেশন ঘটানোর জন্য বহুল ব্যবহৃত রাসায়নিক কোনটি?", options: ["ইথাইল মিথেন সালফোনেট (EMS)", "জিব্যারেলিন", "2,4-D", "কোলচিসিন"], correct: 0, topic: "Mutation Breeding", difficulty: "hard", explanation: "EMS (Ethyl Methane Sulfonate) হলো একটি শক্তিশালী কেমিক্যাল মিউটাজেন যা জিনে মিউটেশন ঘটাতে ব্যবহৃত হয়।", concept: "Chemical Mutagen", shortcut: "EMS = Chemical Mutagens", mistake: "কোলচিসিনকে মিউটাজেন ভাবা", tip: "কোলচিসিন পলিপ্লয়েডি তৈরিতে ব্যবহৃত হয়।" },
-          { question: "উদ্ভিদ কোষে ক্রোমোজোম সংখ্যা দ্বিগুণ করার জন্য কোন রাসায়নিক এজেন্ট ব্যবহৃত হয়?", options: ["আইএএ (IAA)", "কোলচিসিন (Colchicine)", "কাইনেটিন", "এমএস মিডিয়াম"], correct: 1, topic: "Polyploidy Breeding", difficulty: "medium", explanation: "কোলচিসিন কোষ বিভাজনের সময় স্পিন্ডল তন্তু গঠনে বাধা দেয়, ফলে ক্রোমোজোম বিভাজন না হয়ে দ্বিগুণ (Polyploid) হয়ে যায়।", concept: "Polyploidy Induction", shortcut: "Chromosome Doubling = Colchicine", mistake: "অক্সিন মনে করা", tip: "কোলচিসিন *Colchicum autumnale* উদ্ভিদ থেকে সংগৃহীত হয়।" },
-          { question: "একই প্রজাতিভুক্ত দুটি ভিন্ন স্বাদের বা জাতের উদ্ভিদের মধ্যে সংকরায়ণকে কী বলে?", options: ["ইন্ট্রাস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারজেনেরিক হাইব্রিডাইজেশন", "ডিস্ট্যান্ট হাইব্রিডাইজেশন"], correct: 0, topic: "Hybridization Types", difficulty: "medium", explanation: "একই প্রজাতির (Interspecific নয়) অন্তর্গত দুটি জাতের সংকরায়ণ হলো Intra-specific বা Intra-varietal cross।", concept: "Intraspecific Cross", shortcut: "Within Species = Intra-specific", mistake: "Interspecific মনে করা", tip: "Intra = একই, Inter = ভিন্ন।" },
-          { question: "ভিন্ন দুই গণের (Genus) মধ্যে সংকরায়ণের মাধ্যমে সৃষ্ট বিখ্যাত শস্য 'Triticale' কোন দুটির সংকর?", options: ["গম ও ধান", "গম ও রাই (Wheat × Rye)", "ধান ও বার্লি", "ভুট্টা ও গম"], correct: 1, topic: "Hybridization Types", difficulty: "medium", explanation: "Triticale হলো মানবসৃষ্ট প্রথম শস্য, যা গম (Triticum) এবং রাই (Secale)-এর ইন্টারজেনেরিক সংকরায়ণে তৈরি।", concept: "Intergeneric Hybrid", shortcut: "Wheat × Rye = Triticale", mistake: "ধান ও গমের সংকর ভাবা", tip: "এটি একটি এলোপলিপ্লয়েড (Allopolyploid) শস্য।" },
-          { question: "প্রাকৃতিক উপায়ে বীজ উৎপাদন ছাড়াই ভ্রূণ ও বীজ গঠন প্রক্রিয়াকে কী বলে?", options: ["পারথেনোকার্পি", "এপোমিক্সিস (Apomixis)", "অ্যামফিমিক্সিস", "পলিমিক্সিস"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "hard", explanation: "নিষেক ছাড়াই অসেক উপায়ে বীজ উৎপাদনের প্রক্রিয়াকে এপোমিক্সিস বলে।", concept: "Apomixis Definition", shortcut: "Seed without Fertilization = Apomixis", mistake: "পারথেনোকার্পির সাথে গুলিয়ে ফেলা", tip: "পারথেনোকার্পিতে বীজহীন ফল হয়, কিন্তু এপোমিক্সিসে বীজ তৈরি হয়।" },
-          { question: "বীজহীন ফল (Seedless Fruit) উৎপাদনের প্রক্রিয়াকে কী বলা হয়?", options: ["এপোমিক্সিস", "পারথেনোকার্পি (Parthenocarpy)", "পারথেনোজেনেসিস", "পলিএম্ব্রায়োনি"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "easy", explanation: "নিষেক ছাড়াই ফল সৃষ্টি হলে তাকে পারথেনোকার্পিক ফল বলে (যেমন: কলা, বীজহীন আঙুর)।", concept: "Parthenocarpy", shortcut: "Fruit without Seed = Parthenocarpy", mistake: "পারথেনোজেনেসিস ভাবা", tip: "পারথেনোজেনেসিস হলো অসেক প্রজননের মাধ্যমে অপত্য জীব সৃষ্টি।" },
-          { question: "সবচেয়ে প্রাচীন উদ্ভিদ প্রজনন পদ্ধতি কোনটি?", options: ["সংকরায়ণ", "পছন্দকরণ / নির্বাচন (Selection)", "মিউটেশন ব্রিডিং", "জিন প্রকৌশল"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "কৃষিকাজের শুরু থেকেই মানুষ ভালো ফসল বাছাই বা নির্বাচন (Selection) করে বীজ সংরক্ষণ করতো, যা সবচেয়ে প্রাচীন পদ্ধতি।", concept: "Plant Selection History", shortcut: "Oldest Method = Selection", mistake: "সংকরায়ণকে প্রাচীন ভাবা", tip: "Selection দুই প্রকার: Mass Selection ও Pureline Selection।" },
-          { question: "একটি মাত্র স্ব-পরাগায়িত উদ্ভিদ থেকে বংশানুক্রমে সৃষ্ট সমলক্ষণী জীবগোষ্ঠীকে কী বলে?", options: ["প্যুরলাইন (Pureline / বিশুদ্ধ বংশধারক)", "ইনব্রিড লাইন", "ক্লোন", "হাইব্রিড"], correct: 0, topic: "Selection Methods", difficulty: "medium", explanation: "ড্যানিশ বিজ্ঞানী জোহানসেন (Johannsen) ১৯০৩ সালে Pureline তত্ত্ব দেন। এটি homozygous ও homogenous উদ্ভিদগোষ্ঠী।", concept: "Pureline Theory", shortcut: "Johannsen = Pureline", mistake: "ক্লোন ভাবা", tip: "অঙ্গজ প্রজননে সৃষ্ট জনগোষ্ঠী হলো ক্লোন (Clone)।" },
-          { question: "অঙ্গজ প্রজনন (Vegetative Propagation) দ্বারা উৎপন্ন হুবহু একই জিনোটাইপযুক্ত উদ্ভিদদলকে কী বলা হয়?", options: ["বিশুদ্ধ লাইন", "ক্লোন (Clone)", "মাস সিলেক্টেড লাইন", "সংকর"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "মাতৃউদ্ভিদের অঙ্গজ অংশ থেকে তৈরি সমস্ত অপত্য উদ্ভিদ জিনগতভাবে অবিকল এক হওয়ায় এদের ক্লোন বলা হয়।", concept: "Clones in Plants", shortcut: "Asexual progeny = Clone", mistake: "Pureline এর সাথে মেলানো", tip: "আলু, আদা, কলার বংশবৃদ্ধি ক্লোন পদ্ধতির উদাহরণ।" },
-          { question: "টিস্যু কালচারে এক্সপ্ল্যান্ট (Explant) হিসেবে উদ্ভিদের কোন অংশ সবচেয়ে বেশি উপযোগী?", options: ["শীর্ষ মুকুল বা ভাজক টিস্যু (Meristem)", "পরিপক্ক কাণ্ড", "পুরোনো পাতা", "মৃত ছাল"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "ভাজক টিস্যু (Meristem) দ্রুত বিভাজনক্ষম এবং ভাইরাস মুক্ত থাকায় টিস্যু কালচারে শীর্ষ বা কাক্ষিক মুকুল এক্সপ্ল্যান্ট হিসেবে উত্তম।", concept: "Explant Selection", shortcut: "Virus Free = Meristem", mistake: "যেকোনো বয়স্ক অংশ ভাবা", tip: "মেরিস্টেম কালচারের মাধ্যমে ভাইরাসমুক্ত চারা তৈরি করা হয়।" },
-          { question: "টিস্যু কালচার পুষ্টি মাধ্যমে অনিয়ন্ত্রিতভাবে বিভক্ত অসংগঠিত কোষের মণ্ডকে কী বলা হয়?", options: ["ক্যালস (Callus)", "এমব্রয়েড", "প্রোটোপ্লাস্ট", "এক্সপ্ল্যান্ট"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অক্সিন ও সাইটোকাইনিন হরমোনের প্রভাবে এক্সপ্ল্যান্ট বিভাজিত হয়ে যে অবিন্যস্ত কোষপিণ্ড তৈরি করে তাকে ক্যালস বলে।", concept: "Callus Formation", shortcut: "Undifferentiated Cell Mass = Callus", mistake: "এমব্রয়েড ভাবা", tip: "ক্যালস থেকে পরবর্তীতে মূল ও বিটপ সৃষ্টি হয়।" },
-          { question: "উদ্ভিদের কোষ প্রাচীর এনজাইম দিয়ে গলিয়ে ফেলা কোষকে কী বলা হয়?", options: ["ক্যালস", "প্রোটোপ্লাস্ট (Protoplast)", "সোমাটিক হাইব্রিড", "সাইব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "medium", explanation: "সেলুলেজ ও পেকটিনেজ এনজাইম দিয়ে কোষ প্রাচীর সরিয়ে ফেললে কেবল প্লাজমামেমব্রেন বেষ্টিত প্রোটোপ্লাস্ট পাওয়া যায়।", concept: "Protoplast Isolation", shortcut: "Cell without Wall = Protoplast", mistake: "সাইব্রিড ভাবা", tip: "প্রোটোপ্লাস্ট ফিউশন দিয়ে সোমাটিক হাইব্রিড তৈরি করা জ্ঞ।" },
-          { question: "দুটি ভিন্ন প্রজাতির প্রোটোপ্লাস্টের সংমিশ্রণে নতুন উদ্ভিদ সৃষ্টির প্রযুক্তিকে কী বলা হয়?", options: ["সোমাটিক হাইব্রিডাইজেশন (Somatic Hybridization)", "সাইটোপ্লাজমীয় জিনোটাইপ", "জেনেটিক ইঞ্জিনিয়ারিং", "মাইক্রোপ্রোপাগেশন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "দৈহিক কোষের প্রোটোপ্লাস্ট গলিয়ে মিলন ঘটিয়ে সংকর উদ্ভিদ তৈরি করাকে সোমাটিক হাইব্রিডাইজেশন বলে (যেমন: Pomato)।", concept: "Somatic Hybrids", shortcut: "Protoplast Fusion = Somatic Hybrid", mistake: "জেনেটিক ইঞ্জিনিয়ারিং বলা", tip: "পটেটো ও টমেটোর প্রোটোপ্লাস্ট ফিউশনে 'পমেটো' তৈরি হয়।" },
-          { question: "টমেটো এবং আলুর প্রোটোপ্লাস্ট ফিউশন ঘটিয়ে সৃষ্ট সোমাটিক সংকর উদ্ভিদের নাম কী?", options: ["টমেটো আলু", "পমেটো (Pomato)", "টপটেটো", "আলুটমেটো"], correct: 1, topic: "Protoplast Fusion", difficulty: "easy", explanation: "Potato + Tomato = Pomato (মাটির নিচে আলু এবং উপরে টমেটো ফলে)।", concept: "Pomato Example", shortcut: "Potato + Tomato = Pomato", mistake: "টমেটো আলু বলা", tip: "এটি প্রোটোপ্লাস্ট ফিউশনের একটি যুগান্তকারী উদাহরণ।" },
-          { question: "প্রোটোপ্লাস্ট ফিউশন বা গলন ত্বরান্বিত করার জন্য কোন রাসায়নিক দ্রবণ ব্যবহৃত হয়?", options: ["পলিইথিলিন গ্লাইকল (PEG)", "ইথানল", "সোডিয়াম ক্লোরাইড", "ফরমালিন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "PEG (Polyethylene Glycol) প্রোটোপ্লাস্ট দুটির মেমব্রেনকে সাময়িকভাবে গলিয়ে দ্রুত ফিউশনে সাহায্য করে।", concept: "Fusogen Chemical", shortcut: "PEG = Protoplast Fusogen", mistake: "ইথানল মনে করা", tip: "PEG এবং উচ্চ pH/Ca2+ আয়ন ফিউশনে ভূমিকা রাখে।" },
-          { question: "পরাগরেণু বা পরাগধানী কালচার করে কোন ধরণের উদ্ভিদ তৈরি করা যায়?", options: ["ডিপ্লয়েড (2n)", "হ্যাপ্লয়েড (n)", "টেট্রাপ্লয়েড (4n)", "ট্রিপ্লয়েড (3n)"], correct: 1, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "পরাগরেণু মিয়োসিসের ফলে উৎপন্ন হওয়ায় এটি হ্যাপ্লয়েড (n)। পরাগধানী কালচারে সরাসরী হ্যাপ্লয়েড উদ্ভিদ পাওয়া যায়।", concept: "Haploid Plant Breeding", shortcut: "Pollen Culture = Haploid (n)", mistake: "ডিপ্লয়েড ভাবা", tip: "Guha & Maheshwari (1964) প্রথম ধুতুরা গাছে এনথার কালচার করেন।" },
-          { question: "প্রথম পরাগধানী কালচার (Anther Culture) করে হ্যাপ্লয়েড উদ্ভিদ তৈরি করেন কোন বিজ্ঞানীদ্বয়?", options: ["গুহ ও মহেশ্বরী (Guha & Maheshwari)", "ওয়াটসন ও ক্রিক", "হাবারল্যান্ডট", "মেন্ডেল"], correct: 0, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "ভারতীয় বিজ্ঞানী শিপোরা গুহ ও পঞ্চানন মহেশ্বরী ১৯৬৪ সালে *Datura innoxia* গাছে অ্যানথার কালচার সফল করেন।", concept: "Haploid Breeding History", shortcut: "Guha & Maheshwari = Anther Culture", mistake: "হাবারল্যান্ডট বলা", tip: "এটি বায়োলজির অন্যতম সেরা ভারতীয় আবিষ্কার।" },
-          { question: "রোগমুক্ত বা ভাইরাসমুক্ত চারা উৎপাদনের জন্য টিস্যু কালচারের কোন পদ্ধতি ব্যবহার করা হয়?", options: ["মেরিস্টেম কালচার (Meristem Culture)", "এনথার কালচার", "এমব্রায়ো কালচার", "প্রোটোপ্লাস্ট ফিউশন"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "কাণ্ডের অগ্রভাগের ভাজক টিস্যুতে (Meristem) সংবহন না থাকায় এবং কোষ বিভাজনের হার বেশি হওয়ায় সেখানে ভাইরাস পৌঁছাতে পারে না।", concept: "Virus-free Plants", shortcut: "Meristem = Virus Free", mistake: "এমব্রায়ো কালচার বলা", tip: "আলু ও কলার ক্ষেত্রে ভাইরাসমুক্ত চারা তৈরিতে এটি সফল।" },
-          { question: "বিটি কটন (Bt Cotton) বা বিটি বেগুন তৈরিতে কোন ব্যাকটেরিয়ার জিন প্রবেশ করানো হয়েছে?", options: ["*Agrobacterium tumefaciens*", "*Bacillus thuringiensis*", "*Escherichia coli*", "*Rhizobium leguminosarum*"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "*Bacillus thuringiensis* (Bt) ব্যাকটেরিয়ার Cry-জিন ক্রিস্টাল প্রোটিন তৈরি করে যা ক্ষতিকর পোকা মারতে সক্ষম।", concept: "Bt Crops", shortcut: "Bt = Bacillus thuringiensis", mistake: "Agrobacterium মনে করা", tip: "Bt বেগুন ডাল ও ডগা ছিদ্রকারী পোকা প্রতিরোধী।" },
-          { question: "উদ্ভিদ প্রজননে জিন স্থানান্তরের জন্য সবচেয়ে জনপ্রিয় প্রাকৃতিক ভেক্টর (Natural Genetic Engineer) কোনটি?", options: ["*Agrobacterium tumefaciens* এর Ti প্লাজমিড", "*E. coli* প্লাজমিড", "TMV ভাইরাস", "ব্যাকটেরিওফেজ"], correct: 0, topic: "Genetic Engineering in Breeding", difficulty: "medium", explanation: "*Agrobacterium tumefaciens* ব্যাকটেরিয়ার Ti (Tumor Inducing) প্লাজমিড দ্বি-বীজপত্রী উদ্ভিদে সহজেই T-DNA ট্রান্সফার করতে পারে।", concept: "Plant Vector", shortcut: "Natural Genetic Engineer = Agrobacterium", mistake: "E. coli বলা", tip: "উদ্ভিদে ট্রান্সজিন স্থানান্তরে Ti-প্লাজমিড বহুল ব্যবহৃত।" },
-          { question: "গোল্ডেন রাইস (Golden Rice) এ কোন ভিটামিনের পূর্বসূরী (Beta-Carotene) সমৃদ্ধ জিন যুক্ত করা হয়েছে?", options: ["ভিটামিন সি", "ভিটামিন এ (Vitamin A)", "ভিটামিন ডি", "ভিটামিন বি১২"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "গোল্ডেন রাইসে বিটা-ক্যারোটিন তৈরির জিন স্থানান্তরিত করা হয়েছে, যা মানবদেহে গিয়ে ভিটামিন-এ তে রূপান্তরিত হয়।", concept: "Golden Rice Nutrition", shortcut: "Golden Rice = Vitamin A", mistake: "ভিটামিন সি ভাবা", tip: "অন্ধত্ব নিরাময়ে গোল্ডেন রাইস উদ্ভাবিত হয়েছে।" },
-          { question: "কোন এনজাইমের সাহায্যে ডিএনএ অণুর নির্দিষ্ট অংশ কাটা যায়?", options: ["লাইগেজ (Ligase)", "রেস্ট্রিকশন এন্ডোনিউক্লিয়েজ (Restriction Endonuclease)", "পলিমারেজ", "প্রোটিয়েজ"], correct: 1, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "রেস্ট্রিকশন এনজাইমকে 'আণবিক কাঁচি' (Molecular Scissors) বলা হয় কারণ এটি DNA-এর নির্দিষ্ট সিকোয়েন্স কেটে ফেলে।", concept: "Molecular Scissors", shortcut: "Cutting DNA = Restriction Enzyme", mistake: "লাইগেজ ভাবা (যা জোড়া দেয়)", tip: "EcoRI একটি বিখ্যাত রেস্ট্রিকশন এনজাইম।" },
-          { question: "কাটা ডিএনএ খণ্ডগুলোকে একত্রিত বা জোড়া লাগানোর কাজে কোন এনজাইম ব্যবহৃত হয়?", options: ["ডিএনএ লাইগেজ (DNA Ligase)", "রেস্ট্রিকশন এনজাইম", "হেলিকেজ", "জাইমেজ"], correct: 0, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "ডিএনএ লাইগেজকে 'আণবিক আঠা' (Molecular Glue) বলা হয়, যা ফসফোডাইএস্টার বন্ধন তৈরি করে DNA জোড়া দেয়।", concept: "Molecular Glue", shortcut: "Joining DNA = DNA Ligase", mistake: "কাটার এনজাইমের সাথে মেলানো", tip: "Recombinant DNA তৈরিতে কাটিং ও জয়েনিং অত্যাবশ্যক।" },
-          { question: "কৃত্রিম উপায়ে উদ্ভিদের পুষ্টি মাধ্যমে ভ্রূণ সুপ্তাবস্থা কাটিয়ে দ্রুত চারা তৈরির পদ্ধতিকে কী বলে?", options: ["এমব্রায়ো রেসকিউ (Embryo Rescue)", "ক্যালস কালচার", "সোমাটিক এমব্রায়োজেনেসিস", "এনথার কালচার"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "দূরবর্তী সংকরায়ণে ভ্রূণ নষ্ট হওয়া রোধ করতে অপরিণত ভ্রূণকে পুষ্টি মাধ্যমে প্রতিস্থাপন করে রক্ষা করাকে Embryo Rescue বলে।", concept: "Embryo Rescue", shortcut: "Saving Aborted Embryo = Embryo Rescue", mistake: "ক্যালস কালচার ভাবা", tip: "Inter-specific সংকরায়ণে এটি অত্যন্ত কার্যকর।" },
-          { question: "অঙ্গজ টিস্যু কালচার থেকে সৃষ্ট উদ্ভিদের মধ্যে যে সোমাটিক পরিবর্তন বা প্রকরণ দেখা যায় তাকে কী বলে?", options: ["সোমাক্লোনাল ভ্যারিয়েশন (Somaclonal Variation)", "জার্মপ্লাজম পরিবর্তন", "জিন মিউটেশন", "হাইব্রিড ভিগর"], correct: 0, topic: "Tissue Culture Applications", difficulty: "medium", explanation: "ইন-ভিট্রো কালচার বা টিস্যু কালচারের সময় ক্যালস টিস্যুতে যে পরিবর্তন ও প্রকরণ ঘটে তাকে সোমাক্লোনাল ভ্যারিয়েশন বলে।", concept: "Tissue Culture Variation", shortcut: "In vitro Variation = Somaclonal", mistake: "হাইব্রিডাইজেশন বলা", tip: "নতুন জাত উদ্ভাবনে সোমাক্লোনাল ভ্যারিয়েশন কাজে লাগে।" },
-          { question: "একটি নির্দিষ্ট অঞ্চলের সকল প্রকার বৈচিত্র্যময় প্রজাতি ও তাদের জিনের সংগ্রহকে কী বলা হয়?", options: ["জিন ব্যাংক", "জার্মপ্লাজম (Germplasm)", "জিনোম", "জিন পুল"], correct: 1, topic: "Germplasm Conservation", difficulty: "medium", explanation: "কোনো ফসলের বা তার বুনো আত্মীয়ের সকল প্রকার এলিল বা জিন ধারণকারী প্রজনন উপাদানকে একত্রে জার্মপ্লাজম বলে।", concept: "Germplasm Definition", shortcut: "Total Genetic Material = Germplasm", mistake: "জিনপুল ভাবা", tip: "জার্মপ্লাজম সংরক্ষণ করা না হলে প্রজাতির বিলুপ্তি ঘটে।" },
-          { question: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট (BRRI) কোথায় অবস্থিত?", options: ["গাজীপুর", "ময়মনসিংহ", "ঢাকা", "রংপুর"], correct: 0, topic: "Plant Breeding Research Institutes", difficulty: "easy", explanation: "BRRI (Bangladesh Rice Research Institute) জয়দেবপুর, গাজীপুরে অবস্থিত।", concept: "BRRI Location", shortcut: "BRRI = Gazipur", mistake: "ময়মনসিংহ ভাবা (যেখানে BAU)", tip: "BRRI বহু উফশী ও প্রতিকূলতা সহনশীল ধানের জাত তৈরি করেছে।" },
-          { question: "বিআর-২৮ (BR-28) এবং বিআর-২৯ (BR-29) বাংলাদেশের কোন ফসলের জনপ্রিয় উফশী জাত?", options: ["গম", "ধান", "ভুট্টা", "সরিষা"], correct: 1, topic: "Crop Varieties in BD", difficulty: "easy", explanation: "BR-28 ও BR-29 বোরো মৌসুমের অত্যন্ত জনপ্রিয় এবং উচ্চফলনশীল (HYV) ধানের জাত।", concept: "Rice Varieties", shortcut: "BR = Rice (BRRI)", mistake: "গমের জাত ভাবা", tip: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট এগুলো প্রবর্তন করে।" },
-          { question: "বাংলাদেশে লবণাক্ততা সহনশীল ধানের জাত কোনটি?", options: ["ব্রি ধান ৪৭ (BRRI Dhan 47)", "বিআর ৮", "ব্রি ধান ২৮", "বিআর ১১"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "দক্ষিণাঞ্চলের লবণাক্ত উপকূলীয় এলাকায় চাষের জন্য ব্রি ধান ৪৭, ব্রি ধান ৬১ ইত্যাদি উদ্ভাবন করা হয়েছে।", concept: "Stress Tolerant Rice", shortcut: "Salt Tolerant = BRRI Dhan 47", mistake: "ব্রি ধান ২৮ মনে করা", tip: "এটি ১০-১২ dS/m লবণাক্ততা সহ্য করতে পারে।" },
-          { question: "খরা সহনশীল (Drought tolerant) ধানের জাত কোনটি?", options: ["ব্রি ধান ৫৬ (BRRI Dhan 56)", "ব্রি ধান ৪৭", "বিআর ২৬", "ব্রি ধান ২৯"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "ব্রি ধান ৫৬ এবং ব্রি ধান ৫৭ হলো খরাপ্রবণ বরেন্দ্র এলাকার জন্য উপযোগী খরা সহনশীল জাত।", concept: "Drought Tolerant Rice", shortcut: "Drought = BRRI Dhan 56", mistake: "ব্রি ধান ৪৭ ভাবা (যা লবণাক্ততা সহনশীল)", tip: "মঙ্গা এলাকায় এর চাষ লাভজনক।" },
-          { question: "কৃত্রিম জিন স্থানান্তরের জন্য 'জিন গান' (Gene Gun / Biolistic) পদ্ধতিতে কোন ধাতুর সূক্ষ্ম কণা ব্যবহার করা হয়?", options: ["লোহা ও তামা", "সোনা বা টাংস্টেন (Gold or Tungsten)", "অ্যালুমিনিয়াম", "রুপা"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "hard", explanation: "জিন গান পদ্ধতিতে সোনা (Gold) বা টাংস্টেন দিয়ে কোট করা DNA কণাকে উচ্চবেগে কোষের ভেতরে নিক্ষেপ করা হয়।", concept: "Gene Gun Technique", shortcut: "Gene Gun Microcarriers = Gold/Tungsten", mistake: "তামা ভাবা", tip: "একবীজপত্রী উদ্ভিদে জিন স্থানান্তরে জিন গান উপযোগী।" },
-          { question: "বাংলাদেশে পারমাণবিক শক্তি গবেষণা প্রতিষ্ঠানের (BINA) প্রধান কাজ কী?", options: ["রাসায়নিক সার তৈরি", "মিউটেশন ব্রিডিং এর মাধ্যমে উন্নত জাত উদ্ভাবন", "কীটনাশক তৈরি", "মাটি পরীক্ষা"], correct: 1, topic: "Plant Breeding Research Institutes", difficulty: "medium", explanation: "BINA (Bangladesh Institute of Nuclear Agriculture) তেজস্ক্রিয় রশ্নি (Gamma Radiation) প্রয়োগ করে মিউট্যান্ট জাত তৈরি করে।", concept: "BINA Role", shortcut: "BINA = Mutation Breeding / Nuclear Ag", mistake: "সার তৈরি ভাবা", tip: "ইরাটম ধান ও বিনাসরিষা BINA-এর উদ্ভাবন।" },
-          { question: "তেজস্ক্রিয় গামা রশ্নি (Gamma Rays) প্রয়োগ করে উদ্ভিদ প্রজননের কোন পদ্ধতিটি সম্পাদন করা হয়?", options: ["মিউটেশন ব্রিডিং (Mutation Breeding)", "ইমাসকুলেশন", "টিস্যু কালচার", "পদ্ধতিগত নির্বাচন"], correct: 0, topic: "Mutation Breeding", difficulty: "easy", explanation: "গামা রশ্নি, এক্স-রে বা নিউট্রন প্রয়োগ করে কৃত্রিম মিউটেশন ঘটানোকে Induced Mutation বা Mutation Breeding বলে।", concept: "Physical Mutagens", shortcut: "Gamma Rays = Mutation Breeding", mistake: "টিস্যু কালচার মনে করা", tip: "গামা গার্ডেনে তেজস্ক্রিয় কোবাল্ট-৬০ ব্যবহার করা হয়।" },
-          { question: "কোনটি স্ব-পরাগযোগের জন্য একটি প্রাকৃতিক অভিযোজন?", options: ["ডাইকোগ্যামি (Dichogamy)", "ক্লিস্টোগ্যামি (Clistogamy)", "স্ব-বন্ধ্যাত্ব (Self-sterility)", "একলিঙ্গতা (Heterostyly)"], correct: 1, topic: "Pollination Biology", difficulty: "hard", explanation: "ক্লিস্টোগ্যামি অবস্থায় ফুল কখনোই ফোটে না (বন্ধ থাকে), ফলে কেবল স্ব-পরাগযোগ বাধ্যতামূলক হয়ে দাঁড়ায় (যেমন: কানশিরা)।", concept: "Self Pollination Adaptation", shortcut: "Closed Flower = Clistogamy", mistake: "ডাইকোগ্যামি ভাবা", tip: "ডাইকোগ্যামি হলো পর-পরাগযোগের অভিযোজন।" },
-          { question: "স্ত্রী ও পুরুষ ফুল ভিন্ন গাছে অবস্থান করলে সেই উদ্ভিদকে কী বলা হয়?", options: ["মনোএসিয়াস (Monoecious)", "ডাইওসিয়াস (Dioecious)", "উভলিঙ্গ", "পলিগ্যামাস"], correct: 1, topic: "Pollination Biology", difficulty: "medium", explanation: "একই গাছে উভয় ফুল থাকলে Monoecious (যেমন: ভুট্টা) এবং ভিন্ন ভিন্ন গাছে থাকলে Dioecious (যেমন: পেঁপে, তাল)।", concept: "Plant Sex Distribution", shortcut: "Separate Plants = Dioecious", mistake: "Monoecious এর সাথে গুলিয়ে ফেলা", tip: "পেঁপে গাছে পর-পরাগযোগ বাধ্যতামূলক।" },
-          { question: "উদ্ভিদ প্রজননে সায়ব্রিড (Cybrid) বলতে কী বোঝায়?", options: ["দুইটি নিউক্লিয়াসের মিলন", "সাইটোপ্লাজমিক সংকর (Cytoplasmic Hybrid)", "জিনগত মিউট্যান্ট", "ডিএনএ জোড় সায়ব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "hard", explanation: "একটি কোষের নিউক্লিয়াস এবং অন্য কোষের সাইটোপ্লাজম যুক্ত হয়ে সৃষ্ট সংকরকে Cybrid (Cytoplasmic Hybrid) বলে।", concept: "Cybrid Definition", shortcut: "One Nucleus + Other Cytoplasm = Cybrid", mistake: "Somatic Hybrid এর সাথে গুটিয়ে ফেলা", tip: "সায়ব্রিডে কেবল একটি জেনোম এবং উভয় প্লাস্টিড থাকে।" },
-          { question: "টিস্যু কালচারের ক্ষেত্রে কালচার মিডিয়ামের pH সাধারণত কত রাখা হয়?", options: ["3.5 - 4.5", "5.6 - 5.8", "7.0 - 7.5", "8.5 - 9.0"], correct: 1, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "এমএস (MS) পুষ্টি মিডিয়ামের অনুকূল pH হলো ৫.৬ থেকে ৫.৮ (হালকা অম্লীয়)।", concept: "Culture Media pH", shortcut: "Media pH = 5.6 to 5.8", mistake: "৭.০ (নিরপেক্ষ) ভাবা", tip: "অটো ক্লেভ করার আগেই pH ঠিক করতে হয়।" },
-          { question: "টিস্যু কালচার পুষ্টি মাধ্যমকে জীবাণুমুক্ত (Sterilization) করার আধুনিক যন্ত্র কোনটি?", options: ["হট এয়ার ওভেন", "ইনকিউবেটর", "অটোক্লেভ (Autoclave)", "সেনট্রিফিউজ"], correct: 2, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অটোক্লেভ যন্ত্রে ১২১°C তাপমাত্রায়, ১৫ পাউন্ড/বর্গইঞ্চি চাপে ১৫-২০ মিনিট রেখে শতভাগ জীবাণুমুক্ত করা হয়।", concept: "Autoclave Sterilization", shortcut: "121°C, 15 psi = Autoclave", mistake: "ইনকিউবেটর ভাবা", tip: "ইনকিউবেটর তাপমাত্রা নিয়ন্ত্রণে ও কালচারে ব্যবহৃত হয়।" },
-          { question: "নিচের কোনটি উদ্ভিদের প্রধান সাইটোকাইনিন হরমোন যা টিস্যু কালচারে কোষ বিভাজন উদ্দীপিত করে?", options: ["2,4-D", "কাইনেটিন / জিয়াটিন (Kinetin / Zeatin)", "IAA", "জিব্যারেলিক এসিড"], correct: 1, topic: "Plant Growth Regulators", difficulty: "medium", explanation: "সাইটোকাইনিন (কাইনেটিন, বিএপি, জিয়াটিন) টিস্যু কালচারে দ্রুত কোষ বিভাজন ও বিটপ (Shoot) গঠনে সাহায্য করে।", concept: "Hormone Role in Culture", shortcut: "Cytokinin = Shoot / Cell Division", mistake: "2,4-D বলা (যা মূলত অক্সিন)", tip: "অক্সিন ও সাইটোকাইনিনের অনুপাত অঙ্গ সৃষ্টি নিয়ন্ত্রণ করে।" },
-          { question: "কৃত্রিম বীজ (Synthetic Seed / Somatic Seed) তৈরিতে সোমাটিক ভ্রূণকে কোন কেমিকেল দিয়ে আবৃত (Encapsulate) করা হয়?", options: ["সোডিয়াম অ্যালজিনেট (Sodium Alginate)", "অগার", "সেলুলোজ", "পেকটিন"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "সোমাটিক এমব্রায়ো বা ক্যালসকে সোডিয়াম অ্যালজিনেট ও ক্যালসিয়াম ক্লোরাইড দিয়ে কোটিং করে কৃত্রিম বীজ প্রস্তুত করা হয়।", concept: "Synthetic Seeds", shortcut: "Sodium Alginate = SynSeed Coating", mistake: "অগার মনে করা", tip: "এর মাধ্যমে কৃত্রিম বীজ দীর্ঘকাল সংরক্ষণ করা যায়।" },
-          { question: "কলা (Banana) উদ্ভিদের দ্রুত ও বিপুল পরিমানে বংশবৃদ্ধির জন্য বাণিজ্যিকভাবে কোন প্রযুক্তি ব্যবহৃত হচ্ছে?", options: ["বীজ বপন", "মাইক্রোপ্রোপাগেশন / টিস্যু কালচার (Micropropagation)", "গ্রাফটিং", "কাটিং"], correct: 1, topic: "Tissue Culture Applications", difficulty: "easy", explanation: "মাইক্রোপ্রোপাগেশন টিস্যু কালচারের একটি রূপ, যার মাধ্যমে অত্যন্ত কম সময়ে রোগমুক্ত হাজার হাজার কলার চারা তৈরি সম্ভব।", concept: "Micropropagation Benefits", shortcut: "Commercial Clones = Micropropagation", mistake: "গ্রাফটিং ভাবা", tip: "কলা বীজহীন হওয়ায় মাইক্রোপ্রোপাগেশনই সেরা উপায়।" }
-        ]
-      };
+    body.innerHTML = `<div class="pq-card">
+        <div class="pq-question">${escapeHtml(currentQuiz.question||"")}</div>
+        ${remaining !== null ? `<div class="pq-timer">⏳ ${remaining} সেকেন্ড বাকি</div>` : ""}
+        ${optsHtml}
+        ${resultNote}
+    </div>`;
+}
+setInterval(()=>{ if(currentQuiz && currentQuiz.active) renderQuiz(); }, 1000);
 
-      let examData = defaultExamData;
+window.answerQuiz = async function(idx){
+    if(!studentName){ document.getElementById("gateOverlay").classList.remove("hidden"); return; }
+    if(!currentQuiz || !currentQuiz.active) return;
+    const answers = currentQuiz.answers || {};
+    if(answers[studentUid] !== undefined) return;
+    await set(ref(db, `${QUIZ_PATH}/answers/${studentUid}`), { idx, name: studentName, ts: Date.now() });
+    if(idx === currentQuiz.correctIndex){
+        const scoreRef = ref(db, `${QUIZ_SCORES_PATH}/${studentUid}`);
+        const snap = await get(scoreRef);
+        const prev = snap.exists() ? (snap.val().score||0) : 0;
+        await set(scoreRef, { name: studentName, score: prev + 10 });
+    }
+};
 
-      // 🛡️ SECURITY ENGINE: Anti-Screenshot & Capture Deterrent
-      function initSecurityEngine() {
-        const overlay = document.getElementById('screenProtectOverlay');
-        const container = document.getElementById('mainExamContainer');
-        const header = document.getElementById('mainHeader');
+/* ============ LEADERBOARD ============ */
+onValue(ref(db, QUIZ_SCORES_PATH), (snap)=>{
+    const data = snap.exists() ? snap.val() : {};
+    renderLeaderboard(data);
+});
+function renderLeaderboard(data){
+    const list = document.getElementById("peopleBoardList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো স্কোর নেই।</div>`; return; }
+    keys.sort((a,b)=> (data[b].score||0) - (data[a].score||0));
+    let html = "";
+    keys.slice(0,20).forEach((k,i)=>{
+        html += `<div class="people-row"><span class="people-rank">${i+1}</span><span class="people-name">${escapeHtml(data[k].name||"")}${k===studentUid?' (আপনি)':''}</span><span class="people-score">🏅 ${data[k].score||0}</span></div>`;
+    });
+    list.innerHTML = html;
+}
 
-        function triggerSecurityLock(reason) {
-          if (isSubmitted) return;
-          container.classList.add('secure-blur');
-          header.classList.add('secure-blur');
-          overlay.style.display = 'flex';
-          playAudioFeedback('warning');
-          showToastWarning(`🚨 সিকিউরিটি অ্যালার্ট: ${reason}`);
-        }
+/* ============ RESOURCES ============ */
+const resIcons = { pdf:"📄", slide:"🖼️", sheet:"📝", drive:"🔗", bank:"❓" };
+const resNames = { pdf:"PDF নোট", slide:"স্লাইড", sheet:"প্র্যাকটিস শিট", drive:"Google Drive", bank:"প্রশ্নব্যাংক" };
 
-        function unlockSecurity() {
-          container.classList.remove('secure-blur');
-          header.classList.remove('secure-blur');
-          overlay.style.display = 'none';
-        }
+onValue(ref(db, RESOURCES_PATH), (snap)=>{
+    const data = snap.exists() ? snap.val() : {};
+    renderResources(data);
+});
 
-        // 1. Screen Capture Key Shortcuts (PrtScn, Snipping Tool, Inspect)
-        window.addEventListener('keyup', (e) => {
-          if (e.key === 'PrintScreen' || e.keyCode === 44) {
-            navigator.clipboard.writeText(''); // Clear Clipboard
-            triggerSecurityLock("স্ক্রিনশট নেওয়ার চেষ্টা শনাক্ত করা হয়েছে!");
-          }
-        });
+function renderResources(data){
+    const list = document.getElementById("resourceList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো রিসোর্স যোগ করা হয়নি।</div>`; return; }
+    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
+    let html = "";
+    keys.forEach(k=>{
+        const r = data[k];
+        html += `<div class="resource-card">
+            <span class="resource-icon">${resIcons[r.type]||"📎"}</span>
+            <div class="resource-info"><div class="resource-title">${escapeHtml(r.title||"")}</div><div class="resource-type">${resNames[r.type]||""}</div></div>
+            <a class="resource-open" href="${escapeAttr(r.url||"#")}" target="_blank" rel="noopener">খুলুন</a>
+        </div>`;
+    });
+    list.innerHTML = html;
+}
 
-        window.addEventListener('keydown', (e) => {
-          // Block Ctrl+P (Print), Ctrl+Shift+I (DevTools), Ctrl+U (Source), Ctrl+S (Save), Alt+PrtScn
-          if (
-            (e.ctrlKey && (e.key === 'p' || e.key === 'P')) ||
-            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
-            (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
-            (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
-            (e.key === 'F12')
-          ) {
-            e.preventDefault();
-            triggerSecurityLock("নিষিদ্ধ কি-কম্বিনেশন প্রেস করা হয়েছে!");
-            return false;
-          }
-        });
+/* ============ HOMEWORK ============ */
+onValue(ref(db, HOMEWORK_PATH), (snap)=>{
+    const data = snap.exists() ? snap.val() : {};
+    renderHomework(data);
+});
 
-        // 2. Prevent Right Click & Copying
-        document.addEventListener('contextmenu', (e) => e.preventDefault());
-        document.addEventListener('copy', (e) => {
-          e.preventDefault();
-          showToastWarning("⚠️ প্রশ্ন কপি করা নিষিদ্ধ!");
-        });
+function renderHomework(data){
+    const list = document.getElementById("homeworkList");
+    const keys = Object.keys(data);
+    if(keys.length === 0){ list.innerHTML = `<div class="section-empty">এখনো কোনো হোমওয়ার্ক দেওয়া হয়নি।</div>`; return; }
+    keys.sort((a,b)=> (data[b].ts||0) - (data[a].ts||0));
+    const doneMap = JSON.parse(localStorage.getItem("gaivexHwDone") || "{}");
+    let html = "";
+    keys.forEach(k=>{
+        const h = data[k];
+        const done = !!doneMap[k];
+        html += `<div class="homework-card">
+            <div class="homework-title">${escapeHtml(h.title||"")}</div>
+            ${h.deadline ? `<div class="homework-deadline">⏰ ডেডলাইন: ${escapeHtml(h.deadline)}</div>` : ""}
+            ${h.desc ? `<div class="homework-desc">${escapeHtml(h.desc)}</div>` : ""}
+            <button class="homework-done-toggle ${done?'done':''}" onclick="toggleHwDone('${k}')">${done ? '✅ সম্পন্ন হয়েছে' : 'সম্পন্ন হিসেবে চিহ্নিত করুন'}</button>
+        </div>`;
+    });
+    list.innerHTML = html;
+}
+window.toggleHwDone = function(key){
+    const doneMap = JSON.parse(localStorage.getItem("gaivexHwDone") || "{}");
+    doneMap[key] = !doneMap[key];
+    localStorage.setItem("gaivexHwDone", JSON.stringify(doneMap));
+    onValue(ref(db, HOMEWORK_PATH), (snap)=> renderHomework(snap.exists()?snap.val():{}), { onlyOnce:true });
+};
 
-        // 3. Tab Change & Window Blur
-        window.addEventListener('blur', () => {
-          if (!isSubmitted) triggerSecurityLock("উইন্ডো পরিবর্তন বা মিনিমাইজ করা হয়েছে!");
-        });
-
-        overlay.addEventListener('click', () => {
-          unlockSecurity();
-        });
-      }
-
-      // Init Function
-      async function checkAttemptAndLoad() {
-        initSecurityEngine();
-
-        if (currentUser) {
-          try {
-            let userSnap = await get(ref(db, `users/${currentUser.uid}`));
-            if (!userSnap.exists()) userSnap = await get(ref(db, `students/${currentUser.uid}`));
-
-            if (userSnap.exists()) {
-              const userData = userSnap.val();
-              document.getElementById('uName').innerText = userData.name || "Student";
-              document.getElementById('uAvatar').innerText = (userData.name || "S").charAt(0).toUpperCase();
-
-              if (userData.status === 'blocked') {
-                document.getElementById('questionsContainer').innerHTML = `
-                  <div style="text-align: center; padding: 40px 20px; background: #1e293b; border-radius: 12px; border: 1px solid #f43f5e; margin-top: 20px;">
-                    <h2 style="color: #f43f5e; margin-bottom: 10px;">❌ পরীক্ষা দেওয়া সম্ভব নয়!</h2>
-                    <p style="color: #cbd5e1; font-size: 16px;">আপনার অ্যাকাউন্ট ব্লক করা রয়েছে। কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
-                  </div>
-                `;
-                document.getElementById('examTitle').innerText = "অ্যাক্সেস ব্লকড";
-                document.getElementById('topSubmitBtn').style.display = 'none';
-                document.getElementById('paletteSection').style.display = 'none';
-                document.getElementById('examToolbar').style.display = 'none';
-                return;
-              }
+/* ============ FULLSCREEN / LANDSCAPE ============ */
+window.toggleFullscreen = async function(){
+    const wrap = document.getElementById("videoWrap");
+    if(!document.fullscreenElement){
+        try{
+            await wrap.requestFullscreen();
+            if(screen.orientation && screen.orientation.lock){
+                screen.orientation.lock("landscape").catch(()=>{});
             }
-          } catch(err) { console.error("Error checking user:", err); }
-        }
+        }catch(e){}
+    }else{
+        try{
+            if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+        }catch(e){}
+        document.exitFullscreen();
+    }
+};
 
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
-          if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
-            examData = snapshot.val();
-          } else {
-            examData = defaultExamData;
-          }
-        } catch(e) {
-          examData = defaultExamData;
-        }
+document.addEventListener("fullscreenchange", ()=>{
+    const btn = document.getElementById("fsBtn");
+    btn.innerText = document.fullscreenElement ? "⤢" : "⛶";
+});
 
-        document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
-        
-        const cleanId = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
-        activeExamKey = "gaivex_submitted_" + cleanId;
-        examTimerKey = "gaivex_timer_" + cleanId;
-        autoSaveKey = "gaivex_autosave_" + cleanId;
-
-        const localAutoSave = localStorage.getItem(autoSaveKey);
-        if (localAutoSave) {
-          try { userSelections = JSON.parse(localAutoSave); } catch(e){}
-        }
-
-        totalDurationSeconds = (examData.duration || 25) * 60;
-        const savedTimer = localStorage.getItem(examTimerKey);
-        timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalDurationSeconds;
-
-        renderQuestions();
-        renderPalette();
-
-        const savedResult = localStorage.getItem(activeExamKey);
-        if (savedResult) {
-          const resultData = JSON.parse(savedResult);
-          isSubmitted = true;
-          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpent || 0, resultData.perQuestionTime || {});
-        } else {
-          startTimer();
-          setupAntiCheat();
-          setupUnloadProtection();
-        }
-      }
-
-      // Rendering Engine
-      function renderQuestions() {
-        const container = document.getElementById('questionsContainer');
-        const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
-
-        container.innerHTML = examData.questions.map((q, qIndex) => `
-          <div class="question-card" id="q-box-${qIndex}">
-            <div class="question-meta">
-              <span class="tag ${q.difficulty || 'medium'}">${(q.difficulty || 'medium').toUpperCase()}</span>
-              <span class="tag">${q.topic || 'General'}</span>
-            </div>
-            <div class="question-header-row">
-              <div class="question-title">${qIndex + 1}. ${q.question}</div>
-              <div class="action-btns">
-                <button type="button" class="action-icon-btn bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
-                <button type="button" class="action-icon-btn review-btn" id="review-${qIndex}" onclick="window.toggleReview(${qIndex})" title="Mark for Review">🔖</button>
-                ${isSubmitted ? `<button type="button" class="action-icon-btn" onclick="openReportModal(${qIndex})" title="রিপোর্ট করুন">🚩</button>` : ''}
-              </div>
-            </div>
-            <div class="options-list" id="options-list-${qIndex}">
-              ${(q.options || []).map((opt, oIndex) => `
-                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
-                  <input type="radio" name="q_${qIndex}" value="${oIndex}" ${userSelections[qIndex] === oIndex ? 'checked' : ''} onchange="window.selectOption(${qIndex}, ${oIndex})">
-                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
-                </label>
-              `).join('')}
-            </div>
-            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
-              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
-              <div class="review-insights">
-                <div class="insight-card"><strong>📖 Concept:</strong> ${q.concept || 'N/A'}</div>
-                <div class="insight-card"><strong>💡 Shortcut:</strong> ${q.shortcut || 'N/A'}</div>
-                <div class="insight-card"><strong>⚠️ Common Mistake:</strong> ${q.mistake || 'N/A'}</div>
-                <div class="insight-card"><strong>🎯 Admission Tip:</strong> ${q.tip || 'N/A'}</div>
-              </div>
-              <div class="q-time-badge" id="q-time-${qIndex}">⏱️ ব্যয়িত সময়: 0s</div>
-            </div>
-          </div>
-        `).join('');
-
-        window.selectOption = function(qIndex, oIndex) {
-          if (isSubmitted) return;
-          
-          triggerHaptic();
-          playAudioFeedback('click');
-
-          userSelections[qIndex] = Number(oIndex);
-          localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
-          
-          if (currentUser) {
-            update(ref(db, `exam_sessions/${currentUser.uid}/${examData.id || 'exam'}`), {
-              answers: userSelections,
-              lastUpdated: Date.now()
-            }).catch(()=>{});
-          }
-
-          const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
-          allLabels.forEach((lbl, idx) => {
-            lbl.classList.remove('selected-option');
-            if(idx === Number(oIndex)) lbl.classList.add('selected-option');
-          });
-
-          updatePalette();
-
-          // Auto-advance logic
-          const autoAdvance = document.getElementById('autoAdvanceCheck').checked;
-          if (autoAdvance) {
-            if (viewMode === 'single' && qIndex < examData.questions.length - 1) {
-              setTimeout(() => navigateSingle(1), 250);
-            } else if (viewMode === 'all' && qIndex < examData.questions.length - 1) {
-              const nextCard = document.getElementById(`q-box-${qIndex + 1}`);
-              if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-          }
-        };
-
-        window.toggleBookmark = function(qIndex) {
-          triggerHaptic();
-          bookmarkedQuestions[qIndex] = !bookmarkedQuestions[qIndex];
-          const btn = document.getElementById(`bookmark-${qIndex}`);
-          if(bookmarkedQuestions[qIndex]) btn.classList.add('active');
-          else btn.classList.remove('active');
-          updatePalette();
-        };
-
-        window.toggleReview = function(qIndex) {
-          triggerHaptic();
-          reviewQuestions[qIndex] = !reviewQuestions[qIndex];
-          const btn = document.getElementById(`review-${qIndex}`);
-          if(reviewQuestions[qIndex]) btn.classList.add('active');
-          else btn.classList.remove('active');
-          updatePalette();
-        };
-
-        // Render Mathematical/Botanical Equations
-        renderMathInQuestions();
-      }
-
-      function renderMathInQuestions() {
-        if (window.renderMathInElement) {
-          window.renderMathInElement(document.getElementById('questionsContainer'), {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '$', right: '$', display: false}
-            ]
-          });
-        }
-      }
-
-      function renderPalette() {
-        const grid = document.getElementById('paletteGrid');
-        grid.innerHTML = examData.questions.map((_, i) => `
-          <button type="button" class="palette-btn" id="palette-btn-${i}" onclick="scrollToQuestion(${i})">${i + 1}</button>
-        `).join('');
-        updatePalette();
-      }
-
-      function updatePalette() {
-        let answeredCount = 0;
-        examData.questions.forEach((_, i) => {
-          const btn = document.getElementById(`palette-btn-${i}`);
-          if (!btn) return;
-
-          btn.className = "palette-btn";
-          if (i === currentSingleIndex && viewMode === 'single') btn.classList.add('active-current');
-          
-          if (userSelections[i] !== undefined) {
-            answeredCount++;
-            btn.classList.add('answered');
-          } else if (reviewQuestions[i]) {
-            btn.classList.add('review');
-          } else if (bookmarkedQuestions[i]) {
-            btn.classList.add('bookmarked');
-          }
+/* ============ SHARE ============ */
+window.shareClassLink = function(){
+    const url = location.href.split("?")[0];
+    if(navigator.share){
+        navigator.share({ title: "GAIVEX Live Class", url }).catch(()=>{});
+    }else{
+        navigator.clipboard.writeText(url).then(()=>{
+            alert("✅ লিংক কপি করা হয়েছে!");
+        }).catch(()=>{
+            prompt("লিংক কপি করুন:", url);
         });
+    }
+};
 
-        const totalQ = examData.questions.length;
-        document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
-      }
-
-      // Font Zoom Control
-      window.changeFontSize = function(delta) {
-        currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
-        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
-      };
-
-      // Navigation Controls
-      window.scrollToQuestion = function(index) {
-        const now = Date.now();
-        const spent = Math.round((now - currentQuestionStartTime) / 1000);
-        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
-        currentQuestionStartTime = now;
-
-        currentSingleIndex = index;
-        if (viewMode === 'single') {
-          examData.questions.forEach((_, i) => {
-            const box = document.getElementById(`q-box-${i}`);
-            if (box) box.style.display = i === index ? 'block' : 'none';
-          });
-          updateSingleNavFooter();
-        } else {
-          const box = document.getElementById(`q-box-${index}`);
-          if(box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        updatePalette();
-      };
-
-      window.switchViewMode = function(mode) {
-        viewMode = mode;
-        document.getElementById('btnModeAll').classList.toggle('active', mode === 'all');
-        document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
-        document.getElementById('singleNavFooter').style.display = mode === 'single' ? 'flex' : 'none';
-
-        if (mode === 'single') {
-          scrollToQuestion(currentSingleIndex);
-        } else {
-          examData.questions.forEach((_, i) => {
-            const box = document.getElementById(`q-box-${i}`);
-            if (box) box.style.display = 'block';
-          });
-        }
-      };
-
-      function updateSingleNavFooter() {
-        const total = examData.questions.length;
-        document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ${total}`;
-        document.getElementById('prevQBtn').disabled = currentSingleIndex === 0;
-        document.getElementById('nextQBtn').disabled = currentSingleIndex === total - 1;
-      }
-
-      window.navigateSingle = function(dir) {
-        const nextIdx = currentSingleIndex + dir;
-        if (nextIdx >= 0 && nextIdx < examData.questions.length) {
-          scrollToQuestion(nextIdx);
-        }
-      };
-
-      window.jumpToQuestion = function() {
-        const val = parseInt(document.getElementById('jumpQInput').value, 10);
-        if (val && val >= 1 && val <= examData.questions.length) {
-          scrollToQuestion(val - 1);
-        }
-      };
-
-      window.goToNextUnanswered = function() {
-        for (let i = 0; i < examData.questions.length; i++) {
-          if (userSelections[i] === undefined) {
-            scrollToQuestion(i);
-            return;
-          }
-        }
-        alert("🎉 সব প্রশ্ন ইতোমধ্যে উত্তর দেওয়া হয়ে গেছে!");
-      };
-
-      // Timer & Anti-Cheat
-      function startTimer() {
-        updateTimerDisplay();
-        timerInterval = setInterval(() => {
-          timeRemaining--;
-          localStorage.setItem(examTimerKey, timeRemaining);
-          updateTimerDisplay();
-
-          if (timeRemaining === 600) { playAudioFeedback('warning'); showToastWarning("⚠️ আপনার পরীক্ষার আর ১০ মিনিট বাকি!"); }
-          if (timeRemaining === 300) { playAudioFeedback('warning'); showToastWarning("🔥 দ্রুত বাকি প্রশ্নগুলো সম্পন্ন করুন (৫ মিনিট বাকি)!"); }
-          if (timeRemaining === 60)  { playAudioFeedback('warning'); showToastWarning("🚨 মাত্র ১ মিনিট বাকি!"); }
-
-          if (timeRemaining <= 0) {
-            clearInterval(timerInterval);
-            localStorage.removeItem(examTimerKey);
-            alert("⏱️ সময় শেষ! পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
-            submitExamAction();
-          }
-        }, 1000);
-      }
-
-      function updateTimerDisplay() {
-        const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
-        const s = (timeRemaining % 60).toString().padStart(2, '0');
-        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-      }
-
-      function showToastWarning(msg) {
-        const toast = document.getElementById('warningToast');
-        toast.innerText = msg;
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 5000);
-      }
-
-      function setupAntiCheat() {
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden && !isSubmitted) {
-            showToastWarning("⚠️ Tab Switch Detected! Cheating deterrence active.");
-          }
-        });
-      }
-
-      function setupUnloadProtection() {
-        window.onbeforeunload = function() {
-          if (!isSubmitted) return "আপনার পরীক্ষাটি জমা দেওয়া হয়নি! বের হতে চান?";
-        };
-      }
-
-      // Keyboard Shortcuts
-      document.addEventListener('keydown', (e) => {
-        if (isSubmitted) return;
-        if (e.key === 'ArrowRight') navigateSingle(1);
-        if (e.key === 'ArrowLeft') navigateSingle(-1);
-        if (e.key.toLowerCase() === 'm') toggleReview(currentSingleIndex);
-        if (e.key.toLowerCase() === 'b') toggleBookmark(currentSingleIndex);
-
-        const key = e.key.toLowerCase();
-        let optIdx = -1;
-        if (['1', 'a'].includes(key)) optIdx = 0;
-        if (['2', 'b'].includes(key)) optIdx = 1;
-        if (['3', 'c'].includes(key)) optIdx = 2;
-        if (['4', 'd'].includes(key)) optIdx = 3;
-
-        if (optIdx !== -1) {
-          selectOption(currentSingleIndex, optIdx);
-        }
-      });
-
-      // Modals
-      window.openShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'flex'; };
-      window.closeShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'none'; };
-
-      window.openConfirmModal = function() {
-        if (isSubmitted) return;
-        const total = examData.questions.length;
-        const answered = Object.keys(userSelections).length;
-        const unanswered = total - answered;
-
-        document.getElementById('modalStatsText').innerHTML = `
-          Total Questions: <b>${total}</b><br>
-          Answered: <span style="color: #10b981; font-weight: bold;">${answered}</span><br>
-          Unanswered: <span style="color: #f43f5e; font-weight: bold;">${unanswered}</span>
-        `;
-        document.getElementById('confirmModal').style.display = 'flex';
-      };
-
-      window.closeConfirmModal = function() { document.getElementById('confirmModal').style.display = 'none'; };
-      window.confirmAndSubmit = function() { closeConfirmModal(); submitExamAction(); };
-
-      // --- Submission & Evaluation Function (Updated) ---
-      async function submitExamAction() {
-        if (isSubmitted) return;
-
-        const now = Date.now();
-        const spent = Math.round((now - currentQuestionStartTime) / 1000);
-        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
-
-        clearInterval(timerInterval);
-        localStorage.removeItem(examTimerKey);
-        isSubmitted = true;
-        window.onbeforeunload = null;
-
-        const timeSpent = totalDurationSeconds - Math.max(0, timeRemaining);
-        let correctCount = 0;
-        let wrongCount = 0;
-
-        examData.questions.forEach((q, i) => {
-          const selected = userSelections[i];
-          const correctVal = Number(q.correct);
-
-          if (selected !== undefined && selected !== null) {
-            if (Number(selected) === correctVal) {
-              correctCount++;
-            } else {
-              wrongCount++;
-            }
-          }
-        });
-
-        const wrongMark = examData.marking ? Number(examData.marking.wrong) : 0.25;
-        let finalScore = correctCount - (wrongCount * wrongMark);
-        if (finalScore < 0) finalScore = 0;
-
-        // LocalStorage এ অ্যানসার সেভ করা
-        localStorage.setItem(activeExamKey, JSON.stringify({
-          score: finalScore,
-          userAnswers: userSelections,
-          timeSpent: timeSpent,
-          perQuestionTime: perQuestionTime
-        }));
-
-        showSubmittedResult(userSelections, finalScore, timeSpent, perQuestionTime);
-
-        const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
-        const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
-
-        try {
-          if (currentUser) {
-            const attemptRef = push(ref(db, `exam_attempts/${currentUser.uid}`));
-            await set(attemptRef, {
-              examId: examIdClean,
-              examTitle: currentExamTitle,
-              score: finalScore,
-              total: examData.questions.length,
-              timeSpent: timeSpent,
-              submittedAt: new Date().toISOString(),
-              userAnswers: userSelections
-            });
-
-            await set(ref(db, `leaderboard/${examIdClean}/${currentUser.uid}`), {
-              name: document.getElementById('uName').innerText || "Student",
-              score: finalScore,
-              timeSpent: timeSpent,
-              updatedAt: Date.now()
-            });
-          }
-        } catch(err) { console.error("Score Save Error:", err); }
-
-        loadLiveLeaderboard(examIdClean);
-      }
-
-      // --- Dashboard & Review Display Function (Fixed & Updated) ---
-      function showSubmittedResult(userAnswers, score, timeSpent, qTimeMap) {
-        const total = examData.questions.length;
-        
-        let correct = 0;
-        let wrong = 0;
-        let skipped = 0;
-        let topicStats = {}; // Dynamic Topic Stat Calculation
-
-        examData.questions.forEach((q, i) => {
-          const selected = userAnswers ? userAnswers[i] : undefined;
-          const correctVal = Number(q.correct);
-          const topicName = q.topic || 'General';
-
-          if (!topicStats[topicName]) {
-            topicStats[topicName] = { correct: 0, total: 0 };
-          }
-          topicStats[topicName].total++;
-
-          if (selected === undefined || selected === null) {
-            skipped++;
-          } else if (Number(selected) === correctVal) {
-            correct++;
-            topicStats[topicName].correct++;
-          } else {
-            wrong++;
-          }
-        });
-
-        const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0;
-        const attemptRate = Math.round(((total - skipped) / total) * 100);
-
-        document.getElementById('resultDashboard').style.display = 'block';
-        document.getElementById('resScore').innerText = score.toFixed(2);
-        document.getElementById('resAccuracy').innerText = accuracy + '%';
-        document.getElementById('resCorrect').innerText = correct;
-        document.getElementById('resWrong').innerText = wrong;
-        document.getElementById('resSkipped').innerText = skipped;
-        
-        const m = Math.floor(timeSpent / 60);
-        const s = timeSpent % 60;
-        document.getElementById('resTime').innerText = `${m}m ${s}s`;
-        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${attemptRate}%`;
-
-        document.getElementById('barCorrect').style.width = `${(correct/total)*100}%`;
-        document.getElementById('barWrong').style.width = `${(wrong/total)*100}%`;
-        document.getElementById('barSkip').style.width = `${(skipped/total)*100}%`;
-
-        // AI Analysis এখন সঠিকভাবে টপিক ডাটা পাবে
-        runAIAnalysis(accuracy, topicStats);
-
-        document.getElementById('timerDisplay').innerText = "00:00";
-        document.getElementById('filterBar').style.display = 'flex';
-        document.getElementById('topSubmitBtn').style.display = 'none';
-
-        switchViewMode('all');
-
-        examData.questions.forEach((q, i) => {
-          const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
-          const correctVal = Number(q.correct);
-          
-          const expBox = document.getElementById(`exp-${i}`);
-          if(expBox) expBox.style.display = 'block';
-
-          const timeBadge = document.getElementById(`q-time-${i}`);
-          if (timeBadge && qTimeMap && qTimeMap[i]) {
-            timeBadge.innerText = `⏱️ ব্যয়িত সময়: ${qTimeMap[i]}s`;
-          }
-
-          (q.options || []).forEach((_, oIndex) => {
-            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
-            if(lbl) {
-              lbl.classList.remove('selected-option', 'locked-option', 'correct-opt', 'wrong-opt');
-              const input = lbl.querySelector('input');
-              if(input) {
-                input.disabled = true;
-                if (selected !== undefined && Number(selected) === oIndex) {
-                  input.checked = true;
-                }
-              }
-
-              if (oIndex === correctVal) {
-                lbl.classList.add('correct-opt');
-              }
-              if (selected !== undefined && Number(selected) === oIndex && Number(selected) !== correctVal) {
-                lbl.classList.add('wrong-opt');
-              }
-            }
-          });
-        });
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      // --- UI & Analytical Handlers ---
-      function runAIAnalysis(accuracy, topicStats) {
-        let weakTopics = [];
-        let strongTopics = [];
-        for(let topic in topicStats) {
-            let stat = topicStats[topic];
-            let percent = (stat.correct / stat.total) * 100;
-            if(percent < 50) weakTopics.push(topic);
-            else strongTopics.push(topic);
-        }
-        
-        let aiText = "দুর্দান্ত পারফরম্যান্স! তবে কিছু বিষয়ে আরও ফোকাস প্রয়োজন।";
-        if(accuracy < 40) aiText = "আপনার বেসিক আরো ক্লিয়ার করতে হবে। নিচে দুর্বল টপিকগুলো দেওয়া হলো।";
-        else if (accuracy < 70) aiText = "ভালো করেছেন, তবে আরও ইম্প্রুভ করার সুযোগ রয়েছে।";
-        
-        document.getElementById('aiAnalysisText').innerText = aiText;
-        
-        let topicHtml = '';
-        weakTopics.forEach(t => topicHtml += `<span class="topic-pill weak">↓ ${t}</span>`);
-        strongTopics.forEach(t => topicHtml += `<span class="topic-pill strong">↑ ${t}</span>`);
-        document.getElementById('aiTopicList').innerHTML = topicHtml;
-      }
-      
-      window.filterQuestions = function(mode) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        examData.questions.forEach((q, i) => {
-          let box = document.getElementById(`q-box-${i}`);
-          if(!box) return;
-          
-          let selected = userSelections[i];
-          let isCorrect = selected !== undefined && Number(selected) === Number(q.correct);
-          let isWrong = selected !== undefined && Number(selected) !== Number(q.correct);
-          let isSkip = selected === undefined || selected === null;
-          let isReview = reviewQuestions[i];
-          let isBookmark = bookmarkedQuestions[i];
-          
-          let show = false;
-          if(mode === 'all') show = true;
-          else if(mode === 'correct' && isCorrect) show = true;
-          else if(mode === 'wrong' && isWrong) show = true;
-          else if(mode === 'skipped' && isSkip) show = true;
-          else if(mode === 'bookmarked' && isBookmark) show = true;
-          else if(mode === 'review' && isReview) show = true;
-          
-          box.style.display = show ? 'block' : 'none';
-        });
-      };
-      
-      window.toggleTabs = function(tab) {
-         document.getElementById('tabLeaderboard').style.display = tab === 'leaderboard' ? 'block' : 'none';
-         document.getElementById('tabHistory').style.display = tab === 'history' ? 'block' : 'none';
-      };
-      
-      window.openReportModal = function(qIndex) {
-         document.getElementById('reportQIndex').value = qIndex;
-         document.getElementById('reportModal').style.display = 'flex';
-      };
-      
-      window.closeReportModal = function() {
-         document.getElementById('reportModal').style.display = 'none';
-      };
-      
-      window.submitQuestionReport = function() {
-         alert("আপনার রিপোর্ট সফলভাবে জমা হয়েছে। ধন্যবাদ!");
-         closeReportModal();
-      };
-      
-      window.printCertificate = function() {
-         document.getElementById('certName').innerText = document.getElementById('uName').innerText || 'Student';
-         document.getElementById('certExam').innerText = examData.title;
-         document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
-         document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
-         let now = new Date();
-         document.getElementById('certDate').innerText = now.toLocaleDateString();
-         
-         let certHtml = document.getElementById('certificateContainer').outerHTML;
-         let win = window.open('', '', 'width=800,height=600');
-         win.document.write('<html><head><title>Certificate</title>');
-         win.document.write('<style>body{font-family:sans-serif; padding:20px; text-align:center;} .certificate-card{display:block !important; background:#fff; color:#000; padding:30px; border:10px double #1e3a8a; border-radius:8px;} h1{color:#1e3a8a;} h3{color:#d97706;}</style>');
-         win.document.write('</head><body>');
-         win.document.write(certHtml);
-         win.document.write('</body></html>');
-         win.document.close();
-         win.focus();
-         setTimeout(() => { win.print(); win.close(); }, 500);
-      };
-      
-      window.shareResultOnFacebook = function() {
-          let score = document.getElementById('resScore').innerText;
-          let url = "https://gaivex.com";
-          let text = `আমি GAIVEX Smart Exam System-এ ${score} স্কোর করেছি! তুমিও নিজেকে যাচাই করো।`;
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, '_blank');
-      };
-      
-      window.generateAIPractice = function() {
-          alert("AI Practice Module is preparing your custom questions based on weak topics. This feature will be available soon!");
-      };
-      
-      async function loadLiveLeaderboard(examId) {
-          try {
-              let lbRef = ref(db, `leaderboard/${examId}`);
-              onValue(lbRef, (snapshot) => {
-                  if(snapshot.exists()) {
-                      let data = snapshot.val();
-                      let arr = [];
-                      for(let uid in data) {
-                          arr.push({...data[uid], uid});
-                      }
-                      arr.sort((a,b) => b.score - a.score || a.timeSpent - b.timeSpent);
-                      
-                      let tbody = '';
-                      arr.slice(0, 10).forEach((user, idx) => {
-                          let isMe = currentUser && user.uid === currentUser.uid;
-                          tbody += `<tr class="${isMe ? 'my-rank' : ''}">
-                              <td>${idx + 1}</td>
-                              <td>${user.name}</td>
-                              <td>${user.score.toFixed(2)}</td>
-                              <td>${Math.floor(user.timeSpent / 60)}m ${user.timeSpent % 60}s</td>
-                          </tr>`;
-                      });
-                      document.getElementById('leaderboardBody').innerHTML = tbody;
-                  }
-              });
-          } catch(e) {
-              console.log("Leaderboard error", e);
-          }
-      }
-
-      // --- Authentication Init ---
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          currentUser = user;
-        } else {
-          // Optional: redirect to login
-        }
-        checkAttemptAndLoad();
-      });
-      
-    </script>
+/* ============ UTIL ============ */
+function escapeHtml(value){
+    if(value === null || value === undefined) value = "";
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+function escapeAttr(value){ return escapeHtml(value); }
+</script>
 </body>
 </html>
