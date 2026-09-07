@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GAIVEX - Past Classes Archive</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#080d1a;
+    --bg-glow-1: rgba(56,189,248,.14);
+    --bg-glow-2: rgba(244,63,94,.10);
+    --glass: rgba(22,32,52,.55);
+    --glass-hover: rgba(30,41,69,.75);
+    --glass-border: rgba(148,163,184,.14);
+    --ink:#f1f5f9;
+    --ink-dim:#94a3b8;
+    --ink-faint:#64748b;
+    --sky:#38bdf8;
+    --sky-deep:#0284c7;
+    --rose:#f43f5e;
+    --ok:#10b981;
+    --gold:#f59e0b;
+    --purple:#a855f7;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html,body{ height:100%; font-family:'Hind Siliguri', sans-serif; background:var(--bg); color:var(--ink); overflow-x:hidden; }
+.latin{ font-family:'Outfit',sans-serif; }
+
+body{
+    background:
+        radial-gradient(ellipse 900px 600px at 12% -5%, var(--bg-glow-1), transparent 55%),
+        radial-gradient(ellipse 800px 700px at 95% 15%, var(--bg-glow-2), transparent 50%),
+        var(--bg);
+    min-height:100vh;
+    padding-bottom: 50px;
+}
+
+button{ font-family:inherit; cursor:pointer; }
+input,select{ font-family:inherit; }
+
+.glass{
+    background:var(--glass);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid var(--glass-border);
+    box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+
+.hidden{ display:none!important; }
+
+/* TOP NAV */
+.topbar{
+    position:sticky; top:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; border-bottom:1px solid var(--glass-border);
+    background:rgba(8,13,26,.75); backdrop-filter:blur(18px);
+}
+.brand{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+.brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); }
+.brand-mark span{ color:var(--rose); }
+.brand-tag{ font-size:12px; color:var(--ink-dim); font-weight:600; border-left:1px solid var(--glass-border); padding-left:10px; }
+
+/* CONTAINER & HEADER */
+.main-container{ max-width:1250px; margin:0 auto; padding:24px 18px; }
+
+.page-header{ margin-bottom:24px; text-align:center; }
+.page-title{ font-size:28px; font-weight:700; color:#fff; margin-bottom:8px; }
+.page-subtitle{ font-size:14px; color:var(--ink-dim); }
+
+/* BREADCRUMB & SEARCH */
+.control-bar{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    margin-bottom:20px; padding:12px 18px; border-radius:var(--radius-md);
+}
+.breadcrumb{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-dim); flex-wrap:wrap; }
+.bc-item{ cursor:pointer; transition:.2s; }
+.bc-item:hover{ color:var(--sky); }
+.bc-item.active{ color:var(--sky); font-weight:700; }
+.bc-sep{ color:var(--ink-faint); }
+
+.search-box{ position:relative; width:100%; max-width:320px; }
+.search-input{
+    width:100%; padding:9px 14px 9px 36px; border-radius:20px;
+    border:1px solid var(--glass-border); background:rgba(15,23,42,.6);
+    color:#fff; font-size:13px; outline:none; transition:.2s;
+}
+.search-input:focus{ border-color:var(--sky); box-shadow:0 0 10px rgba(56,189,248,.2); }
+.search-icon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--ink-faint); font-size:14px; }
+
+/* SUBJECT GRID (STEP 1) */
+.subject-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; }
+.subject-card{
+    border-radius:var(--radius-lg); padding:22px; cursor:pointer;
+    transition:transform .2s, border-color .2s, background .2s;
+    position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; min-height:160px;
+}
+.subject-card:hover{ transform:translateY(-4px); border-color:var(--sky); background:var(--glass-hover); }
+.subject-icon{ font-size:36px; margin-bottom:12px; display:inline-block; }
+.subject-name{ font-size:20px; font-weight:700; color:#fff; }
+.subject-count{ font-size:12px; color:var(--ink-dim); margin-top:4px; }
+
+/* PAPER GRID (STEP 2) */
+.paper-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; }
+.paper-card{
+    border-radius:var(--radius-lg); padding:24px; cursor:pointer;
+    transition:.2s; text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.paper-card:hover{ border-color:var(--sky); transform:scale(1.02); background:var(--glass-hover); }
+.paper-badge{ font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(56,189,248,.15); color:var(--sky); }
+.paper-title{ font-size:22px; font-weight:700; color:#fff; }
+
+/* CHAPTER LIST (STEP 3) */
+.chapter-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+.chapter-card{
+    border-radius:var(--radius-md); padding:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between;
+    transition:.2s;
+}
+.chapter-card:hover{ border-color:var(--sky); background:rgba(56,189,248,.08); transform:translateX(4px); }
+.chapter-title{ font-size:14.5px; font-weight:600; color:var(--ink); }
+.chapter-arrow{ color:var(--ink-faint); font-size:18px; transition:.2s; }
+.chapter-card:hover .chapter-arrow{ color:var(--sky); transform:translateX(3px); }
+
+/* CONTENT ARCHIVE VIEW (STEP 4) */
+.content-layout{ display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start; }
+
+.video-player-box{ border-radius:var(--radius-lg); overflow:hidden; background:#000; position:relative; aspect-ratio:16/9; }
+.video-player-box iframe{ width:100%; height:100%; border:none; }
+.empty-player{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--ink-faint); text-align:center; padding:20px; }
+
+.class-details-card{ border-radius:var(--radius-lg); padding:20px; margin-top:16px; }
+.class-title-main{ font-size:20px; font-weight:700; color:#fff; margin-bottom:8px; }
+.class-meta{ display:flex; gap:12px; font-size:12px; color:var(--ink-dim); flex-wrap:wrap; margin-bottom:16px; }
+
+/* RESOURCES TABS & CARDS */
+.resource-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:16px; }
+.res-card{
+    padding:14px; border-radius:var(--radius-md); background:rgba(15,23,42,.5);
+    border:1px solid var(--glass-border); transition:.2s; display:flex; flex-direction:column; justify-content:space-between; gap:10px;
+}
+.res-card:hover{ border-color:var(--sky); background:rgba(15,23,42,.8); }
+.res-type{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--sky); }
+.res-title{ font-size:13px; font-weight:600; color:#fff; }
+.res-btn{
+    padding:6px 12px; border-radius:6px; border:none; font-size:11px; font-weight:700;
+    background:linear-gradient(135deg,var(--sky),var(--sky-deep)); color:#04121e; text-decoration:none; text-align:center; display:block;
+}
+
+/* PLAYLIST SIDEBAR */
+.playlist-card{ border-radius:var(--radius-lg); padding:16px; max-height:700px; overflow-y:auto; }
+.playlist-head{ font-size:15px; font-weight:700; color:var(--sky); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+.playlist-items{ display:flex; flex-direction:column; gap:8px; }
+.item-card{
+    padding:12px; border-radius:var(--radius-md); background:rgba(15,23,42,.4);
+    border:1px solid var(--glass-border); cursor:pointer; transition:.2s; display:flex; gap:10px; align-items:center;
+}
+.item-card:hover{ background:rgba(56,189,248,.1); border-color:var(--sky); }
+.item-card.active{ background:rgba(56,189,248,.18); border-color:var(--sky); }
+.item-idx{ font-size:12px; font-weight:700; color:var(--sky); width:20px; }
+.item-info{ flex:1; }
+.item-title{ font-size:13px; font-weight:600; color:#fff; line-height:1.3; }
+.item-date{ font-size:10.5px; color:var(--ink-faint); margin-top:2px; }
+
+@media(max-width:900px){
+    .content-layout{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="brand" onclick="resetToSubjects()">
+        <div class="brand-mark">GAIVEX<span>.</span></div>
+        <div class="brand-tag latin">PAST CLASSES ARCHIVE</div>
+    </div>
+</div>
+
+<div class="main-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header" id="pageHeader">
+        <h1 class="page-title">আর্কাইভ ক্লাস লাইব্রেরি</h1>
+        <p class="page-subtitle">আপনার প্রয়োজনীয় বিষয়, পত্র ও অধ্যায় নির্বাচন করে পূর্বের সব ক্লাস ও লেকচার শিট সংগ্রহ করুন</p>
+    </div>
+
+    <!-- CONTROL BAR -->
+    <div class="control-bar glass">
+        <div class="breadcrumb" id="breadcrumb">
+            <span class="bc-item active" onclick="resetToSubjects()">বিষয়সমূহ</span>
+        </div>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="অধ্যায় বা বিষয় খুঁজুন..." oninput="handleSearch()">
+        </div>
+    </div>
+
+    <!-- STEP 1: SUBJECT SELECTION -->
+    <div id="stepSubjects" class="subject-grid"></div>
+
+    <!-- STEP 2: PAPER SELECTION -->
+    <div id="stepPapers" class="paper-grid hidden"></div>
+
+    <!-- STEP 3: CHAPTER SELECTION -->
+    <div id="stepChapters" class="chapter-grid hidden"></div>
+
+    <!-- STEP 4: CLASS CONTENT & ARCHIVE VIEW -->
+    <div id="stepContent" class="content-layout hidden">
+        <div>
+            <!-- VIDEO PLAYER -->
+            <div class="video-player-box glass">
+                <div id="playerPlaceholder" class="empty-player">
+                    <span style="font-size:40px;">🎬</span>
+                    <span>প্লেলিস্ট থেকে যেকোনো একটি ক্লাস সিলেক্ট করুন</span>
+                </div>
+                <iframe id="mainVideoPlayer" class="hidden" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+
+            <!-- CLASS DETAILS & RESOURCES -->
+            <div class="class-details-card glass">
+                <h2 id="activeClassTitle" class="class-title-main">ক্লাস সিলেক্ট করা হয়নি</h2>
+                <div class="class-meta">
+                    <span>📅 তারিখ: <b id="activeClassDate">—</b></span>
+                    <span>👨‍🏫 শিক্ষক: <b id="activeClassTeacher">—</b></span>
+                </div>
+
+                <hr style="border-color:var(--glass-border); margin:14px 0;">
+
+                <h3 style="font-size:15px; font-weight:700; color:var(--sky);">📑 প্রয়োজনীয় রিসোর্স ও স্টাডি মেটেরিয়াল</h3>
+                <div class="resource-grid" id="resourceGrid">
+                    <div style="font-size:12px; color:var(--ink-faint); grid-column:1/-1;">কোনো ফাইল সংযুক্ত করা নেই</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAYLIST SIDEBAR -->
+        <div class="playlist-card glass">
+            <div class="playlist-head">
+                <span>📚 সকল ক্লাসসমূহ</span>
+                <span id="classCountBadge" style="font-size:11px; background:rgba(56,189,248,.15); padding:2px 8px; border-radius:12px;">0 Classes</span>
+            </div>
+            <div class="playlist-items" id="playlistItems">
+                <div style="text-align:center; font-size:12px; color:var(--ink-faint); padding:20px;">ক্লাস লোড হচ্ছে...</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- FIREBASE CONNECTION -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
+    authDomain: "gaivexexam.firebaseapp.com",
+    databaseURL: "https://gaivexexam-default-rtdb.firebaseio.com",
+    projectId: "gaivexexam",
+    storageBucket: "gaivexexam.firebasestorage.app",
+    messagingSenderId: "956204530190",
+    appId: "1:956204530190:web:4e5550afefa3e314c99a5f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// SUBJECT & CHAPTER DATA STRUCTURE
+const SUBJECT_DATA = {
+    physics: {
+        title: "পদার্থবিজ্ঞান (Physics)",
+        icon: "⚛️",
+        papers: {
+            paper1: { title: "১ম পত্র", chapters: ["অধ্যায় ১: ভৌতজগৎ ও পরিমাপ", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: গতিবিদ্যা", "অধ্যায় ৪: নিউটনীয় বলবিজ্ঞান", "অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা", "অধ্যায় ৬: মহাকর্ষ ও অভিকর্ষ", "অধ্যায় ৭: পদার্থের গাঠনিক ধর্ম", "অধ্যায় ৮: পর্যায়বৃত্ত গতি", "অধ্যায় ৯: তরঙ্গ", "অধ্যায় ১০: আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"] },
+            paper2: { title: "২য় পত্র", chapters: ["অধ্যায় ১: তাপগতিবিদ্যা", "অধ্যায় ২: স্থির তড়িৎ", "অধ্যায় ৩: চল তড়িৎ", "অধ্যায় ৪: তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", "অধ্যায় ৫: তাড়িতচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", "অধ্যায় ৬: জ্যামিতিক আলোকবিজ্ঞান", "অধ্যায় ৭: ভৌত আলোকবিজ্ঞান", "অধ্যায় ৮: আধুনিক পদার্থবিজ্ঞানের সূচনা", "অধ্যায় ৯: পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "অধ্যায় ১০: সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", "অধ্যায় ১১: জ্যোতির্বিজ্ঞান"] }
+        }
+    },
+    chemistry: {
+        title: "রসায়ন (Chemistry)",
+        icon: "🧪",
+        papers: {
+            paper1: { title: "১ম পত্র", chapters: ["অধ্যায় ১: ল্যাবরেটরি নিরাপদ ব্যবহার", "অধ্যায় ২: গুণগত রসায়ন", "অধ্যায় ৩: মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "অধ্যায় ৪: রাসায়নিক পরিবর্তন", "অধ্যায় ৫: কর্মমুখী রসায়ন"] },
+            paper2: { title: "২য় পত্র", chapters: ["অধ্যায় ১: পরিবেশ রসায়ন", "অধ্যায় ২: জৈব রসায়ন", "অধ্যায় ৩: পরিমাণগত রসায়ন", "অধ্যায় ৪: তড়িৎ রসায়ন", "অধ্যায় ৫: অর্থনৈতিক রসায়ন"] }
+        }
+    },
+    biology: {
+        title: "জীববিজ্ঞান (Biology)",
+        icon: "🧬",
+        papers: {
+            paper1: { title: "১ম পত্র (উদ্ভিদবিজ্ঞান)", chapters: ["অধ্যায় ১: কোষ ও এর গঠন", "অধ্যায় ২: কোষ বিভাজন", "অধ্যায় ৩: কোষ রসায়ন", "অধ্যায় ৪: অণুজীব", "অধ্যায় ৫: শৈবাল ও ছত্রাক", "অধ্যায় ৬: ব্রায়োফাইটা ও টেরোডোফাইটা", "অধ্যায় ৭: নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "অধ্যায় ৮: টিস্যু ও টিস্যুতন্ত্র", "অধ্যায় ৯: উদ্ভিদ শারীরতত্ত্ব", "অধ্যায় ১০: উদ্ভিদ প্রজনন", "অধ্যায় ১১: জীবপ্রযুক্তি", "অধ্যায় ১২: जीवों পরিবেশ ও বিস্তার"] },
+            paper2: { title: "২য় পত্র (প্রাণীবিজ্ঞান)", chapters: ["অধ্যায় ১: প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "অধ্যায় ২: প্রাণীর পরিচিতি", "অধ্যায় ৩: মানব শারীরতত্ত্ব: পরিপাক ও শোষণ", "অধ্যায় ৪: মানব শারীরতত্ত্ব: রক্ত ও সংবহন", "অধ্যায় ৫: মানব শারীরতত্ত্ব: শ্বসন ও শ্বাসক্রিয়া", "অধ্যায় ৬: মানব শারীরতত্ত্ব: বর্জ্য ও নিষ্কাশন", "অধ্যায় ৭: মানব শারীরতত্ত্ব: চলন ও অঙ্গচালনা", "অধ্যায় ৮: মানব শারীরতত্ত্ব: সমন্বয় ও নিয়ন্ত্রণ", "অধ্যায় ৯: মানব জীবনের ধারাবাহিকতা", "অধ্যায় ১০: মানবদেহের প্রতিরক্ষা", "অধ্যায় ১১: জিনতত্ত্ব ও বিবর্তন", "অধ্যায় ১২: প্রাণীর আচরণ"] }
+        }
+    },
+    math: {
+        title: "উচ্চতর গণিত (Higher Math)",
+        icon: "📐",
+        papers: {
+            paper1: { title: "১ম পত্র", chapters: ["অধ্যায় ১: ম্যাট্রিক্স ও নির্ণায়ক", "অধ্যায় ২: ভেক্টর", "অধ্যায় ৩: সরলরেখা", "অধ্যায় ৪: বৃত্ত", "অধ্যায় ৫: বিন্যাস ও সমাবেশ", "অধ্যায় ৬: ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৭: সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "অধ্যায় ৮: ফাংশন ও ফাংশনের লেখচিত্র", "অধ্যায় ৯: অন্তরীকরণ (Differentiation)", "অধ্যায় ১০: যোগজীকরণ (Integration)"] },
+            paper2: { title: "২য় পত্র", chapters: ["অধ্যায় ১: বাস্তব সংখ্যা ও অসমতা", "অধ্যায় ২: রৈখিক প্রোগ্রামন", "অধ্যায় ৩: জটিল সংখ্যা", "অধ্যায় ৪: বহুপদী ও বহুপদী সমীকরণ", "অধ্যায় ৫: দ্বিপদী বিস্তৃতি", "অধ্যায় ৬: কনিক", "অধ্যায় ৭: বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", "অধ্যায় ৮: স্থিতিবিদ্যা", "অধ্যায় ৯: সমতলে বস্তুকণার গতি", "অধ্যায় ১০: সম্ভাবনা (Probability)"] }
+        }
+    },
+    english: {
+        title: "ইংরেজি (English)",
+        icon: "🇬🇧",
+        papers: {
+            paper1: { title: "English 1st Paper", chapters: ["Unseen Passage & Grammar", "Flowchart & Summary", "Theme Writing", "Cloze Test with Clues", "Rearrange"] },
+            paper2: { title: "English 2nd Paper", chapters: ["Preposition", "Words & Phrases", "Completing Sentences", "Right Forms of Verbs", "Narrative Style", "Modifier", "Sentence Connectors", "Punctuation"] }
+        }
+    },
+    gk: {
+        title: "সাধারণ জ্ঞান (General Knowledge)",
+        icon: "🌍",
+        papers: {
+            paper1: { title: "বাংলাদেশ বিষয়াবলী", chapters: ["প্রাচীনকাল হতে মুক্তিযুদ্ধ", "বাংলাদেশের সংবিধান", "ভৌগোলিক অবস্থান ও মানচিত্র", "অর্থনীতি ও মেগা প্রজেক্ট", "সংস্কৃতি ও সাহিত্য"] },
+            paper2: { title: "আন্তর্জাতিক বিষয়াবলী", chapters: ["বৈশ্বিক ইতিহাস ও যুদ্ধ", "আন্তর্জাতিক সংস্থা ও জোট", "সাম্প্রতিক বিশ্ব ও ভৌগোলিক তথ্য", "বিশ্ব অর্থনীতি ও বাণিজ্য"] }
+        }
+    }
+};
+
+let currentSubject = null;
+let currentPaper = null;
+let currentChapter = null;
+
+// RENDER STEP 1: SUBJECTS
+window.resetToSubjects = function(){
+    currentSubject = null; currentPaper = null; currentChapter = null;
+    showSection("stepSubjects");
+    updateBreadcrumb();
+
+    const grid = document.getElementById("stepSubjects");
+    let html = "";
+    Object.keys(SUBJECT_DATA).forEach(key => {
+        const sub = SUBJECT_DATA[key];
+        html += `<div class="subject-card glass" onclick="selectSubject('${key}')">
+            <div>
+                <span class="subject-icon">${sub.icon}</span>
+                <div class="subject-name">${sub.title}</div>
+            </div>
+            <div class="subject-count">পত্র ও অধ্যায় সমূহ দেখতে ক্লিক করুন →</div>
+        </div>`;
+    });
+    grid.innerHTML = html;
+};
+
+// STEP 2: SELECT SUBJECT
+window.selectSubject = function(subKey){
+    currentSubject = subKey;
+    showSection("stepPapers");
+    updateBreadcrumb();
+
+    const grid = document.getElementById("stepPapers");
+    const papers = SUBJECT_DATA[subKey].papers;
+    let html = "";
+    Object.keys(papers).forEach(pKey => {
+        const paper = papers[pKey];
+        html += `<div class="paper-card glass" onclick="selectPaper('${pKey}')">
+            <span class="paper-badge">${SUBJECT_DATA[subKey].title}</span>
+            <div class="paper-title">${paper.title}</div>
+            <div style="font-size:12px; color:var(--ink-dim);">${paper.chapters.length} টি অধ্যায় রয়েছে</div>
+        </div>`;
+    });
+    grid.innerHTML = html;
+};
+
+// STEP 3: SELECT PAPER
+window.selectPaper = function(paperKey){
+    currentPaper = paperKey;
+    showSection("stepChapters");
+    updateBreadcrumb();
+
+    const grid = document.getElementById("stepChapters");
+    const chapters = SUBJECT_DATA[currentSubject].papers[paperKey].chapters;
+    let html = "";
+    chapters.forEach((chap, idx) => {
+        html += `<div class="chapter-card glass" onclick="selectChapter('${chap}')">
+            <span class="chapter-title">${chap}</span>
+            <span class="chapter-arrow">➔</span>
+        </div>`;
+    });
+    grid.innerHTML = html;
+};
+
+// STEP 4: FETCH ARCHIVED CLASSES FROM FIREBASE
+window.selectChapter = async function(chapTitle){
+    currentChapter = chapTitle;
+    showSection("stepContent");
+    updateBreadcrumb();
+
+    const playlist = document.getElementById("playlistItems");
+    playlist.innerHTML = `<div style="text-align:center; color:var(--ink-faint); padding:20px;">ডেটা লোড হচ্ছে...</div>`;
+
+    // PATH: archives / subject / paper / chapter
+    const archivePath = `archives/${currentSubject}/${currentPaper}/${sanitizeFirebaseKey(currentChapter)}`;
+    
+    try {
+        const snap = await get(ref(db, archivePath));
+        if(snap.exists()){
+            const classes = snap.val();
+            renderClassPlaylist(classes);
+        } else {
+            playlist.innerHTML = `<div style="text-align:center; color:var(--ink-faint); padding:20px;">এই অধ্যায়ে এখনও কোনো ক্লাস রেকর্ড করা হয়নি।</div>`;
+            document.getElementById("classCountBadge").innerText = "0 Classes";
+        }
+    } catch (e) {
+        playlist.innerHTML = `<div style="text-align:center; color:var(--rose); padding:20px;">ক্লাস লোড করতে সমস্যা হয়েছে!</div>`;
+    }
+};
+
+// RENDER PLAYLIST
+function renderClassPlaylist(classesObj){
+    const playlist = document.getElementById("playlistItems");
+    const keys = Object.keys(classesObj);
+    document.getElementById("classCountBadge").innerText = `${keys.length} Classes`;
+
+    let html = "";
+    let classList = [];
+
+    keys.forEach((k, idx) => {
+        const item = classesObj[k];
+        classList.push(item);
+        html += `<div class="item-card" onclick="loadVideo(${idx})" id="itemCard_${idx}">
+            <span class="item-idx">${idx + 1}.</span>
+            <div class="item-info">
+                <div class="item-title">${escapeHtml(item.title)}</div>
+                <div class="item-date">📅 ${item.date || 'N/A'} • 👨‍🏫 ${escapeHtml(item.teacher || 'Teacher')}</div>
+            </div>
+        </div>`;
+    });
+
+    playlist.innerHTML = html;
+    window.activeClassList = classList;
+
+    // Load First Class Automatically
+    if(classList.length > 0) loadVideo(0);
+}
+
+// PLAY VIDEO & RENDER RESOURCES
+window.loadVideo = function(idx){
+    const item = window.activeClassList[idx];
+    if(!item) return;
+
+    // Highlight Playlist Item
+    document.querySelectorAll(".item-card").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+    });
+
+    // Setup Video Player
+    const player = document.getElementById("mainVideoPlayer");
+    const placeholder = document.getElementById("playerPlaceholder");
+
+    const embedUrl = getEmbedLink(item.videoUrl);
+    if(embedUrl){
+        player.src = embedUrl;
+        player.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+    } else {
+        player.src = "";
+        player.classList.add("hidden");
+        placeholder.classList.remove("hidden");
+        placeholder.innerHTML = `<span>🔗 সরাসরি লিংকে ক্লাস দেখুন: <a href="${item.videoUrl}" target="_blank" style="color:var(--sky);">${item.videoUrl}</a></span>`;
+    }
+
+    // Set Meta
+    document.getElementById("activeClassTitle").innerText = item.title;
+    document.getElementById("activeClassDate").innerText = item.date || "N/A";
+    document.getElementById("activeClassTeacher").innerText = item.teacher || "Teacher";
+
+    // Set Resources (Lecture Sheet, Practice Sheet, etc.)
+    const resGrid = document.getElementById("resourceGrid");
+    if(item.resources && item.resources.length > 0){
+        let resHtml = "";
+        item.resources.forEach(r => {
+            resHtml += `<div class="res-card">
+                <div>
+                    <div class="res-type">${r.type || 'DOCUMENT'}</div>
+                    <div class="res-title">${escapeHtml(r.title)}</div>
+                </div>
+                <a href="${r.url}" target="_blank" class="res-btn">ওপেন করুন ↗</a>
+            </div>`;
+        });
+        resGrid.innerHTML = resHtml;
+    } else {
+        resGrid.innerHTML = `<div style="font-size:12px; color:var(--ink-faint); grid-column:1/-1;">এই ক্লাসের সাথে কোনো অতিরিক্ত মেটেরিয়াল যুক্ত নেই।</div>`;
+    }
+};
+
+// EMBED LINK PARSER
+function getEmbedLink(url){
+    if(!url) return null;
+    if(url.includes("youtube.com") || url.includes("youtu.be")){
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}?autoplay=1` : null;
+    }
+    if(url.includes("drive.google.com")){
+        return url.replace("/view", "/preview");
+    }
+    return null; // Meet/Zoom or Other Links
+}
+
+// BREADCRUMB & UI SWITCH
+function updateBreadcrumb(){
+    const bc = document.getElementById("breadcrumb");
+    let html = `<span class="bc-item" onclick="resetToSubjects()">বিষয়সমূহ</span>`;
+
+    if(currentSubject){
+        html += ` <span class="bc-sep">❯</span> <span class="bc-item ${!currentPaper?'active':''}" onclick="selectSubject('${currentSubject}')">${SUBJECT_DATA[currentSubject].title}</span>`;
+    }
+    if(currentPaper){
+        html += ` <span class="bc-sep">❯</span> <span class="bc-item ${!currentChapter?'active':''}" onclick="selectPaper('${currentPaper}')">${SUBJECT_DATA[currentSubject].papers[currentPaper].title}</span>`;
+    }
+    if(currentChapter){
+        html += ` <span class="bc-sep">❯</span> <span class="bc-item active">${currentChapter}</span>`;
+    }
+
+    bc.innerHTML = html;
+}
+
+function showSection(id){
+    ["stepSubjects", "stepPapers", "stepChapters", "stepContent"].forEach(sec => {
+        document.getElementById(sec).classList.add("hidden");
+    });
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function sanitizeFirebaseKey(key){
+    return key.replace(/[.#$\[\]]/g, "_");
+}
+
+function escapeHtml(str){
+    if(!str) return "";
+    return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+
+// SEARCH FUNCTIONALITY
+window.handleSearch = function(){
+    const query = document.getElementById("searchInput").value.trim().toLowerCase();
+    if(!query) return;
+
+    if(!currentSubject) {
+        document.querySelectorAll(".subject-card").forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(query) ? "flex" : "none";
+        });
+    } else if(currentPaper && !currentChapter) {
+        document.querySelectorAll(".chapter-card").forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(query) ? "flex" : "none";
+        });
+    }
+};
+
+// INITIALIZE
+resetToSubjects();
+</script>
+
+</body>
+</html>
