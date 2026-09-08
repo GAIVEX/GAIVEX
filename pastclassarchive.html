@@ -19,9 +19,7 @@
     --ink-dim:#94a3b8;
     --ink-faint:#64748b;
     --sky:#38bdf8;
-    --sky-deep:#0284c7;
     --rose:#f43f5e;
-    --ok:#10b981;
     --radius-lg:20px;
     --radius-md:14px;
     --radius-sm:10px;
@@ -30,7 +28,6 @@
 *{ box-sizing:border-box; margin:0; padding:0; }
 
 html,body{ height:100%; font-family:'Hind Siliguri', sans-serif; background:var(--bg); color:var(--ink); }
-.latin{ font-family:'Outfit',sans-serif; }
 
 body{
     background:
@@ -42,7 +39,7 @@ body{
 }
 
 button{ font-family:inherit; cursor:pointer; }
-input,select,textarea{ font-family:inherit; }
+input,select{ font-family:inherit; }
 
 .glass{
     background:var(--glass);
@@ -52,6 +49,8 @@ input,select,textarea{ font-family:inherit; }
     box-shadow:0 8px 32px rgba(0,0,0,.3);
 }
 
+.hidden{ display:none!important; }
+
 /* TOPBAR */
 .topbar{
     position:sticky; top:0; z-index:200;
@@ -59,8 +58,16 @@ input,select,textarea{ font-family:inherit; }
     padding:14px 24px; border-bottom:1px solid var(--glass-border);
     background:rgba(8,13,26,.75); backdrop-filter:blur(18px);
 }
-.brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:var(--sky); }
+.brand-mark{ font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; color:var(--sky); }
 .brand-mark span{ color:var(--rose); }
+
+/* PASSWORD OVERLAY */
+.auth-overlay{
+    position:fixed; inset:0; z-index:999;
+    background:rgba(8,13,26,.95); backdrop-filter:blur(20px);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.auth-box{ width:100%; max-width:380px; padding:30px; border-radius:var(--radius-lg); text-align:center; }
 
 /* CONTAINER & FORMS */
 .main-container{ max-width:850px; margin:30px auto; padding:0 18px; }
@@ -88,10 +95,21 @@ input,select,textarea{ font-family:inherit; }
     padding:8px 14px; border-radius:var(--radius-sm); border:1px solid var(--glass-border);
     background:rgba(255,255,255,.05); color:var(--ink); font-size:12px; font-weight:600;
 }
-.btn-secondary:hover{ background:rgba(255,255,255,.1); }
 
 .res-item-row{ display:grid; grid-template-columns:140px 1fr 40px; gap:8px; margin-bottom:8px; align-items:center; }
-.btn-del{ background:rgba(244,63,94,.15); color:var(--rose); border:1px solid rgba(244,63,94,.3); border-radius:6px; height:38px; cursor:pointer; font-weight:700; }
+.btn-del-sm{ background:rgba(244,63,94,.15); color:var(--rose); border:1px solid rgba(244,63,94,.3); border-radius:6px; height:38px; cursor:pointer; font-weight:700; }
+
+/* EXISTING CLASSES LIST */
+.class-manage-item{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:12px; border-radius:var(--radius-md); background:rgba(15,23,42,.4);
+    border:1px solid var(--glass-border); margin-bottom:8px;
+}
+.btn-delete-class{
+    background:rgba(244,63,94,.2); color:var(--rose); border:1px solid var(--rose);
+    padding:6px 12px; border-radius:6px; font-size:12px; font-weight:700; transition:.2s;
+}
+.btn-delete-class:hover{ background:var(--rose); color:#fff; }
 
 @media(max-width:600px){
     .form-row{ grid-template-columns:1fr; }
@@ -101,41 +119,53 @@ input,select,textarea{ font-family:inherit; }
 </head>
 <body>
 
+<!-- PASSWORD PROTECTION MODAL -->
+<div class="auth-overlay" id="authOverlay">
+    <div class="auth-box glass">
+        <h3 style="color:#fff; margin-bottom:8px;">🔒 অ্যাডমিন লগইন</h3>
+        <p style="font-size:12px; color:var(--ink-dim); margin-bottom:16px;">Past Class Admin Panel এ ঢুকতে পাসওয়ার্ড দিন</p>
+        <input type="password" id="adminPassInput" class="form-control" placeholder="পাসওয়ার্ড লিখুন..." style="margin-bottom:12px; text-align:center;">
+        <button class="btn-primary" onclick="verifyPassword()">প্রবেশ করুন</button>
+        <div id="authError" style="color:var(--rose); font-size:12px; margin-top:8px;" class="hidden">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
+    </div>
+</div>
+
 <div class="topbar">
     <div class="brand-mark">GAIVEX<span>.</span> ARCHIVE MANAGER</div>
+    <button class="btn-secondary" onclick="logoutAdmin()">Logout</button>
 </div>
 
 <div class="main-container">
+    
+    <!-- ADD CLASS FORM -->
     <div class="card glass">
         <h2 class="card-title">📤 আর্কাইভ ক্লাস ও লেকচার শিট আপলোড</h2>
 
-        <!-- STEP 1: CATEGORY SELECTION -->
         <div class="form-row">
             <div class="form-group">
                 <label class="form-label">বিষয় (Subject)</label>
                 <select id="selSubject" class="form-control" onchange="onSubjectChange()">
-                    <option value="">বিষয় সিলেক্ট করুন...</option>
+                    <option value="">বিষয় সিলেক্ট করুন...</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label class="form-label">পত্র (Paper)</label>
                 <select id="selPaper" class="form-control" onchange="onPaperChange()">
-                    <option value="">আগে বিষয় সিলেক্ট করুন</option>
+                    <option value="">আগে বিষয় সিলেক্ট করুন</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
             <label class="form-label">অধ্যায় (Chapter)</label>
-            <select id="selChapter" class="form-control">
+            <select id="selChapter" class="form-control" onchange="loadExistingClasses()">
                 <option value="">আগে পত্র সিলেক্ট করুন</option>
             </select>
         </div>
 
         <hr style="border-color:var(--glass-border); margin:18px 0;">
 
-        <!-- STEP 2: CLASS DETAILS -->
         <div class="form-group">
             <label class="form-label">ক্লাসের শিরোনাম (Class Title)</label>
             <input id="classTitle" class="form-control" placeholder="যেমন: ভেক্টর - লেকচার ০১ (মৌলিক ধারণা ও যোগ)">
@@ -160,7 +190,6 @@ input,select,textarea{ font-family:inherit; }
 
         <hr style="border-color:var(--glass-border); margin:18px 0;">
 
-        <!-- STEP 3: RESOURCES (PDF & SHEETS) -->
         <div class="form-group">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <label class="form-label" style="margin:0;">📁 লেকচার শিট / নোটস / প্র্যাকটিস লিঙ্ক</label>
@@ -174,11 +203,20 @@ input,select,textarea{ font-family:inherit; }
             💾 ডাটাবেসে সেভ ও আর্কাইভ করুন
         </button>
     </div>
+
+    <!-- MANAGE & DELETE EXISTING CLASSES -->
+    <div class="card glass">
+        <h2 class="card-title">🗑️ সিলেক্ট করা অধ্যায়ের বিদ্যমান ক্লাস ডিলিট করুন</h2>
+        <div id="existingClassesList">
+            <div style="font-size:13px; color:var(--ink-faint); text-align:center; padding:10px;">উপরে বিষয়, পত্র ও অধ্যায় সিলেক্ট করলে ক্লাসের তালিকা দেখাবে।</div>
+        </div>
+    </div>
+
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, push, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -193,7 +231,30 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// DATA STRUCTURE EXACTLY MATCHING PASTCLASS.HTML
+// PASSWORD CONFIGURATION (আপনার ইচ্ছামতো পাসওয়ার্ড পরিবর্তন করুন)
+const ADMIN_PASSWORD = "123456"; 
+
+window.verifyPassword = function(){
+    const input = document.getElementById("adminPassInput").value;
+    if(input === ADMIN_PASSWORD){
+        document.getElementById("authOverlay").classList.add("hidden");
+        sessionStorage.setItem("archive_admin_auth", "true");
+    } else {
+        document.getElementById("authError").classList.remove("hidden");
+    }
+};
+
+window.logoutAdmin = function(){
+    sessionStorage.removeItem("archive_admin_auth");
+    location.reload();
+};
+
+// Auto Login check
+if(sessionStorage.getItem("archive_admin_auth") === "true"){
+    document.getElementById("authOverlay").classList.add("hidden");
+}
+
+// DATA STRUCTURE
 const SUBJECT_DATA = {
     physics: {
         title: "পদার্থবিজ্ঞান (Physics)",
@@ -239,14 +300,13 @@ const SUBJECT_DATA = {
     }
 };
 
-// INITIALIZE DROPDOWNS
 window.onload = function(){
     const selSub = document.getElementById("selSubject");
     Object.keys(SUBJECT_DATA).forEach(key => {
         selSub.innerHTML += `<option value="${key}">${SUBJECT_DATA[key].title}</option>`;
     });
     document.getElementById("classDate").valueAsDate = new Date();
-    addResourceRow(); // default 1 resource field
+    addResourceRow();
 };
 
 window.onSubjectChange = function(){
@@ -280,7 +340,6 @@ window.onPaperChange = function(){
     }
 };
 
-// RESOURCE ROW HANDLERS
 window.addResourceRow = function(){
     const container = document.getElementById("resourceContainer");
     const div = document.createElement("div");
@@ -293,12 +352,12 @@ window.addResourceRow = function(){
             <option value="Exam Link">Exam Link</option>
         </select>
         <input class="form-control res-url" placeholder="Google Drive/PDF link (https://...)">
-        <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
+        <button class="btn-del-sm" onclick="this.parentElement.remove()">✕</button>
     `;
     container.appendChild(div);
 };
 
-// FIREBASE UPLOAD
+// UPLOAD CLASS
 window.uploadClassArchive = async function(){
     const sub = document.getElementById("selSubject").value;
     const paper = document.getElementById("selPaper").value;
@@ -309,11 +368,10 @@ window.uploadClassArchive = async function(){
     const videoUrl = document.getElementById("videoUrl").value.trim();
 
     if(!sub || !paper || !chapter || !title || !videoUrl){
-        alert("⚠️ বিষয, পত্র, অধ্যায়, ক্লাসের শিরোনাম এবং ভিডিও লিংক দেওয়া বাধ্যতামূলক!");
+        alert("⚠️ বিষয়, পত্র, অধ্যায়, ক্লাসের শিরোনাম এবং ভিডিও লিংক দেওয়া বাধ্যতামূলক!");
         return;
     }
 
-    // Collect resources
     const resources = [];
     document.querySelectorAll(".res-item-row").forEach(row => {
         const type = row.querySelector(".res-type").value;
@@ -323,7 +381,6 @@ window.uploadClassArchive = async function(){
         }
     });
 
-    // Sanitized Firebase Key
     const sanitizedChapter = chapter.replace(/[.#$\[\]]/g, "_");
     const targetPath = `archives/${sub}/${paper}/${sanitizedChapter}`;
 
@@ -343,9 +400,62 @@ window.uploadClassArchive = async function(){
         document.getElementById("videoUrl").value = "";
         document.getElementById("resourceContainer").innerHTML = "";
         addResourceRow();
+        loadExistingClasses(); // Refresh delete list
     } catch(err) {
-        console.error(err);
-        alert("❌ আপলোড করতে সমস্যা হয়েছে! ইন্টারনেট ও কনফিগারেশন চেক করুন।");
+        alert("❌ আপলোড করতে সমস্যা হয়েছে!");
+    }
+};
+
+// LOAD EXISTING CLASSES TO DELETE
+window.loadExistingClasses = async function(){
+    const sub = document.getElementById("selSubject").value;
+    const paper = document.getElementById("selPaper").value;
+    const chapter = document.getElementById("selChapter").value;
+    const listDiv = document.getElementById("existingClassesList");
+
+    if(!sub || !paper || !chapter){
+        listDiv.innerHTML = `<div style="font-size:13px; color:var(--ink-faint); text-align:center; padding:10px;">উপরে বিষয়, পত্র ও অধ্যায় সিলেক্ট করলে ক্লাসের তালিকা দেখাবে।</div>`;
+        return;
+    }
+
+    const sanitizedChapter = chapter.replace(/[.#$\[\]]/g, "_");
+    const targetPath = `archives/${sub}/${paper}/${sanitizedChapter}`;
+
+    try {
+        const snap = await get(ref(db, targetPath));
+        if(snap.exists()){
+            const data = snap.val();
+            let html = "";
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                html += `
+                <div class="class-manage-item">
+                    <div>
+                        <div style="font-weight:700; color:#fff; font-size:14px;">${item.title}</div>
+                        <div style="font-size:11px; color:var(--ink-dim);">📅 ${item.date || 'N/A'} • 👨‍🏫 ${item.teacher || 'N/A'}</div>
+                    </div>
+                    <button class="btn-delete-class" onclick="deleteClass('${targetPath}/${key}')">🗑️ Delete</button>
+                </div>`;
+            });
+            listDiv.innerHTML = html;
+        } else {
+            listDiv.innerHTML = `<div style="font-size:13px; color:var(--ink-faint); text-align:center; padding:10px;">এই অধ্যায়ে কোনো ক্লাস পাওয়া যায়নি।</div>`;
+        }
+    } catch(e) {
+        listDiv.innerHTML = `<div style="font-size:13px; color:var(--rose); text-align:center; padding:10px;">ডাটা লোড করতে ব্যর্থ হয়েছে!</div>`;
+    }
+};
+
+// DELETE CLASS FUNCTION
+window.deleteClass = async function(fullPath){
+    if(confirm("⚠️ আপনি কি নিশ্চিত যে এই ক্লাসটি ডাটাবেস থেকে ডিলিট করতে চান?")){
+        try {
+            await remove(ref(db, fullPath));
+            alert("🗑️ ক্লাসটি সফলভাবে ডিলিট করা হয়েছে!");
+            loadExistingClasses();
+        } catch(e) {
+            alert("❌ ডিলিট করতে সমস্যা হয়েছে!");
+        }
     }
 };
 </script>
