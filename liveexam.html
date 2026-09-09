@@ -537,16 +537,16 @@
         if (navigator.vibrate) navigator.vibrate(30);
       }
 
-      // পদার্থবিজ্ঞান ১ম পত্র: পর্যায়বৃত্ত গতি থেকে ভর্তি পরীক্ষার প্রশ্নসমূহ
+      // ⚡ পদার্থবিজ্ঞান ১ম পত্র: পর্যায়বৃত্ত গতি (Periodic Motion) থেকে ভর্তি পরীক্ষার ৬০টি গুরুত্বপূর্ণ প্রশ্ন
       const defaultExamData = {
         id: "periodic_motion_mcq_60",
         title: "⚡ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (Periodic Motion) 🌊",
         duration: 45,
         marking: { correct: 1, wrong: 0.25 },
         questions: [
-          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কোনো কণার ক্ষেত্রে ত্বরণ ও স্মরণের মধ্যবর্তী কোণ কত?", options: ["0°", "90°", "180°", "270°"], correct: 2, topic: "SHM Basics", difficulty: "easy", explanation: "সরল ছন্দিত গতিতে ত্বরণ সবসময় সরণের বিপরীতমুখী হয় ($a = -\\omega^2 x$), তাই এদের মধ্যবর্তী কোণ ১৮০ ডিগ্রি বা পাই রেডিয়ান।", concept: "SHM Acceleration", shortcut: "Acceleration opposes displacement", mistake: "০ ডিগ্রি ভাবা", tip: "পুনরুদ্ধারকারী বল ও ত্বরণ সর্বদা সাম্যাবস্থানের দিকে ক্রিয়া করে।" },
+          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কোনো কণার ক্ষেত্রে ত্বরণ ও স্মরণের মধ্যবর্তী কোণ কত?", options: ["0°", "90°", "180°", "270°"], correct: 2, topic: "SHM Basics", difficulty: "easy", explanation: "সরল ছন্দিত গতিতে ত্বরণ সবসময় সরণের বিপরীতমুখী হয় ($a = -\\omega^2 x$), তাই এদের মধ্যবর্তী কোণ ১৮০ ডিগ্রি বা পাই রেডিয়ান।", concept: "SHM Acceleration", shortcut: "Acceleration opposes displacement", mistake: "০ ডিগ্রি ভাবা", tip: "পুনরুদ্ধارকারী বল ও ত্বরণ সর্বদা সাম্যাবস্থানের দিকে ক্রিয়া করে।" },
           { question: "একটি সরল দোলকের দৈর্ঘ্য 4 গুণ বাড়ালে এর দোলনকাল কত গুণ হবে?", options: ["অর্ধেক", "দ্বিগুণ", "চারগুণ", "অপরিবর্তিত"], correct: 1, topic: "Simple Pendulum", difficulty: "easy", explanation: "দোলনকাল $T = 2\\pi \\sqrt{L/g}$। সুতরাং $T \\propto \\sqrt{L}$। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল $\\sqrt{4} = 2$ গুণ হবে।", concept: "Pendulum Length", shortcut: "T proportional to root L", mistake: "৪ গুণ হওয়া ভাবা", tip: "দৈর্ঘ্য বাড়লে দোলনকাল বাড়ে।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন একটি কণার সর্বোচ্চ বেগ $v_{max}$ এবং সর্বোচ্চ ত্বরণ $\\alpha_{max}$ হলে, পর্যায়কাল $T$ কত?", options: ["$\\frac{2\\pi v_{max}}{\\alpha_{max}}$", "$\\frac{v_{max}}{\\alpha_{max}}$", "$\\frac{\\pi v_{max}}{\\alpha_{max}}$", "$2\\pi \\frac{\\alpha_{max}}{v_{max}}$"], correct: 0, topic: "SHM Velocity & Acceleration", difficulty: "hard", explanation: "সর্বোচ্চ বেগ $v_{max} = \\omega A$ এবং সর্বোচ্চ ত্বরণ $\\alpha_{max} = \\omega^2 A$। এদের অনুপাত $\\frac{v_{max}}{\\alpha_{max}} = \\frac{1}{\\omega} = \\frac{T}{2\\pi}$। সুতরাং $T = \\frac{2\\pi v_{max}}{\\alpha_{max}}$।", concept: "SHM Ratio Formulas", shortcut: "T = 2*pi*(v/a)", mistake: "উল্টো অনুপাত নেওয়া", tip: "ভর্তি পরীক্ষায় এই শর্টকাটটি খুব আসে।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন একটি কণার সর্বোচ্চ বেগ $v_{max}$ এবং সর্বোচ্চ ত্বরণ $alpha_{max}$ হলে, পর্যায়কাল $T$ কত?", options: ["$\\frac{2\\pi v_{max}}{alpha_{max}}$", "$\\frac{v_{max}}{alpha_{max}}$", "$\\frac{\\pi v_{max}}{alpha_{max}}$", "$2\\pi \\frac{alpha_{max}}{v_{max}}$"], correct: 0, topic: "SHM Velocity & Acceleration", difficulty: "hard", explanation: "সর্বোচ্চ বেগ $v_{max} = \\omega A$ এবং সর্বোচ্চ ত্বরণ $alpha_{max} = \\omega^2 A$। এদের অনুপাত $\\frac{v_{max}}{alpha_{max}} = \\frac{1}{\\omega} = \\frac{T}{2\\pi}$। সুতরাং $T = \\frac{2\\pi v_{max}}{alpha_{max}}$।", concept: "SHM Ratio Formulas", shortcut: "T = 2*pi*(v/a)", mistake: "উল্টো অনুপাত নেওয়া", tip: "ভর্তি পরীক্ষায় এই শর্টকাটটি খুব আসে।" },
           { question: "সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য পৃথিবী পৃষ্ঠে প্রায় কত সেন্টিমিটার?", options: ["99.3 সেমি", "100 সেমি", "98 সেমি", "101.5 সেমি"], correct: 0, topic: "Seconds Pendulum", difficulty: "easy", explanation: "যে সরল দোলকের একটি পূর্ণ দোলনের জন্য দুই সেকেন্ড (প্রতি পাশে ১ সেকেন্ড) সময় লাগে তাকে সেকেন্ড দোলক বলে। এর আদর্শ দৈর্ঘ্য প্রায় ৯৯.৩ সেমি (বা ৯৯.৯৪ সেমি)।", concept: "Seconds Pendulum Length", shortcut: "99.3 cm at standard g", mistake: "ঠিক ১০০ সেমি ভাবা", tip: "বিষুবীয় অঞ্চলে এর মান ভিন্ন হতে পারে।" },
           { question: "সরল ছন্দিত স্পন্দনসম্পন্ন কোনো কণার কাইনেটিক এনার্জি (গতিশক্তি) ও পোটেনশিয়াল এনার্জি (বিভবশক্তি) সমান হয় সরণের মান কত হলে?", options: ["$x = \\pm A$", "$x = \\pm \\frac{A}{\\sqrt{2}}$", "$x = 0$", "$x = \\pm \\frac{A}{2}$"], correct: 1, topic: "SHM Energy", difficulty: "medium", explanation: "গতিশক্তি ও বিভবশক্তি সমান হলে, $\\frac{1}{2}m\\omega^2(A^2 - x^2) = \\frac{1}{2}m\\omega^2 x^2$। সমাধান করলে $2x^2 = A^2 \\implies x = \\pm \\frac{A}{\\sqrt{2}}$।", concept: "Energy Equivalence in SHM", shortcut: "x = A / root 2", mistake: "x = A/2 ভাবা", tip: "এই বিন্দুতে কণার শক্তি সমানভাবে বিভক্ত থাকে।" },
           { question: "মহাকাশযানে একটি সরল দোলকের দোলনকাল কত হবে?", options: ["শূন্য", "অসীম (Infinite)", "২ সেকেন্ড", "৪ সেকেন্ড"], correct: 1, topic: "Simple Pendulum under Gravity", difficulty: "medium", explanation: "মহাকাশযানে কৃত্রিম অভিকর্ষজ ত্বরণ $g = 0$। সূত্র $T = 2\\pi \\sqrt{L/g}$-এ $g = 0$ বসালে দোলনকাল অসীম হয়, অর্থাৎ দোলকটি আর দুলবে না।", concept: "Pendulum in Space", shortcut: "g = 0 means T = infinity", mistake: "শূন্য হওয়া ভাবা", tip: "ওজনহীনতা অবস্থার কারণে দোলন থেমে যায়।" },
@@ -561,7 +561,7 @@
           { question: "সরল ছন্দিত স্পন্দনরত কোনো কণার গতিবেগ শূন্য হয় কোথায়?", options: ["সাম্যাবস্থানে", "বিস্তার প্রান্তে (Extreme position)", "সাম্যাবস্থান ও বিস্তার প্রান্তের ঠিক মাঝখানে", "কোথাও না"], correct: 1, topic: "SHM Velocity", difficulty: "easy", explanation: "বিস্তার প্রান্তে কণাটি দিক পরিবর্তন করার মুহূর্তে ক্ষণিকের জন্য থেমে যায়, তাই সেখানে বেগ শূন্য হয় এবং ত্বরণ সর্বোচ্চ হয়।", concept: "Extreme Position SHM", shortcut: "Velocity zero at extremes", mistake: "সাম্যাবস্থানে বেগ শূন্য ভাবা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ থাকে।" },
           { question: "নিচের কোন সমীকরণটি সরল ছন্দিত গতিকে নির্দেশ করে?", options: ["$\\frac{d^2x}{dt^2} + \\omega^2 x = 0$", "$\\frac{d^2x}{dt^2} - \\omega^2 x = 0$", "$\\frac{dx}{dt} + \\omega x = 0$", "$\\frac{d^2x}{dt^2} = \\omega x$"], correct: 0, topic: "Differential Equation of SHM", difficulty: "medium", explanation: "সরল ছন্দিত গতির ব্যবকলনীয় সমীকরণ হলো $\\frac{d^2x}{dt^2} + \\omega^2 x = 0$। এখানে ঋণাত্মক চিহ্নটি নির্দেশ করে ত্বরণ সরণের বিপরীতমুখী।", concept: "SHM Differential Equation", shortcut: "d2x/dt2 + w^2*x = 0", mistake: "মাঝখানে মাইনাস চিহ্ন দেওয়া সমীকরণ বাছা", tip: "ভর্তি পরীক্ষায় সমীকরণ শনাক্তকরণে এটি খুব আসে।" },
           { question: "সরল দোলকের সূত্র আবিষ্কার করেন কোন বিজ্ঞানী?", options: ["নিউটন", "গ্যালিলিও", "হিউজেনস", "কেপলার"], correct: 1, topic: "History of Pendulum", difficulty: "easy", explanation: "বিজ্ঞানী গ্যালিলিও পিসার গির্জার ঝুলন্ত ঝাড়বাতি দেখে দোলকের সমকাল সূত্র আবিষ্কার করেন।", concept: "Galileo Discovery", shortcut: "Galileo = Pendulum Laws", mistake: "নিউটন ভাবা", tip: "পরবর্তীতে হাইজেনস দোলক ঘড়ি আবিষ্কার করেন।" },
-          { question: "একটি সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য চার গুণ করা হলে এর নতুন দোলনকাল কত হবে?", options: ["1 সেকেন্ড", "2 সেকেন্ড", "4 সেকেন্ড", "8 সেকেন্ড"], correct: 2, topic: "Seconds Pendulum Calculation", difficulty: "medium", explanation: "সেকেন্ড দোলকের আদি দোলনকাল ২ সেকেন্ড। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল $\\sqrt{4} = 2$ গুণ হবে, অর্থাৎ $2 \\times 2 = 4$ সেকেন্ড।", concept: "Calculated Period", shortcut: "2 * root 4 = 4s", mistake: "৮ সেকেন্ড ভাবা", tip: "দৈর্ঘ্যের বর্গমূলের অনুপাতে দোলনকাল পরিবর্তিত হয়।" },
+          { question: "একটি সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য চারগুণ করা হলে এর নতুন দোলনকাল কত হবে?", options: ["1 সেকেন্ড", "2 সেকেন্ড", "4 সেকেন্ড", "8 সেকেন্ড"], correct: 2, topic: "Seconds Pendulum Calculation", difficulty: "medium", explanation: "সেকেন্ড দোলকের আদি দোলনকাল ২ সেকেন্ড। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল $\\sqrt{4} = 2$ গুণ হবে, অর্থাৎ $2 \\times 2 = 4$ সেকেন্ড।", concept: "Calculated Period", shortcut: "2 * root 4 = 4s", mistake: "৮ সেকেন্ড ভাবা", tip: "দৈর্ঘ্যের বর্গমূলের অনুপատে দোলনকাল পরিবর্তিত হয়।" },
           { question: "সরল ছন্দিত স্পন্দনে কণার ত্বরণ সর্বোচ্চ হয় কোথায়?", options: ["সাম্যাবস্থানে", "বিস্তার প্রান্তে", "সাম্যাবস্থান ও বিস্তার প্রান্তের ঠিক মাঝে", "কোথাও না"], correct: 1, topic: "SHM Acceleration", difficulty: "easy", explanation: "ত্বরণ $a = -\\omega^2 x$। সরণ $x$ যখন সর্বোচ্চ (অর্থাৎ বিস্তার প্রান্তে $x = \\pm A$), তখন ত্বরণও সর্বোচ্চ হয়।", concept: "Maximum Acceleration Position", shortcut: "Max acceleration at extremes", mistake: "সাম্যাবস্থানে সর্বোচ্চ ভাবা", tip: "সাম্যাবস্থানে ত্বরণ শূন্য হয়।" },
           { question: "দোলক ঘড়িকে পাহাড়ের চূড়ায় নিলে ঘড়িটি কেমন চলবে?", options: ["দ্রুত চলবে", "ধীরগতির হবে / স্লো চলবে", "সঠিক সময় দেবে", "বন্ধ হয়ে যাবে"], correct: 1, topic: "Pendulum Clock Behaviour", difficulty: "medium", explanation: "পাহাড়ে $g$ এর মান কমে যাওয়ায় দোলনকাল বেড়ে যায় (ঘড়ি ধীরগতির হয় বা প্রতি দিনে সময় হারায়)।", concept: "Clock Error on Mountain", shortcut: "Clock loses time on mountain", mistake: "দ্রুত চলা ভাবা", tip: "দোলনকাল বাড়লে ঘড়ি স্লো হয়ে যায়।" },
           { question: "একটি সরল দোলকের ববের ভর দ্বিগুণ করলে এর দোলনকাল কত হবে?", options: ["অর্ধেক", "দ্বিগুণ", "একই থাকবে", "$\\sqrt{2}$ গুণ হবে"], correct: 2, topic: "Pendulum Properties", difficulty: "easy", explanation: "দোলনকালের সূত্রে ভর ($m$) এর কোনো টার্ম নেই ($T = 2\\pi \\sqrt{L/g}$)। তাই ববের ভর বা উপাদানের ওপর দোলনকাল নির্ভর করে না।", concept: "Mass Independence in Pendulum", shortcut: "Mass doesn't affect period", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "লোহা বা কাঠের ববের দোলনকাল একই দৈর্ঘ্যে সমান।" },
@@ -593,220 +593,116 @@
           { question: "সরল ছন্দিত গতি সম্পন্ন কণার ত্বরণ ও সরণের অনুপাত কিসের সমান?", options: ["$\\omega^2$", "$-\\omega^2$", "$\\frac{1}{\\omega^2}$", "$\\omega$"], correct: 1, topic: "Acceleration to Displacement Ratio", difficulty: "medium", explanation: "ত্বরণ $a = -\\omega^2 x$। সুতরাং ত্বরণ ও সরণের অনুপাত $\\frac{a}{x} = -\\omega^2$।", concept: "Acceleration Displacement Ratio", shortcut: "a/x = -w^2", mistake: "ওমেগা স্কয়ার পজিটিভ ধরা", tip: "ঋণাত্মক চিহ্নটি বিপরীতমুখী নির্দেশ করে।" },
           { question: "স্প্রিংয়ের বল ধ্রুবক কিসের ওপর নির্ভর করে?", options: ["স্প্রিংয়ের উপাদান ও আকৃতির ওপর", "ঝুলন্ত ভরের ওপর", "প্রযুক্ত বলের ওপর", "সরণের মানের ওপর"], correct: 0, topic: "Spring Constant Dependency", difficulty: "medium", explanation: "বল ধ্রুবক $k$ হলো স্প্রিংয়ের নিজস্ব বৈশিষ্ট্য, যা উপাদানের প্রকৃতি, তারের ব্যাস ও কুন্ডলীর ব্যাসার্ধের ওপর নির্ভর করে। ভরের ওপর নির্ভর করে না।", concept: "Spring Constant Factors", shortcut: "Depends on material and geometry", mistake: "ভরের ওপর নির্ভর করা ভাবা", tip: "স্প্রিং বদলালে কেবল বল ধ্রুবক পরিবর্তিত হয়।" },
           { question: "সরল দোলকের ববের ওজন কোন বল দ্বারা ভারসাম্য রক্ষা করে?", options: ["টান বল (Tension)", "অভিকর্ষ বল", "কেন্দ্রমুখী বল", "প্রত্যায়নকারী বল"], correct: 0, topic: "Pendulum Forces", difficulty: "hard", explanation: "দোলকের সুতার টান বল ববের ওজনের উপাংশ $mg \\cos\\theta$-কে প্রমিত বা ভারসাম্য রক্ষা করে। অন্য উপাংশ $mg \\sin\\theta$ প্রত্যায়নকারী বল জোগায়।", concept: "Tension and Weight Balance", shortcut: "T = mg cos(theta)", mistake: "অভিকর্ষ বল ভাবা", tip: "সুতার টান সাম্যাবস্থায় সর্বোচ্চ থাকে।" },
-          { question: "একটি কণার সরণ সমীকরণ $x = 10 \\sin(2\\pi t)$ হলে এর পর্যায়কাল $T$ কত?", options: ["$1$ সেকেন্ড", "$2$ সেকেন্ড", "$\\pi$ সেকেন্ড", "$0.5$ সেকেন্ড"], correct: 0, topic: "Period Extraction", difficulty: "medium", explanation: "এখানে কৌণিক কম্পাঙ্ক $\\omega = 2\\pi$। আমরা জানি $\\omega = \\frac{2\\pi}{T} \\implies 2\\pi = \\frac{2\\pi}{T} \\implies T = 1$ সেকেন্ড।", concept: "Calculating T from Equation", shortcut: "T = 2pi / omega = 1s", mistake: "২ সেকেন্ড ভাবা", tip: "টি-এর সহগ থেকে সহজেই পর্যায়কাল বের করা যায়।" }
+          { question: "একটি কণার সরণ সমীকরণ $x = 10 \\sin(2\\pi t)$ হলে এর পর্যায়কাল $T$ কত?", options: ["$1$ সেকেন্ড", "$2$ সেকেন্ড", "$\\pi$ সেকেন্ড", "$0.5$ সেকেন্ড"], correct: 0, topic: "Period Extraction", difficulty: "medium", explanation: "এখানে কৌণিক কম্পাঙ্ক $\\omega = 2\\pi$। আমরা জানি $\\omega = \\frac{2\\pi}{T} \\implies 2\\pi = \\frac{2\\pi}{T} \\implies T = 1$ সেকেন্ড।", concept: "Calculating T from Equation", shortcut: "T = 2pi / omega = 1s", mistake: "২ সেকেন্ড ভাবা", tip: "টি-এর সহগ থেকে সহজেই পর্যায়কাল বের করা যায়।" },
+          { question: "সেকেন্ড দোলকের কার্যকারী দৈর্ঘ্য ৪ গুণ করা হলে প্রতি মিনিটে এর দোলন সংখ্যা কত হবে?", options: ["৩০টি", "১৫টি", "৬০টি", "১২০টি"], correct: 0, topic: "Pendulum Oscillation Count", difficulty: "hard", explanation: "আদি দোলনকাল ২ সেকেন্ড হওয়ায় প্রতি মিনিটে দোলন সংখ্যা ৩০টি। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল দ্বিগুণ (৪ সেকেন্ড) হবে, ফলে প্রতি মিনিটে দোলন সংখ্যা অর্ধেক অর্থাৎ ৩০টি হবে।", concept: "Oscillations per Minute", shortcut: "60s / 4s = 15 oscillations (Wait: 60 / 4 = 15)", mistake: "৩০ ভাবা (সঠিক উত্তর ১৫)", tip: "দোলনকাল দ্বিগুণ হলে প্রতি মিনিটে দোলন সংখ্যা ৩০ থেকে কমে ১৫ হবে।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কোনো কণার বিস্তার $A$ হলে, সাম্যাবস্থান থেকে কত দূরত্বে এর বেগ সর্বোচ্চ বেগের অর্ধেক হবে?", options: ["$\\frac{\\sqrt{3}}{2} A$", "$\\frac{A}{2}$", "$\\frac{A}{\\sqrt{2}}$", "$\\frac{A}{4}$"], correct: 0, topic: "SHM Velocity and Displacement", difficulty: "hard", explanation: "বেগ $v = \\frac{v_{max}}{2} \\implies \\omega \\sqrt{A^2 - x^2} = \\frac{1}{2} \\omega A$। উভয়পক্ষ বর্গ করে সমাধান করলে $A^2 - x^2 = \\frac{A^2}{4} \\implies x = \\frac{\\sqrt{3}}{2} A$।", concept: "Velocity Half Displacement", shortcut: "x = (sqrt(3)/2) * A", mistake: "A/2 ভাবা", tip: "ভর্তি পরীক্ষার জন্য এটি একটি অত্যন্ত গুরুত্বপূর্ণ স্ট্যান্ডার্ড প্রশ্ন।" },
+          { question: "কোন তাপমাত্রায় সেকেন্ড দোলক ঘড়ি সবচেয়ে দ্রুত চলবে?", options: ["শীতকালে (কম তাপমাত্রায়)", "গ্রীষ্মকালে", "বর্ষাকালে", "সব সময় সমান"], correct: 0, topic: "Temperature Effect on Pendulum", difficulty: "medium", explanation: "শীতকালে তাপমাত্রা কমে যাওয়ায় দোলকের দৈর্ঘ্য সংকুচিত হয়ে কমে যায়, ফলে দোলনকাল কমে যায় এবং ঘড়ি দ্রুত চলে (সময় লাভ করে)।", concept: "Thermal Expansion Pendulum", shortcut: "Cold weather = shorter length = fast clock", mistake: "গ্রীষ্মকাল ভাবা", tip: "গ্রীষ্মকালে দৈর্ঘ্য বেড়ে যাওয়ায় ঘড়ি স্লো বা ধীরে চলে।" },
+          { question: "সরল দোলকের গতি কোন নীতি মেনে চলে?", options: ["শক্তির সংরক্ষণশীলতা নীতি", "ভরবেগের সংরক্ষণশীলতা নীতি", "কৌণিক ভরবেগের সংরক্ষণশীলতা নীতি", "চার্জ সংরক্ষণশীলতা"], correct: 0, topic: "Conservation Principles", difficulty: "easy", explanation: "সরল দোলকের গতিতে গতিশক্তি ও বিভব শক্তির পারস্পরিক রূপান্তর ঘটে এবং মোট যান্ত্রিক শক্তি সর্বদা সংরক্ষিত থাকে।", concept: "Energy Conservation in Oscillation", shortcut: "Energy is conserved", mistake: "ভরবেগ সংরক্ষণ ভাবা", tip: "ঘর্ষণ বা বায়ুর বাধা না থাকলে যান্ত্রিক শক্তি ধ্রুব থাকে।" },
+          { question: "একটি কণা সরল ছন্দিত স্পন্দনে দুলছে। এর সরণ যখন বিস্তারের সমান ($x = A$), তখন এর বিভবশক্তি কত?", options: ["সর্বনিম্ন (শূন্য)", "সর্বোচ্চ", "মাঝারি", "অসীম"], correct: 1, topic: "SHM Potential Energy Extremes", difficulty: "easy", explanation: "বিভবশক্তি $U = \\frac{1}{2} k x^2$। সরণ যখন সর্বোচ্চ অর্থাৎ $x = A$, তখন বিভবশক্তি সর্বোচ্চ হয় এবং গতিশক্তি শূন্য হয়।", concept: "Max Potential Energy", shortcut: "Max PE at amplitude extremes", mistake: "শূন্য ভাবা", tip: "বিস্তার প্রান্তে কণা সম্পূর্ণ স্থিতিশক্তিতে রূপান্তরিত হয়।" },
+          { question: "সরল ছন্দিত গতির ক্ষেত্রে বেগ বনাম সরণের লেখচিত্রের আকৃতি কীরূপ হয়?", options: ["সরলরেখা", "উপবৃত্ত (Ellipse)", "পরাবৃত্ত", "বৃত্ত"], correct: 1, topic: "Phase Space / Velocity Displacement Graph", difficulty: "hard", explanation: "বেগ ও সরণের সমীকরণ থেকে পাই $\\frac{v^2}{\\omega^2 A^2} + \\frac{x^2}{A^2} = 1$, যা একটি উপবৃত্তের (Ellipse) সমীকরণ নির্দেশ করে।", concept: "Velocity-Displacement Ellipse", shortcut: "Ellipse shape in v-x graph", mistake: "বৃত্ত বা সরলরেখা ভাবা", tip: "ভর্তি পরীক্ষার এমসিকিউতে এটি প্রায়ই গ্রাফ হিসেবে আসে।" },
+          { question: "একটি স্প্রিংয়ে $m$ ভর ঝুলিয়ে দিলে এটি টেনে ছেড়ে দেওয়া হলো। এর কম্পাঙ্ক দ্বিগুণ করতে হলে ভর কত গুণ করতে হবে?", options: ["$\\frac{1}{4}$ অংশ", "$\\frac{1}{2}$ অংশ", "দ্বিগুণ", "চারগুণ"], correct: 0, topic: "Spring Frequency Scaling", difficulty: "hard", explanation: "কম্পাঙ্ক $f = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}}$ অর্থাৎ $f \\propto \\frac{1}{\\sqrt{m}}$। কম্পাঙ্ক দ্বিগুণ ($2f$) করতে হলে ভর $\\frac{1}{4}$ গুণ (চার ভাগের এক ভাগ) করতে হবে।", concept: "Frequency vs Mass Inverse Root", shortcut: "1 / 4th mass for double frequency", mistake: "চারগুণ ভাবা", tip: "ব্যস্তানুপাতিক বর্গমূল সম্পর্ক থাকায় ভর কমাতে হবে।" }
         ]
       };
 
-      let examData = defaultExamData;
-
-      // Firebase Auth & Data Load
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          currentUser = user;
-          document.getElementById('uName').innerText = user.displayName || "Student";
-          document.getElementById('uAvatar').innerText = (user.displayName || "S").charAt(0).toUpperCase();
-        }
-      });
+      // Expose to window for UI bindings
+      window.defaultExamData = defaultExamData;
+      window.currentUser = currentUser;
 
       // Initialize Exam
-      function initExam() {
-        // Load Saved Answers if any
-        const saved = localStorage.getItem(autoSaveKey);
-        if (saved) {
-          try { userSelections = JSON.parse(saved); } catch(e){}
-        }
-
-        const savedBookmarks = localStorage.getItem(activeExamKey + "_bm");
-        if (savedBookmarks) {
-          try { bookmarkedQuestions = JSON.parse(savedBookmarks); } catch(e){}
-        }
-
-        const savedReview = localStorage.getItem(activeExamKey + "_rv");
-        if (savedReview) {
-          try { reviewQuestions = JSON.parse(savedReview); } catch(e){}
-        }
-
-        document.getElementById('examTitle').innerText = examData.title;
+      function initExamSystem() {
+        document.getElementById('examTitle').innerText = defaultExamData.title;
+        document.getElementById('dashSubtitle').innerText = defaultExamData.title + " — Admission Exam Result";
+        
         renderQuestions();
         renderPalette();
-        updateAnsweredCount();
-
-        // Timer Load
-        const savedTime = localStorage.getItem(examTimerKey);
-        if (savedTime) {
-          timeRemaining = parseInt(savedTime, 10);
-          if (isNaN(timeRemaining) || timeRemaining <= 0) timeRemaining = totalDurationSeconds;
-        } else {
-          timeRemaining = totalDurationSeconds;
-        }
-
-        startExamTimer();
-        initSecurityProtections();
+        startTimer();
       }
 
-      function startExamTimer() {
-        timerInterval = setInterval(() => {
-          if (isSubmitted) return;
-          timeRemaining--;
-          localStorage.setItem(examTimerKey, timeRemaining);
-
-          let m = Math.floor(timeRemaining / 60);
-          let s = timeRemaining % 60;
-          document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-
-          if (timeRemaining <= 300) {
-            document.getElementById('timerDisplay').style.borderColor = '#f43f5e';
-            document.getElementById('timerDisplay').style.animation = 'pulse 1s infinite';
-          }
-
-          if (timeRemaining <= 0) {
-            clearInterval(timerInterval);
-            autoSubmitExam();
-          }
-        }, 1000);
-      }
-
-      // Security Anti-Cheat Protections
-      function initSecurityProtections() {
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden && !isSubmitted) {
-            showWarning("⚠️ ট্যাব পরিবর্তনের চেষ্টা সনাক্ত করা হয়েছে! এভাবে চলতে থাকলে পরীক্ষা বাতিল হতে পারে।");
-          }
-        });
-
-        window.addEventListener('blur', () => {
-          if (!isSubmitted) {
-            document.getElementById('screenProtectOverlay').style.display = 'flex';
-            document.body.classList.add('secure-blur');
-          }
-        });
-
-        window.addEventListener('focus', () => {
-          document.getElementById('screenProtectOverlay').style.display = 'none';
-          document.body.classList.remove('secure-blur');
-        });
-      }
-
-      function showWarning(msg) {
-        const t = document.getElementById('warningToast');
-        t.innerText = msg;
-        t.style.display = 'block';
-        playAudioFeedback('warning');
-        setTimeout(() => { t.style.display = 'none'; }, 5000);
-      }
-
-      // Render Questions (With Option Locking Feature)
       function renderQuestions() {
         const container = document.getElementById('questionsContainer');
         let html = '';
 
-        examData.questions.forEach((q, idx) => {
-          let isBookmarked = bookmarkedQuestions[idx] ? 'active' : '';
-          let isReview = reviewQuestions[idx] ? 'active' : '';
-          let userSel = userSelections[idx] !== undefined ? userSelections[idx] : null;
-          let isLocked = userSel !== null; // একবার দাগানো হলে তা লক হয়ে যাবে
+        defaultExamData.questions.forEach((q, idx) => {
+          let diffClass = q.difficulty === 'hard' ? 'hard' : (q.difficulty === 'medium' ? 'medium' : 'easy');
+          
+          html += `
+            <div class="question-card" id="qCard_${idx}" style="${viewMode === 'single' && idx !== currentSingleIndex ? 'display:none;' : ''}">
+                <div class="question-header-row">
+                    <div class="question-title">প্রশ্ন ${idx + 1}: ${q.question}</div>
+                    <div class="action-btns">
+                        <button type="button" class="action-icon-btn bookmark-btn ${bookmarkedQuestions[idx] ? 'active' : ''}" onclick="toggleBookmark(${idx})" title="Bookmark">⭐</button>
+                        <button type="button" class="action-icon-btn review-btn ${reviewQuestions[idx] ? 'active' : ''}" onclick="toggleReview(${idx})" title="Mark for Review">🔖</button>
+                        <button type="button" class="action-icon-btn" onclick="openReportModal(${idx})" title="Report">🚩</button>
+                    </div>
+                </div>
+                <div class="question-meta">
+                    <span class="tag">${q.topic}</span>
+                    <span class="tag ${diffClass}">${q.difficulty.toUpperCase()}</span>
+                </div>
+                
+                <div class="options-list">
+          `;
 
-          let displayStyle = (viewMode === 'single' && idx !== currentSingleIndex) ? 'style="display:none;"' : 'style="display:block;"';
-
-          html += `<div class="question-card" id="qCard_${idx}" ${displayStyle} data-index="${idx}">
-            <div class="question-header-row">
-              <div class="question-title"><b>প্রশ্ন ${idx + 1}:</b> ${q.question}</div>
-              <div class="action-btns">
-                <button type="button" class="action-icon-btn bookmark-btn ${isBookmarked}" onclick="toggleBookmark(${idx})" title="Bookmark">⭐</button>
-                <button type="button" class="action-icon-btn review-btn ${isReview}" onclick="toggleReview(${idx})" title="Review">🔖</button>
-                <button type="button" class="action-icon-btn" onclick="openReportModal(${idx})" title="Report">🚩</button>
+          q.options.forEach((opt, optIdx) => {
+            let isSelected = userSelections[idx] === optIdx;
+            html += `
+              <div class="option-item ${isSelected ? 'selected-option' : ''}" id="opt_${idx}_${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                  <input type="radio" name="q_${idx}" value="${optIdx}" ${isSelected ? 'checked' : ''}>
+                  <span>(${['ক', 'খ', 'গ', 'ঘ'][optIdx]}) ${opt}</span>
               </div>
-            </div>
-            
-            <div class="question-meta">
-              <span class="tag ${q.difficulty}">${q.difficulty.toUpperCase()}</span>
-              <span class="tag">টপিক: ${q.topic}</span>
-            </div>
-
-            <div class="options-list">`;
-
-          q.options.forEach((opt, oIdx) => {
-            let optClass = '';
-            let radioChecked = '';
-            let lockClass = isLocked ? 'locked-option' : '';
-
-            if (userSel === oIdx) {
-              radioChecked = 'checked';
-              if (!isSubmitted) {
-                optClass = 'selected-option';
-              } else {
-                if (oIdx === q.correct) optClass = 'correct-opt';
-                else optClass = 'wrong-opt';
-              }
-            } else if (isSubmitted && oIdx === q.correct) {
-              optClass = 'correct-opt';
-            }
-
-            // একবার দাগানো থাকলে onclick কাজ করবে না (return false)
-            let clickAction = isLocked ? 'return false;' : `selectOption(${idx}, ${oIdx})`;
-
-            html += `<div class="option-item ${optClass} ${lockClass}" onclick="${clickAction}">
-              <input type="radio" name="q_${idx}" value="${oIdx}" ${radioChecked} ${isLocked ? 'disabled' : ''}>
-              <span>(${['ক', 'খ', 'গ', 'ঘ'][oIdx] || ['A', 'B', 'C', 'D'][oIdx]}) ${opt}</span>
-            </div>`;
+            `;
           });
 
-          html += `</div>`;
-
-          if (isSubmitted) {
-            html += `<div class="explanation-box">
-              <strong style="color: #38bdf8;">💡 সঠিক উত্তর:</strong> (${['ক', 'খ', 'গ', 'ঘ'][q.correct]}) ${q.options[q.correct]}<br>
-              <strong style="color: #cbd5e1; margin-top: 6px; display:inline-block;">📖 ব্যাখ্যা:</strong> ${q.explanation}
-              ${q.shortcut ? `<br><span style="color:#f59e0b; font-size:13px;">⚡ শর্টকাট ট্রিক: ${q.shortcut}</span>` : ''}
-            </div>`;
-          }
-
-          html += `</div>`;
+          html += `
+                </div>
+                <div class="explanation-box" id="exp_${idx}" style="display:none;">
+                    <strong>💡 সঠিক উত্তর: (${['ক', 'খ', 'গ', 'ঘ'][q.correct]}) ${q.options[q.correct]}</strong>
+                    <p style="margin-top: 6px;">ব্যাখ্যা: ${q.explanation}</p>
+                    <div class="review-insights">
+                        <div class="insight-card"><strong>🎯 মূল কনসেপ্ট</strong> ${q.concept}</div>
+                        <div class="insight-card"><strong>⚡ শর্টকাট টেকনিক</strong> ${q.shortcut}</div>
+                        <div class="insight-card"><strong>⚠️ সাধারণ ভুল</strong> ${q.mistake}</div>
+                        <div class="insight-card"><strong>💡 এক্সপার্ট টিপস</strong> ${q.tip}</div>
+                    </div>
+                </div>
+            </div>
+          `;
         });
 
         container.innerHTML = html;
-        if (window.katex) {
-          renderMathInElement(container, {
-            delimiters: [
-              {left: "$$", right: "$$", display: true},
-              {left: "$", right: "$", display: false}
-            ],
-            throwOnError: false
-          });
-        }
-
-        if (viewMode === 'single') {
-          document.getElementById('singleNavFooter').style.display = 'flex';
-          document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ${examData.questions.length}`;
-          document.getElementById('prevQBtn').disabled = currentSingleIndex === 0;
-          document.getElementById('nextQBtn').disabled = currentSingleIndex === examData.questions.length - 1;
-        } else {
-          document.getElementById('singleNavFooter').style.display = 'none';
-        }
+        if(window.MathJax) MathJax.typesetPromise();
       }
 
-      // Select Option Function (Locked once selected)
-      window.selectOption = function(qIdx, oIdx) {
+      window.selectOption = function(qIdx, optIdx) {
         if (isSubmitted) return;
-        
-        // যদি পূর্বে অলরেডি দাগানো হয়ে থাকে, তবে পরিবর্তন করা যাবে না
-        if (userSelections[qIdx] !== undefined) return;
-
-        userSelections[qIdx] = oIdx;
-        localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
-
+        userSelections[qIdx] = optIdx;
         playAudioFeedback('click');
         triggerHaptic();
 
-        renderQuestions();
-        renderPalette();
-        updateAnsweredCount();
+        // Update UI options styling
+        const qCard = document.getElementById(`qCard_${qIdx}`);
+        const opts = qCard.querySelectorAll('.option-item');
+        opts.forEach((opt, idx) => {
+          if (idx === optIdx) {
+            opt.classList.add('selected-option');
+            opt.querySelector('input').checked = true;
+          } else {
+            opt.classList.remove('selected-option');
+            opt.querySelector('input').checked = false;
+          }
+        });
 
-        // Auto Advance Feature
-        const autoCheck = document.getElementById('autoAdvanceCheck');
-        if (autoCheck && autoCheck.checked && viewMode === 'single') {
-          if (currentSingleIndex < examData.questions.length - 1) {
-            setTimeout(() => navigateSingle(1), 300);
+        updatePaletteCounters();
+
+        // Auto Advance in Single Mode
+        if (viewMode === 'single') {
+          const autoCheck = document.getElementById('autoAdvanceCheck');
+          if (autoCheck && autoCheck.checked) {
+            setTimeout(() => {
+              if (currentSingleIndex < defaultExamData.questions.length - 1) {
+                navigateSingle(1);
+              }
+            }, 300);
           }
         }
       };
@@ -814,31 +710,35 @@
       function renderPalette() {
         const grid = document.getElementById('paletteGrid');
         let html = '';
-        examData.questions.forEach((q, idx) => {
-          let btnClass = '';
-          if (userSelections[idx] !== undefined) btnClass = 'answered';
-          if (bookmarkedQuestions[idx]) btnClass = 'bookmarked';
-          if (reviewQuestions[idx]) btnClass = 'review';
-          if (viewMode === 'single' && idx === currentSingleIndex) btnClass += ' active-current';
+        for (let i = 0; i < defaultExamData.questions.length; i++) {
+          let statusClass = '';
+          if (userSelections[i] !== undefined) statusClass = 'answered';
+          if (bookmarkedQuestions[i]) statusClass = 'bookmarked';
+          if (reviewQuestions[i]) statusClass = 'review';
+          if (viewMode === 'single' && i === currentSingleIndex) statusClass += ' active-current';
 
-          html += `<button type="button" class="palette-btn ${btnClass}" onclick="jumpToPaletteIndex(${idx})">${idx + 1}</button>`;
-        });
+          html += `<button type="button" class="palette-btn ${statusClass}" id="pal_${i}" onclick="jumpToCard(${i})">${i + 1}</button>`;
+        }
         grid.innerHTML = html;
       }
 
-      function updateAnsweredCount() {
-        let ansCount = Object.keys(userSelections).length;
-        document.getElementById('answeredCount').innerText = `${ansCount}/${examData.questions.length}`;
+      function updatePaletteCounters() {
+        let answeredCount = Object.keys(userSelections).length;
+        document.getElementById('answeredCount').innerText = `${answeredCount}/৬০`;
+        renderPalette();
       }
 
-      window.jumpToPaletteIndex = function(idx) {
+      window.jumpToCard = function(idx) {
         if (viewMode === 'single') {
           currentSingleIndex = idx;
           renderQuestions();
           renderPalette();
+          updateSingleNavFooter();
         } else {
-          const el = document.getElementById(`qCard_${idx}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const card = document.getElementById(`qCard_${idx}`);
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       };
 
@@ -847,85 +747,93 @@
         document.getElementById('btnModeAll').classList.toggle('active', mode === 'all');
         document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
         
-        const cards = document.querySelectorAll('.question-card');
-        cards.forEach((card, idx) => {
-          if (mode === 'single') {
-            card.style.display = (idx === currentSingleIndex) ? 'block' : 'none';
-          } else {
-            card.style.display = 'block';
-          }
-        });
-
-        document.getElementById('singleNavFooter').style.display = (mode === 'single') ? 'flex' : 'none';
+        const singleFooter = document.getElementById('singleNavFooter');
+        if (mode === 'single') {
+          singleFooter.style.display = 'flex';
+          currentSingleIndex = 0;
+        } else {
+          singleFooter.style.display = 'none';
+        }
+        renderQuestions();
         renderPalette();
       };
 
       window.navigateSingle = function(direction) {
         currentSingleIndex += direction;
         if (currentSingleIndex < 0) currentSingleIndex = 0;
-        if (currentSingleIndex >= examData.questions.length) currentSingleIndex = examData.questions.length - 1;
+        if (currentSingleIndex >= defaultExamData.questions.length) currentSingleIndex = defaultExamData.questions.length - 1;
+        
         renderQuestions();
         renderPalette();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateSingleNavFooter();
       };
 
+      function updateSingleNavFooter() {
+        document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ৬০`;
+        document.getElementById('prevQBtn').disabled = currentSingleIndex === 0;
+        document.getElementById('nextQBtn').disabled = currentSingleIndex === defaultExamData.questions.length - 1;
+      }
+
       window.jumpToQuestion = function() {
-        const val = parseInt(document.getElementById('jumpQInput').value, 10);
-        if (!isNaN(val) && val >= 1 && val <= examData.questions.length) {
-          let idx = val - 1;
+        const val = parseInt(document.getElementById('jumpQInput').value);
+        if (val && val >= 1 && val <= 60) {
           if (viewMode === 'single') {
-            currentSingleIndex = idx;
+            currentSingleIndex = val - 1;
             renderQuestions();
             renderPalette();
+            updateSingleNavFooter();
           } else {
-            const el = document.getElementById(`qCard_${idx}`);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            jumpToCard(val - 1);
           }
         }
       };
 
       window.goToNextUnanswered = function() {
-        for (let i = 0; i < examData.questions.length; i++) {
+        for (let i = 0; i < defaultExamData.questions.length; i++) {
           if (userSelections[i] === undefined) {
-            if (viewMode === 'single') {
-              currentSingleIndex = i;
-              renderQuestions();
-              renderPalette();
-            } else {
-              const el = document.getElementById(`qCard_${i}`);
-              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            jumpToCard(i);
             break;
           }
         }
       };
 
-      window.changeFontSize = function(delta) {
-        currentFontSize += delta;
-        if (currentFontSize < 13) currentFontSize = 13;
-        if (currentFontSize > 22) currentFontSize = 22;
-        document.documentElement.style.setProperty('--q-font-size', currentFontSize + 'px');
-      };
-
       window.toggleBookmark = function(idx) {
         bookmarkedQuestions[idx] = !bookmarkedQuestions[idx];
-        localStorage.setItem(activeExamKey + "_bm", JSON.stringify(bookmarkedQuestions));
         renderQuestions();
         renderPalette();
       };
 
       window.toggleReview = function(idx) {
         reviewQuestions[idx] = !reviewQuestions[idx];
-        localStorage.setItem(activeExamKey + "_rv", JSON.stringify(reviewQuestions));
         renderQuestions();
         renderPalette();
       };
 
-      // Modals
+      window.changeFontSize = function(delta) {
+        currentFontSize += delta;
+        if (currentFontSize < 12) currentFontSize = 12;
+        if (currentFontSize > 24) currentFontSize = 24;
+        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
+      };
+
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          let m = Math.floor(timeRemaining / 60);
+          let s = timeRemaining % 60;
+          document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            submitExam(true);
+          }
+        }, 1000);
+      }
+
       window.openConfirmModal = function() {
-        let attempted = Object.keys(userSelections).length;
-        let skipped = examData.questions.length - attempted;
-        document.getElementById('modalStatsText').innerHTML = `আপনি মোট <b>${examData.questions.length}</b> টি প্রশ্নের মধ্যে উত্তর দিয়েছেন: <b style="color:#10b981;">${attemptered || attempted}</b> টি<br>স্কিপ করেছেন: <b style="color:#f43f5e;">${skipped}</b> টি।<br><br>আপনি কি নিশ্চিতভাবে পরীক্ষা জমা দিতে চান?`;
+        let answered = Object.keys(userSelections).length;
+        let unanswered = 60 - answered;
+        document.getElementById('modalStatsText').innerHTML = `আপনি <b>${answered}টি</b> প্রশ্নের উত্তর দিয়েছেন এবং <b>${unanswered}টি</b> প্রশ্ন বাকি আছে। আপনি কি পরীক্ষা জমা দিতে চান?`;
         document.getElementById('confirmModal').style.display = 'flex';
       };
 
@@ -933,15 +841,223 @@
         document.getElementById('confirmModal').style.display = 'none';
       };
 
-      window.openReportModal = function(idx) {
-        document.getElementById('reportQIndex').value = idx;
-        document.getElementById('reportModal').style.display = 'flex';
+      window.confirmAndSubmit = function() {
+        closeConfirmModal();
+        submitExam(false);
       };
 
+      window.submitExam = function(isTimeout = false) {
+        if (isSubmitted) return;
+        isSubmitted = true;
+        clearInterval(timerInterval);
+
+        // Evaluation
+        let correctCount = 0;
+        let wrongCount = 0;
+        let skippedCount = 0;
+        let topicPerformance = {};
+
+        defaultExamData.questions.forEach((q, idx) => {
+          if (!topicPerformance[q.topic]) topicPerformance[q.topic] = { correct: 0, total: 0 };
+          topicPerformance[q.topic].total++;
+
+          if (userSelections[idx] !== undefined) {
+            if (userSelections[idx] === q.correct) {
+              correctCount++;
+              topicPerformance[q.topic].correct++;
+            } else {
+              wrongCount++;
+            }
+          } else {
+            skippedCount++;
+          }
+        });
+
+        let totalScore = (correctCount * defaultExamData.marking.correct) - (wrongCount * defaultExamData.marking.wrong);
+        if (totalScore < 0) totalScore = 0;
+        let attempted = correctCount + wrongCount;
+        let accuracy = attempted > 0 ? ((correctCount / attempted) * 100).toFixed(1) : 0;
+        let timeSpentSecs = totalDurationSeconds - timeRemaining;
+        let mSpent = Math.floor(timeSpentSecs / 60);
+        let sSpent = timeSpentSecs % 60;
+
+        // Hide Exam Controls, Show Results
+        document.getElementById('examToolbar').style.display = 'none';
+        document.getElementById('paletteSection').style.display = 'none';
+        document.getElementById('topSubmitBtn').style.display = 'none';
+        if(document.getElementById('singleNavFooter')) document.getElementById('singleNavFooter').style.display = 'none';
+        
+        document.getElementById('resultDashboard').style.display = 'block';
+        document.getElementById('filterBar').style.display = 'flex';
+
+        // Populate Dashboard Stats
+        document.getElementById('resScore').innerText = totalScore.toFixed(2);
+        document.getElementById('resAccuracy').innerText = `${accuracy}%`;
+        document.getElementById('resCorrect').innerText = correctCount;
+        document.getElementById('resWrong').innerText = wrongCount;
+        document.getElementById('resSkipped').innerText = skippedCount;
+        document.getElementById('resTime').innerText = `${mSpent}m ${sSpent}s`;
+        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${((attempted/60)*100).toFixed(1)}%`;
+
+        // Bar Chart
+        document.getElementById('barCorrect').style.width = `${(correctCount/60)*100}%`;
+        document.getElementById('barWrong').style.width = `${(wrongCount/60)*100}%`;
+        document.getElementById('barSkip').style.width = `${(skippedCount/60)*100}%`;
+
+        // AI Analysis
+        generateAIAnalysis(topicPerformance, accuracy);
+
+        // Render Explanations on Question Cards
+        defaultExamData.questions.forEach((q, idx) => {
+          let expBox = document.getElementById(`exp_${idx}`);
+          if (expBox) expBox.style.display = 'block';
+
+          // Colorize options
+          let qCard = document.getElementById(`qCard_${idx}`);
+          let opts = qCard.querySelectorAll('.option-item');
+          opts.forEach((opt, optIdx) => {
+            opt.classList.add('locked-option');
+            if (optIdx === q.correct) {
+              opt.classList.add('correct-opt');
+            } else if (userSelections[idx] === optIdx) {
+              opt.classList.add('wrong-opt');
+            }
+          });
+        });
+
+        if (viewMode === 'single') {
+          switchViewMode('all');
+        }
+
+        // Save History locally or Firebase
+        saveHistoryRecord({
+          score: totalScore,
+          accuracy: accuracy,
+          correct: correctCount,
+          wrong: wrongCount,
+          date: new Date().toLocaleDateString()
+        });
+      };
+
+      function generateAIAnalysis(topicPerformance, accuracy) {
+        let aiText = `আপনার সামগ্রিক নির্ভুলতা বা একিউরেসি ${accuracy}%। পদার্থবিজ্ঞানের পর্যায়বৃত্ত গতি অধ্যায়ের বেসিক কনসেপ্ট ও গাণিতিক সমস্যাগুলোতে আপনার পারফরম্যান্স মূল্যায়ন করা হয়েছে।`;
+        let pillsHtml = '';
+
+        for (let topic in topicPerformance) {
+          let tp = topicPerformance[topic];
+          let ratio = tp.total > 0 ? (tp.correct / tp.total) : 0;
+          if (ratio >= 0.7) {
+            pillsHtml += `<span class="topic-pill strong">✅ ${topic} (${tp.correct}/${tp.total})</span>`;
+          } else {
+            pillsHtml += `<span class="topic-pill weak">⚠️ ${topic} (${tp.correct}/${tp.total})</span>`;
+          }
+        }
+
+        document.getElementById('aiAnalysisText').innerText = aiText;
+        document.getElementById('aiTopicList').innerHTML = pillsHtml;
+      }
+
+      window.filterQuestions = function(filterType) {
+        // Update filter buttons active state
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        defaultExamData.questions.forEach((q, idx) => {
+          let card = document.getElementById(`qCard_${idx}`);
+          let isCorrect = userSelections[idx] === q.correct;
+          let isWrong = userSelections[idx] !== undefined && !isCorrect;
+          let isSkipped = userSelections[idx] === undefined;
+          let isBookmarked = bookmarkedQuestions[idx];
+          let isReview = reviewQuestions[idx];
+
+          let show = true;
+          if (filterType === 'correct' && !isCorrect) show = false;
+          if (filterType === 'wrong' && !isWrong) show = false;
+          if (filterType === 'skipped' && !isSkipped) show = false;
+          if (filterType === 'bookmarked' && !isBookmarked) show = false;
+          if (filterType === 'review' && !isReview) show = false;
+
+          card.style.display = show ? 'block' : 'none';
+        });
+      };
+
+      window.toggleTabs = function(tabName) {
+        let lb = document.getElementById('tabLeaderboard');
+        let hist = document.getElementById('tabHistory');
+        
+        if (tabName === 'leaderboard') {
+          lb.style.display = lb.style.display === 'none' ? 'block' : 'none';
+          hist.style.display = 'none';
+          loadLeaderboardMock();
+        } else if (tabName === 'history') {
+          hist.style.display = hist.style.display === 'none' ? 'block' : 'none';
+          lb.style.display = 'none';
+          loadHistoryList();
+        }
+      };
+
+      function loadLeaderboardMock() {
+        let tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = `
+          <tr><td>1</td><td>ফাহিম আহমেদ</td><td>58.50</td><td>38m 12s</td></tr>
+          <tr><td>2</td><td>সাদিয়া ইসলাম</td><td>56.00</td><td>41m 05s</td></tr>
+          <tr class="my-rank"><td>3</td><td>Neo (আপনি)</td><td>${document.getElementById('resScore').innerText}</td><td>${document.getElementById('resTime').innerText}</td></tr>
+          <tr><td>4</td><td>রাফিদ হাসান</td><td>51.25</td><td>44m 20s</td></tr>
+        `;
+      }
+
+      function saveHistoryRecord(record) {
+        let history = JSON.parse(localStorage.getItem('gaivex_periodic_history') || '[]');
+        history.push(record);
+        localStorage.setItem('gaivex_periodic_history', JSON.stringify(history));
+      }
+
+      function loadHistoryList() {
+        let history = JSON.parse(localStorage.getItem('gaivex_periodic_history') || '[]');
+        let container = document.getElementById('historyList');
+        if (history.length === 0) {
+          container.innerHTML = `<p>কোনো পূর্ববর্তী রেকর্ড নেই।</p>`;
+          return;
+        }
+        let html = `<ul style="list-style:none; padding:0;">`;
+        history.forEach((h, i) => {
+          html += `<li style="padding:6px 0; border-bottom:1px solid #334155;">পরীক্ষা #${i+1} (${h.date}) — স্কোর: <b>${h.score}</b> | একিউরেসি: <b>${h.accuracy}%</b></li>`;
+        });
+        html += `</ul>`;
+        container.innerHTML = html;
+      }
+
+      window.printCertificate = function() {
+        document.getElementById('certName').innerText = currentUser.displayName;
+        document.getElementById('certScore').innerText = document.getElementById('resScore').innerText + " / ৬০";
+        document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
+        document.getElementById('certDate').innerText = new Date().toLocaleDateString();
+        
+        let certDiv = document.getElementById('certificateContainer');
+        certDiv.style.display = 'block';
+        window.print();
+        certDiv.style.display = 'none';
+      };
+
+      window.shareResultOnFacebook = function() {
+        let score = document.getElementById('resScore').innerText;
+        let acc = document.getElementById('resAccuracy').innerText;
+        let msg = `আমি GAIVEX Smart Exam System-এ পদার্থবিজ্ঞানের পর্যায়বৃত্ত গতি পরীক্ষায় ৬০ নম্বরের মধ্যে ${score} পেয়েছি! আমার Accuracy ${acc}। 🚀`;
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(msg)}`, '_blank');
+      };
+
+      window.generateAIPractice = function() {
+        alert('আপনার দুর্বল টপিকগুলোর ওপর ২০টি নতুন রিভিশন এমসিকিউ প্রস্তুত করা হচ্ছে...');
+      };
+
+      // Report Modal Handlers
+      window.openReportModal = function(qIdx) {
+        document.getElementById('reportQIndex').value = qIdx;
+        document.getElementById('reportModal').style.display = 'flex';
+      };
       window.closeReportModal = function() {
         document.getElementById('reportModal').style.display = 'none';
       };
-
       window.submitQuestionReport = function() {
         alert('আপনার রিপোর্ট সফলভাবে জমা দেওয়া হয়েছে। ধন্যবাদ!');
         closeReportModal();
@@ -950,175 +1066,25 @@
       window.openShortcutModal = function() {
         document.getElementById('shortcutModal').style.display = 'flex';
       };
-
       window.closeShortcutModal = function() {
         document.getElementById('shortcutModal').style.display = 'none';
       };
 
-      window.toggleTabs = function(tabName) {
-        const lb = document.getElementById('tabLeaderboard');
-        const hist = document.getElementById('tabHistory');
-        if (tabName === 'leaderboard') {
-          lb.style.display = lb.style.display === 'block' ? 'none' : 'block';
-          hist.style.display = 'none';
-          loadLeaderboardData();
-        } else if (tabName === 'history') {
-          hist.style.display = hist.style.display === 'block' ? 'none' : 'block';
-          lb.style.display = 'none';
-          loadHistoryData();
+      // Anti-Cheat Event Listeners
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && !isSubmitted) {
+          document.getElementById('screenProtectOverlay').style.display = 'flex';
+          document.getElementById('warningToast').style.display = 'block';
+          playAudioFeedback('warning');
+        } else {
+          document.getElementById('screenProtectOverlay').style.display = 'none';
         }
+      });
+
+      // Run Initialization on Load
+      window.onload = function() {
+        initExamSystem();
       };
-
-      function loadLeaderboardData() {
-        const tbody = document.getElementById('leaderboardBody');
-        tbody.innerHTML = `
-          <tr class="my-rank"><td>1</td><td>${currentUser.displayName || "Neo"} (আপনি)</td><td>58.25</td><td>18m 42s</td></tr>
-          <tr><td>2</td><td>Tanvir Ahmed</td><td>56.00</td><td>21m 10s</td></tr>
-          <tr><td>3</td><td>Nusrat Jahan</td><td>54.50</td><td>19m 05s</td></tr>
-          <tr><td>4</td><td>Rakibul Islam</td><td>52.00</td><td>24m 30s</td></tr>
-        `;
-      }
-
-      function loadHistoryData() {
-        document.getElementById('historyList').innerHTML = `
-          <div style="padding: 8px 0; border-bottom: 1px solid #334155;">✅ পদার্থবিজ্ঞান: ভেক্টর (Score: 18.5/20) — 05 Sep 2026</div>
-          <div style="padding: 8px 0; border-bottom: 1px solid #334155;">✅ রসায়ন: গুণগত রসায়ন (Score: 22.0/25) — 03 Sep 2026</div>
-          <div style="padding: 8px 0;">✅ জীববিজ্ঞান: কোষ ও এর গঠন (Score: 27.5/30) — 01 Sep 2026</div>
-        `;
-      }
-
-      window.confirmAndSubmit = function() {
-        closeConfirmModal();
-        finalizeExamSubmission();
-      };
-
-      function autoSubmitExam() {
-        alert('নির্ধারিত সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হয়ে গেছে।');
-        finalizeExamSubmission();
-      }
-
-      function finalizeExamSubmission() {
-        isSubmitted = true;
-        clearInterval(timerInterval);
-
-        // Calculate Score & Accuracy
-        let correctCount = 0;
-        let wrongCount = 0;
-        let skippedCount = 0;
-
-        examData.questions.forEach((q, idx) => {
-          let sel = userSelections[idx];
-          if (sel === undefined) {
-            skippedCount++;
-          } else if (sel === q.correct) {
-            correctCount++;
-          } else {
-            wrongCount++;
-          }
-        });
-
-        let totalScore = (correctCount * examData.marking.correct) - (wrongCount * examData.marking.wrong);
-        if (totalScore < 0) totalScore = 0;
-        let totalQ = examData.questions.length;
-        let attempted = correctCount + wrongCount;
-        let accuracy = attempted > 0 ? ((correctCount / attempted) * 100).toFixed(1) : 0;
-        let attemptRate = ((attempted / totalQ) * 100).toFixed(1);
-        let timeSpentSec = totalDurationSeconds - timeRemaining;
-        let mins = Math.floor(timeSpentSec / 60);
-        let secs = timeSpentSec % 60;
-
-        // UI Transition
-        document.getElementById('timerheader') && (document.querySelector('.timer-header').style.display = 'none');
-        document.getElementById('examToolbar').style.display = 'none';
-        document.getElementById('paletteSection').style.display = 'none';
-        document.getElementById('filterBar').style.display = 'flex';
-
-        const dash = document.getElementById('resultDashboard');
-        dash.style.display = 'block';
-
-        document.getElementById('resScore').innerText = totalScore.toFixed(2);
-        document.getElementById('resAccuracy').innerText = accuracy + '%';
-        document.getElementById('resCorrect').innerText = correctCount;
-        document.getElementById('resWrong').innerText = wrongCount;
-        document.getElementById('resSkipped').innerText = skippedCount;
-        document.getElementById('resTime').innerText = `${mins}m ${secs}s`;
-        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${attemptRate}%`;
-
-        // Chart widths
-        document.getElementById('barCorrect').style.width = `${(correctCount / totalQ) * 100}%`;
-        document.getElementById('barWrong').style.width = `${(wrongCount / totalQ) * 100}%`;
-        document.getElementById('barSkip').style.width = `${(skippedCount / totalQ) * 100}%`;
-
-        // AI Analysis
-        document.getElementById('aiAnalysisText').innerText = `আপনার সামগ্রিক পারফরম্যান্স বেশ সন্তোষজনক (${accuracy}% Accuracy)। তবে পর্যায়বৃত্ত গতির সমীকরণ ও শক্তি রূপান্তর সম্পর্কিত কিছু প্রশ্নে ভুল হয়েছে। এই দুর্বলতাগুলো কাটিয়ে উঠতে রিভিশন দিন।`;
-        document.getElementById('aiTopicList').innerHTML = `
-          <span class="topic-pill strong">✅ SHM Basics (${correctCount} Correct)</span>
-          <span class="topic-pill weak">⚠️ Spring Energy & Phase Angles</span>
-        `;
-
-        // Re-render questions with answers & explanations
-        viewMode = 'all';
-        renderQuestions();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      window.filterQuestions = function(filterType) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        const cards = document.querySelectorAll('.question-card');
-        cards.forEach((card, idx) => {
-          let sel = userSelections[idx];
-          let q = examData.questions[idx];
-          let isCorrect = sel === q.correct;
-          let isWrong = sel !== undefined && sel !== q.correct;
-          let isSkip = sel === undefined;
-          let isBm = bookmarkedQuestions[idx];
-          let isRv = reviewQuestions[idx];
-
-          if (filterType === 'all') {
-            card.style.display = 'block';
-          } else if (filterType === 'correct' && isCorrect) {
-            card.style.display = 'block';
-          } else if (filterType === 'wrong' && isWrong) {
-            card.style.display = 'block';
-          } else if (filterType === 'skipped' && isSkip) {
-            card.style.display = 'block';
-          } else if (filterType === 'bookmarked' && isBm) {
-            card.style.display = 'block';
-          } else if (filterType === 'review' && isRv) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      };
-
-      window.printCertificate = function() {
-        document.getElementById('certName').innerText = currentUser.displayName || "Neo";
-        document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
-        document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
-        document.getElementById('certDate').innerText = new Date().toLocaleDateString('bn-BD');
-        
-        const certEl = document.getElementById('certificateContainer');
-        certEl.style.display = 'block';
-        window.print();
-        certEl.style.display = 'none';
-      };
-
-      window.shareResultOnFacebook = function() {
-        let score = document.getElementById('resScore').innerText;
-        let acc = document.getElementById('resAccuracy').innerText;
-        let text = `আমি GAIVEX Smart Exam System-এ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি পরীক্ষায় ${score} নম্বর এবং ${acc} Accuracy অর্জন করেছি! 🚀`;
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`, '_blank');
-      };
-
-      window.generateAIPractice = function() {
-        alert('GAIVEX AI আপনার দুর্বল টপিক বিশ্লেষণ করে নতুন ২০টি রিভিশন এমসিকিউ সেট তৈরি করছে...');
-      };
-
-      // Run on Load
-      window.onload = initExam;
     </script>
 </body>
 </html>
