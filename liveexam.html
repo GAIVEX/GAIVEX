@@ -232,8 +232,8 @@
         <a href="index.html" class="logo">GAIVEX<span>.</span></a>
         <div class="nav-right">
             <div class="user-badge" id="userProfileBadge">
-                <div class="user-avatar" id="uAvatar">N</div>
-                <span id="uName">Neo</span>
+                <div class="user-avatar" id="uAvatar">S</div>
+                <span id="uName">Student</span>
             </div>
             <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 13px;">🏠 হোম</a>
         </div>
@@ -256,7 +256,7 @@
         <div class="result-dashboard" id="resultDashboard">
             <div class="dash-header">
                 <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড</h2>
-                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি — Live Admission Exam Result</p>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (Admission Physics) — Live Exam Result</p>
                 
                 <div class="stats-grid">
                     <div class="stat-card"><div class="num" id="resScore">0.00</div><div class="lbl">মোট নম্বর</div></div>
@@ -443,8 +443,8 @@
         <h1>GAIVEX Digital Certificate</h1>
         <h3>Certificate of Participation & Performance</h3>
         <p>This is awarded to</p>
-        <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Neo</h2>
-        <p>for completing the live examination <b><span id="certExam">পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি</span></b></p>
+        <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Student Name</h2>
+        <p>for completing the live examination <b><span id="certExam">Periodic Motion</span></b></p>
         <br>
         <p>Score Obtained: <b><span id="certScore">00</span></b> | Accuracy: <b><span id="certAcc">00%</span></b></p>
         <p>Date: <span id="certDate">09/09/2026</span></p>
@@ -489,14 +489,14 @@
       const auth = getAuth(app);
 
       // Global State Management
-      let currentUser = { displayName: "Neo" };
+      let currentUser = null;
       let timerInterval = null;
-      let totalDurationSeconds = 2700; // 45 minutes for 60 questions
-      let timeRemaining = 2700;
+      let totalDurationSeconds = 1800; // 30 mins for 60 Qs
+      let timeRemaining = 1800;
       let startTimeStamp = Date.now();
-      let activeExamKey = "gaivex_exam_periodic_motion";
-      let examTimerKey = "gaivex_timer_periodic";
-      let autoSaveKey = "gaivex_autosave_answers_periodic";
+      let activeExamKey = "gaivex_exam_physics_periodic";
+      let examTimerKey = "gaivex_timer_physics_periodic";
+      let autoSaveKey = "gaivex_autosave_physics_periodic";
       let userSelections = {};
       let bookmarkedQuestions = {};
       let reviewQuestions = {};
@@ -537,554 +537,795 @@
         if (navigator.vibrate) navigator.vibrate(30);
       }
 
-      // ⚡ পদার্থবিজ্ঞান ১ম পত্র: পর্যায়বৃত্ত গতি (Periodic Motion) থেকে ভর্তি পরীক্ষার ৬০টি গুরুত্বপূর্ণ প্রশ্ন
+      // ⚡ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (60 Admission MCQ)
       const defaultExamData = {
-        id: "periodic_motion_mcq_60",
-        title: "⚡ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (Periodic Motion) 🌊",
-        duration: 45,
+        id: "physics_periodic_motion_60",
+        title: "⚡ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (Admission Special) 🌀",
+        duration: 30,
         marking: { correct: 1, wrong: 0.25 },
         questions: [
-          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কোনো কণার ক্ষেত্রে ত্বরণ ও স্মরণের মধ্যবর্তী কোণ কত?", options: ["0°", "90°", "180°", "270°"], correct: 2, topic: "SHM Basics", difficulty: "easy", explanation: "সরল ছন্দিত গতিতে ত্বরণ সবসময় সরণের বিপরীতমুখী হয় ($a = -\\omega^2 x$), তাই এদের মধ্যবর্তী কোণ ১৮০ ডিগ্রি বা পাই রেডিয়ান।", concept: "SHM Acceleration", shortcut: "Acceleration opposes displacement", mistake: "০ ডিগ্রি ভাবা", tip: "পুনরুদ্ধارকারী বল ও ত্বরণ সর্বদা সাম্যাবস্থানের দিকে ক্রিয়া করে।" },
-          { question: "একটি সরল দোলকের দৈর্ঘ্য 4 গুণ বাড়ালে এর দোলনকাল কত গুণ হবে?", options: ["অর্ধেক", "দ্বিগুণ", "চারগুণ", "অপরিবর্তিত"], correct: 1, topic: "Simple Pendulum", difficulty: "easy", explanation: "দোলনকাল $T = 2\\pi \\sqrt{L/g}$। সুতরাং $T \\propto \\sqrt{L}$। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল $\\sqrt{4} = 2$ গুণ হবে।", concept: "Pendulum Length", shortcut: "T proportional to root L", mistake: "৪ গুণ হওয়া ভাবা", tip: "দৈর্ঘ্য বাড়লে দোলনকাল বাড়ে।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন একটি কণার সর্বোচ্চ বেগ $v_{max}$ এবং সর্বোচ্চ ত্বরণ $alpha_{max}$ হলে, পর্যায়কাল $T$ কত?", options: ["$\\frac{2\\pi v_{max}}{alpha_{max}}$", "$\\frac{v_{max}}{alpha_{max}}$", "$\\frac{\\pi v_{max}}{alpha_{max}}$", "$2\\pi \\frac{alpha_{max}}{v_{max}}$"], correct: 0, topic: "SHM Velocity & Acceleration", difficulty: "hard", explanation: "সর্বোচ্চ বেগ $v_{max} = \\omega A$ এবং সর্বোচ্চ ত্বরণ $alpha_{max} = \\omega^2 A$। এদের অনুপাত $\\frac{v_{max}}{alpha_{max}} = \\frac{1}{\\omega} = \\frac{T}{2\\pi}$। সুতরাং $T = \\frac{2\\pi v_{max}}{alpha_{max}}$।", concept: "SHM Ratio Formulas", shortcut: "T = 2*pi*(v/a)", mistake: "উল্টো অনুপাত নেওয়া", tip: "ভর্তি পরীক্ষায় এই শর্টকাটটি খুব আসে।" },
-          { question: "সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য পৃথিবী পৃষ্ঠে প্রায় কত সেন্টিমিটার?", options: ["99.3 সেমি", "100 সেমি", "98 সেমি", "101.5 সেমি"], correct: 0, topic: "Seconds Pendulum", difficulty: "easy", explanation: "যে সরল দোলকের একটি পূর্ণ দোলনের জন্য দুই সেকেন্ড (প্রতি পাশে ১ সেকেন্ড) সময় লাগে তাকে সেকেন্ড দোলক বলে। এর আদর্শ দৈর্ঘ্য প্রায় ৯৯.৩ সেমি (বা ৯৯.৯৪ সেমি)।", concept: "Seconds Pendulum Length", shortcut: "99.3 cm at standard g", mistake: "ঠিক ১০০ সেমি ভাবা", tip: "বিষুবীয় অঞ্চলে এর মান ভিন্ন হতে পারে।" },
-          { question: "সরল ছন্দিত স্পন্দনসম্পন্ন কোনো কণার কাইনেটিক এনার্জি (গতিশক্তি) ও পোটেনশিয়াল এনার্জি (বিভবশক্তি) সমান হয় সরণের মান কত হলে?", options: ["$x = \\pm A$", "$x = \\pm \\frac{A}{\\sqrt{2}}$", "$x = 0$", "$x = \\pm \\frac{A}{2}$"], correct: 1, topic: "SHM Energy", difficulty: "medium", explanation: "গতিশক্তি ও বিভবশক্তি সমান হলে, $\\frac{1}{2}m\\omega^2(A^2 - x^2) = \\frac{1}{2}m\\omega^2 x^2$। সমাধান করলে $2x^2 = A^2 \\implies x = \\pm \\frac{A}{\\sqrt{2}}$।", concept: "Energy Equivalence in SHM", shortcut: "x = A / root 2", mistake: "x = A/2 ভাবা", tip: "এই বিন্দুতে কণার শক্তি সমানভাবে বিভক্ত থাকে।" },
-          { question: "মহাকাশযানে একটি সরল দোলকের দোলনকাল কত হবে?", options: ["শূন্য", "অসীম (Infinite)", "২ সেকেন্ড", "৪ সেকেন্ড"], correct: 1, topic: "Simple Pendulum under Gravity", difficulty: "medium", explanation: "মহাকাশযানে কৃত্রিম অভিকর্ষজ ত্বরণ $g = 0$। সূত্র $T = 2\\pi \\sqrt{L/g}$-এ $g = 0$ বসালে দোলনকাল অসীম হয়, অর্থাৎ দোলকটি আর দুলবে না।", concept: "Pendulum in Space", shortcut: "g = 0 means T = infinity", mistake: "শূন্য হওয়া ভাবা", tip: "ওজনহীনতা অবস্থার কারণে দোলন থেমে যায়।" },
-          { question: "একটি স্প্রিংয়ের বল ধ্রুবক $k$। স্প্রিংকে সমান দুই টুকরো করলে প্রতিটি টুকরোর বল ধ্রুবক কত হবে?", options: ["$k$", "$k/2$", "$2k$", "$4k$"], correct: 2, topic: "Spring Oscillation", difficulty: "medium", explanation: "স্প্রিংয়ের দৈর্ঘ্য কমালে বল ধ্রুবক বৃদ্ধি পায়। স্প্রিংয়ের দৈর্ঘ্য অর্ধেক করলে বল ধ্রুবক দ্বিগুণ ($2k$) হয়, কারণ $k \\propto \\frac{1}{L}$।", concept: "Spring Constant vs Length", shortcut: "Halve length = Double k", mistake: "অর্ধেক (k/2) ভাবা", tip: "টুকরো করলে বলধ্রুবক ব্যস্তানুপাতিক হারে বাড়ে।" },
-          { question: "সরল ছন্দিত গতির ক্ষেত্রে মোট শক্তির সমীকরণ কোনটি?", options: ["$E = \\frac{1}{2} k A^2$", "$E = \\frac{1}{2} k x^2$", "$E = m\\omega^2 x$", "$E = \\frac{1}{4} k A^2$"], correct: 0, topic: "SHM Energy Conservation", difficulty: "easy", explanation: "সরল ছন্দিত গতিসম্পন্ন কণার মোট শক্তি সর্বদা ধ্রুবক এবং এর মান বিস্তারের বর্গের সমানুপাতিক ($E = \\frac{1}{2} k A^2$)।", concept: "Total Energy SHM", shortcut: "E = 1/2 k A^2", mistake: "বিভব শক্তির সমীকরণ দাগানো", tip: "মোট শক্তি সরণের ওপর নির্ভর করে না।" },
-          { question: "সেকেন্ড দোলকের কম্পাঙ্ক কত?", options: ["0.5 Hz", "1.0 Hz", "2.0 Hz", "0.25 Hz"], correct: 0, topic: "Frequency & Period", difficulty: "easy", explanation: "সেকেন্ড দোলকের দোলনকাল $T = 2$ সেকেন্ড। কম্পাঙ্ক $f = \\frac{1}{T} = \\frac{1}{2} = 0.5\\text{ Hz}$।", concept: "Seconds Pendulum Frequency", shortcut: "f = 1/T = 0.5 Hz", mistake: "১ Hz ভাবা", tip: "এক সেকেন্ডে সম্পন্ন কম্পন সংখ্যাই কম্পাঙ্ক।" },
-          { question: "একটি সরল দোলককে পাহাড়ের চূড়ায় নিলে এর দোলনকাল কী হবে?", options: ["কমবে", "বাড়বে", "অপরিবর্তিত থাকবে", "প্রথমে কমবে পরে বাড়বে"], correct: 1, topic: "Pendulum & Altitude", difficulty: "medium", explanation: "পাহাড়ের চূড়ায় অভিকর্ষজ ত্বরণ $g$-এর মান ভূপৃষ্ঠের চেয়ে কমে যায়। $T \\propto \\frac{1}{\\sqrt{g}}$ হওয়ায় $g$ কমলে দোলনকাল $T$ বৃদ্ধি পায় (দোলকটি স্লো চলে)।", concept: "Effect of g on Pendulum", shortcut: "g decreases -> T increases", mistake: "কমে যাওয়া ভাবা", tip: "পাহাড়ে গিয়ে ঘড়ি স্লো বা ধীরে চলে।" },
-          { question: "সরল ছন্দিত স্পন্দনে গতিশক্তি সরণের সাথে কীভাবে পরিবর্তিত হয়?", options: ["সরলরৈখিক", "পরাবৃত্তিক (Parabolic)", "উপবৃত্তিক", "সমবৃত্তিক"], correct: 1, topic: "SHM Energy Graphs", difficulty: "hard", explanation: "গতিশক্তি $E_k = \\frac{1}{2}m\\omega^2(A^2 - x^2)$। এখানে সরণ $x$-এর সাথে শক্তির সম্পর্ক পরাবৃত্তীয় (Parabolic)।", concept: "Energy vs Displacement", shortcut: "Parabolic variation", mistake: "সরলরৈখিক ভাবা", tip: "সাম্যাবস্থানে গতিশক্তি সর্বোচ্চ এবং বিস্তার প্রান্তে শূন্য।" },
-          { question: "কোন কণার সরণ $x = 5 \\sin(10\\pi t + \\pi/4)$ হলে, এর আদি দশা (Initial Phase) কত?", options: ["$0$", "$\\pi/4$", "$10\\pi$", "$\\pi/2$"], correct: 1, topic: "Phase Angle in SHM", difficulty: "medium", explanation: "আদর্শ সমীকরণ $x = A \\sin(\\omega t + \\phi)$-এর সাথে তুলনা করলে আদি দশা $\\phi = \\pi/4$ পাওয়া যায়।", concept: "Phase Angle Identification", shortcut: "Compare with standard equation", mistake: "অন্য ধ্রুবক নেওয়া", tip: "সময় $t = 0$ তে দশাই হলো আদি দশা।" },
-          { question: "পৃথিবী পৃষ্ঠে একটি সেকেন্ড দোলককে চন্দ্রপৃষ্ঠে নিয়ে গেলে দোলনকাল কেমন হবে?", options: ["কমবে", "৬ গুণ হবে", "$\\sqrt{6}$ গুণ হবে", "অপরিবর্তিত থাকবে"], correct: 2, topic: "Pendulum on Moon", difficulty: "hard", explanation: "চন্দ্রপৃষ্ঠে অভিকর্ষজ ত্বরণ পৃথিবীর $\\frac{1}{6}$ অংশ ($g_m = g/6$)। যেহেতু $T \\propto \\frac{1}{\\sqrt{g}}$, তাই চাঁদে দোলনকাল $\\sqrt{6}$ গুণ বৃদ্ধি পাবে।", concept: "Moon Pendulum", shortcut: "T_moon = root(6) * T_earth", mistake: "৬ গুণ বৃদ্ধি ভাবা", tip: "চাঁদে অভিকর্ষ বল কম হওয়ায় দোলক ধীরগতির হয়।" },
-          { question: "একটি স্প্রিংয়ের সাথে $m$ ভরের বস্তু ঝুলিয়ে দিলে এটি $T$ সময়ে এক সম্পন্ন করে। ভর দ্বিগুণ করলে নতুন দোলনকাল কত হবে?", options: ["$2T$", "$\\sqrt{2} T$", "$T/2$", "$4T$"], correct: 1, topic: "Spring-Mass System", difficulty: "medium", explanation: "স্প্রিং-ভর সিস্টেমের দোলনকাল $T = 2\\pi \\sqrt{m/k}$। অর্থাৎ $T \\propto \\sqrt{m}$। ভর ২ গুণ করলে দোলনকাল $\\sqrt{2}$ গুণ হবে।", concept: "Mass Effect on Spring", shortcut: "T proportional to root m", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "ভর বাড়লে পর্যায়কাল বাড়ে।" },
-          { question: "সরল ছন্দিত স্পন্দনরত কোনো কণার গতিবেগ শূন্য হয় কোথায়?", options: ["সাম্যাবস্থানে", "বিস্তার প্রান্তে (Extreme position)", "সাম্যাবস্থান ও বিস্তার প্রান্তের ঠিক মাঝখানে", "কোথাও না"], correct: 1, topic: "SHM Velocity", difficulty: "easy", explanation: "বিস্তার প্রান্তে কণাটি দিক পরিবর্তন করার মুহূর্তে ক্ষণিকের জন্য থেমে যায়, তাই সেখানে বেগ শূন্য হয় এবং ত্বরণ সর্বোচ্চ হয়।", concept: "Extreme Position SHM", shortcut: "Velocity zero at extremes", mistake: "সাম্যাবস্থানে বেগ শূন্য ভাবা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ থাকে।" },
-          { question: "নিচের কোন সমীকরণটি সরল ছন্দিত গতিকে নির্দেশ করে?", options: ["$\\frac{d^2x}{dt^2} + \\omega^2 x = 0$", "$\\frac{d^2x}{dt^2} - \\omega^2 x = 0$", "$\\frac{dx}{dt} + \\omega x = 0$", "$\\frac{d^2x}{dt^2} = \\omega x$"], correct: 0, topic: "Differential Equation of SHM", difficulty: "medium", explanation: "সরল ছন্দিত গতির ব্যবকলনীয় সমীকরণ হলো $\\frac{d^2x}{dt^2} + \\omega^2 x = 0$। এখানে ঋণাত্মক চিহ্নটি নির্দেশ করে ত্বরণ সরণের বিপরীতমুখী।", concept: "SHM Differential Equation", shortcut: "d2x/dt2 + w^2*x = 0", mistake: "মাঝখানে মাইনাস চিহ্ন দেওয়া সমীকরণ বাছা", tip: "ভর্তি পরীক্ষায় সমীকরণ শনাক্তকরণে এটি খুব আসে।" },
-          { question: "সরল দোলকের সূত্র আবিষ্কার করেন কোন বিজ্ঞানী?", options: ["নিউটন", "গ্যালিলিও", "হিউজেনস", "কেপলার"], correct: 1, topic: "History of Pendulum", difficulty: "easy", explanation: "বিজ্ঞানী গ্যালিলিও পিসার গির্জার ঝুলন্ত ঝাড়বাতি দেখে দোলকের সমকাল সূত্র আবিষ্কার করেন।", concept: "Galileo Discovery", shortcut: "Galileo = Pendulum Laws", mistake: "নিউটন ভাবা", tip: "পরবর্তীতে হাইজেনস দোলক ঘড়ি আবিষ্কার করেন।" },
-          { question: "একটি সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য চারগুণ করা হলে এর নতুন দোলনকাল কত হবে?", options: ["1 সেকেন্ড", "2 সেকেন্ড", "4 সেকেন্ড", "8 সেকেন্ড"], correct: 2, topic: "Seconds Pendulum Calculation", difficulty: "medium", explanation: "সেকেন্ড দোলকের আদি দোলনকাল ২ সেকেন্ড। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল $\\sqrt{4} = 2$ গুণ হবে, অর্থাৎ $2 \\times 2 = 4$ সেকেন্ড।", concept: "Calculated Period", shortcut: "2 * root 4 = 4s", mistake: "৮ সেকেন্ড ভাবা", tip: "দৈর্ঘ্যের বর্গমূলের অনুপատে দোলনকাল পরিবর্তিত হয়।" },
-          { question: "সরল ছন্দিত স্পন্দনে কণার ত্বরণ সর্বোচ্চ হয় কোথায়?", options: ["সাম্যাবস্থানে", "বিস্তার প্রান্তে", "সাম্যাবস্থান ও বিস্তার প্রান্তের ঠিক মাঝে", "কোথাও না"], correct: 1, topic: "SHM Acceleration", difficulty: "easy", explanation: "ত্বরণ $a = -\\omega^2 x$। সরণ $x$ যখন সর্বোচ্চ (অর্থাৎ বিস্তার প্রান্তে $x = \\pm A$), তখন ত্বরণও সর্বোচ্চ হয়।", concept: "Maximum Acceleration Position", shortcut: "Max acceleration at extremes", mistake: "সাম্যাবস্থানে সর্বোচ্চ ভাবা", tip: "সাম্যাবস্থানে ত্বরণ শূন্য হয়।" },
-          { question: "দোলক ঘড়িকে পাহাড়ের চূড়ায় নিলে ঘড়িটি কেমন চলবে?", options: ["দ্রুত চলবে", "ধীরগতির হবে / স্লো চলবে", "সঠিক সময় দেবে", "বন্ধ হয়ে যাবে"], correct: 1, topic: "Pendulum Clock Behaviour", difficulty: "medium", explanation: "পাহাড়ে $g$ এর মান কমে যাওয়ায় দোলনকাল বেড়ে যায় (ঘড়ি ধীরগতির হয় বা প্রতি দিনে সময় হারায়)।", concept: "Clock Error on Mountain", shortcut: "Clock loses time on mountain", mistake: "দ্রুত চলা ভাবা", tip: "দোলনকাল বাড়লে ঘড়ি স্লো হয়ে যায়।" },
-          { question: "একটি সরল দোলকের ববের ভর দ্বিগুণ করলে এর দোলনকাল কত হবে?", options: ["অর্ধেক", "দ্বিগুণ", "একই থাকবে", "$\\sqrt{2}$ গুণ হবে"], correct: 2, topic: "Pendulum Properties", difficulty: "easy", explanation: "দোলনকালের সূত্রে ভর ($m$) এর কোনো টার্ম নেই ($T = 2\\pi \\sqrt{L/g}$)। তাই ববের ভর বা উপাদানের ওপর দোলনকাল নির্ভর করে না।", concept: "Mass Independence in Pendulum", shortcut: "Mass doesn't affect period", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "লোহা বা কাঠের ববের দোলনকাল একই দৈর্ঘ্যে সমান।" },
-          { question: "কৌণিক কম্পাঙ্ক $\\omega$ এবং সাধারণ কম্পাঙ্ক $f$-এর মধ্যে সঠিক সম্পর্ক কোনটি?", options: ["$\\omega = 2\\pi f$", "$\\omega = \\frac{f}{2\\pi}$", "$\\omega = \\pi f$", "$f = 2\\pi \\omega$"], correct: 0, topic: "Angular Frequency", difficulty: "easy", explanation: "কৌণিক কম্পাঙ্ক ও কম্পাঙ্কের সংজ্ঞা অনুযায়ী $\\omega = 2\\pi f = \\frac{2\\pi}{T}$।", concept: "Angular Frequency Formula", shortcut: "omega = 2 pi f", mistake: "উল্টো সম্পর্ক দেওয়া", tip: "কম্পাঙ্কের দ্বিগুণ পাই গুণ করলে কৌণিক কম্পাঙ্ক পাওয়া যায়।" },
-          { question: "একটি স্প্রিংয়ে $m$ ভর ঝুলিয়ে দিলে এটি প্রসারিত হয় $y$। এর দোলনকালের সঠিক প্রকাশ কোনটি?", options: ["$T = 2\\pi \\sqrt{\\frac{y}{g}}$", "$T = 2\\pi \\sqrt{\\frac{m}{k}}$", "$T = 2\\pi \\sqrt{\\frac{L}{g}}$", "$T = \\pi \\sqrt{\\frac{y}{g}}$"], correct: 0, topic: "Spring Static Extension", difficulty: "hard", explanation: "স্প্রিংয়ের ক্ষেত্রে হুকের সূত্রানুসারে $mg = ky \\implies \\frac{m}{k} = \\frac{y}{g}$। একে দোলনকালের সূত্রে বসালে $T = 2\\pi \\sqrt{\\frac{y}{g}}$ পাওয়া যায়।", concept: "Spring Extension Formula", shortcut: "T = 2 pi root(y/g)", mistake: "সাধারণ দোলকের সূত্র ভাবা", tip: "স্প্রিংয়ের দৈর্ঘ্য বা সরণ সরাসরি জানা থাকলে এই সূত্র ব্যবহার করা হয়।" },
-          { question: "সরল ছন্দিত গতির ক্ষেত্রে মোট শক্তির গ্রাফটি কেমন হয়?", options: ["মূলবিন্দুগামী সরলরেখা", "সমান্তরাল সরলরেখা (সরণের অক্ষের)", "পরাবৃত্ত", "উপবৃত্ত"], correct: 1, topic: "Energy Graphs in SHM", difficulty: "medium", explanation: "মোট শক্তি সরণ বা সময়ের ওপর নির্ভর করে না, এটি সর্বদা ধ্রুবক। তাই সরণের অক্ষের সমান্তরাল একটি সরলরেখা পাওয়া যায়।", concept: "Total Energy Graph", shortcut: "Parallel line to displacement axis", mistake: "বক্ররেখা ভাবা", tip: "গতিশক্তি ও বিভব শক্তির যোগফল সর্বদা ধ্রুবক থাকে।" },
-          { question: "নিচের কোনটি পর্যায়বৃত্ত গতির উদাহরণ নয়?", options: ["ঘড়ির কাটার গতি", "সূর্যের চারদিকে পৃথিবীর প্রদক্ষিণ", "বায়ুমণ্ডলে শব্দের প্রোপাগেশন", "সরল দোলকের গতি"], correct: 2, topic: "Periodic Motion Examples", difficulty: "easy", explanation: "শব্দ তরঙ্গ হলো তরঙ্গ গতি (Wave Motion), এটি নির্দিষ্ট বিন্দুকে নির্দিষ্ট সময়ে বারবার অতিক্রম করে না, তবে পর্যায়বৃত্ত হতে পারে। তবে স্পেসিফিকালি শব্দের প্রোপাগেশন হলো তরঙ্গ সঞ্চারণ। (বিকল্প প্রশ্নভেদে সরল দোলকের গতি স্পন্দন গতি)।", concept: "Periodic vs Non-periodic", shortcut: "Identify wave/periodic traits", mistake: "ঘড়ির কাঁটা ভাবা", tip: "সকল স্পন্দন গতিই পর্যায়বৃত্ত গতি।" },
-          { question: "একটি সেকেন্ড দোলকের দৈর্ঘ্য চার গুণ করলে নতুন দোলনকাল কত হবে?", options: ["2 সেকেন্ড", "4 সেকেন্ড", "8 সেকেন্ড", "16 সেকেন্ড"], correct: 1, topic: "Seconds Pendulum Calculation", difficulty: "medium", explanation: "সেকেন্ড দোলকের আদি দোলনকাল ২ সেকেন্ড। দৈর্ঘ্য চার গুণ করলে দোলনকাল $\\sqrt{4} = 2$ গুণ হয়, অর্থাৎ $2 \\times 2 = 4$ সেকেন্ড।", concept: "Length Scaling", shortcut: "2 * 2 = 4s", mistake: "৮ সেকেন্ড ভাবা", tip: "দৈর্ঘ্য ৪ গুণ হলে দোলনকাল দ্বিগুণ হয়।" },
-          { question: "সরল ছন্দিত স্পন্দনরত কণার গতিবেগ সর্বোচ্চ হয় কখন?", options: ["বিস্তার প্রান্তে", "সাম্যাবস্থানে", "সরণ যখন সর্বোচ্চ", "ত্বরণ যখন সর্বোচ্চ"], correct: 1, topic: "SHM Velocity Position", difficulty: "easy", explanation: "সাম্যাবস্থানে সরণ $x = 0$ হওয়ায় গতিশক্তি ও বেগ সর্বোচ্চ হয় ($v_{max} = \\omega A$)।", concept: "Max Velocity Position", shortcut: "Velocity max at equilibrium", mistake: "বিস্তার প্রান্তে ভাবা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ কিন্তু ত্বরণ শূন্য।" },
-          { question: "কোনো সরল দোলকের দোলনকাল ৫০% বৃদ্ধি করতে হলে এর দৈর্ঘ্য কত শতাংশ বাড়াতে হবে?", options: ["100%", "125%", "50%", "25%"], correct: 1, topic: "Percentage Change Problems", difficulty: "hard", explanation: "$T_2 = 1.5 T_1$। যেহেতু $T \\propto \\sqrt{L}$, তাই $\\frac{L_2}{L_1} = (1.5)^2 = 2.25$। অর্থাৎ দৈর্ঘ্য ১২৫% বাড়াতে হবে ($2.25 - 1 = 1.25$ বা ১২৫%)।", concept: "Percentage Length Calculation", shortcut: "(1.5)^2 - 1 = 125%", mistake: "৫০% বা ১০০% ভাবা", tip: "ভর্তি পরীক্ষার জন্য এটি একটি স্ট্যান্ডার্ড ম্যাথ।" },
-          { question: "পৃথিবী পৃষ্ঠে সেকেন্ড দোলকের দৈর্ঘ্য প্রায় কত মিটার?", options: ["0.993 মিটার", "1.0 মিটার", "9.8 মিটার", "0.5 মিটার"], correct: 0, topic: "Seconds Pendulum Length", difficulty: "easy", explanation: "৯৯.৩ সেমি কে মিটারে প্রকাশ করলে প্রায় ০.৯৯৩ মিটার হয়।", concept: "Pendulum Meter Conversion", shortcut: "99.3 cm = 0.993 m", mistake: "১ মিটার নিখুঁত ধরা", tip: "প্রায় ১ মিটার হিসেবে অনেক সময় ধরা হয়।" },
-          { question: "একটি স্প্রিংকে টেনে এর দৈর্ঘ্য দ্বিগুণ করা হলে এর মধ্যে সঞ্চিত স্থিতিশক্তি কত গুণ হবে?", options: ["দ্বিগুণ", "চারগুণ", "আটগুণ", "অপরিবর্তিত"], correct: 1, topic: "Spring Potential Energy", difficulty: "medium", explanation: "স্থিতিশক্তি $U = \\frac{1}{2} k x^2$। সরণ বা প্রসারণ $x$ দ্বিগুণ করলে শক্তি $2^2 = 4$ গুণ বৃদ্ধি পাবে।", concept: "Spring Energy Proportionality", shortcut: "U proportional to x^2", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "বর্গের হারে স্থিতিশক্তি বাড়ে।" },
-          { question: "সরল ছন্দিত স্পন্দনে সম্পন্ন একটি পূর্ণ কম্পনে কণা কর্তৃক অতিক্রান্ত মোট দূরত্ব কত?", options: ["$A$", "$2A$", "$4A$", "শূন্য"], correct: 2, topic: "SHM Displacement & Distance", difficulty: "easy", explanation: "কণাটি সাম্যাবস্থান থেকে বিস্তার $A$ তে যায়, সেখান থেকে বিপরীত বিস্তার $-A$ তে গিয়ে আবার সাম্যাবস্থানে ফিরে আসে। মোট দূরত্ব = $A + A + A + A = 4A$।", concept: "Total Distance per Cycle", shortcut: "4 * Amplitude", mistake: "২এ (2A) ভাবা", tip: "সরণ শূন্য হলেও অতিক্রান্ত দূরত্ব ৪এ।" },
-          { question: "দোলক ঘড়ি ধীরে চলার কারণ কী?", options: ["দোলনকাল হ্রাস পাওয়া", "দোলনকাল বৃদ্ধি পাওয়া", "কার্যকরী দৈর্ঘ্য হ্রাস পাওয়া", "অভিকর্ষজ ত্বরণ বৃদ্ধি পাওয়া"], correct: 1, topic: "Pendulum Clock Errors", difficulty: "medium", explanation: "দোলনকাল $T$ বৃদ্ধি পেলে ঘড়ির কাটা প্রতি সেকেন্ডে কম ঘরে, ফলে ঘড়ি ধীরে বা স্লো চলে।", concept: "Clock Lagging Reasons", shortcut: "Increased T leads to slow clock", mistake: "দৈর্ঘ্য কমা ভাবা", tip: "দোলনকাল বাড়লেই ঘড়ি সময় হারায়।" },
-          { question: "সরল দোলকের গতি কোন ধরনের গতি?", options: ["পর্যায়বৃত্ত গতি", "সরল ছন্দিত গতি (প্রায়শই)", "ঘূর্ণন গতি", "চলন গতি"], correct: 1, topic: "Pendulum Motion Type", difficulty: "easy", explanation: "বিস্তার খুব কম হলে সরল দোলকের গতি প্রায় সরল ছন্দিত গতি (Simple Harmonic Motion) হিসেবে গণ্য করা হয়।", concept: "Pendulum SHM Approximation", shortcut: "Small angle = SHM", mistake: "শুধুমাত্র পর্যায়বৃত্ত বলা", tip: "কৌণিক বিস্তার ৪ ডিগ্রির কম হলে এটি নিখুঁত সরল ছন্দিত গতি হয়।" },
-          { question: "একটি স্প্রিংয়ের বল ধ্রুবক $k$ এবং এর সাথে সংযুক্ত ভরের ভরবেগ $p$ হলে এর গতিশক্তি কত?", options: ["$\\frac{p^2}{2m}$", "$\\frac{1}{2}kx^2$", "$mgx$", "$\\frac{p}{2m}$"], correct: 0, topic: "Kinetic Energy & Momentum", difficulty: "medium", explanation: "যেকোনো গতিশীল বস্তুর গতিশক্তি ও ভরবেগের মধ্যকার চিরন্তন সম্পর্ক হলো $E_k = \\frac{p^2}{2m}$।", concept: "KE and Momentum Relation", shortcut: "Standard KE formula using p", mistake: "স্প্রিংয়ের শক্তির সূত্র দেওয়া", tip: "ভরবেগ দেওয়া থাকলে এই সূত্র ব্যবহার করতে হয়।" },
-          { question: "সরল ছন্দিত স্পন্দনরত কণার বেগ এবং সরণের মধ্যে দশা পার্থক্য কত?", options: ["$0$", "$\\pi/2$", "$\\pi$", "$2\\pi$"], correct: 1, topic: "Phase Difference in SHM", difficulty: "hard", explanation: "সরণ $x = A \\sin(\\omega t)$ হলে বেগ $v = \\omega A \\cos(\\omega t) = \\omega A \\sin(\\omega t + \\pi/2)$। এদের দশা পার্থক্য $\\pi/2$ বা ৯০ ডিগ্রি।", concept: "Phase between x and v", shortcut: "Phase diff = pi/2", mistake: "জিরো বা পাই ভাবা", tip: "বেগ সরণের চেয়ে ৯০ ডিগ্রি অগ্রগামী থাকে।" },
-          { question: "কোন শর্তে সরল দোলকের গতি সরল ছন্দিত গতি হয়?", options: ["কৌণিক বিস্তার খুব বড় হলে", "কৌণিক বিস্তার খুব ক্ষুদ্র ($\\le 4^\\circ$) হলে", "ববের ভর বেশি হলে", "সুতা খুব লম্বা হলে"], correct: 1, topic: "SHM Condition for Pendulum", difficulty: "medium", explanation: "কৌণিক বিস্তার ক্ষুদ্র হলে $\\sin\\theta \\approx \\theta$ ধরা যায়, যা সরল ছন্দিত গতির ব্যবকলনীয় সমীকরণ মেনে চলে।", concept: "Small Angle Approximation", shortcut: "Theta <= 4 degrees", mistake: "বড় বিস্তার হওয়া ভাবা", tip: "বড় কোণে দুললে এটি সরল ছন্দিত থাকে না।" },
-          { question: "একটি সেকেন্ড দোলকের কার্যকর দৈর্ঘ্য ৯ গুণ করা হলে নতুন দোলনকাল কত হবে?", options: ["3 সেকেন্ড", "6 সেকেন্ড", "9 সেকেন্ড", "18 সেকেন্ড"], correct: 1, topic: "Seconds Pendulum Scaling", difficulty: "medium", explanation: "আদি দোলনকাল $T_1 = 2$ সেকেন্ড। দৈর্ঘ্য ৯ গুণ করায় নতুন দোলনকাল $T_2 = 2 \\times \\sqrt{9} = 2 \\times 3 = 6$ সেকেন্ড।", concept: "Length Multiplier Calculation", shortcut: "2 * root 9 = 6s", mistake: "১৮ সেকেন্ড ভাবা", tip: "বর্গমূলের নিয়মে দোলনকাল পরিবর্তিত হয়।" },
-          { question: "মাধ্যাকর্ষণ বলের প্রভাবে সৃষ্ট অবমুক্ত দোলনের ক্ষেত্রে শক্তি কী রূপ ধারণ করে?", options: ["শক্তি সংরক্ষিত থাকে না", "শক্তি সংরক্ষিত থাকে (Conservation of Energy)", "শক্তি ক্রমান্বয়ে বৃদ্ধি পায়", "শক্তি সম্পূর্ণ হ্রাস পায়"], correct: 1, topic: "Energy Conservation in SHM", difficulty: "easy", explanation: "বায়ুর বাধা বা ঘর্ষণ উপেক্ষা করলে আদর্শ সরল দোলকের গতিতে যান্ত্রিক শক্তি সর্বদা সংরক্ষিত থাকে।", concept: "Mechanical Energy Conservation", shortcut: "Total energy remains constant", mistake: "শক্তি অপচয় হওয়া ভাবা", tip: "গতিশক্তি ও বিভব শক্তির রূপান্তর ঘটে মাত্র।" },
-          { question: "সরল ছন্দিত গতির ক্ষেত্রে সর্বোচ্চ বেগের মান কত?", options: ["$\\omega A$", "$\\omega^2 A$", "$\\frac{A}{\\omega}$", "$A\\omega^2$"], correct: 0, topic: "SHM Max Velocity", difficulty: "easy", explanation: "বেগ $v = \\omega \\sqrt{A^2 - x^2}$। সাম্যাবস্থানে $x = 0$ হওয়ায় সর্বোচ্চ বেগ $v_{max} = \\omega A$।", concept: "Max Velocity Formula", shortcut: "v_max = omega * A", mistake: "ওমেগা স্কয়ার এ ভাবা", tip: "বিস্তার ও কৌণিক কম্পাঙ্কের গুণফলই সর্বোচ্চ বেগ।" },
-          { question: "কোনটি স্প্রিংয়ের বল ধ্রুবক ($k$)-এর সঠিক একক?", options: ["N/m", "N m", "N/m²", "kg/s²"], correct: 0, topic: "Spring Constant Units", difficulty: "easy", explanation: "হুকের সূত্রানুসারে $F = -kx \\implies k = \\frac{F}{x}$। এর একক নিউটন প্রতি মিটার বা N/m (বা kg s⁻²)।", concept: "Spring Constant Dimensions", shortcut: "Force / Distance = N/m", mistake: "নিউটন মিটার ভাবা", tip: "মাত্রা সমীকরণ $MT^{-2}$।" },
-          { question: "পৃথিবীর কেন্দ্রে সরল দোলকের দোলনকাল কত হবে?", options: ["শূন্য", "২ সেকেন্ড", "অসীম (Infinite)", "২৪ সেকেন্ড"], correct: 2, topic: "Pendulum at Earth Center", difficulty: "medium", explanation: "পৃথিবীর কেন্দ্রে অভিকর্ষজ ত্বরণ $g = 0$। ফলে দোলনকাল $T = 2\\pi \\sqrt{L/g} = \\infty$ বা অসীম হয়।", concept: "Center of Earth Gravity", shortcut: "g = 0 at center -> T = infinity", mistake: "শূন্য হওয়া ভাবা", tip: "মহাকাশযান ও পৃথিবীর কেন্দ্রের ক্ষেত্রে একই নিয়ম প্রযোজ্য।" },
-          { question: "একটি কণার সরণ $x = 4 \\cos(5t)$ হলে এর বিস্তার কত?", options: ["4", "5", "20", "0.8"], correct: 0, topic: "SHM Amplitude Identification", difficulty: "easy", explanation: "সমীকরণ $x = A \\cos(\\omega t)$-এর সাথে তুলনা করলে বিস্তার $A = 4$ একক পাওয়া যায়।", concept: "Amplitude Extraction", shortcut: "Coefficient of cos/sin is amplitude", mistake: "৫ বা ২০ ভাবা", tip: "ত্রিকোণমিতিক ফাংশনের সামনের সহগই বিস্তার।" },
-          { question: "সরল ছন্দিত স্পন্দন সম্পন্ন কণার গতিপথ কেমন?", options: ["বৃত্তাকার", "উপবৃত্তাকার", "সরলরৈখিক", "উপবৃত্তাকার বা পরাবৃত্তাকার"], correct: 2, topic: "SHM Path", difficulty: "easy", explanation: "সরল ছন্দিত গতি সবসময় একটি সরলরেখা বরাবর একই পথে বারবার যাতায়াত করে।", concept: "Straight Line Motion", shortcut: "SHM is linear oscillation", mistake: "বৃত্তাকার ভাবা", tip: "এটি একমাত্রিক স্পন্দন গতি।" },
-          { question: "সরল দোলকের সাম্যাবস্থান থেকে সরণ বিস্তারের অর্ধেক হলে গতিশক্তি মোট শক্তির কত অংশ হবে?", options: ["$\\frac{1}{4}$ অংশ", "$\\frac{3}{4}$ অংশ", "$\\frac{1}{2}$ অংশ", "$\\frac{1}{8}$ অংশ"], correct: 1, topic: "Energy Ratio in SHM", difficulty: "hard", explanation: "সরণ $x = A/2$ হলে, গতিশক্তি $E_k = \\frac{1}{2}k(A^2 - x^2) = \\frac{1}{2}k(A^2 - A^2/4) = \\frac{3}{4} \\left(\\frac{1}{2}kA^2\\right) = \\frac{3}{4} E$।", concept: "Kinetic Energy Fraction", shortcut: "At x = A/2, KE = 3/4 Total Energy", mistake: "১/৪ অংশ ভাবা", tip: "বিভব শক্তি হবে ১/৪ অংশ।" },
-          { question: "একটি সেকেন্ড দোলকের দৈর্ঘ্য চার গুণ করলে এর কম্পাঙ্ক কত হবে?", options: ["দ্বিগুণ", "অর্ধেক", "চারগুণ", "অপরিবর্তিত"], correct: 1, topic: "Frequency Calculation", difficulty: "medium", explanation: "দৈর্ঘ্য ৪ গুণ করলে দোলনকাল দ্বিগুণ হয় ($T_2 = 2 T_1$)। কম্পাঙ্ক দোলনকালের ব্যস্তানুপাতিক ($f = 1/T$), তাই কম্পাঙ্ক অর্ধেক হয়ে যাবে।", concept: "Frequency vs Length", shortcut: "Halved frequency", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "দোলনকাল বাড়লে কম্পাঙ্ক কমে।" },
-          { question: "কোনো কণার পর্যায়কাল $T$ এবং কম্পাঙ্ক $f$ হলে এদের সঠিক সম্পর্ক কোনটি?", options: ["$f = \\frac{1}{T}$", "$f = T$", "$f = 2\\pi T$", "$f = \\frac{T}{2\\pi}$"], correct: 0, topic: "Frequency Period Relation", difficulty: "easy", explanation: "এক সেকেন্ডে সম্পন্ন কম্পন সংখ্যা হলো কম্পাঙ্ক ($f$) এবং একটি পূর্ণ কম্পনের সময়কাল হলো পর্যায়কাল ($T$)। এরা একে অপরের ব্যস্তানুপাতিক।", concept: "Basic Frequency Relation", shortcut: "f = 1 / T", mistake: "সমান ধরে নেওয়া", tip: "দুটোর গুণফল সবসময় ১ হয় ($f \\cdot T = 1$)।" },
-          { question: "সরল ছন্দিত গতি সম্পন্ন কণার ত্বরণ ও সরণের অনুপাত কিসের সমান?", options: ["$\\omega^2$", "$-\\omega^2$", "$\\frac{1}{\\omega^2}$", "$\\omega$"], correct: 1, topic: "Acceleration to Displacement Ratio", difficulty: "medium", explanation: "ত্বরণ $a = -\\omega^2 x$। সুতরাং ত্বরণ ও সরণের অনুপাত $\\frac{a}{x} = -\\omega^2$।", concept: "Acceleration Displacement Ratio", shortcut: "a/x = -w^2", mistake: "ওমেগা স্কয়ার পজিটিভ ধরা", tip: "ঋণাত্মক চিহ্নটি বিপরীতমুখী নির্দেশ করে।" },
-          { question: "স্প্রিংয়ের বল ধ্রুবক কিসের ওপর নির্ভর করে?", options: ["স্প্রিংয়ের উপাদান ও আকৃতির ওপর", "ঝুলন্ত ভরের ওপর", "প্রযুক্ত বলের ওপর", "সরণের মানের ওপর"], correct: 0, topic: "Spring Constant Dependency", difficulty: "medium", explanation: "বল ধ্রুবক $k$ হলো স্প্রিংয়ের নিজস্ব বৈশিষ্ট্য, যা উপাদানের প্রকৃতি, তারের ব্যাস ও কুন্ডলীর ব্যাসার্ধের ওপর নির্ভর করে। ভরের ওপর নির্ভর করে না।", concept: "Spring Constant Factors", shortcut: "Depends on material and geometry", mistake: "ভরের ওপর নির্ভর করা ভাবা", tip: "স্প্রিং বদলালে কেবল বল ধ্রুবক পরিবর্তিত হয়।" },
-          { question: "সরল দোলকের ববের ওজন কোন বল দ্বারা ভারসাম্য রক্ষা করে?", options: ["টান বল (Tension)", "অভিকর্ষ বল", "কেন্দ্রমুখী বল", "প্রত্যায়নকারী বল"], correct: 0, topic: "Pendulum Forces", difficulty: "hard", explanation: "দোলকের সুতার টান বল ববের ওজনের উপাংশ $mg \\cos\\theta$-কে প্রমিত বা ভারসাম্য রক্ষা করে। অন্য উপাংশ $mg \\sin\\theta$ প্রত্যায়নকারী বল জোগায়।", concept: "Tension and Weight Balance", shortcut: "T = mg cos(theta)", mistake: "অভিকর্ষ বল ভাবা", tip: "সুতার টান সাম্যাবস্থায় সর্বোচ্চ থাকে।" },
-          { question: "একটি কণার সরণ সমীকরণ $x = 10 \\sin(2\\pi t)$ হলে এর পর্যায়কাল $T$ কত?", options: ["$1$ সেকেন্ড", "$2$ সেকেন্ড", "$\\pi$ সেকেন্ড", "$0.5$ সেকেন্ড"], correct: 0, topic: "Period Extraction", difficulty: "medium", explanation: "এখানে কৌণিক কম্পাঙ্ক $\\omega = 2\\pi$। আমরা জানি $\\omega = \\frac{2\\pi}{T} \\implies 2\\pi = \\frac{2\\pi}{T} \\implies T = 1$ সেকেন্ড।", concept: "Calculating T from Equation", shortcut: "T = 2pi / omega = 1s", mistake: "২ সেকেন্ড ভাবা", tip: "টি-এর সহগ থেকে সহজেই পর্যায়কাল বের করা যায়।" },
-          { question: "সেকেন্ড দোলকের কার্যকারী দৈর্ঘ্য ৪ গুণ করা হলে প্রতি মিনিটে এর দোলন সংখ্যা কত হবে?", options: ["৩০টি", "১৫টি", "৬০টি", "১২০টি"], correct: 0, topic: "Pendulum Oscillation Count", difficulty: "hard", explanation: "আদি দোলনকাল ২ সেকেন্ড হওয়ায় প্রতি মিনিটে দোলন সংখ্যা ৩০টি। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল দ্বিগুণ (৪ সেকেন্ড) হবে, ফলে প্রতি মিনিটে দোলন সংখ্যা অর্ধেক অর্থাৎ ৩০টি হবে।", concept: "Oscillations per Minute", shortcut: "60s / 4s = 15 oscillations (Wait: 60 / 4 = 15)", mistake: "৩০ ভাবা (সঠিক উত্তর ১৫)", tip: "দোলনকাল দ্বিগুণ হলে প্রতি মিনিটে দোলন সংখ্যা ৩০ থেকে কমে ১৫ হবে।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কোনো কণার বিস্তার $A$ হলে, সাম্যাবস্থান থেকে কত দূরত্বে এর বেগ সর্বোচ্চ বেগের অর্ধেক হবে?", options: ["$\\frac{\\sqrt{3}}{2} A$", "$\\frac{A}{2}$", "$\\frac{A}{\\sqrt{2}}$", "$\\frac{A}{4}$"], correct: 0, topic: "SHM Velocity and Displacement", difficulty: "hard", explanation: "বেগ $v = \\frac{v_{max}}{2} \\implies \\omega \\sqrt{A^2 - x^2} = \\frac{1}{2} \\omega A$। উভয়পক্ষ বর্গ করে সমাধান করলে $A^2 - x^2 = \\frac{A^2}{4} \\implies x = \\frac{\\sqrt{3}}{2} A$।", concept: "Velocity Half Displacement", shortcut: "x = (sqrt(3)/2) * A", mistake: "A/2 ভাবা", tip: "ভর্তি পরীক্ষার জন্য এটি একটি অত্যন্ত গুরুত্বপূর্ণ স্ট্যান্ডার্ড প্রশ্ন।" },
-          { question: "কোন তাপমাত্রায় সেকেন্ড দোলক ঘড়ি সবচেয়ে দ্রুত চলবে?", options: ["শীতকালে (কম তাপমাত্রায়)", "গ্রীষ্মকালে", "বর্ষাকালে", "সব সময় সমান"], correct: 0, topic: "Temperature Effect on Pendulum", difficulty: "medium", explanation: "শীতকালে তাপমাত্রা কমে যাওয়ায় দোলকের দৈর্ঘ্য সংকুচিত হয়ে কমে যায়, ফলে দোলনকাল কমে যায় এবং ঘড়ি দ্রুত চলে (সময় লাভ করে)।", concept: "Thermal Expansion Pendulum", shortcut: "Cold weather = shorter length = fast clock", mistake: "গ্রীষ্মকাল ভাবা", tip: "গ্রীষ্মকালে দৈর্ঘ্য বেড়ে যাওয়ায় ঘড়ি স্লো বা ধীরে চলে।" },
-          { question: "সরল দোলকের গতি কোন নীতি মেনে চলে?", options: ["শক্তির সংরক্ষণশীলতা নীতি", "ভরবেগের সংরক্ষণশীলতা নীতি", "কৌণিক ভরবেগের সংরক্ষণশীলতা নীতি", "চার্জ সংরক্ষণশীলতা"], correct: 0, topic: "Conservation Principles", difficulty: "easy", explanation: "সরল দোলকের গতিতে গতিশক্তি ও বিভব শক্তির পারস্পরিক রূপান্তর ঘটে এবং মোট যান্ত্রিক শক্তি সর্বদা সংরক্ষিত থাকে।", concept: "Energy Conservation in Oscillation", shortcut: "Energy is conserved", mistake: "ভরবেগ সংরক্ষণ ভাবা", tip: "ঘর্ষণ বা বায়ুর বাধা না থাকলে যান্ত্রিক শক্তি ধ্রুব থাকে।" },
-          { question: "একটি কণা সরল ছন্দিত স্পন্দনে দুলছে। এর সরণ যখন বিস্তারের সমান ($x = A$), তখন এর বিভবশক্তি কত?", options: ["সর্বনিম্ন (শূন্য)", "সর্বোচ্চ", "মাঝারি", "অসীম"], correct: 1, topic: "SHM Potential Energy Extremes", difficulty: "easy", explanation: "বিভবশক্তি $U = \\frac{1}{2} k x^2$। সরণ যখন সর্বোচ্চ অর্থাৎ $x = A$, তখন বিভবশক্তি সর্বোচ্চ হয় এবং গতিশক্তি শূন্য হয়।", concept: "Max Potential Energy", shortcut: "Max PE at amplitude extremes", mistake: "শূন্য ভাবা", tip: "বিস্তার প্রান্তে কণা সম্পূর্ণ স্থিতিশক্তিতে রূপান্তরিত হয়।" },
-          { question: "সরল ছন্দিত গতির ক্ষেত্রে বেগ বনাম সরণের লেখচিত্রের আকৃতি কীরূপ হয়?", options: ["সরলরেখা", "উপবৃত্ত (Ellipse)", "পরাবৃত্ত", "বৃত্ত"], correct: 1, topic: "Phase Space / Velocity Displacement Graph", difficulty: "hard", explanation: "বেগ ও সরণের সমীকরণ থেকে পাই $\\frac{v^2}{\\omega^2 A^2} + \\frac{x^2}{A^2} = 1$, যা একটি উপবৃত্তের (Ellipse) সমীকরণ নির্দেশ করে।", concept: "Velocity-Displacement Ellipse", shortcut: "Ellipse shape in v-x graph", mistake: "বৃত্ত বা সরলরেখা ভাবা", tip: "ভর্তি পরীক্ষার এমসিকিউতে এটি প্রায়ই গ্রাফ হিসেবে আসে।" },
-          { question: "একটি স্প্রিংয়ে $m$ ভর ঝুলিয়ে দিলে এটি টেনে ছেড়ে দেওয়া হলো। এর কম্পাঙ্ক দ্বিগুণ করতে হলে ভর কত গুণ করতে হবে?", options: ["$\\frac{1}{4}$ অংশ", "$\\frac{1}{2}$ অংশ", "দ্বিগুণ", "চারগুণ"], correct: 0, topic: "Spring Frequency Scaling", difficulty: "hard", explanation: "কম্পাঙ্ক $f = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}}$ অর্থাৎ $f \\propto \\frac{1}{\\sqrt{m}}$। কম্পাঙ্ক দ্বিগুণ ($2f$) করতে হলে ভর $\\frac{1}{4}$ গুণ (চার ভাগের এক ভাগ) করতে হবে।", concept: "Frequency vs Mass Inverse Root", shortcut: "1 / 4th mass for double frequency", mistake: "চারগুণ ভাবা", tip: "ব্যস্তানুপাতিক বর্গমূল সম্পর্ক থাকায় ভর কমাতে হবে।" }
+          { question: "নিচের কোনটি পর্যায়বৃত্ত গতির (Periodic Motion) উদাহরণ নয়?", options: ["ঘড়ির কাটার গতি", "সূর্যের চারদিকে পৃথিবীর আবর্তন", "সরল দোলকের গতি", "বাতাসে নিক্ষিপ্ত পাথরের গতি"], correct: 3, topic: "Basic Concepts", difficulty: "easy", explanation: "বাতাসে নিক্ষিপ্ত পাথরের গতি একটি সরলরৈখিক বা বক্রগতির উদাহরণ, এটি নির্দিষ্ট সময় পর পর পুনরাবৃত্তি হয় না তাই এটি পর্যায়বৃত্ত গতি নয়।", concept: "Periodic Motion Definition", shortcut: "Repeated Motion = Periodic", mistake: "সব গতির ক্ষেত্রে ঘড়ির কাটার সাথে মেলানো", tip: "নির্দিষ্ট সময় পর পর নির্দিষ্ট দিক থেকে অতিক্রম করাই পর্যায়বৃত্ত গতি।" },
+          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কোনো কণার ত্বরণ ও স্মরণের মধ্যে সম্পর্ক কোনটি?", options: ["$a \\propto x$", "$a \\propto -x$", "$a \\propto \\frac{1}{x}$", "$a \\propto x^2$"], correct: 1, topic: "SHM Kinematics", difficulty: "easy", explanation: "সরল ছন্দিত গতির ক্ষেত্রে ত্বরণ স্মরণের সমানুপাতিক কিন্তু বিপরীতমুখী, অর্থাৎ $a = -\\omega^2 x$ বা $a \\propto -x$।", concept: "SHM Acceleration", shortcut: "a = -ω²x", mistake: "ঋণাত্মক চিহ্ন বাদ দেওয়া", tip: "ঋণাত্মক চিহ্নটি নির্দেশ করে ত্বরণ সর্বদা সাম্যাবস্থানের দিকেমুখী।" },
+          { question: "সরল দোলকের কার্যকর দৈর্ঘ্য ৪ গুণ বাড়ালে এর দোলনকাল কত গুণ হবে?", options: ["২ গুণ", "৪ গুণ", "$\\sqrt{2}$ গুণ", "অর্ধেক"], correct: 0, topic: "Simple Pendulum", difficulty: "medium", explanation: "$T = 2\\pi \\sqrt{L/g}$। সুতরাং $L$ ৪ গুণ হলে $T$ হবে $\\sqrt{4} = 2$ গুণ।", concept: "Pendulum Length & Time Period", shortcut: "T ∝ √L", mistake: "৪ গুণ লিখে ফেলা", tip: "দৈর্ঘ্য ৪ গুণ হলে দোলনকাল দ্বিগুণ হয়।" },
+          { question: "একটি সেকেন্ড দোলকের কার্যকর দৈর্ঘ্য পৃথিবীর কেন্দ্রে নিয়ে গেলে এর দোলনকাল কত হবে?", options: ["২ সেকেন্ড", "শূন্য", "অসীম (Infinite)", "১ সেকেন্ড"], correct: 2, topic: "Simple Pendulum", difficulty: "hard", explanation: "পৃথিবীর কেন্দ্রে অভিকর্ষজ ত্বরণ $g = 0$। সূত্র $T = 2\\pi \\sqrt{L/g}$ অনুযায়ী $g = 0$ হলে দোলনকাল অসীম হয়। অর্থাৎ দোলকটি আর দুলবে না।", concept: "Gravity at Earth Center", shortcut: "g = 0 ⟹ T = ∞", mistake: "শূন্য ধরে নেওয়া", tip: "কেন্দ্রের দিকে বা মহাশূন্যে দোলক অচল হয়ে যায়।" },
+          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কণার সর্বোচ্চ বেগ কত?", options: ["$v_{max} = \\omega x$", "$v_{max} = \\omega A$", "$v_{max} = \\frac{A}{\\omega}$", "$v_{max} = \\omega^2 A$"], correct: 1, topic: "SHM Velocity", difficulty: "easy", explanation: "সর্বোচ্চ সরণ বা বিস্তার $x = A$ হলে বেগ সর্বোচ্চ হয়, যার মান $v_{max} = \\omega A$।", concept: "Maximum Velocity in SHM", shortcut: "v_max = ωA", mistake: "ωx ব্যবহার করা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ এবং বিস্তার অবস্থানে বেগ শূন্য।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার মোট শক্তির সমীকরণ কোনটি?", options: ["$E = \\frac{1}{2}m\\omega^2 A^2$", "$E = m\\omega^2 A$", "$E = \\frac{1}{2}m\\omega A^2$", "$E = m\\omega A$"], correct: 0, topic: "SHM Energy", difficulty: "medium", explanation: "সরল ছন্দিত গতিতে মোট শক্তি গতিশক্তি ও স্থিতিশক্তির যোগফল, যার মান ধ্রুবক এবং $E = \\frac{1}{2}m\\omega^2 A^2$।", concept: "Total Energy of SHM", shortcut: "E = ½ mω²A²", mistake: "হাফ বাদ দেওয়া", tip: "মোট শক্তি বিস্তারের বর্গের সমানুপাতিক।" },
+          { question: "একটি স্প্রিংকে টেনে লম্বা করলে এর মধ্যে কোন শক্তি সঞ্চিত হয়?", options: ["গতিশক্তি", "স্থিতিশক্তি (Potential Energy)", "চৌম্বক শক্তি", "রাসায়নিক শক্তি"], correct: 1, topic: "Spring Oscillation", difficulty: "easy", explanation: "স্প্রিংকে প্রসারিত বা সংকুচিত করলে কৃতকাজ স্থিতিশক্তি হিসেবে সঞ্চিত হয় ($U = \\frac{1}{2}kx^2$)।", concept: "Spring Potential Energy", shortcut: "Elastic PE", mistake: "গতিশক্তি ভাবা", tip: "স্প্রিংয়ের ক্ষেত্রে বিভব শক্তি ও স্থিতিশক্তি একই।" },
+          { question: "কোন তাপমাত্রায় সেকেন্ড দোলকের ঘড়ি সঠিক সময় দেয়?", options: ["$0^\\circ C$", "$4^\\circ C$", "$20^\\circ C$", "নির্দিষ্ট কোনো তাপমাত্রা নেই (Room Temp/Standard)"], correct: 3, topic: "Temperature Effect on Pendulum", difficulty: "medium", explanation: "ঘড়ি প্রস্তুতকারক নির্দিষ্ট কোনো আদর্শ তাপমাত্রায় (সাধারণত ২০° সেলসিয়াস) সেকেন্ড দোলক তৈরি করেন, যা পরিবেশভেদে পরিবর্তিত হয়।", concept: "Standard Clock Temperature", shortcut: "Standard Calibration Temp", mistake: "৪ ডিগ্রি সেলসিয়াস ভাবা", tip: "তাপমাত্রা বাড়লে দোলক দীর্ঘ হয় এবং ঘড়ি স্লো হয়ে যায়।" },
+          { question: "একটি স্প্রিং ধ্রুবক $k$ বিশিষ্ট স্প্রিংকে সমান দুই টুকরো করলে প্রতি টুকরার স্প্রিং ধ্রুবক কত হবে?", options: ["$k$", "$2k$", "$k/2$", "$4k$"], correct: 1, topic: "Spring Constant", difficulty: "hard", explanation: "স্প্রিংয়ের দৈর্ঘ্য অর্ধেক হলে স্প্রিং ধ্রুবক দ্বিগুণ হয়, কারণ স্প্রিং ধ্রুবক দৈর্ঘ্যের ব্যস্তানুপাতিক ($k \\propto 1/L$)।", concept: "Spring Splitting", shortcut: "Length halved = Constant doubled (2k)", mistake: "অর্ধেক (k/2) ভেবে বসা", tip: "টুকরো করলে প্রতি অংশের দৈর্ঘ্য কমে তাই শক্তিমত্তা বাড়ে।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার সাম্যাবস্থানে ত্বরণ কত?", options: ["সর্বোচ্চ", "শূন্য (Zero)", "অসীম", "মধ্যম মানের"], correct: 1, topic: "SHM Kinematics", difficulty: "easy", explanation: "যেহেতু $a = -\\omega^2 x$, সাম্যাবস্থানে সরণ $x = 0$ হওয়ায় ত্বরণও শূন্য হয়।", concept: "Acceleration at Mean Position", shortcut: "x = 0 ⟹ a = 0", mistake: "সর্বোচ্চ মনে করা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ কিন্তু ত্বরণ ও বল শূন্য।" },
+          { question: "সরল দোলকের সাম্যাবস্থান থেকে বিস্তার অবস্থানে পৌঁছাতে পর্যায়কালের কত সময় লাগে?", options: ["$T$", "$T/2$", "$T/4$", "$2T$"], correct: 2, topic: "Simple Pendulum Time", difficulty: "medium", explanation: "একটি পূর্ণ কম্পন সম্পন্ন করতে সময় লাগে $T$। সাম্যাবস্থান থেকে চরম অবস্থানে যেতে সময় লাগে পূর্ণ কম্পনের চারভাগের এক ভাগ বা $T/4$।", concept: "Quarter Period in SHM", shortcut: "Mean to Extremity = T/4", mistake: "T/2 ভাবা", tip: "পূর্ণ চক্রে ৪টি সমান দূরত্ব অতিক্রম করতে হয়।" },
+          { question: "কোন ধরনের তরঙ্গে কণাগুলোর কম্পন গতির দিকের সাথে লম্বভাবে সম্পন্ন হয়?", options: ["অনুদৈর্ঘ্য তরঙ্গ", "আড়াআড়ি বা অনুপ্রস্থ তরঙ্গ (Transverse Wave)", "শব্দ তরঙ্গ", "চাপ তরঙ্গ"], correct: 1, topic: "Wave Motion", difficulty: "easy", explanation: "যে তরঙ্গে কণার কম্পন তরঙ্গ প্রসারণের দিকের সাথে লম্বভাবে হয় তাকে অনুপ্রস্থ বা আড়াআড়ি তরঙ্গ বলে (যেমন: আলো, পানির ঢেউ)।", concept: "Transverse Wave Definition", shortcut: "Perpendicular = Transverse", mistake: "অনুদৈর্ঘ্য বলা", tip: "আলো একটি অনুপ্রস্থ তড়িৎ চৌম্বকীয় তরঙ্গ।" },
+          { question: "শব্দ তরঙ্গ বায়ুর মধ্য দিয়ে যাওয়ার সময় কোন ধরনের তরঙ্গ সৃষ্টি করে?", options: ["অনুপ্রস্থ তরঙ্গ", "অনুদৈর্ঘ্য তরঙ্গ (Longitudinal Wave)", "স্থির তরঙ্গ", "তড়িৎ চৌম্বক তরঙ্গ"], correct: 1, topic: "Wave Motion", difficulty: "easy", explanation: "শব্দ তরঙ্গে মাধ্যмы কণাগুলোর কম্পন তরঙ্গ প্রসারণের দিকের সমান্তরালে (সংকোচন ও প্রসারণ) হয়, তাই এটি অনুদৈর্ঘ্য তরঙ্গ।", concept: "Sound Wave Nature", shortcut: "Parallel = Longitudinal", mistake: "অনুপ্রস্থ ভাবা", tip: "শব্দ তরঙ্গের সঞ্চারণে সংকোচন ও বিরলীকরণ তৈরি হয়।" },
+          { question: "তরঙ্গ দীর্ঘ ($\\lambda$) এবং কম্পাঙ্ক ($f$) হলে তরঙ্গবেগ $v$ এর সঠিক সমীকরণ কোনটি?", options: ["$v = f\\lambda$", "$v = \\frac{f}{\\lambda}$", "$v = \\frac{\\lambda}{f}$", "$v = f^2\\lambda$"], correct: 0, topic: "Wave Equation", difficulty: "easy", explanation: "তরঙ্গবেগ $v = f\\lambda$ (যেখানে $f$ কম্পাঙ্ক এবং $\\lambda$ তরঙ্গদৈর্ঘ্য)।", concept: "Wave Velocity Relation", shortcut: "v = fλ", mistake: "ভাগ আকারে লেখা", tip: "মাধ্যমের প্রকৃতি পরিবর্তনে তরঙ্গবেগ পরিবর্তিত হয়।" },
+          { question: "দুটি সমমানের তরঙ্গ একই দিকে অগ্রসর হয়ে উপরিপাতনের ফলে তীব্রতা সর্বোচ্চ হলে তাকে কী বলে?", options: ["মৃত বা ধ্বংসাত্মক ব্যাতিচার", "গঠনমূলক ব্যাতিচার (Constructive Interference)", "বিপরীত দশা", "সমাবর্তন"], correct: 1, topic: "Interference", difficulty: "medium", explanation: "দশা পার্থক্য শূন্য বা জোড় পাই ($2n\\pi$) হলে গঠনমূলক ব্যাতিচার ঘটে এবং তীব্রতা সর্বোচ্চ হয়।", concept: "Constructive Interference", shortcut: "In-phase = Max Intensity", mistake: "ধ্বংসাত্মক ব্যাতিচার ভাবা", tip: "গঠনমূলক ব্যাতিচারে আলোর উজ্জ্বলতা বা শব্দের প্রাবল্য বাড়ে।" },
+          { question: "বিটের (Beat) সৃষ্টি হয় যখন সামান্য পার্থক্যের দুটি তরঙ্গ একসাথে চলে। বিট ফ্রিকোয়েন্সি বা বিট সংখ্যা কত?", options: ["$f_1 + f_2$", "$|f_1 - f_2|$", "$\\frac{f_1 f_2}{f_1 + f_2}$", "$2(f_1 - f_2)$"], correct: 1, topic: "Beats", difficulty: "easy", explanation: "প্রতি সেকেন্ডে উৎপন্ন বিট সংখ্যা দুটি উৎসের কম্পাঙ্কের পার্থক্যের সমান, অর্থাৎ $n = |f_1 - f_2|$।", concept: "Beat Frequency Formula", shortcut: "Beat = |f₁ - f₂|", mistake: "যোগফল নেওয়া", tip: "বিট সংখ্যা প্রতি সেকেন্ডে ১০ এর বেশি হলে কান আলাদা করতে পারে না।" },
+          { question: "ডপলার প্রভাব (Doppler Effect) নিচের কোনটির সাথে সম্পর্কিত?", options: ["আলো ও শব্দ উভয়ের কম্পাঙ্কের পরিবর্তন", "শুধুমাত্র আলোর বেগ", "শুধুমাত্র তরল প্রবাহ", "তাপমাত্রার পরিবর্তন"], correct: 0, topic: "Doppler Effect", difficulty: "medium", explanation: "উৎস ও শ্রোতার আপেক্ষিক গতির কারণে শব্দ বা আলোর আপাত কম্পাঙ্কের পরিবর্তনের ঘটনাকে ডপলার প্রভাব বলে।", concept: "Doppler Effect Scope", shortcut: "Relative Motion = Apparent Frequency Shift", mistake: "শুধুমাত্র শব্দ ভাবা", tip: "জ্যোতির্বিদ্যায় নক্ষত্রের গতি পরিমাপে আলোর ডপলার প্রভাব ব্যবহার হয়।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার বেগ শূন্য হয় কোথায়?", options: ["সাম্যাবস্থানে", "চরম বা বিস্তার অবস্থানে (Extremities)", "সব জায়গায় সমান", "সাম্যাবস্থান ও চরম অবস্থানের ঠিক মাঝখানে"], correct: 1, topic: "SHM Kinematics", difficulty: "easy", explanation: "চরম বা বিস্তার অবস্থানে কণার গতি দিক পরিবর্তন করে, তাই সেখানে বেগ শূন্য হয় এবং ত্বরণ সর্বোচ্চ হয়।", concept: "Velocity at Extremes", shortcut: "At A, v = 0", mistake: "সাম্যাবস্থানে শূন্য ভাবা", tip: "চরম বিন্দুতে বেগ জিরো এবং সরণ ম্যাক্সিমাম।" },
+          { question: "একটি সরল দোলকের দৈর্ঘ্য চারগুণ করলে এর কম্পাঙ্ক কত হবে?", options: ["দ্বিগুণ", "অর্ধেক (Half)", "চারগুণ", "অপরিবর্তিত থাকবে"], correct: 1, topic: "Simple Pendulum", difficulty: "medium", explanation: "যেহেতু দোলনকাল $T \\propto \\sqrt{L}$, তাই কম্পাঙ্ক $f \\propto \\frac{1}{\\sqrt{L}}$। দৈর্ঘ্য ৪ গুণ হলে কম্পাঙ্ক হবে $\\frac{1}{\\sqrt{4}} = \\frac{1}{2}$ বা অর্ধেক।", concept: "Frequency of Pendulum", shortcut: "f ∝ 1/√L", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "দৈর্ঘ্যের সাথে কম্পাঙ্কের সম্পর্ক ব্যস্তানুপাতিক।" },
+          { question: "মুক্ত কম্পনের (Free Oscillation) ক্ষেত্রে বিস্তার কেমন থাকে?", options: ["সময়ে সাথে কমতে থাকে", "ধ্রুবক বা অপরিবর্তিত থাকে", "বাড়তে থাকে", "পর্যায়ক্রমে শূন্য হয়"], correct: 1, topic: "Types of Oscillations", difficulty: "easy", explanation: "বাইরের কোনো বাধা বা বল না থাকলে আদর্শ মুক্ত কম্পনের শক্তি ও বিস্তার সর্বদা ধ্রুবক থাকে।", concept: "Free Oscillation Amplitude", shortcut: "Constant Amplitude", mistake: "কমে যাওয়া ভাবা", tip: "বাস্তব ক্ষেত্রে ঘর্ষণের কারণে এটি অবমন্দন হয়ে যায়।" },
+          { question: "অনুরণন (Resonance) কোন বিশেষ ঘটনার একটি রূপ?", options: ["ব্যাতিচারের", "সাদৃশ্যপূর্ণ বলের অধীনে লব্ধি কম্পন (Forced Oscillation max)", "ব্যতিচার ও সমাবর্তন", "পোলারায়ন"], correct: 1, topic: "Resonance", difficulty: "medium", explanation: "বাইরের পর্যায় বলের কম্পাঙ্ক বস্তুর স্বাভাবিক কম্পাঙ্কের সমান হলে বিস্তার হঠাৎ অনেক বেড়ে যায়, একে অনুনাদ বলে। এটি তীব্র পরবশ কম্পন।", concept: "Resonance Condition", shortcut: "External Frequency = Natural Frequency", mistake: "স্বাভাবিক কম্পন ভাবা", tip: "ব্রিজ পার হওয়ার সময় সৈন্যদের কুচকাওয়াজ বন্ধ রাখতে হয়।" },
+          { question: "স্থির তরঙ্গের ক্ষেত্রে দুটি পরপর নিস্পন্দ বিন্দুর (Nodes) মধ্যবর্তী দূরত্ব কত?", options: ["$\\lambda$", "$\\lambda/2$", "$\\lambda/4$", "$2\\lambda$"], correct: 1, topic: "Stationary Waves", difficulty: "medium", explanation: "স্থির তরঙ্গে দুটি পরপর নিস্পন্দ বিন্দু অথবা দুটি পরপর প্রস্পন্দ বিন্দুর মধ্যকার দূরত্ব হলো অর্ধ তরঙ্গদৈর্ঘ্য বা $\\lambda/2$।", concept: "Node Distance in Stationary Wave", shortcut: "Node to Node = λ/2", mistake: "λ/4 ভাবা", tip: "নিস্পন্দ ও প্রস্পন্দ বিন্দুর দূরত্ব হলো $\\lambda/4$।" },
+          { question: "সরল ছন্দিত স্পন্দনে গতিশক্তি ও স্থিতিশক্তির অনুপাত সমান হয় সাম্যাবস্থান থেকে কত দূরত্বে?", options: ["$x = A$", "$x = \\frac{A}{\\sqrt{2}}$", "$x = \\frac{A}{2}$", "$x = 0$"], correct: 1, topic: "SHM Energy Distribution", difficulty: "hard", explanation: "গতিশক্তি ও স্থিতিশক্তি সমান হলে $\\frac{1}{2}m\\omega^2(A^2 - x^2) = \\frac{1}{2}m\\omega^2 x^2 \\implies x = \\frac{A}{\\sqrt{2}}$।", concept: "KE equals PE in SHM", shortcut: "x = A/√2", mistake: "A/2 মনে করা", tip: "এটি একটি জনপ্রিয় এডমিশন ম্যাথমেটিক্যাল প্রশ্ন।" },
+          { question: "কোন মাধ্যমে শব্দের বেগ সবচেয়ে বেশি?", options: ["বায়ু মাধ্যম", "পানি মাধ্যম", "লোহা বা কঠিন মাধ্যম (Solid)", "শূন্যস্থান"], correct: 2, topic: "Sound Waves in Media", difficulty: "easy", explanation: "কঠিন মাধ্যমে স্থিতিস্থাপকতা অনেক বেশি থাকায় শব্দের বেগ কঠিন মাধ্যমে সবচেয়ে বেশি (লোহায় প্রায় ৫১৩ মাস/সে)।", concept: "Sound Speed by Medium", shortcut: "Solid > Liquid > Gas", mistake: "বায়ু মাধ্যম ভাবা", tip: "শূন্যস্থানে শব্দ চলতে পারে না।" },
+          { question: "একটি আদর্শ সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য কত প্রায়?", options: ["$0.5\\text{ m}$", "$0.993\\text{ m}$ বা প্রায় $1\\text{ m}$", "$2\\text{ m}$", "$9.8\\text{ m}$"], correct: 1, topic: "Simple Pendulum", difficulty: "easy", explanation: "পৃথিবী পৃষ্ঠে সেকেন্ড দোলকের (দোলনকাল ২ সেকেন্ড) কার্যকরী দৈর্ঘ্য প্রায় ৯৯.৩ সেন্টিমিটার বা ১ মিটার।", concept: "Second Pendulum Length", shortcut: "L ≈ 1 meter", mistake: "৯.৮ মিটার ভাবা", tip: "এটি ব্যবহারিক পরীক্ষার অত্যন্ত কমন প্রশ্ন।" },
+          { question: "শব্দের তীব্রতার একক নিচের কোনটি?", options: ["ওয়াট/$m^2$", "ডেসিবেল ($dB$)", "উভয়ই (Both A and B)", "হার্জ"], correct: 2, topic: "Sound Intensity", difficulty: "medium", explanation: "শব্দের তীব্রতা পরিমাপের একক W/$m^2$ এবং তীব্রতার লেভেল পরিমাপের একক হলো ডেসিবেল (dB)।", concept: "Sound Intensity Units", shortcut: "W/m² & dB", mistake: "শুধু ডেসিবেল ভাবা", tip: "সাধারণ কথোপকথন প্রায় ৬০ dB হয়ে থাকে।" },
+          { question: "সরল দোলকের গতি কোন ধরনের গতি?", options: ["পর্যায়বৃত্ত গতি কিন্তু সরল ছন্দিত নয়", "সরল ছন্দিত গতি (Simple Harmonic Motion - SHM)", "ঘূর্ণন গতি", "চলন গতি"], correct: 1, topic: "Simple Pendulum", difficulty: "medium", explanation: "কৌণিক সরণ খুব কম ($\\theta < 4^\\circ$) হলে সরল দোলকের গতিকে সরল ছন্দিত গতি হিসেবে ধরা হয়।", concept: "Pendulum as SHM", shortcut: "Small Angle = SHM", mistake: "সাধারণ পর্যায়বৃত্ত গতি বলা", tip: "বড় কোণের জন্য এটি সরল ছন্দিত থাকে না।" },
+          { question: "একটি কণার সরণ $x = A \\sin(\\omega t + \\delta)$ হলে এর আদি দশা (Initial Phase) কোনটি?", options: ["$\\omega t$", "$\\delta$", "$(\\omega t + \\delta)$", "$A$"], correct: 1, topic: "SHM Phase", difficulty: "medium", explanation: "$t = 0$ সময়ে কণার যে দশা থাকে তাকে আদি দশা বা ফেজ কনস্ট্যান্ট ($\\delta$) বলে।", concept: "Initial Phase Definition", shortcut: "At t=0, phase = δ", mistake: "ωt ভাবা", tip: "সময়ের সাথে দশা পরিবর্তিত হয় কিন্তু আদি দশা ধ্রুবক।" },
+          { question: "অনুপ্রস্থ তরঙ্গের ক্ষেত্রে তরঙ্গশীর্ষ (Crest) ও তরঙ্গপাদের (Trough) মধ্যকার পথপার্থক্য কত?", options: ["$\\lambda$", "$\\lambda/2$", "$\\lambda/4$", "$2\\lambda$"], correct: 1, topic: "Wave Properties", difficulty: "medium", explanation: "একটি সম্পূর্ণ তরঙ্গচক্রে একটি শীর্ষ ও একটি পাদ থাকে, যাদের মধ্যবর্তী দূরত্ব বা পথপার্থক্য হলো অর্ধ তরঙ্গদৈর্ঘ্য ($\\lambda/2$)।", concept: "Crest to Trough Path Difference", shortcut: "Crest to Trough = λ/2", mistake: "λ ভাবা", tip: "দশা পার্থক্য হয় $\\pi$ রেডিয়ান।" },
+          { question: "শব্দ দূষণ রোধে বিশ্ব স্বাস্থ্য সংস্থা (WHO) এর মতে শহরের দিনে অনুমোদিত শব্দের মাত্রা কত?", options: ["সতর্কতা নেই", "৪৫ ডেসিবেল", "৩৫ ডেসিবেল", "৪৫-৫০ ডেসিবেল (Residential Area)"], correct: 3, topic: "Sound Levels", difficulty: "medium", explanation: "ডব্লিউএইচও এর আদর্শ মান অনুযায়ী আবাসিক এলাকায় দিনের বেলা শব্দের গ্রহণযোগ্য মাত্রা ৪৫ থেকে ৫০ dB।", concept: "WHO Sound Standards", shortcut: "Residential Day Limit ≈ 45-50 dB", mistake: "১০০ ডেসিবেল ভাবা", tip: "৮৫ ডেসিবেলের বেশি শব্দ মানবদেহের জন্য ক্ষতিকর।" },
+          { question: "শব্দ তরঙ্গের প্রতিধ্বনি শোনার জন্য উৎস ও প্রতিফলক পৃষ্ঠের ন্যূনতম দূরত্ব কত হওয়া প্রয়োজন?", options: ["$16.6\\text{ m}$ বা প্রায় $17\\text{ m}$", "$34\\text{ m}$", "$10\\text{ m}$", "$5\\text{ m}$"], correct: 0, topic: "Echo & Sound", difficulty: "easy", explanation: "আমাদের কানের শব্দ স্থায়িত্বকাল ০.১ সেকেন্ড। বাতাসে শব্দের বেগ ৩৪৩ মি/সে হলে ন্যূনতম দূরত্ব হয় $\\frac{343 \\times 0.1}{2} \\approx 17\\text{ m}$।", concept: "Minimum Distance for Echo", shortcut: "16.6 m / 17 m", mistake: "৩৪ মিটার ভাবা", tip: "শব্দের রেশ মস্তিষ্কে ০.১ সেকেন্ড থাকে।" },
+          { question: "ডপলার প্রভাবে শব্দের কম্পাঙ্কের আপাত বৃদ্ধি ঘটে কখন?", options: ["উৎস ও শ্রোতা দূরে সরে গেলে", "উৎস ও শ্রোতার মধ্যকার দূরত্ব কমতে থাকলে", "উৎস স্থির ও শ্রোতা স্থির থাকলে", "বাতাস না থাকলে"], correct: 1, topic: "Doppler Effect", difficulty: "medium", explanation: "উৎস ও শ্রোতা একে অপরের কাছাকাছি এলে আপাত কম্পাঙ্ক ও তীব্রতা বৃদ্ধি পায়।", concept: "Doppler Apparent Frequency", shortcut: "Approaching = Higher Frequency", mistake: "দূরে সরে যাওয়া ভাবা", tip: "কাছাকাছি এলে তীক্ষ্ণতা বাড়ে।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার কৌণিক বেগ $\\omega$ এবং পর্যায়কাল $T$ এর মধ্যে সঠিক সম্পর্ক কোনটি?", options: ["$\\omega = \\frac{2\\pi}{T}$", "$\\omega = 2\\pi T$", "$\\omega = \\frac{T}{2\\pi}$", "$\\omega = \\pi T$"], correct: 0, topic: "SHM Parameters", difficulty: "easy", explanation: "এক পূর্ণ কম্পনে কোণ ঘুরে $2\\pi$, সময় লাগে $T$। সুতরাং কৌণিক বেগ $\\omega = \\frac{2\\pi}{T}$ বা $2\\pi f$।", concept: "Angular Frequency Relation", shortcut: "ω = 2π/T", mistake: "2πT ব্যবহার করা", tip: "এটি সব ধরনের পর্যায়বৃত্ত গতির ক্ষেত্রে প্রযোজ্য।" },
+          { question: "নিচের কোনটির ক্ষেত্রে মাধ্যমের প্রয়োজন হয় না?", options: ["শব্দ তরঙ্গ", "পানির তরঙ্গ", "তড়িৎ চৌম্বক তরঙ্গ (Electromagnetic Waves)", "টানটান তারের তরঙ্গ"], correct: 2, topic: "Wave Nature", difficulty: "easy", explanation: "আলো, এক্স-রে, রেডিও তরঙ্গ ইত্যাদি হলো তড়িৎ চৌম্বক তরঙ্গ, যা চলাচলের জন্য কোনো মাধ্যম প্রয়োজন হয় না (শূন্যস্থান দিয়েও চলতে পারে)।", concept: "EM Waves Nature", shortcut: "No medium needed for EM waves", mistake: "শব্দ তরঙ্গ ভাবা", tip: "সূর্যের আলো পৃথিবী পর্যন্ত শূন্যস্থান পেরিয়ে আসে।" },
+          { question: "একটি কণার সমীকরণ $y = 5 \\sin(100t + \\pi/4)$ হলে এর বিস্তার ($A$) কত?", options: ["$5$", "$100$", "$10$", "$\\pi/4$"], correct: 1, topic: "SHM Equation Analysis", difficulty: "easy", explanation: "প্রমিত সমীকরণ $y = A \\sin(\\omega t + \\delta)$ এর সাথে তুলনা করে পাই বিস্তার $A = 5$ এবং কৌণিক বেগ $\\omega = 100$।", concept: "Amplitude Identification", shortcut: "Coefficient of sin = Amplitude (5)", mistake: "100 কে বিস্তার বলা", tip: "সামনের সংখ্যাটি সবসময় বিস্তার নির্দেশ করে।" },
+          { question: "অবমন্দিত কম্পনের (Damped Oscillation) ক্ষেত্রে কী ঘটে?", options: ["বিস্তার সময়ের সাথে ক্রমান্বয়ে হ্রাস পায়", "বিস্তার বাড়ে", "শক্তি সর্বদা ধ্রুবক থাকে", "কম্পাঙ্ক অসীম হয়"], correct: 0, topic: "Damped Oscillation", difficulty: "easy", explanation: "ঘর্ষণ বা সান্দ্রতার কারণে সিস্টেমের শক্তি অপচয় হয়, ফলে অবমন্দিত কম্পনের বিস্তার সময়ের সাথে কমতে থাকে।", concept: "Damped Wave Amplitude", shortcut: "Amplitude decreases over time", mistake: "বিস্তার বৃদ্ধি পাওয়া ভাবা", tip: "গাড়ির শক absorbers অবমন্দিত কম্পনের বাস্তব উদাহরণ।" },
+          { question: "একটি টানা তারের দৈর্ঘ্য দ্বিগুণ করলে এবং টান অপরিবর্তিত রাখলে এর মূল কম্পাঙ্ক কীরূপ পরিবর্তিত হবে?", options: ["দ্বিগুণ হবে", "অর্ধেক হবে", "চারগুণ হবে", "অপরিবর্তিত থাকবে"], correct: 1, topic: "Stretched String", difficulty: "medium", explanation: "টানা তারের মূল কম্পাঙ্ক $f \\propto \\frac{1}{L}$। দৈর্ঘ্য দ্বিগুণ করা হলে কম্পাঙ্ক অর্ধেক হয়ে যাবে।", concept: "String Frequency & Length", shortcut: "f ∝ 1/L", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "গিটার বা সেতারের তার টিপে কম্পাঙ্ক পরিবর্তন করা হয়।" },
+          { question: "শব্দের তীব্রতা লেভেলের একক বেল (Bel) অপেক্ষা ডেসিবেল (dB) কত গুণ ছোট?", options: ["১০ গুণ", "১০০ গুণ", "১০১৮ গুণ", "১০০০ গুণ"], correct: 0, topic: "Sound Intensity Levels", difficulty: "medium", explanation: "১ বেল = ১০ ডেসিবেল (dB)। অর্থাৎ ডেসিবেল হলো বেলের এক দশমাংশ, বা বেল ডেসিবেলের ১০ গুণ বড়।", concept: "Bel to Decibel Conversion", shortcut: "1 Bel = 10 dB", mistake: "১০০ গুণ ভাবা", tip: "আলেকজান্ডার গ্রাহাম বেলের নামানুসারে 'বেল' একক রাখা হয়েছে।" },
+          { question: "দুটি তরঙ্গ উপরিপাতিত হয়ে চরম বা অন্ধকার বিন্দু (Destructive) তৈরি করলে তীব্রতা কত হবে?", options: ["সর্বোচ্চ", "শূন্য (Zero)", "সর্বোচ্চের অর্ধেক", "অপরিবর্তিত"], correct: 1, topic: "Interference", difficulty: "easy", explanation: "ধ্বংসাত্মক ব্যাতিচারের ক্ষেত্রে বিপরীত দশার মিলনের ফলে বিস্তার ও তীব্রতা উভয়ই শূন্য হয়ে যায়।", concept: "Destructive Interference Intensity", shortcut: "Destructive = Zero Intensity", mistake: "সর্বোচ্চ ভাবা", tip: "দশা পার্থক্য বিজোড় পাই হলে এটি ঘটে।" },
+          { question: "কোন তাপমাত্রায় সেলসিয়াস ও ফারেনহাইট স্কেলে একই পাঠ পাওয়া যায়?", options: ["$0^\\circ$", "$-40^\\circ$", "$100^\\circ$", "$32^\\circ$"], correct: 1, topic: "Miscellaneous Physics", difficulty: "easy", explanation: "সূত্র $\\frac{C}{5} = \\frac{F-32}{9}$ এ $C = F = x$ বসালে মান আসে $-40^\\circ$।", concept: "Temperature Scales Intersection", shortcut: "C = F = -40", mistake: "শূন্য ধরে নেওয়া", tip: "এটি তাপগতিবিদ্যা ও পর্যায়বৃত্ত গতির কমন সাধারণ জ্ঞান।" },
+          { question: "টানা তারে আড়াআড়ি তরঙ্গের বেগ $v = \\sqrt{T/m}$। এখানে $m$ কী নির্দেশ করে?", options: ["মোট ভর", "একক দৈর্ঘ্যের ভর বা রৈখিক ভরঘনত্ব (Mass per unit length)", "ত্বরণ", "টান বল"], correct: 1, topic: "Stretched String Velocity", difficulty: "medium", explanation: "সূত্রে $T$ হলো তারের টান এবং $m$ হলো তারের একক দৈর্ঘ্যের ভর ($\\mu$ বা $m$)।", concept: "Linear Mass Density", shortcut: "m = Mass per unit length", mistake: "মোট ভর মনে করা", tip: "তার যত ভারী হবে, তরঙ্গের বেগ তত কম হবে।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার বেগ এবং স্মরণের মধ্যে দশা পার্থক্য কত?", options: ["$0$", "$\\pi/2$ radian", "$\\pi$ radian", "$2\\pi$ radian"], correct: 1, topic: "SHM Phase Relation", difficulty: "hard", explanation: "সরণ $x = A \\sin(\\omega t)$ হলে বেগ $v = \\omega A \\cos(\\omega t) = \\omega A \\sin(\\omega t + \\pi/2)$। সুতরাং দশা পার্থক্য $\\pi/2$ বা $90^\\circ$।", concept: "Displacement and Velocity Phase", shortcut: "Velocity leads displacement by π/2", mistake: "দশা পার্থক্য শূন্য ভাবা", tip: "ত্বরণ ও স্মরণের দশা পার্থক্য পাই ($\\pi$)।" },
+          { question: "কোনো মাধ্যমে শব্দের বেগ বায়ুর তাপমাত্রার সাথে কীভাবে পরিবর্তিত হয়?", options: ["তাপমাত্রার বর্গমূলের সমানুপাতিক ($v \\propto \\sqrt{T}$)", "তাপমাত্রার ব্যস্তানুপাতিক", "তাপমাত্রার বর্গের সমানুপাতিক", "অপরিবর্তিত থাকে"], correct: 0, topic: "Sound Speed & Temperature", difficulty: "medium", explanation: "শব্দের বেগ পরম তাপমাত্রার বর্গমূলের সমানুপাতিক, অর্থাৎ $v \\propto \\sqrt{T}$। তাপমাত্রা বাড়লে শব্দের বেগ বাড়ে।", concept: "Speed of Sound vs Temperature", shortcut: "v ∝ √T", mistake: "ব্যাস্তানুপাতিক ভাবা", tip: "গ্রীষ্মকালে শীতকালের চেয়ে শব্দের বেগ বেশি হয়।" },
+          { question: "সরল দোলকের বব (Bob) যদি লোহা থেকে পারদে পরিবর্তন করা হয়, তবে এর দোলনকালের কী পরিবর্তন হবে?", options: ["বাড়বে", "কমবে", "অপরিবর্তিত থাকবে", "শূন্য হবে"], correct: 2, topic: "Simple Pendulum", difficulty: "medium", explanation: "দোলনকালের সূত্রে পদার্থের ঘনত্বের কোনো সরাসরি প্রভাব নেই, এটি কেবল কার্যকর দৈর্ঘ্য ($L$) এবং অভিকর্ষজ ত্বরণের ($g$) ওপর নির্ভর করে।", concept: "Pendulum Bob Material Independence", shortcut: "Independent of bob material", mistake: "ঘনত্ব ভিন্ন হওয়ায় পরিবর্তন ভাবা", tip: "ববের আকার বা উপাদান দোলনকাল পরিবর্তন করে না।" },
+          { question: "একটি সেকেন্ড দোলককে পাহাড়ের চূড়ায় নিয়ে গেলে কী ঘটবে?", options: ["ঘড়িটি সঠিক সময় দেবে", "ঘড়িটি স্লো বা ধীরে চলবে (Lose time)", "ঘড়িটি ফাস্ট বা দ্রুত চলবে", "দোলকটি থেমে যাবে"], correct: 1, topic: "Simple Pendulum", difficulty: "medium", explanation: "পাহáরের চূড়ায় অভিকর্ষজ ত্বরণ $g$ এর মান কমে যায়। ফলে $T$ বেড়ে যায় এবং ঘড়ি ধীরে চলে বা সময় হারায়।", concept: "Pendulum on Mountain", shortcut: "g decreases ⟹ T increases ⟹ Loses time", mistake: "দ্রুত চলা ভাবা", tip: "খনি বা পাহাড় উভয় স্থানেই g কমে তাই ঘড়ি স্লো হয়।" },
+          { question: "শব্দ তরঙ্গের তীব্রতা লেভেলের পরিবর্তনশীলতা মানুষের কানে কোন আইন মেনে অনুভূত হয়?", options: ["রৈখিক আইন", "ওয়েবার-ফেখনার সূত্র (Weber-Fechner Law - Logarithmic)", "নিউটনীয় সূত্র", "বয়েলের সূত্র"], correct: 1, topic: "Acoustics & Sound Perception", difficulty: "hard", explanation: "মানুষের কান শব্দের তীব্রতার লঘুগাণিতিক বা লগারিদমিক (Logarithmic) পরিবর্তন অনুভব করে, যা ওয়েবার-ফেখনার সূত্র নামে পরিচিত।", concept: "Weber-Fechner Law", shortcut: "Logarithmic sensation", mistake: "রৈখিক অনুপাত ভাবা", tip: "এ কারণেই ডেসিবেল স্কেলে লগারিদম ব্যবহার করা হয়।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার মোট শক্তি কিসের ওপর নির্ভর করে?", options: ["বিস্তারের বর্গের ওপর ($E \\propto A^2$)", "শুধুমাত্র ভরের ওপর", "সময়ের ওপর", "কম্পাঙ্কের বর্গমূলের ওপর"], correct: 0, topic: "SHM Energy", difficulty: "easy", explanation: "মোট শক্তির সমীকরণ $E = \\frac{1}{2}m\\omega^2 A^2$ থেকে স্পষ্ট যে শক্তি বিস্তার $A$ এর বর্গের সমানুপাতিক।", concept: "SHM Total Energy Dependence", shortcut: "Energy ∝ Amplitude²", mistake: "সময় বা রৈখিক বেগের ওপর ভাবা", tip: "বিস্তার দ্বিগুণ হলে মোট শক্তি চারগুণ হয়।" },
+          { question: "স্থির তরঙ্গের ক্ষেত্রে দুটি পরপর নিস্পন্দ বিন্দুর মাঝখানে থাকা প্রস্পন্দ বিন্দুতে কণার বিস্তার কীরূপ থাকে?", options: ["শূন্য", "সর্বোচ্চ ($2A$)", "মাঝারি", "ন্যূনতম"], correct: 1, topic: "Stationary Waves", difficulty: "medium", explanation: "স্থির তরঙ্গে নিস্পন্দ বিন্দুতে সরণ সবসময় শূন্য এবং প্রস্পন্দ বিন্দুতে কণাগুলোর সরণ ও বেগ সর্বোচ্চ ($2A$) হয়।", concept: "Antinode Amplitude", shortcut: "Antinode = Max Amplitude", mistake: "শূন্য ভাবা", tip: "এখানে শক্তি স্থানান্তরিত হয় না, কেবল বন্দি থাকে।" },
+          { question: "একটি কণার উপর দুটি লম্ব সরল ছন্দিত স্পন্দন প্রযুক্ত হলে লব্ধি গতিপথ উপবৃত্তাকার হতে পারে, যদি দশা পার্থক্য কত হয়?", options: ["$0$ বা $\\pi$", "$\\pi/2$ বা $90^\\circ$", "$2\\pi$", "কোনোটিই নয়"], correct: 1, topic: "Lissajous Figures / SHM Composition", difficulty: "hard", explanation: "পরস্পর লম্ব দুটি সরল ছন্দিত গতির দশা পার্থক্য $\\pi/2$ এবং সমান বিস্তার না হলে লব্ধি গতিপথ উপবৃত্তাকার (Elliptical) হয়।", concept: "Superposition of Perpendicular SHMs", shortcut: "Phase diff π/2 = Ellipse/Circle", mistake: "শূন্য ভাবা", tip: "এটি লিসাজু ফিগার নামে পরিচিত।" },
+          { question: "ডপলার প্রভাবে যদি শ্রোতা স্থির থাকে এবং উৎস শ্রোতার দিকে শব্দের বেগের অর্ধেক বেগে এগিয়ে আসে, তবে আপাত কম্পাঙ্ক মূল কম্পাঙ্কের কত গুণ হবে?", options: ["$2$ গুণ", "$1.5$ গুণ", "$0.5$ গুণ", "$3$ গুণ"], correct: 0, topic: "Doppler Effect Math", difficulty: "hard", explanation: "সূত্র $f' = f \\frac{v}{v - v_s}$। এখানে $v_s = v/2$ বসালে $f' = f \\frac{v}{v - v/2} = 2f$ বা দ্বিগুণ হয়।", concept: "Doppler Calculation", shortcut: "v_s = v/2 ⟹ f' = 2f", mistake: "দেড় গুণ ভাবা", tip: "এডমিশন পরীক্ষায় এই ধরনের নিউমেরিক্যাল প্রায়ই আসে।" },
+          { question: "তরঙ্গের তীব্রতা ($I$) এবং বিস্তারের ($A$) মধ্যে সঠিক সম্পর্ক কোনটি?", options: ["$I \\propto A$", "$I \\propto A^2$", "$I \\propto \\sqrt{A}$", "$I \\propto A^3$"], correct: 1, topic: "Wave Intensity", difficulty: "medium", explanation: "যেকোনো তরঙ্গের তীব্রতা বা শক্তি তার বিস্তারের বর্গের সমানুপাতিক, অর্থাৎ $I \\propto A^2$।", concept: "Intensity vs Amplitude", shortcut: "Intensity ∝ Amplitude²", mistake: "বর্গমূলের সমানুপাতিক ভাবা", tip: "বিস্তার দ্বিগুণ হলে তীব্রতা চারগুণ বৃদ্ধি পায়।" },
+          { question: "সরল ছন্দিত গতিতে গতিশক্তি ও স্থিতিশক্তির পরিবর্তনের হার প্রতি পূর্ণকম্পনে কতবার ঘটে?", options: ["১ বার", "২ বার", "৪ বার", "৮ বার"], correct: 2, topic: "SHM Energy Cycle", difficulty: "hard", explanation: "প্রতি কম্পনে গতিশক্তি ও স্থিতিশক্তি উভয়ই দুইবার সর্বোচ্চ এবং দুইবার সর্বনিম্ন হয়, যার ফলে মোট পরিবর্তনের চক্র ৪ বার পূর্ণ হয়।", concept: "Energy Change Frequency in SHM", shortcut: "4 times per cycle", mistake: "দুইবার ভাবা", tip: "সরণের দ্বিগুণ কম্পাঙ্কে শক্তি পরিবর্তিত হয়।" },
+          { question: "বায়ুতে শব্দের বেগ কোনটির ওপর নির্ভর করে না?", options: ["বায়ুর চাপ ($P$)", "বায়ুর তাপমাত্রা ($T$)", "বায়ুর আর্দ্রতা", "বায়ুর প্রকৃতি"], correct: 0, topic: "Sound Speed Factors", difficulty: "medium", explanation: "ল্যাপলাসের সূত্রানুসারে চাপ বাড়লে ঘনত্বও সেই অনুপাতে বাড়ে, ফলে বায়ুর চাপের পরিবর্তনে শব্দের বেগের কোনো পরিবর্তন হয় না।", concept: "Independence of Sound Speed on Pressure", shortcut: "Velocity independent of Pressure", mistake: "চাপের সমানুপাতিক ভাবা", tip: "এটি লাপলাসের সংশোধন নামে পরিচিত।" },
+          { question: "একটি সেকেন্ড দোলকের কার্যকর দৈর্ঘ্য ৪ গুণ করলে নতুন দোলনকাল কত হবে?", options: ["$1\\text{ s}$", "$2\\text{ s}$", "$4\\text{ s}$", "$8\\text{ s}$"], correct: 2, topic: "Simple Pendulum", difficulty: "medium", explanation: "সেকেন্ড দোলকের আদি দোলনকাল $2\\text{ s}$। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল দ্বিগুণ হবে, অর্থাৎ নতুন দোলনকাল $2 \\times 2 = 4\\text{ s}$।", concept: "Second Pendulum Length Scaling", shortcut: "T_new = 2 × T_old = 4s", mistake: "আট সেকেন্ড ভাবা", tip: "দৈর্ঘ্য বাড়লে দোলনকাল বাড়ে।" },
+          { question: "পানির উপর তেলের পাতলা স্তর থাকলে কিসের কারণে রঙিন দেখায়?", options: ["ব্যতিচার (Interference)", "অপবর্তন", "পোলারায়ন", "বিচ্ছুরণ"], correct: 0, topic: "Wave Interference in Thin Films", difficulty: "medium", explanation: "পাতলা ফিল্মের ব্যতিচারের (Thin film interference) কারণে তেলের স্তর বা সাবানের বুদবুদ রোদের আলোয় রঙিন দেখায়।", concept: "Thin Film Interference", shortcut: "Oil film colors = Interference", mistake: "বিচ্ছুরণ ভাবা", tip: "এটি তরঙ্গ optics এর একটি চমৎকার উদাহরণ।" },
+          { question: "সরল ছন্দিত গতিসম্পন্ন কণার সরণ সর্বোচ্চ হলে কিসের মান শূন্য হয়?", options: ["ত্বরণ", "বল", "বেগ (Velocity)", "স্থিতিশক্তি"], correct: 2, topic: "SHM Kinematics", difficulty: "easy", explanation: "বিস্তার অবস্থানে সরণ সর্বোচ্চ হলেও কণা মুহূর্তের জন্য থেমে যায়, তাই সেখানে বেগ শূন্য হয়।", concept: "Velocity at Max Displacement", shortcut: "At max x, v = 0", mistake: "ত্বরণ শূন্য ভাবা", tip: "বিস্তারে বেগ শূন্য হলেও ত্বরণ সর্বোচ্চ থাকে।" },
+          { question: "নিচের কোন কণা বা তরঙ্গটি যান্ত্রিক তরঙ্গ (Mechanical Wave)?", options: ["আলো তরঙ্গ", "এক্স-রে", "শব্দ তরঙ্গ (Sound Wave)", "রেডিও তরঙ্গ"], correct: 2, topic: "Wave Classification", difficulty: "easy", explanation: "যে তরঙ্গ চলাচলের জন্য মাধ্যম আবশ্যক তাকে যান্ত্রিক তরঙ্গ বলে। শব্দ তরঙ্গ চলার জন্য মাধ্যম লাগে, তাই এটি যান্ত্রিক তরঙ্গ।", concept: "Mechanical Wave Definition", shortcut: "Sound = Mechanical Wave", mistake: "আলো তরঙ্গ ভাবা", tip: "তড়িৎ চৌম্বকীয় তরঙ্গ যান্ত্রিক তরঙ্গ নয়।" },
+          { question: "একটি স্প্রিংয়ে $m$ ভর ঝুলিয়ে দিলে এটি টেনে ছেড়ে দিলে যে কম্পন হয় তা কিসের উদাহরণ?", options: ["সরল ছন্দিত স্পন্দন (SHM)", "ঘূর্ণন গতি", "চলন গতি", "তরঙ্গ গতি"], correct: 0, topic: "Spring Oscillation", difficulty: "easy", explanation: "স্প্রিং-ভর সিস্টেমে হুকের সূত্র মেনে চলা হয় এবং উৎপন্ন গতি একটি নিখুঁত সরল ছন্দিত স্পন্দন গতি।", concept: "Mass-Spring SHM", shortcut: "Spring = SHM", mistake: "সাধারণ পর্যায়বৃত্ত গতি বলা", tip: "এর কম্পাঙ্ক $f = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}}$।" }
         ]
       };
 
-      // Expose to window for UI bindings
-      window.defaultExamData = defaultExamData;
-      window.currentUser = currentUser;
+      let examData = defaultExamData;
 
-      // Initialize Exam
-      function initExamSystem() {
-        document.getElementById('examTitle').innerText = defaultExamData.title;
-        document.getElementById('dashSubtitle').innerText = defaultExamData.title + " — Admission Exam Result";
+      // 🛡️ SECURITY ENGINE: Anti-Screenshot & Capture Deterrent
+      function initSecurityEngine() {
+        const overlay = document.getElementById('screenProtectOverlay');
+        const container = document.getElementById('mainExamContainer');
+        const header = document.getElementById('mainHeader');
+
+        function triggerSecurityLock(reason) {
+          if (isSubmitted) return;
+          container.classList.add('secure-blur');
+          header.classList.add('secure-blur');
+          overlay.style.display = 'flex';
+          playAudioFeedback('warning');
+          showToastWarning(`🚨 সিকিউরিটি অ্যালার্ট: ${reason}`);
+        }
+
+        function unlockSecurity() {
+          container.classList.remove('secure-blur');
+          header.classList.remove('secure-blur');
+          overlay.style.display = 'none';
+        }
+
+        // 1. Screen Capture Key Shortcuts (PrtScn, Snipping Tool, Inspect)
+        window.addEventListener('keyup', (e) => {
+          if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            navigator.clipboard.writeText(''); // Clear Clipboard
+            triggerSecurityLock("স্ক্রিনশট নেওয়ার চেষ্টা শনাক্ত করা হয়েছে!");
+          }
+        });
+
+        window.addEventListener('keydown', (e) => {
+          // Block Ctrl+P (Print), Ctrl+Shift+I (DevTools), Ctrl+U (Source), Ctrl+S (Save), Alt+PrtScn
+          if (
+            (e.ctrlKey && (e.key === 'p' || e.key === 'P')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+            (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
+            (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
+            (e.key === 'F12')
+          ) {
+            e.preventDefault();
+            triggerSecurityLock("নিষিদ্ধ কি-কম্বিনেশন প্রেস করা হয়েছে!");
+            return false;
+          }
+        });
+
+        // 2. Prevent Right Click & Copying
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('copy', (e) => {
+          e.preventDefault();
+          showToastWarning("⚠️ প্রশ্ন কপি করা নিষিদ্ধ!");
+        });
+
+        // 3. Tab Change & Window Blur
+        window.addEventListener('blur', () => {
+          if (!isSubmitted) triggerSecurityLock("উইন্ডো পরিবর্তন বা মিনিমাইজ করা হয়েছে!");
+        });
+
+        overlay.addEventListener('click', () => {
+          unlockSecurity();
+        });
+      }
+
+      // Init Function
+      async function checkAttemptAndLoad() {
+        initSecurityEngine();
+
+        if (currentUser) {
+          try {
+            let userSnap = await get(ref(db, `users/${currentUser.uid}`));
+            if (!userSnap.exists()) userSnap = await get(ref(db, `students/${currentUser.uid}`));
+
+            if (userSnap.exists()) {
+              const userData = userSnap.val();
+              document.getElementById('uName').innerText = userData.name || "Student";
+              document.getElementById('uAvatar').innerText = (userData.name || "S").charAt(0).toUpperCase();
+
+              if (userData.status === 'blocked') {
+                document.getElementById('questionsContainer').innerHTML = `
+                  <div style="text-align: center; padding: 40px 20px; background: #1e293b; border-radius: 12px; border: 1px solid #f43f5e; margin-top: 20px;">
+                    <h2 style="color: #f43f5e; margin-bottom: 10px;">❌ পরীক্ষা দেওয়া সম্ভব নয়!</h2>
+                    <p style="color: #cbd5e1; font-size: 16px;">আপনার অ্যাকাউন্ট ব্লক করা রয়েছে। কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
+                  </div>
+                `;
+                document.getElementById('examTitle').innerText = "অ্যাক্সেস ব্লকড";
+                document.getElementById('topSubmitBtn').style.display = 'none';
+                document.getElementById('paletteSection').style.display = 'none';
+                document.getElementById('examToolbar').style.display = 'none';
+                return;
+              }
+            }
+          } catch(err) { console.error("Error checking user:", err); }
+        }
+
+        try {
+          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
+          if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
+            examData = snapshot.val();
+          } else {
+            examData = defaultExamData;
+          }
+        } catch(e) {
+          examData = defaultExamData;
+        }
+
+        document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
         
+        const cleanId = (examData.id || "exam_physics").replace(/[^a-zA-Z0-9]/g, "_");
+        activeExamKey = "gaivex_submitted_" + cleanId;
+        examTimerKey = "gaivex_timer_" + cleanId;
+        autoSaveKey = "gaivex_autosave_" + cleanId;
+
+        const localAutoSave = localStorage.getItem(autoSaveKey);
+        if (localAutoSave) {
+          try { userSelections = JSON.parse(localAutoSave); } catch(e){}
+        }
+
+        totalDurationSeconds = (examData.duration || 30) * 60;
+        const savedTimer = localStorage.getItem(examTimerKey);
+        timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalDurationSeconds;
+
         renderQuestions();
         renderPalette();
-        startTimer();
+
+        const savedResult = localStorage.getItem(activeExamKey);
+        if (savedResult) {
+          const resultData = JSON.parse(savedResult);
+          isSubmitted = true;
+          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpent || 0, resultData.perQuestionTime || {});
+        } else {
+          startTimer();
+          setupAntiCheat();
+          setupUnloadProtection();
+        }
       }
 
+      // Rendering Engine
       function renderQuestions() {
         const container = document.getElementById('questionsContainer');
-        let html = '';
+        const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
 
-        defaultExamData.questions.forEach((q, idx) => {
-          let diffClass = q.difficulty === 'hard' ? 'hard' : (q.difficulty === 'medium' ? 'medium' : 'easy');
-          
-          html += `
-            <div class="question-card" id="qCard_${idx}" style="${viewMode === 'single' && idx !== currentSingleIndex ? 'display:none;' : ''}">
-                <div class="question-header-row">
-                    <div class="question-title">প্রশ্ন ${idx + 1}: ${q.question}</div>
-                    <div class="action-btns">
-                        <button type="button" class="action-icon-btn bookmark-btn ${bookmarkedQuestions[idx] ? 'active' : ''}" onclick="toggleBookmark(${idx})" title="Bookmark">⭐</button>
-                        <button type="button" class="action-icon-btn review-btn ${reviewQuestions[idx] ? 'active' : ''}" onclick="toggleReview(${idx})" title="Mark for Review">🔖</button>
-                        <button type="button" class="action-icon-btn" onclick="openReportModal(${idx})" title="Report">🚩</button>
-                    </div>
-                </div>
-                <div class="question-meta">
-                    <span class="tag">${q.topic}</span>
-                    <span class="tag ${diffClass}">${q.difficulty.toUpperCase()}</span>
-                </div>
-                
-                <div class="options-list">
-          `;
-
-          q.options.forEach((opt, optIdx) => {
-            let isSelected = userSelections[idx] === optIdx;
-            html += `
-              <div class="option-item ${isSelected ? 'selected-option' : ''}" id="opt_${idx}_${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
-                  <input type="radio" name="q_${idx}" value="${optIdx}" ${isSelected ? 'checked' : ''}>
-                  <span>(${['ক', 'খ', 'গ', 'ঘ'][optIdx]}) ${opt}</span>
+        container.innerHTML = examData.questions.map((q, qIndex) => `
+          <div class="question-card" id="q-box-${qIndex}">
+            <div class="question-meta">
+              <span class="tag ${q.difficulty || 'medium'}">${(q.difficulty || 'medium').toUpperCase()}</span>
+              <span class="tag">${q.topic || 'General'}</span>
+            </div>
+            <div class="question-header-row">
+              <div class="question-title">${qIndex + 1}. ${q.question}</div>
+              <div class="action-btns">
+                <button type="button" class="action-icon-btn bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
+                <button type="button" class="action-icon-btn review-btn" id="review-${qIndex}" onclick="window.toggleReview(${qIndex})" title="Mark for Review">🔖</button>
+                ${isSubmitted ? `<button type="button" class="action-icon-btn" onclick="openReportModal(${qIndex})" title="রিপোর্ট করুন">🚩</button>` : ''}
               </div>
-            `;
+            </div>
+            <div class="options-list" id="options-list-${qIndex}">
+              ${(q.options || []).map((opt, oIndex) => `
+                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
+                  <input type="radio" name="q_${qIndex}" value="${oIndex}" ${userSelections[qIndex] === oIndex ? 'checked' : ''} onchange="window.selectOption(${qIndex}, ${oIndex})">
+                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
+              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
+              <div class="review-insights">
+                <div class="insight-card"><strong>📖 Concept:</strong> ${q.concept || 'N/A'}</div>
+                <div class="insight-card"><strong>💡 Shortcut:</strong> ${q.shortcut || 'N/A'}</div>
+                <div class="insight-card"><strong>⚠️ Common Mistake:</strong> ${q.mistake || 'N/A'}</div>
+                <div class="insight-card"><strong>🎯 Admission Tip:</strong> ${q.tip || 'N/A'}</div>
+              </div>
+              <div class="q-time-badge" id="q-time-${qIndex}">⏱️ ব্যয়িত সময়: 0s</div>
+            </div>
+          </div>
+        `).join('');
+
+        window.selectOption = function(qIndex, oIndex) {
+          if (isSubmitted) return;
+          
+          triggerHaptic();
+          playAudioFeedback('click');
+
+          userSelections[qIndex] = Number(oIndex);
+          localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
+          
+          if (currentUser) {
+            update(ref(db, `exam_sessions/${currentUser.uid}/${examData.id || 'exam'}`), {
+              answers: userSelections,
+              lastUpdated: Date.now()
+            }).catch(()=>{});
+          }
+
+          const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
+          allLabels.forEach((lbl, idx) => {
+            lbl.classList.remove('selected-option');
+            if(idx === Number(oIndex)) lbl.classList.add('selected-option');
           });
 
-          html += `
-                </div>
-                <div class="explanation-box" id="exp_${idx}" style="display:none;">
-                    <strong>💡 সঠিক উত্তর: (${['ক', 'খ', 'গ', 'ঘ'][q.correct]}) ${q.options[q.correct]}</strong>
-                    <p style="margin-top: 6px;">ব্যাখ্যা: ${q.explanation}</p>
-                    <div class="review-insights">
-                        <div class="insight-card"><strong>🎯 মূল কনসেপ্ট</strong> ${q.concept}</div>
-                        <div class="insight-card"><strong>⚡ শর্টকাট টেকনিক</strong> ${q.shortcut}</div>
-                        <div class="insight-card"><strong>⚠️ সাধারণ ভুল</strong> ${q.mistake}</div>
-                        <div class="insight-card"><strong>💡 এক্সপার্ট টিপস</strong> ${q.tip}</div>
-                    </div>
-                </div>
-            </div>
-          `;
-        });
+          updatePalette();
 
-        container.innerHTML = html;
-        if(window.MathJax) MathJax.typesetPromise();
+          // Auto-advance logic
+          const autoAdvance = document.getElementById('autoAdvanceCheck').checked;
+          if (autoAdvance) {
+            if (viewMode === 'single' && qIndex < examData.questions.length - 1) {
+              setTimeout(() => navigateSingle(1), 250);
+            } else if (viewMode === 'all' && qIndex < examData.questions.length - 1) {
+              const nextCard = document.getElementById(`q-box-${qIndex + 1}`);
+              if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        };
+
+        window.toggleBookmark = function(qIndex) {
+          triggerHaptic();
+          bookmarkedQuestions[qIndex] = !bookmarkedQuestions[qIndex];
+          const btn = document.getElementById(`bookmark-${qIndex}`);
+          if(bookmarkedQuestions[qIndex]) btn.classList.add('active');
+          else btn.classList.remove('active');
+          updatePalette();
+        };
+
+        window.toggleReview = function(qIndex) {
+          triggerHaptic();
+          reviewQuestions[qIndex] = !reviewQuestions[qIndex];
+          const btn = document.getElementById(`review-${qIndex}`);
+          if(reviewQuestions[qIndex]) btn.classList.add('active');
+          else btn.classList.remove('active');
+          updatePalette();
+        };
+
+        // Render Mathematical/Physics Equations using KaTeX
+        renderMathInQuestions();
       }
 
-      window.selectOption = function(qIdx, optIdx) {
-        if (isSubmitted) return;
-        userSelections[qIdx] = optIdx;
-        playAudioFeedback('click');
-        triggerHaptic();
-
-        // Update UI options styling
-        const qCard = document.getElementById(`qCard_${qIdx}`);
-        const opts = qCard.querySelectorAll('.option-item');
-        opts.forEach((opt, idx) => {
-          if (idx === optIdx) {
-            opt.classList.add('selected-option');
-            opt.querySelector('input').checked = true;
-          } else {
-            opt.classList.remove('selected-option');
-            opt.querySelector('input').checked = false;
-          }
-        });
-
-        updatePaletteCounters();
-
-        // Auto Advance in Single Mode
-        if (viewMode === 'single') {
-          const autoCheck = document.getElementById('autoAdvanceCheck');
-          if (autoCheck && autoCheck.checked) {
-            setTimeout(() => {
-              if (currentSingleIndex < defaultExamData.questions.length - 1) {
-                navigateSingle(1);
-              }
-            }, 300);
-          }
+      function renderMathInQuestions() {
+        if (window.renderMathInElement) {
+          window.renderMathInElement(document.getElementById('questionsContainer'), {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ]
+          });
         }
-      };
+      }
 
       function renderPalette() {
         const grid = document.getElementById('paletteGrid');
-        let html = '';
-        for (let i = 0; i < defaultExamData.questions.length; i++) {
-          let statusClass = '';
-          if (userSelections[i] !== undefined) statusClass = 'answered';
-          if (bookmarkedQuestions[i]) statusClass = 'bookmarked';
-          if (reviewQuestions[i]) statusClass = 'review';
-          if (viewMode === 'single' && i === currentSingleIndex) statusClass += ' active-current';
-
-          html += `<button type="button" class="palette-btn ${statusClass}" id="pal_${i}" onclick="jumpToCard(${i})">${i + 1}</button>`;
-        }
-        grid.innerHTML = html;
+        grid.innerHTML = examData.questions.map((_, i) => `
+          <button type="button" class="palette-btn" id="palette-btn-${i}" onclick="scrollToQuestion(${i})">${i + 1}</button>
+        `).join('');
+        updatePalette();
       }
 
-      function updatePaletteCounters() {
-        let answeredCount = Object.keys(userSelections).length;
-        document.getElementById('answeredCount').innerText = `${answeredCount}/৬০`;
-        renderPalette();
+      function updatePalette() {
+        let answeredCount = 0;
+        examData.questions.forEach((_, i) => {
+          const btn = document.getElementById(`palette-btn-${i}`);
+          if (!btn) return;
+
+          btn.className = "palette-btn";
+          if (i === currentSingleIndex && viewMode === 'single') btn.classList.add('active-current');
+          
+          if (userSelections[i] !== undefined) {
+            answeredCount++;
+            btn.classList.add('answered');
+          } else if (reviewQuestions[i]) {
+            btn.classList.add('review');
+          } else if (bookmarkedQuestions[i]) {
+            btn.classList.add('bookmarked');
+          }
+        });
+
+        const totalQ = examData.questions.length;
+        document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
       }
 
-      window.jumpToCard = function(idx) {
+      // Font Zoom Control
+      window.changeFontSize = function(delta) {
+        currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
+        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
+      };
+
+      // Navigation Controls
+      window.scrollToQuestion = function(index) {
+        const now = Date.now();
+        const spent = Math.round((now - currentQuestionStartTime) / 1000);
+        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
+        currentQuestionStartTime = now;
+
+        currentSingleIndex = index;
         if (viewMode === 'single') {
-          currentSingleIndex = idx;
-          renderQuestions();
-          renderPalette();
+          examData.questions.forEach((_, i) => {
+            const box = document.getElementById(`q-box-${i}`);
+            if (box) box.style.display = i === index ? 'block' : 'none';
+          });
           updateSingleNavFooter();
         } else {
-          const card = document.getElementById(`qCard_${idx}`);
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
+          const box = document.getElementById(`q-box-${index}`);
+          if(box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+        updatePalette();
       };
 
       window.switchViewMode = function(mode) {
         viewMode = mode;
         document.getElementById('btnModeAll').classList.toggle('active', mode === 'all');
         document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
-        
-        const singleFooter = document.getElementById('singleNavFooter');
-        if (mode === 'single') {
-          singleFooter.style.display = 'flex';
-          currentSingleIndex = 0;
-        } else {
-          singleFooter.style.display = 'none';
-        }
-        renderQuestions();
-        renderPalette();
-      };
+        document.getElementById('singleNavFooter').style.display = mode === 'single' ? 'flex' : 'none';
 
-      window.navigateSingle = function(direction) {
-        currentSingleIndex += direction;
-        if (currentSingleIndex < 0) currentSingleIndex = 0;
-        if (currentSingleIndex >= defaultExamData.questions.length) currentSingleIndex = defaultExamData.questions.length - 1;
-        
-        renderQuestions();
-        renderPalette();
-        updateSingleNavFooter();
+        if (mode === 'single') {
+          scrollToQuestion(currentSingleIndex);
+        } else {
+          examData.questions.forEach((_, i) => {
+            const box = document.getElementById(`q-box-${i}`);
+            if (box) box.style.display = 'block';
+          });
+        }
       };
 
       function updateSingleNavFooter() {
-        document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ৬০`;
+        const total = examData.questions.length;
+        document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ${total}`;
         document.getElementById('prevQBtn').disabled = currentSingleIndex === 0;
-        document.getElementById('nextQBtn').disabled = currentSingleIndex === defaultExamData.questions.length - 1;
+        document.getElementById('nextQBtn').disabled = currentSingleIndex === total - 1;
       }
 
+      window.navigateSingle = function(dir) {
+        const nextIdx = currentSingleIndex + dir;
+        if (nextIdx >= 0 && nextIdx < examData.questions.length) {
+          scrollToQuestion(nextIdx);
+        }
+      };
+
       window.jumpToQuestion = function() {
-        const val = parseInt(document.getElementById('jumpQInput').value);
-        if (val && val >= 1 && val <= 60) {
-          if (viewMode === 'single') {
-            currentSingleIndex = val - 1;
-            renderQuestions();
-            renderPalette();
-            updateSingleNavFooter();
-          } else {
-            jumpToCard(val - 1);
-          }
+        const val = parseInt(document.getElementById('jumpQInput').value, 10);
+        if (val && val >= 1 && val <= examData.questions.length) {
+          scrollToQuestion(val - 1);
         }
       };
 
       window.goToNextUnanswered = function() {
-        for (let i = 0; i < defaultExamData.questions.length; i++) {
+        for (let i = 0; i < examData.questions.length; i++) {
           if (userSelections[i] === undefined) {
-            jumpToCard(i);
-            break;
+            scrollToQuestion(i);
+            return;
           }
         }
+        alert("🎉 সব প্রশ্ন ইতোমধ্যে উত্তর দেওয়া হয়ে গেছে!");
       };
 
-      window.toggleBookmark = function(idx) {
-        bookmarkedQuestions[idx] = !bookmarkedQuestions[idx];
-        renderQuestions();
-        renderPalette();
-      };
-
-      window.toggleReview = function(idx) {
-        reviewQuestions[idx] = !reviewQuestions[idx];
-        renderQuestions();
-        renderPalette();
-      };
-
-      window.changeFontSize = function(delta) {
-        currentFontSize += delta;
-        if (currentFontSize < 12) currentFontSize = 12;
-        if (currentFontSize > 24) currentFontSize = 24;
-        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
-      };
-
+      // Timer & Anti-Cheat
       function startTimer() {
+        updateTimerDisplay();
         timerInterval = setInterval(() => {
           timeRemaining--;
-          let m = Math.floor(timeRemaining / 60);
-          let s = timeRemaining % 60;
-          document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+          localStorage.setItem(examTimerKey, timeRemaining);
+          updateTimerDisplay();
+
+          if (timeRemaining === 600) { playAudioFeedback('warning'); showToastWarning("⚠️ আপনার পরীক্ষার আর ১০ মিনিট বাকি!"); }
+          if (timeRemaining === 300) { playAudioFeedback('warning'); showToastWarning("🔥 দ্রুত বাকি প্রশ্নগুলো সম্পন্ন করুন (৫ মিনিট বাকি)!"); }
+          if (timeRemaining === 60)  { playAudioFeedback('warning'); showToastWarning("🚨 মাত্র ১ মিনিট বাকি!"); }
 
           if (timeRemaining <= 0) {
             clearInterval(timerInterval);
-            submitExam(true);
+            localStorage.removeItem(examTimerKey);
+            alert("⏱️ সময় শেষ! পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
+            submitExamAction();
           }
         }, 1000);
       }
 
+      function updateTimerDisplay() {
+        const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+        const s = (timeRemaining % 60).toString().padStart(2, '0');
+        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+      }
+
+      function showToastWarning(msg) {
+        const toast = document.getElementById('warningToast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 5000);
+      }
+
+      function setupAntiCheat() {
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden && !isSubmitted) {
+            showToastWarning("⚠️ Tab Switch Detected! Cheating deterrence active.");
+          }
+        });
+      }
+
+      function setupUnloadProtection() {
+        window.onbeforeunload = function() {
+          if (!isSubmitted) return "আপনার পরীক্ষাটি জমা দেওয়া হয়নি! বের হতে চান?";
+        };
+      }
+
+      // Keyboard Shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (isSubmitted) return;
+        if (e.key === 'ArrowRight') navigateSingle(1);
+        if (e.key === 'ArrowLeft') navigateSingle(-1);
+        if (e.key.toLowerCase() === 'm') toggleReview(currentSingleIndex);
+        if (e.key.toLowerCase() === 'b') toggleBookmark(currentSingleIndex);
+
+        const key = e.key.toLowerCase();
+        let optIdx = -1;
+        if (['1', 'a'].includes(key)) optIdx = 0;
+        if (['2', 'b'].includes(key)) optIdx = 1;
+        if (['3', 'c'].includes(key)) optIdx = 2;
+        if (['4', 'd'].includes(key)) optIdx = 3;
+
+        if (optIdx !== -1) {
+          selectOption(currentSingleIndex, optIdx);
+        }
+      });
+
+      // Modals
+      window.openShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'flex'; };
+      window.closeShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'none'; };
+
       window.openConfirmModal = function() {
-        let answered = Object.keys(userSelections).length;
-        let unanswered = 60 - answered;
-        document.getElementById('modalStatsText').innerHTML = `আপনি <b>${answered}টি</b> প্রশ্নের উত্তর দিয়েছেন এবং <b>${unanswered}টি</b> প্রশ্ন বাকি আছে। আপনি কি পরীক্ষা জমা দিতে চান?`;
+        if (isSubmitted) return;
+        const total = examData.questions.length;
+        const answered = Object.keys(userSelections).length;
+        const unanswered = total - answered;
+
+        document.getElementById('modalStatsText').innerHTML = `
+          Total Questions: <b>${total}</b><br>
+          Answered: <span style="color: #10b981; font-weight: bold;">${answered}</span><br>
+          Unanswered: <span style="color: #f43f5e; font-weight: bold;">${unanswered}</span>
+        `;
         document.getElementById('confirmModal').style.display = 'flex';
       };
 
-      window.closeConfirmModal = function() {
-        document.getElementById('confirmModal').style.display = 'none';
-      };
+      window.closeConfirmModal = function() { document.getElementById('confirmModal').style.display = 'none'; };
+      window.confirmAndSubmit = function() { closeConfirmModal(); submitExamAction(); };
 
-      window.confirmAndSubmit = function() {
-        closeConfirmModal();
-        submitExam(false);
-      };
-
-      window.submitExam = function(isTimeout = false) {
+      // --- Submission & Evaluation Function ---
+      async function submitExamAction() {
         if (isSubmitted) return;
-        isSubmitted = true;
-        clearInterval(timerInterval);
 
-        // Evaluation
+        const now = Date.now();
+        const spent = Math.round((now - currentQuestionStartTime) / 1000);
+        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
+
+        clearInterval(timerInterval);
+        localStorage.removeItem(examTimerKey);
+        isSubmitted = true;
+        window.onbeforeunload = null;
+
+        const timeSpent = totalDurationSeconds - Math.max(0, timeRemaining);
         let correctCount = 0;
         let wrongCount = 0;
-        let skippedCount = 0;
-        let topicPerformance = {};
 
-        defaultExamData.questions.forEach((q, idx) => {
-          if (!topicPerformance[q.topic]) topicPerformance[q.topic] = { correct: 0, total: 0 };
-          topicPerformance[q.topic].total++;
+        examData.questions.forEach((q, i) => {
+          const selected = userSelections[i];
+          const correctVal = Number(q.correct);
 
-          if (userSelections[idx] !== undefined) {
-            if (userSelections[idx] === q.correct) {
+          if (selected !== undefined && selected !== null) {
+            if (Number(selected) === correctVal) {
               correctCount++;
-              topicPerformance[q.topic].correct++;
             } else {
               wrongCount++;
             }
-          } else {
-            skippedCount++;
           }
         });
 
-        let totalScore = (correctCount * defaultExamData.marking.correct) - (wrongCount * defaultExamData.marking.wrong);
-        if (totalScore < 0) totalScore = 0;
-        let attempted = correctCount + wrongCount;
-        let accuracy = attempted > 0 ? ((correctCount / attempted) * 100).toFixed(1) : 0;
-        let timeSpentSecs = totalDurationSeconds - timeRemaining;
-        let mSpent = Math.floor(timeSpentSecs / 60);
-        let sSpent = timeSpentSecs % 60;
+        const wrongMark = examData.marking ? Number(examData.marking.wrong) : 0.25;
+        let finalScore = correctCount - (wrongCount * wrongMark);
+        if (finalScore < 0) finalScore = 0;
 
-        // Hide Exam Controls, Show Results
-        document.getElementById('examToolbar').style.display = 'none';
-        document.getElementById('paletteSection').style.display = 'none';
-        document.getElementById('topSubmitBtn').style.display = 'none';
-        if(document.getElementById('singleNavFooter')) document.getElementById('singleNavFooter').style.display = 'none';
+        localStorage.setItem(activeExamKey, JSON.stringify({
+          score: finalScore,
+          userAnswers: userSelections,
+          timeSpent: timeSpent,
+          perQuestionTime: perQuestionTime
+        }));
+
+        showSubmittedResult(userSelections, finalScore, timeSpent, perQuestionTime);
+
+        const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
+        const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
+
+        try {
+          if (currentUser) {
+            const attemptRef = push(ref(db, `exam_attempts/${currentUser.uid}`));
+            await set(attemptRef, {
+              examId: examIdClean,
+              examTitle: currentExamTitle,
+              score: finalScore,
+              total: examData.questions.length,
+              timeSpent: timeSpent,
+              submittedAt: new Date().toISOString(),
+              userAnswers: userSelections
+            });
+
+            await set(ref(db, `leaderboard/${examIdClean}/${currentUser.uid}`), {
+              name: document.getElementById('uName').innerText || "Student",
+              score: finalScore,
+              timeSpent: timeSpent,
+              updatedAt: Date.now()
+            });
+          }
+        } catch(err) { console.error("Score Save Error:", err); }
+      }
+
+      function showSubmittedResult(userAnswers, score, timeSpent, qTimeMap) {
+        const total = examData.questions.length;
         
+        let correct = 0;
+        let wrong = 0;
+        let skipped = 0;
+        let topicStats = {};
+
+        examData.questions.forEach((q, i) => {
+          const selected = userAnswers ? userAnswers[i] : undefined;
+          const correctVal = Number(q.correct);
+          const topicName = q.topic || 'General';
+
+          if (!topicStats[topicName]) {
+            topicStats[topicName] = { correct: 0, total: 0 };
+          }
+          topicStats[topicName].total++;
+
+          if (selected === undefined || selected === null) {
+            skipped++;
+          } else if (Number(selected) === correctVal) {
+            correct++;
+            topicStats[topicName].correct++;
+          } else {
+            wrong++;
+          }
+        });
+
+        const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0;
+        const attemptRate = Math.round(((total - skipped) / total) * 100);
+
         document.getElementById('resultDashboard').style.display = 'block';
+        document.getElementById('resScore').innerText = score.toFixed(2);
+        document.getElementById('resAccuracy').innerText = accuracy + '%';
+        document.getElementById('resCorrect').innerText = correct;
+        document.getElementById('resWrong').innerText = wrong;
+        document.getElementById('resSkipped').innerText = skipped;
+        
+        const m = Math.floor(timeSpent / 60);
+        const s = timeSpent % 60;
+        document.getElementById('resTime').innerText = `${m}m ${s}s`;
+        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${attemptRate}%`;
+
+        document.getElementById('barCorrect').style.width = `${(correct/total)*100}%`;
+        document.getElementById('barWrong').style.width = `${(wrong/total)*100}%`;
+        document.getElementById('barSkip').style.width = `${(skipped/total)*100}%`;
+
+        runAIAnalysis(accuracy, topicStats);
+
+        document.getElementById('timerDisplay').innerText = "00:00";
         document.getElementById('filterBar').style.display = 'flex';
+        document.getElementById('topSubmitBtn').style.display = 'none';
 
-        // Populate Dashboard Stats
-        document.getElementById('resScore').innerText = totalScore.toFixed(2);
-        document.getElementById('resAccuracy').innerText = `${accuracy}%`;
-        document.getElementById('resCorrect').innerText = correctCount;
-        document.getElementById('resWrong').innerText = wrongCount;
-        document.getElementById('resSkipped').innerText = skippedCount;
-        document.getElementById('resTime').innerText = `${mSpent}m ${sSpent}s`;
-        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${((attempted/60)*100).toFixed(1)}%`;
+        switchViewMode('all');
 
-        // Bar Chart
-        document.getElementById('barCorrect').style.width = `${(correctCount/60)*100}%`;
-        document.getElementById('barWrong').style.width = `${(wrongCount/60)*100}%`;
-        document.getElementById('barSkip').style.width = `${(skippedCount/60)*100}%`;
+        examData.questions.forEach((q, i) => {
+          const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
+          const correctVal = Number(q.correct);
+          
+          const expBox = document.getElementById(`exp-${i}`);
+          if(expBox) expBox.style.display = 'block';
 
-        // AI Analysis
-        generateAIAnalysis(topicPerformance, accuracy);
+          const timeBadge = document.getElementById(`q-time-${i}`);
+          if (timeBadge && qTimeMap && qTimeMap[i]) {
+            timeBadge.innerText = `⏱️ ব্যয়িত সময়: ${qTimeMap[i]}s`;
+          }
 
-        // Render Explanations on Question Cards
-        defaultExamData.questions.forEach((q, idx) => {
-          let expBox = document.getElementById(`exp_${idx}`);
-          if (expBox) expBox.style.display = 'block';
-
-          // Colorize options
-          let qCard = document.getElementById(`qCard_${idx}`);
-          let opts = qCard.querySelectorAll('.option-item');
-          opts.forEach((opt, optIdx) => {
-            opt.classList.add('locked-option');
-            if (optIdx === q.correct) {
-              opt.classList.add('correct-opt');
-            } else if (userSelections[idx] === optIdx) {
-              opt.classList.add('wrong-opt');
+          const allLabels = document.querySelectorAll(`[id^="opt-label-${i}-"]`);
+          allLabels.forEach((lbl, idx) => {
+            lbl.classList.add('locked-option');
+            if (idx === correctVal) {
+              lbl.classList.add('correct-opt');
+            } else if (selected !== undefined && idx === Number(selected) && idx !== correctVal) {
+              lbl.classList.add('wrong-opt');
             }
           });
         });
 
-        if (viewMode === 'single') {
-          switchViewMode('all');
-        }
-
-        // Save History locally or Firebase
-        saveHistoryRecord({
-          score: totalScore,
-          accuracy: accuracy,
-          correct: correctCount,
-          wrong: wrongCount,
-          date: new Date().toLocaleDateString()
-        });
-      };
-
-      function generateAIAnalysis(topicPerformance, accuracy) {
-        let aiText = `আপনার সামগ্রিক নির্ভুলতা বা একিউরেসি ${accuracy}%। পদার্থবিজ্ঞানের পর্যায়বৃত্ত গতি অধ্যায়ের বেসিক কনসেপ্ট ও গাণিতিক সমস্যাগুলোতে আপনার পারফরম্যান্স মূল্যায়ন করা হয়েছে।`;
-        let pillsHtml = '';
-
-        for (let topic in topicPerformance) {
-          let tp = topicPerformance[topic];
-          let ratio = tp.total > 0 ? (tp.correct / tp.total) : 0;
-          if (ratio >= 0.7) {
-            pillsHtml += `<span class="topic-pill strong">✅ ${topic} (${tp.correct}/${tp.total})</span>`;
-          } else {
-            pillsHtml += `<span class="topic-pill weak">⚠️ ${topic} (${tp.correct}/${tp.total})</span>`;
-          }
-        }
-
-        document.getElementById('aiAnalysisText').innerText = aiText;
-        document.getElementById('aiTopicList').innerHTML = pillsHtml;
+        renderMathInQuestions();
       }
 
+      function runAIAnalysis(accuracy, topicStats) {
+        const textElem = document.getElementById('aiAnalysisText');
+        const listElem = document.getElementById('aiTopicList');
+
+        let msg = `আপনার সার্বিক একুরেসি ${accuracy}%. `;
+        if (accuracy >= 80) {
+          msg += "আপনার প্রস্তুতি অত্যন্ত চমৎকার! পর্যায়বৃত্ত গতি ও তরঙ্গের সূত্রগুলোতে আপনার দখল দারুণ।";
+        } else if (accuracy >= 50) {
+          msg += "আপনার প্রস্তুতি ভালো, তবে কিছু ম্যাথ ও তাত্ত্বিক অংশে আরও প্র্যাকটিস প্রয়োজন।";
+        } else {
+          msg += "আপনার বেসিক ক্লিয়ারেন্স বাড়াতে হবে। বিশেষ করে স্প্রিং ও দোলক সম্পর্কিত সমীকরণগুলো ভালোভাবে রিভিশন দিন।";
+        }
+        textElem.innerText = msg;
+
+        let pillsHtml = "";
+        for (let tName in topicStats) {
+          let tData = topicStats[tName];
+          let tAcc = Math.round((tData.correct / tData.total) * 100);
+          let isStrong = tAcc >= 60;
+          pillsHtml += `<div class="topic-pill ${isStrong ? 'strong' : 'weak'}"><span>${isStrong ? '✅' : '⚠️'}</span> ${tName} (${tAcc}%)</div>`;
+        }
+        listElem.innerHTML = pillsHtml;
+      }
+
+      window.runAIAnalysis = runAIAnalysis;
+
       window.filterQuestions = function(filterType) {
-        // Update filter buttons active state
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
 
-        defaultExamData.questions.forEach((q, idx) => {
-          let card = document.getElementById(`qCard_${idx}`);
-          let isCorrect = userSelections[idx] === q.correct;
-          let isWrong = userSelections[idx] !== undefined && !isCorrect;
-          let isSkipped = userSelections[idx] === undefined;
-          let isBookmarked = bookmarkedQuestions[idx];
-          let isReview = reviewQuestions[idx];
+        examData.questions.forEach((q, i) => {
+          const box = document.getElementById(`q-box-${i}`);
+          if (!box) return;
 
+          const selected = userSelections[i];
+          const correctVal = Number(q.correct);
           let show = true;
-          if (filterType === 'correct' && !isCorrect) show = false;
-          if (filterType === 'wrong' && !isWrong) show = false;
-          if (filterType === 'skipped' && !isSkipped) show = false;
-          if (filterType === 'bookmarked' && !isBookmarked) show = false;
-          if (filterType === 'review' && !isReview) show = false;
 
-          card.style.display = show ? 'block' : 'none';
+          if (filterType === 'correct') {
+            show = (selected !== undefined && Number(selected) === correctVal);
+          } else if (filterType === 'wrong') {
+            show = (selected !== undefined && Number(selected) !== correctVal);
+          } else if (filterType === 'skipped') {
+            show = (selected === undefined);
+          } else if (filterType === 'bookmarked') {
+            show = !!bookmarkedQuestions[i];
+          } else if (filterType === 'review') {
+            show = !!reviewQuestions[i];
+          }
+
+          box.style.display = show ? 'block' : 'none';
         });
       };
 
       window.toggleTabs = function(tabName) {
-        let lb = document.getElementById('tabLeaderboard');
-        let hist = document.getElementById('tabHistory');
-        
+        const lb = document.getElementById('tabLeaderboard');
+        const hi = document.getElementById('tabHistory');
         if (tabName === 'leaderboard') {
-          lb.style.display = lb.style.display === 'none' ? 'block' : 'none';
-          hist.style.display = 'none';
-          loadLeaderboardMock();
-        } else if (tabName === 'history') {
-          hist.style.display = hist.style.display === 'none' ? 'block' : 'none';
+          lb.style.display = lb.style.display === 'block' ? 'none' : 'block';
+          hi.style.display = 'none';
+        } else {
+          hi.style.display = hi.style.display === 'block' ? 'none' : 'block';
           lb.style.display = 'none';
-          loadHistoryList();
         }
       };
 
-      function loadLeaderboardMock() {
-        let tbody = document.getElementById('leaderboardBody');
-        tbody.innerHTML = `
-          <tr><td>1</td><td>ফাহিম আহমেদ</td><td>58.50</td><td>38m 12s</td></tr>
-          <tr><td>2</td><td>সাদিয়া ইসলাম</td><td>56.00</td><td>41m 05s</td></tr>
-          <tr class="my-rank"><td>3</td><td>Neo (আপনি)</td><td>${document.getElementById('resScore').innerText}</td><td>${document.getElementById('resTime').innerText}</td></tr>
-          <tr><td>4</td><td>রাফিদ হাসান</td><td>51.25</td><td>44m 20s</td></tr>
-        `;
-      }
+      async function loadLiveLeaderboard(examIdClean) {
+        try {
+          const snap = await get(ref(db, `leaderboard/${examIdClean}`));
+          const tbody = document.getElementById('leaderboardBody');
+          if (!snap.exists()) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">কোনো র‍্যাংক পাওয়া যায়নি।</td></tr>`;
+            return;
+          }
 
-      function saveHistoryRecord(record) {
-        let history = JSON.parse(localStorage.getItem('gaivex_periodic_history') || '[]');
-        history.push(record);
-        localStorage.setItem('gaivex_periodic_history', JSON.stringify(history));
-      }
+          let list = [];
+          snap.forEach(child => { list.push(child.val()); });
+          list.sort((a,b) => b.score - a.score || a.timeSpent - b.timeSpent);
 
-      function loadHistoryList() {
-        let history = JSON.parse(localStorage.getItem('gaivex_periodic_history') || '[]');
-        let container = document.getElementById('historyList');
-        if (history.length === 0) {
-          container.innerHTML = `<p>কোনো পূর্ববর্তী রেকর্ড নেই।</p>`;
-          return;
-        }
-        let html = `<ul style="list-style:none; padding:0;">`;
-        history.forEach((h, i) => {
-          html += `<li style="padding:6px 0; border-bottom:1px solid #334155;">পরীক্ষা #${i+1} (${h.date}) — স্কোর: <b>${h.score}</b> | একিউরেসি: <b>${h.accuracy}%</b></li>`;
-        });
-        html += `</ul>`;
-        container.innerHTML = html;
+          tbody.innerHTML = list.map((item, idx) => `
+            <tr class="${currentUser && item.name === document.getElementById('uName').innerText ? 'my-rank' : ''}">
+              <td>#${idx + 1}</td>
+              <td>${item.name}</td>
+              <td style="color:#38bdf8; font-weight:bold;">${item.score.toFixed(2)}</td>
+              <td>${Math.floor(item.timeSpent/60)}m ${item.timeSpent%60}s</td>
+            </tr>
+          `).join('');
+        } catch(e) {}
       }
 
       window.printCertificate = function() {
-        document.getElementById('certName').innerText = currentUser.displayName;
-        document.getElementById('certScore').innerText = document.getElementById('resScore').innerText + " / ৬০";
+        document.getElementById('certName').innerText = document.getElementById('uName').innerText || "Student";
+        document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
         document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
         document.getElementById('certDate').innerText = new Date().toLocaleDateString();
-        
-        let certDiv = document.getElementById('certificateContainer');
-        certDiv.style.display = 'block';
+
+        const card = document.getElementById('certificateContainer');
+        card.style.display = 'block';
         window.print();
-        certDiv.style.display = 'none';
+        setTimeout(() => { card.style.display = 'none'; }, 1000);
       };
 
       window.shareResultOnFacebook = function() {
-        let score = document.getElementById('resScore').innerText;
-        let acc = document.getElementById('resAccuracy').innerText;
-        let msg = `আমি GAIVEX Smart Exam System-এ পদার্থবিজ্ঞানের পর্যায়বৃত্ত গতি পরীক্ষায় ৬০ নম্বরের মধ্যে ${score} পেয়েছি! আমার Accuracy ${acc}। 🚀`;
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(msg)}`, '_blank');
+        const score = document.getElementById('resScore').innerText;
+        const acc = document.getElementById('resAccuracy').innerText;
+        const text = encodeURIComponent(`আমি GAIVEX-এর পদার্থবিজ্ঞান (পর্যায়বৃত্ত গতি) লাইভ পরীক্ষায় ${score} নম্বর এবং ${acc} একুরেসি অর্জন করেছি! 🔥`);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${text}`, '_blank');
       };
 
       window.generateAIPractice = function() {
-        alert('আপনার দুর্বল টপিকগুলোর ওপর ২০টি নতুন রিভিশন এমসিকিউ প্রস্তুত করা হচ্ছে...');
+        alert("⚡ আপনার দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি নতুন রিভিশন প্রশ্ন জেনারেট করা হচ্ছে...");
       };
 
-      // Report Modal Handlers
-      window.openReportModal = function(qIdx) {
-        document.getElementById('reportQIndex').value = qIdx;
+      window.openReportModal = function(qIndex) {
+        document.getElementById('reportQIndex').value = qIndex;
         document.getElementById('reportModal').style.display = 'flex';
       };
-      window.closeReportModal = function() {
-        document.getElementById('reportModal').style.display = 'none';
-      };
+      window.closeReportModal = function() { document.getElementById('reportModal').style.display = 'none'; };
       window.submitQuestionReport = function() {
-        alert('আপনার রিপোর্ট সফলভাবে জমা দেওয়া হয়েছে। ধন্যবাদ!');
+        alert("🚩 আপনার রিপোর্ট সফলভাবে জমা দেওয়া হয়েছে। ধন্যবাদ!");
         closeReportModal();
       };
 
-      window.openShortcutModal = function() {
-        document.getElementById('shortcutModal').style.display = 'flex';
-      };
-      window.closeShortcutModal = function() {
-        document.getElementById('shortcutModal').style.display = 'none';
-      };
-
-      // Anti-Cheat Event Listeners
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden && !isSubmitted) {
-          document.getElementById('screenProtectOverlay').style.display = 'flex';
-          document.getElementById('warningToast').style.display = 'block';
-          playAudioFeedback('warning');
+      // Auth state observer
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser = user;
         } else {
-          document.getElementById('screenProtectOverlay').style.display = 'none';
+          currentUser = null;
         }
+        checkAttemptAndLoad();
       });
-
-      // Run Initialization on Load
-      window.onload = function() {
-        initExamSystem();
-      };
     </script>
 </body>
 </html>
