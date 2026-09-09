@@ -13,13 +13,16 @@
     <style>
         :root {
             --q-font-size: 16px;
+            --bg-main: #0f172a;
+            --text-main: #f8fafc;
+            --card-bg: #1e293b;
+            --border-color: #334155;
         }
         * { 
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
             font-family: 'Hind Siliguri', sans-serif; 
-            /* Anti-Copy and Text Selection Disable */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -28,15 +31,22 @@
         }
         
         body { 
-            background-color: #0f172a; 
-            color: #f8fafc; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
             position: relative;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* Screen capture / Blur Protection Overlay */
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --text-main: #0f172a;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
         .secure-blur {
             filter: blur(15px) grayscale(100%) !important;
             pointer-events: none !important;
@@ -59,62 +69,62 @@
             padding: 20px;
         }
         
-        /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: #1e293b; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 4%; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 22px; font-weight: 700; color: #38bdf8; text-decoration: none; }
         .logo span { color: #f43f5e; }
         .nav-right { display: flex; align-items: center; gap: 12px; }
-        .user-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; background: #0f172a; padding: 4px 10px; border-radius: 20px; border: 1px solid #334155; }
+        .user-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; background: var(--bg-main); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-color); }
         .user-avatar { width: 22px; height: 22px; border-radius: 50%; background: #38bdf8; color: #0f172a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; }
 
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
         
-        /* Timer Header */
-        .timer-header { position: sticky; top: 60px; z-index: 900; background: #1e293b; border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; flex-wrap: nowrap; }
-        .timer-info { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .timer-header { position: sticky; top: 60px; z-index: 900; background: var(--card-bg); border: 2px solid #38bdf8; border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); gap: 10px; }
+        .timer-info { display: flex; align-items: center; gap: 15px; overflow: hidden; }
         #examTitle { font-size: 14px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; font-weight: 600; }
-        .timer-box { font-size: 16px; font-weight: bold; color: #f43f5e; background: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #f43f5e; white-space: nowrap; }
+        
+        /* Circular Timer UI */
+        .circular-timer { position: relative; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        .circular-timer svg { transform: rotate(-90deg); width: 50px; height: 50px; }
+        .circular-timer circle { fill: none; stroke-width: 4; stroke-linecap: round; }
+        .circular-timer .bg-ring { stroke: var(--border-color); }
+        .circular-timer .progress-ring { stroke: #f43f5e; stroke-dasharray: 138; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
+        .timer-text { position: absolute; font-size: 11px; font-weight: bold; color: #f43f5e; }
+
         .btn-top-submit { background: #10b981; color: white; border: none; padding: 8px 16px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
         .btn-top-submit:hover { background: #059669; }
 
-        /* Banner Warnings */
         .warning-toast { display: none; background: #f59e0b; color: #0f172a; padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-align: center; }
         
-        /* Control Toolbar */
-        .exam-toolbar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .exam-toolbar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .mode-toggle { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .tool-btn { background: #0f172a; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+        .tool-btn { background: var(--bg-main); border: 1px solid #475569; color: var(--text-main); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .tool-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
         
-        /* Font Controls & Auto Advance Toggle */
-        .ctrl-group { display: flex; align-items: center; gap: 6px; background: #0f172a; padding: 3px 8px; border-radius: 6px; border: 1px solid #475569; }
+        .ctrl-group { display: flex; align-items: center; gap: 6px; background: var(--bg-main); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border-color); }
         .ctrl-label { font-size: 11px; color: #94a3b8; font-weight: 600; }
-        .font-btn { background: #1e293b; border: 1px solid #334155; color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .font-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        /* Question Search & Quick Jump */
         .search-box { display: flex; gap: 6px; }
-        .search-box input { background: #0f172a; border: 1px solid #475569; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; width: 70px; text-align: center; }
+        .search-box input { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 8px; border-radius: 6px; font-size: 12px; width: 90px; text-align: center; }
 
-        /* Question Cards */
-        .question-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
+        .question-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; }
         .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
-        .question-title { font-size: var(--q-font-size); font-weight: 600; color: #f8fafc; line-height: 1.5; flex: 1; }
+        .question-title { font-size: var(--q-font-size); font-weight: 600; color: var(--text-main); line-height: 1.5; flex: 1; }
         .question-meta { display: flex; gap: 6px; margin-bottom: 10px; }
-        .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #0f172a; border: 1px solid #334155; color: #94a3b8; }
+        .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--bg-main); border: 1px solid var(--border-color); color: #94a3b8; }
         .tag.hard { border-color: #f43f5e; color: #f43f5e; }
         .tag.medium { border-color: #facc15; color: #facc15; }
         .tag.easy { border-color: #10b981; color: #10b981; }
 
         .action-btns { display: flex; gap: 6px; }
-        .action-icon-btn { background: #0f172a; border: 1px solid #334155; cursor: pointer; font-size: 16px; color: #64748b; transition: 0.2s; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .action-icon-btn { background: var(--bg-main); border: 1px solid var(--border-color); cursor: pointer; font-size: 16px; color: #64748b; transition: 0.2s; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
         .action-icon-btn.bookmark-btn.active { color: #facc15; border-color: #facc15; }
         .action-icon-btn.review-btn.active { color: #a855f7; border-color: #a855f7; }
-        .action-icon-btn:hover { background: #334155; }
+        .action-icon-btn:hover { background: var(--border-color); }
         
-        /* Options */
         .options-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .option-item { background: #0f172a; border: 1.5px solid #475569; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: var(--q-font-size); display: flex; align-items: center; gap: 12px; color: #f8fafc; }
-        .option-item:hover { border-color: #38bdf8; background: #1e293b; }
+        .option-item { background: var(--bg-main); border: 1.5px solid var(--border-color); padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: var(--q-font-size); display: flex; align-items: center; gap: 12px; color: var(--text-main); }
+        .option-item:hover { border-color: #38bdf8; background: var(--card-bg); }
         .option-item input[type="radio"] { accent-color: #38bdf8; transform: scale(1.3); cursor: pointer; }
 
         .option-item.selected-option { background: #1e3a8a !important; border-color: #38bdf8 !important; color: #ffffff !important; font-weight: 600; transform: scale(1.01); }
@@ -122,105 +132,89 @@
         .correct-opt { background: #065f46 !important; border-color: #10b981 !important; color: #ffffff !important; font-weight: bold; }
         .wrong-opt { background: #9f1239 !important; border-color: #f43f5e !important; color: #ffffff !important; }
 
-        /* Review Details Cards */
-        .explanation-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 14px; margin-top: 15px; border-radius: 0 8px 8px 0; font-size: 14px; color: #cbd5e1; line-height: 1.6; }
-        .review-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
-        .insight-card { background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
-        .insight-card strong { display: block; color: #38bdf8; margin-bottom: 2px; }
-        .q-time-badge { font-size: 11px; color: #38bdf8; background: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; display: inline-block; margin-top: 8px; }
+        .explanation-box { background: var(--bg-main); border-left: 4px solid #38bdf8; padding: 14px; margin-top: 15px; border-radius: 0 8px 8px 0; font-size: 14px; color: #cbd5e1; line-height: 1.6; }
 
-        /* Single Mode Nav Footer */
-        .single-nav-footer { display: none; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
+        .single-nav-footer { display: none; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-color); }
         .nav-btn { background: #38bdf8; color: #0f172a; border: none; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; }
         .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* Palette Section */
-        .palette-section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin-top: 25px; margin-bottom: 30px; }
+        .palette-section { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; margin-top: 25px; margin-bottom: 30px; }
         .palette-title { font-size: 15px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; max-height: 220px; overflow-y: auto; padding: 4px; }
-        .palette-btn { width: 100%; aspect-ratio: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; position: relative; }
+        .palette-btn { width: 100%; aspect-ratio: 1; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; position: relative; }
         .palette-btn.active-current { ring: 2px solid #38bdf8; border-color: #38bdf8; font-size: 15px; }
         .palette-btn.answered { background: #1e3a8a; border-color: #38bdf8; color: #fff; }
         .palette-btn.bookmarked { background: #854d0e; border-color: #facc15; color: #fff; }
         .palette-btn.review { background: #581c87; border-color: #a855f7; color: #fff; }
 
-        .palette-legend { display: flex; gap: 15px; font-size: 12px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 12px; margin-top: 15px; flex-wrap: wrap; }
+        .palette-legend { display: flex; gap: 15px; font-size: 12px; color: #94a3b8; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 15px; flex-wrap: wrap; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-box { width: 12px; height: 12px; border-radius: 3px; }
 
-        /* Result Dashboard */
         .result-dashboard { display: none; margin-bottom: 30px; }
-        .dash-header { background: #1e293b; border: 1px solid #38bdf8; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .dash-header { background: var(--card-bg); border: 1px solid #38bdf8; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
-        .stat-card { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; text-align: center; }
+        .stat-card { background: var(--bg-main); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center; }
         .stat-card .num { font-size: 20px; font-weight: bold; color: #38bdf8; }
         .stat-card .lbl { font-size: 12px; color: #94a3b8; margin-top: 2px; }
 
-        /* Accuracy Chart Bar */
-        .chart-box { background: #0f172a; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #334155; }
-        .progress-bar-wrap { height: 16px; background: #334155; border-radius: 10px; overflow: hidden; display: flex; margin-top: 8px; }
+        .chart-box { background: var(--bg-main); padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--border-color); }
+        .progress-bar-wrap { height: 16px; background: var(--border-color); border-radius: 10px; overflow: hidden; display: flex; margin-top: 8px; }
         .prog-seg { height: 100%; transition: width 0.5s ease; }
         .prog-correct { background: #10b981; }
         .prog-wrong { background: #f43f5e; }
         .prog-skip { background: #64748b; }
 
-        /* AI Analysis Section */
-        .ai-box { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #6366f1; border-radius: 12px; padding: 20px; margin-top: 20px; position: relative; text-align: left; }
+        .ai-box { background: linear-gradient(135deg, #1e1b4b 0%, var(--bg-main) 100%); border: 1px solid #6366f1; border-radius: 12px; padding: 20px; margin-top: 20px; position: relative; text-align: left; }
         .ai-badge { position: absolute; top: 12px; right: 15px; background: #6366f1; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
         .topic-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .topic-pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
         .topic-pill.weak { background: rgba(244, 63, 94, 0.2); border: 1px solid #f43f5e; color: #f43f5e; }
         .topic-pill.strong { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
 
-        /* Leaderboard & Tabs */
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        .leaderboard-table th, .leaderboard-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; }
-        .leaderboard-table th { background: #0f172a; color: #38bdf8; }
+        .leaderboard-table th, .leaderboard-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .leaderboard-table th { background: var(--bg-main); color: #38bdf8; }
         .leaderboard-table tr.my-rank { background: rgba(56, 189, 248, 0.15); font-weight: bold; }
 
-        /* Filters */
         .filter-bar { display: none; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .filter-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s; }
+        .filter-btn { background: var(--card-bg); border: 1px solid #475569; color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s; }
         .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
 
-        /* Modals */
+        /* Mobile Bottom Navigation Bar */
+        .mobile-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-bg); border-top: 1px solid var(--border-color); padding: 8px 15px; justify-content: space-around; align-items: center; z-index: 1001; }
+        .mob-nav-item { background: none; border: none; color: var(--text-main); font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+        .mob-nav-item svg { width: 18px; height: 18px; fill: currentColor; }
+
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: #1e293b; border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 480px; width: 90%; text-align: center; }
+        .modal-box { background: var(--card-bg); border: 1px solid #38bdf8; padding: 25px; border-radius: 12px; max-width: 480px; width: 90%; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
         .modal-btn { padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 13px; }
         .btn-confirm { background: #10b981; color: white; }
         .btn-cancel { background: #475569; color: white; }
 
-        /* Printable Certificate Template */
         .certificate-card { background: #fff; color: #000; padding: 30px; border: 10px double #1e3a8a; border-radius: 8px; text-align: center; display: none; }
-        .certificate-card h1 { color: #1e3a8a; font-size: 28px; margin-bottom: 5px; }
-        .certificate-card h3 { color: #d97706; font-size: 18px; margin-bottom: 20px; }
-
-        /* Footer */
-        .site-footer { background: #1e293b; border-top: 1px solid #334155; padding: 25px 20px 20px; margin-top: auto; text-align: center; }
+        
+        .site-footer { background: var(--card-bg); border-top: 1px solid var(--border-color); padding: 25px 20px 60px; margin-top: auto; text-align: center; }
         .footer-logo { font-size: 20px; font-weight: 700; color: #38bdf8; }
         .footer-logo span { color: #f43f5e; }
         .social-links { display: flex; justify-content: center; gap: 18px; margin-top: 10px; }
-        .social-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; transition: 0.3s; }
+        .social-btn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--bg-main); border: 1px solid var(--border-color); transition: 0.3s; }
         .social-btn:hover { border-color: #38bdf8; transform: translateY(-2px); }
         .social-btn svg { width: 18px; height: 18px; }
 
-        /* Print Media Security CSS */
         @media print {
             body { display: none !important; }
         }
 
-        @media (max-width: 640px) {
-          .timer-header { flex-wrap: wrap; }
-          #examTitle { max-width: 140px; }
-          .exam-toolbar { flex-direction: column; align-items: stretch; }
-          .search-box { justify-content: space-between; }
+        @media (max-width: 768px) {
+          .mobile-bottom-nav { display: flex; }
+          .site-footer { padding-bottom: 75px; }
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Anti-Screenshot / Blur Protection Screen Overlay -->
     <div id="screenProtectOverlay">
         <h2>🔒 সিকিউরিটি অ্যালার্ট!</h2>
         <p style="margin-top: 10px; font-size: 16px; color: #cbd5e1;">পরীক্ষা চলাকালীন স্ক্রিনশট নেওয়া, উইন্ডো পরিবর্তন করা বা প্রিন্ট করা নিষিদ্ধ!</p>
@@ -231,32 +225,45 @@
     <header class="navbar" id="mainHeader">
         <a href="index.html" class="logo">GAIVEX<span>.</span></a>
         <div class="nav-right">
+            <button class="tool-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️ Light</button>
             <div class="user-badge" id="userProfileBadge">
                 <div class="user-avatar" id="uAvatar">S</div>
-                <span id="uName">Student</span>
+                <span id="uName">Mamun Abdul</span>
             </div>
             <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 13px;">🏠 হোম</a>
         </div>
     </header>
 
     <div class="container" id="mainExamContainer">
-        <!-- Anti-cheat / System Warning Toast -->
-        <div class="warning-toast" id="warningToast">⚠️ সতর্কতা: স্ক্রিনশট, ক্যাপচার বা ট্যাব পরিবর্তন করার চেষ্টা করলে পরীক্ষা বাতিল হতে পারে!</div>
+        <div class="warning-toast" id="warningToast">⚠️ সতর্কতা: স্ক্রিনশট বা ট্যাব পরিবর্তন করার চেষ্টা করলে পরীক্ষা বাতিল হতে পারে! (Tab-switch Warning Active)</div>
 
-        <!-- Sticky Timer Bar -->
+        <!-- Sticky Timer Bar with Circular Timer -->
         <div class="timer-header">
             <div class="timer-info">
-                <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
-                <div class="timer-box" id="timerDisplay">00:00</div>
+                <div class="circular-timer">
+                    <svg viewBox="0 0 50 50">
+                        <circle class="bg-ring" cx="25" cy="25" r="22"></circle>
+                        <circle class="progress-ring" id="progressRingCircle" cx="25" cy="25" r="22"></circle>
+                    </svg>
+                    <div class="timer-text" id="circularTimerText">25m</div>
+                </div>
+                <div>
+                    <h3 id="examTitle">🌾 উদ্ভিদ প্রজনন (Plant Breeding) — Live Exam</h3>
+                    <span style="font-size: 11px; color: #10b981;" id="autoSaveStatus">💾 Auto Save: Enabled</span>
+                </div>
             </div>
-            <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="tool-btn" onclick="toggleFullScreen()" id="fsToggleBtn">🖵 Full</button>
+                <button type="button" class="tool-btn" onclick="resumeExamState()" id="resumeBtn" style="background:#854d0e; color:#fff; border-color:#facc15; display:none;">🔄 Resume</button>
+                <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit 🚀</button>
+            </div>
         </div>
 
-        <!-- Result Dashboard (Hidden during exam) -->
+        <!-- Result Dashboard -->
         <div class="result-dashboard" id="resultDashboard">
             <div class="dash-header">
-                <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড</h2>
-                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Plant Breeding (উদ্ভিদ প্রজনন) — Live Exam Result</p>
+                <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড (Detailed Result)</h2>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Plant Breeding — Result & Analytics</p>
                 
                 <div class="stats-grid">
                     <div class="stat-card"><div class="num" id="resScore">0.00</div><div class="lbl">মোট নম্বর</div></div>
@@ -267,7 +274,6 @@
                     <div class="stat-card"><div class="num" id="resTime">0m 0s</div><div class="lbl">সময় ব্যয়</div></div>
                 </div>
 
-                <!-- Accuracy Visual Bar -->
                 <div class="chart-box">
                     <div style="display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1;">
                         <span>📈 Accuracy Breakup</span>
@@ -280,32 +286,32 @@
                     </div>
                 </div>
 
-                <!-- GAIVEX AI Weakness Analysis -->
                 <div class="ai-box">
                     <span class="ai-badge">GAIVEX AI 🧠</span>
-                    <h4 style="color: #cbd5e1; margin-bottom: 6px;">🤖 AI Performance & Weakness Analysis</h4>
+                    <h4 style="color: #cbd5e1; margin-bottom: 6px;">🤖 Weak Topic Analysis & Performance</h4>
                     <p style="color: #94a3b8; font-size: 13px;" id="aiAnalysisText">বিশ্লেষণ প্রস্তুত করা হচ্ছে...</p>
                     
                     <div style="margin-top: 12px;">
-                        <span style="font-size: 12px; color: #64748b; font-weight: bold;">টপিক পারফরম্যান্স:</span>
+                        <span style="font-size: 12px; color: #64748b; font-weight: bold;">শনাক্তকৃত দুর্বল টপিকসমূহ:</span>
                         <div class="topic-list" id="aiTopicList"></div>
                     </div>
 
-                    <button class="tool-btn" style="margin-top: 15px; background: #6366f1; color: white; border: none;" onclick="generateAIPractice()">⚡ দুর্বল টপিকের ওপর ২০টি AI রিভিশন এমসিকিউ পান</button>
+                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                        <button class="tool-btn" style="background: #6366f1; color: white; border: none;" onclick="retryWrongQuestions()">🔄 ভুল প্রশ্নগুলো পুনরায় চেষ্টা করুন (Wrong Retry)</button>
+                        <button class="tool-btn" style="background: #10b981; color: white; border: none;" onclick="generateAIPractice()">⚡ দুর্বল টপিকের ওপর AI রিভিশন সেট</button>
+                    </div>
                 </div>
 
-                <!-- Action Toolbar for Results -->
                 <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button class="tool-btn" onclick="toggleTabs('leaderboard')">🏆 Live Leaderboard দেখুন</button>
+                    <button class="tool-btn" onclick="toggleTabs('leaderboard')">🏆 Live Leaderboard</button>
                     <button class="tool-btn" onclick="toggleTabs('history')">📈 Performance History</button>
                     <button class="tool-btn" onclick="printCertificate()">📜 Certificate</button>
                     <button class="tool-btn" style="background:#1877F2; border-color:#1877F2; color:#fff;" onclick="shareResultOnFacebook()">🌐 Share Score</button>
                 </div>
             </div>
 
-            <!-- Dynamic Tab Content -->
-            <div id="tabLeaderboard" style="display: none; background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
-                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">🏆 আজকের Live Ranking</h3>
+            <div id="tabLeaderboard" style="display: none; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">🏆 বৈশ্বিক Live Ranking</h3>
                 <table class="leaderboard-table">
                     <thead>
                         <tr><th>Rank</th><th>Student Name</th><th>Score</th><th>Time</th></tr>
@@ -316,42 +322,32 @@
                 </table>
             </div>
 
-            <div id="tabHistory" style="display: none; background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
-                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">📊 আপনার গত পরীক্ষার পারফরম্যান্স ট্র্যাকার</h3>
+            <div id="tabHistory" style="display: none; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 10px;">📊 আপনার পারফরম্যান্স হিস্ট্রি (Performance History)</h3>
                 <div id="historyList" style="font-size: 13px; color: #cbd5e1;"></div>
             </div>
         </div>
 
-        <!-- Exam Controls & Navigation Toolbar -->
         <div class="exam-toolbar" id="examToolbar">
             <div class="mode-toggle">
                 <button type="button" class="tool-btn active" id="btnModeAll" onclick="switchViewMode('all')">📄 All Questions</button>
                 <button type="button" class="tool-btn" id="btnModeSingle" onclick="switchViewMode('single')">📱 One Question</button>
                 
-                <!-- Font Size Controls -->
                 <div class="ctrl-group">
                     <span class="ctrl-label">Font:</span>
                     <button type="button" class="font-btn" onclick="changeFontSize(-1)">A-</button>
                     <button type="button" class="font-btn" onclick="changeFontSize(1)">A+</button>
                 </div>
 
-                <!-- Auto Advance Toggle -->
-                <div class="ctrl-group">
-                    <input type="checkbox" id="autoAdvanceCheck" style="accent-color: #38bdf8; cursor: pointer;">
-                    <label for="autoAdvanceCheck" class="ctrl-label" style="cursor: pointer;">Auto Next</label>
-                </div>
-
                 <button type="button" class="tool-btn" onclick="openShortcutModal()">⌨️ Help</button>
             </div>
             
             <div class="search-box">
-                <input type="number" id="jumpQInput" placeholder="Q. No" min="1">
-                <button type="button" class="tool-btn" onclick="jumpToQuestion()">Go 🚀</button>
-                <button type="button" class="tool-btn" onclick="goToNextUnanswered()" style="background:#0284c7; border-color:#0284c7; color:#fff;">বাকি প্রশ্ন ➔</button>
+                <input type="text" id="questionSearchInput" placeholder="🔍 Search..." oninput="searchQuestionsLive()">
+                <button type="button" class="tool-btn" onclick="goToNextUnanswered()" style="background:#0284c7; border-color:#0284c7; color:#fff;">বাকি ➔</button>
             </div>
         </div>
 
-        <!-- Filter Bar (Post-Exam) -->
         <div class="filter-bar" id="filterBar">
             <button class="filter-btn active" onclick="filterQuestions('all')">সব প্রশ্ন</button>
             <button class="filter-btn" onclick="filterQuestions('correct')">সঠিক উত্তর</button>
@@ -361,38 +357,55 @@
             <button class="filter-btn" onclick="filterQuestions('review')">Review 🔖</button>
         </div>
 
-        <!-- Form & Container -->
         <form id="examForm" onsubmit="event.preventDefault();">
             <div id="questionsContainer"></div>
         </form>
 
-        <!-- Single Question Navigation Buttons -->
         <div class="single-nav-footer" id="singleNavFooter">
             <button type="button" class="nav-btn" id="prevQBtn" onclick="navigateSingle(-1)">← Previous</button>
             <span id="singleProgress" style="font-size: 13px; font-weight: bold; color: #38bdf8;">Question 1 / 50</span>
             <button type="button" class="nav-btn" id="nextQBtn" onclick="navigateSingle(1)">Next →</button>
         </div>
 
-        <!-- Advanced 4-Status Question Palette -->
         <div class="palette-section" id="paletteSection">
             <div class="palette-title">
-                <span>প্রশ্ন প্যালেট (Smart Navigation)</span>
+                <span>প্রশ্ন প্যালেট (Improved Palette & Navigation)</span>
                 <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
             <div class="palette-legend">
-                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> 🟦 Answered</div>
+                <div class="legend-item"><div class="legend-box" style="background:#1e3a8a;"></div> 🟦 Answered (Locked)</div>
                 <div class="legend-item"><div class="legend-box" style="background:#854d0e;"></div> 🟨 Bookmarked</div>
                 <div class="legend-item"><div class="legend-box" style="background:#581c87;"></div> 🟪 Review</div>
-                <div class="legend-item"><div class="legend-box" style="background:#0f172a; border: 1px solid #475569;"></div> ⬜ Unanswered</div>
+                <div class="legend-item"><div class="legend-box" style="background:var(--bg-main); border: 1px solid var(--border-color);"></div> ⬜ Unanswered</div>
             </div>
         </div>
     </div>
 
-    <!-- Submit Confirmation Modal -->
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav">
+        <button class="mob-nav-item" onclick="switchViewMode('all')">
+            <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+            সব প্রশ্ন
+        </button>
+        <button class="mob-nav-item" onclick="navigateSingle(-1)">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            আগেরটি
+        </button>
+        <button class="mob-nav-item" onclick="navigateSingle(1)">
+            <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            পরবর্তী
+        </button>
+        <button class="mob-nav-item" onclick="openConfirmModal()" style="color:#10b981;">
+            <svg viewBox="0 0 24 24" fill="#10b981"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+            জমা দিন
+        </button>
+    </div>
+
+    <!-- Modals -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-box">
-            <h3 style="color: #38bdf8; margin-bottom: 10px;">Are you sure you want to submit?</h3>
+            <h3 style="color: #38bdf8; margin-bottom: 10px;">পরীক্ষা জমা দিতে চান?</h3>
             <p id="modalStatsText" style="color: #cbd5e1; font-size: 15px; line-height: 1.6;"></p>
             <div class="modal-buttons">
                 <button type="button" class="modal-btn btn-cancel" onclick="closeConfirmModal()">ফিরে যান</button>
@@ -401,26 +414,6 @@
         </div>
     </div>
 
-    <!-- Question Issue Report Modal -->
-    <div class="modal-overlay" id="reportModal">
-        <div class="modal-box">
-            <h3 style="color: #f43f5e; margin-bottom: 10px;">🚩 প্রশ্ন রিপোর্ট করুন</h3>
-            <input type="hidden" id="reportQIndex">
-            <select id="reportReason" style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; margin-bottom: 10px;">
-                <option value="Wrong Answer">❌ ভুল উত্তর (Wrong Answer)</option>
-                <option value="Question Error">⚠️ প্রশ্নে ভুল (Question Error)</option>
-                <option value="Explanation Error">📖 ব্যাখ্যা ভুল (Explanation Error)</option>
-                <option value="Typo">📝 বানানে ভুল (Typo)</option>
-            </select>
-            <textarea id="reportDetails" placeholder="বিস্তারিত লিখুন (ঐচ্ছিক)..." style="width:100%; height:70px; background:#0f172a; border:1px solid #475569; color:#fff; padding:8px; border-radius:6px; font-size:12px;"></textarea>
-            <div class="modal-buttons">
-                <button type="button" class="modal-btn btn-cancel" onclick="closeReportModal()">বাতিল</button>
-                <button type="button" class="modal-btn btn-confirm" onclick="submitQuestionReport()">জমা দিন</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Keyboard Shortcuts Modal -->
     <div class="modal-overlay" id="shortcutModal">
         <div class="modal-box" style="text-align: left;">
             <h3 style="color: #38bdf8; margin-bottom: 15px; text-align: center;">⌨️ Keyboard Shortcuts</h3>
@@ -428,7 +421,6 @@
                 <li>➡️ <b>Right Arrow:</b> পরবর্তী প্রশ্ন</li>
                 <li>⬅️ <b>Left Arrow:</b> পূর্ববর্তী প্রশ্ন</li>
                 <li>1️⃣, 2️⃣, 3️⃣, 4️⃣: <b>ক, খ, গ, ঘ</b> সিলেক্ট করুন</li>
-                <li>🔤 <b>A, B, C, D:</b> অপশন প্রেস করুন</li>
                 <li>🔖 <b>M Key:</b> Mark for Review</li>
                 <li>⭐ <b>B Key:</b> Bookmark</li>
             </ul>
@@ -438,19 +430,17 @@
         </div>
     </div>
 
-    <!-- Printable Certificate Template (Hidden) -->
     <div id="certificateContainer" class="certificate-card">
         <h1>GAIVEX Digital Certificate</h1>
         <h3>Certificate of Participation & Performance</h3>
         <p>This is awarded to</p>
-        <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Student Name</h2>
+        <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Mamun Abdul Gaiyum Tamim</h2>
         <p>for completing the live examination <b><span id="certExam">Plant Breeding</span></b></p>
         <br>
         <p>Score Obtained: <b><span id="certScore">00</span></b> | Accuracy: <b><span id="certAcc">00%</span></b></p>
-        <p>Date: <span id="certDate">02/09/2026</span></p>
+        <p>Date: <span id="certDate">09/09/2026</span></p>
     </div>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-logo">GAIVEX<span>.</span></div>
         <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">বিশ্ববিদ্যালয় ভর্তি পরীক্ষার সেরা ও স্মার্ট প্রস্তুতি প্ল্যাটফর্ম।</p>
@@ -458,21 +448,17 @@
             <a href="https://www.facebook.com/share/181kbkyvQu/" target="_blank" class="social-btn" title="Facebook">
                 <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             </a>
-            <a href="https://www.instagram.com/gaivex8?igsh=MTR3enA0NW01M3JhNA==" target="_blank" class="social-btn" title="Instagram">
-                <svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
             <a href="https://youtube.com/@gaivex-h5p" target="_blank" class="social-btn" title="YouTube">
                 <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
         </div>
-        <div style="margin-top:15px; border-top:1px solid #334155; padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
+        <div style="margin-top:15px; border-top:1px solid var(--border-color); padding-top:10px; color:#64748b; font-size:12px;">&copy; 2026 GAIVEX. All rights reserved.</div>
     </footer>
 
-    <!-- Firebase Modular SDK Integration -->
+    <!-- Firebase & Main Script Logic -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getDatabase, ref, get, set, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyAoQInHVL3h3R58OF8SZbmsFtX4Kx6xckQ",
@@ -486,862 +472,538 @@
 
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
-      const auth = getAuth(app);
 
-      // Global State Management
-      let currentUser = null;
+      // State Variables
       let timerInterval = null;
       let totalDurationSeconds = 1500;
       let timeRemaining = 1500;
       let startTimeStamp = Date.now();
-      let activeExamKey = "gaivex_exam_default";
-      let examTimerKey = "gaivex_timer_default";
-      let autoSaveKey = "gaivex_autosave_answers";
       let userSelections = {};
+      let lockedQuestions = {};
       let bookmarkedQuestions = {};
       let reviewQuestions = {};
       let isSubmitted = false;
-      let viewMode = 'all'; 
+      let viewMode = 'all';
       let currentSingleIndex = 0;
       let currentFontSize = 16;
+      let shuffledQuestions = [];
+      let tabSwitchCount = 0;
 
-      // Audio & Analytics Tracking
-      let perQuestionTime = {};
-      let currentQuestionStartTime = Date.now();
+      const rawExamData = {
+        id: "plant_breeding_mcq_50_v2",
+        title: "🌾 উদ্ভিদ প্রজনন ",
+        duration: 25,
+        questions: [
+          { question: "উদ্ভিদ প্রজননের মূল লক্ষ্য কোনটি?", options: ["উদ্ভিদের রূপ বৃদ্ধি করা", "উচ্চ ফলনশীল ও রোগপ্রতিরোধী জাত উদ্ভাবন", "উদ্ভিদের আয়ু কমানো", "উদ্ভিদের আকার ছোট করা"], correct: 0, topic: "Introduction", difficulty: "easy", explanation: "উদ্ভিদ প্রজননের প্রধান উদ্দেশ্য হলো ফসলের ফলন বৃদ্ধি ও রোগ সহ্য করার ক্ষমতা বাড়ানো।" },
+          { question: "ফুলের পরাগরেণু একই ফুলের গর্ভমুণ্ডে পতিত হওয়াকে কী বলে?", options: ["পরপরাগযোগ", "স্বসংকরায়ন", "স্ব-পরাগযোগ", "এপোমিক্সিস"], correct: 2, topic: "Pollination", difficulty: "easy", explanation: "একই ফুল বা গাছের মধ্যে পরাগযোগ ঘটলে স্ব-পরাগযোগ বলে।" },
+          { question: "নিচের কোনটি স্ব-পরাগায়িত উদ্ভিদ?", options: ["ভুট্টা", "ধান", "পেঁপে", "সরিষা"], correct: 1, topic: "Pollination", difficulty: "easy", explanation: "ধান, গম, টমেটো হলো স্ব-পরাগায়িত উদ্ভিদ।" },
+          { question: "উভলিঙ্গ ফুল থেকে কচি অবস্থায় পুংকেশর কেটে ফেলে দেওয়াকে কী বলা হয়?", options: ["ইমাসকুলেশন", "ব্যাগিং", "ট্যাগিং", "ক্রসিং"], correct: 0, topic: "Hybridization", difficulty: "easy", explanation: "অবাঞ্ছিত স্ব-পরাগযোগ রোধে ইমাসকুলেশন করা হয়।" },
+          { question: "ইমাসকুলেশনের পর ফুলকে বাটার পেপার দিয়ে ঢেকে দেওয়াকে কী বলে?", options: ["ট্যাগিং", "ইমাসকুলেশন", "ব্যাগিং", "আইসোলেশন"], correct: 2, topic: "Hybridization", difficulty: "easy", explanation: "পরাগের দূষণ রোধে বাটার পেপার ব্যাগ ব্যবহার করা হয়।" },
+          { question: "সংকরায়ণে প্রাপ্ত প্রথম বংশধরকে কী বলা হয়?", options: ["F2 জনু", "F1 জনু", "P1 জনু", "প্যারেন্টাল"], correct: 1, topic: "Hybridization", difficulty: "easy", explanation: "প্রথম অপত্য বংশধরকে F1 জেনারেশন বলে।" },
+          { question: "সঙ্করায়নের ফলে সৃষ্ট অপত্য উদ্ভিদ যদি মা-বাবা উভয়ের চেয়ে শ্রেষ্ঠ গুণসম্পন্ন হয়, তবে তাকে কী বলে?", options: ["হেটেরোসিস", "ইনব্রিডিং ডিপ্রেশন", "জিনোটাইপ", "পলিপ্রোয়েডি"], correct: 0, topic: "Heterosis", difficulty: "medium", explanation: "সংকর উদ্ভিদের তেজ ও ফলন বৃদ্ধিকে হেটেরোসিস বলে।" },
+          { question: "পরপর কয়েক বংশধর ধরে স্ব-পরাগযোগের ফলে হেটেরোসিস হ্রাস পাওয়াকে কী বলে?", options: ["জিন ড্রাফট", "ইনব্রিডিং ডিপ্রেশন", "এপোমিক্সিস", "মিউটেশন"], correct: 1, topic: "Heterosis", difficulty: "medium", explanation: "আত্মপ্রকাশ করায় উদ্ভিদের তেজ ও ফলন হ্রাস পায়।" },
+          { question: "উদ্ভিদের কোনো কোষ বা টিস্যু থেকে পূর্ণাঙ্গ উদ্ভিদ পুনরুৎপাদনের ক্ষমতাকে কী বলা হয়?", options: ["টোটিপোটেন্সি", "প্লুরিপোটেন্সি", "ক্যালোজেনেসিস", "এমব্রায়োজেনেসিস"], correct: 0, topic: "Tissue Culture", difficulty: "easy", explanation: "একটি পূর্ণাঙ্গ উদ্ভিদে পরিণত হওয়ার ক্ষমতাকে টোটিপোটেন্সি বলে।" },
+          { question: "উদ্ভিদ প্রজননে কৃত্রিমভাবে মিউটেশন ঘটানোর জন্য বহুল ব্যবহৃত রাসায়নিক কোনটি?", options: ["ইথাইল মিথেন সালফোনেট", "জিব্যারেলিন", "2,4-D", "কোলচিসিন"], correct: 0, topic: "Mutation", difficulty: "hard", explanation: "EMS একটি শক্তিশালী কেমিক্যাল মিউটাজেন।" }
+        ]
+      };
 
-      // Audio Synthesizer (Web Audio API)
-      function playAudioFeedback(type) {
+      // Random Question & Option Generator (Shuffle)
+      function initExamData() {
+        const saved = localStorage.getItem("gaivex_exam_shuffled");
+        if (saved) {
+          shuffledQuestions = JSON.parse(saved);
+        } else {
+          shuffledQuestions = rawExamData.questions.map(q => {
+            const opts = [...q.options];
+            const correctText = opts[q.correct];
+            // Shuffle options
+            for (let i = opts.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [opts[i], opts[j]] = [opts[j], opts[i]];
+            }
+            const newCorrectIdx = opts.indexOf(correctText);
+            return { ...q, options: opts, correct: newCorrectIdx };
+          });
+          // Shuffle questions order
+          for (let i = shuffledQuestions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledQuestions[i], shuffledQuestions[j]] = [shuffledQuestions[j], shuffledQuestions[i]];
+          }
+          localStorage.setItem("gaivex_exam_shuffled", JSON.stringify(shuffledQuestions));
+        }
+      }
+
+      window.onload = function() {
+        initExamData();
+        loadSavedState();
+        renderExamInterface();
+        startTimer();
+        setupSecurityGuards();
+      };
+
+      function playSound(type) {
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
-
           if (type === 'click') {
-            osc.frequency.setValueAtTime(600, ctx.currentTime);
-            gain.gain.setValueAtTime(0.05, ctx.currentTime);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.05);
-          } else if (type === 'warning') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(440, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(500, ctx.currentTime);
+            gain.gain.setValueAtTime(0.03, ctx.currentTime);
+            osc.start(); osc.stop(ctx.currentTime + 0.04);
           }
         } catch(e){}
       }
 
-      function triggerHaptic() {
-        if (navigator.vibrate) navigator.vibrate(30);
+      function setupSecurityGuards() {
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden && !isSubmitted) {
+            tabSwitchCount++;
+            document.getElementById("warningToast").style.display = "block";
+            document.getElementById("warningToast").innerText = `⚠️ সতর্কতা (${tabSwitchCount}/3): ট্যাব পরিবর্তন করা নিষেধ!`;
+            if (tabSwitchCount >= 3) {
+              alert("⚠️ বারবার ট্যাব পরিবর্তন করায় আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা দেওয়া হলো!");
+              confirmAndSubmit();
+            }
+          }
+        });
       }
 
-      // 🌾 50 Plant Breeding (উদ্ভিদ প্রজনন) Exam Questions
-      const defaultExamData = {
-        id: "plant_breeding_mcq_50_v1",
-        title: "🌾 উদ্ভিদ প্রজনন (Plant Breeding) — ৫০টি গুরুত্বপূর্ণ MCQ",
-        duration: 25,
-        marking: { correct: 1, wrong: 0.25 },
-        questions: [
-          { question: "উদ্ভিদ প্রজননের মূল লক্ষ্য কোনটি?", options: ["উদ্ভিদের রূপ বৃদ্ধি করা", "উচ্চ ফলনশীল ও রোগপ্রতিরোধী জাত উদ্ভাবন", "উদ্ভিদের আয়ু কমানো", "উদ্ভিদের আকার ছোট করা"], correct: 1, topic: "Introduction to Plant Breeding", difficulty: "easy", explanation: "উদ্ভিদ প্রজননের প্রধান উদ্দেশ্য হলো ফসলের ফলন বৃদ্ধি, গুণগত মান উন্নয়ন এবং প্রতিকূল পরিবেশ ও রোগ সহ্য করার ক্ষমতা বাড়ানো।", concept: "Plant Breeding Goals", shortcut: "High Yield + Resistance", mistake: "শুধুমাত্র আকৃতি বৃদ্ধি মনে করা", tip: "উদ্ভিদের অর্থনৈতিক বৈশিষ্ট্য উন্নয়নই মূল উদ্দেশ্য।" },
-          { question: "ফুলের পরাগরেণু একই ফুলের গর্ভমুণ্ডে পতিত হওয়াকে কী বলে?", options: ["পরপরাগযোগ (Cross Pollination)", "স্বসংকরায়ন", "স্ব-পরাগযোগ (Self Pollination)", "এপোমিক্সিস"], correct: 2, topic: "Pollination Biology", difficulty: "easy", explanation: "একই ফুল বা একই গাছের অন্য ফুলের মধ্যে পরাগযোগ ঘটলে তাকে স্ব-পরাগযোগ বলে।", concept: "Pollination Modes", shortcut: "Same Flower/Plant = Self", mistake: "পরপরাগযোগের সাথে গুটিয়ে ফেলা", tip: "ধান, গম, মটরশুঁটি স্ব-পরাগায়িত উদ্ভিদ।" },
-          { question: "নিচের কোনটি স্ব-পরাগায়িত (Self-pollinated) উদ্ভিদ?", options: ["ভুট্টা", "ধান", "পেঁপে", "সরিষা"], correct: 1, topic: "Pollination Biology", difficulty: "easy", explanation: "ধান, গম, টমেটো, মটরশুঁটি ইত্যাদি প্রধানত স্ব-পরাগায়িত ফসল।", concept: "Crop Selfing", shortcut: "Paddy = Self Pollinated", mistake: "ভুট্টাকে স্ব-পরাগায়িত ভাবা", tip: "ভুট্টা একটি প্রধান পর-পরাগায়িত উদ্ভিদ।" },
-          { question: "উভলিঙ্গ ফুল থেকে কচি অবস্থায় পুংকেশর কেটে ফেলে দেওয়াকে কী বলা হয়?", options: ["ইমাসকুলেশন (Emasculation)", "ব্যাগিং (Bagging)", "ট্যাগিং (Tagging)", "ক্রসিং"], correct: 0, topic: "Hybridization Technique", difficulty: "easy", explanation: "কৃত্রিম সংকরায়ণে অवांছিত স্ব-পরাগযোগ রোধে ফুল ফোটার আগে পরাগধানী বা পুংকেশর অপসারণ করাকে ইমাসকুলেশন বলে।", concept: "Emasculation Definition", shortcut: "Anther Removal = Emasculation", mistake: "ব্যাগিংয়ের সাথে গুলিয়ে ফেলা", tip: "ইমাসকুলেশন কেবল স্ত্রী-প্যারেন্ট উদ্ভিদে করা হয়।" },
-          { question: "ইমাসকুলেশনের পর ফুলকে বাটার পেপার দিয়ে ঢেকে দেওয়াকে কী বলে?", options: ["ট্যাগিং", "ইমাসকুলেশন", "ব্যাগিং (Bagging)", "আইসোলেশন"], correct: 2, topic: "Hybridization Technique", difficulty: "easy", explanation: "বাইরের অনিচ্ছাকৃত পরাগরেণু এসে যেন গর্ভমুণ্ডে না পড়ে, সেজন্য ইমাসকুলেটেড ফুলকে বাটার পেপার ব্যাগ দিয়ে ঢেকে রাখা হয়।", concept: "Bagging Technique", shortcut: "Covering = Bagging", mistake: "ট্যাগিং মনে করা", tip: "ব্যাগিং পরাগরেণুর দূষণ রোধ করে।" },
-          { question: "সংকরায়ণে প্রাপ্ত প্রথম বংশধরকে কী বলা হয়?", options: ["F2 জনু", "F1 জনু (First Filial Generation)", "P1 জনু", "প্যারেন্টাল জেনারেশন"], correct: 1, topic: "Hybridization Concepts", difficulty: "easy", explanation: "দুইটি বিশুদ্ধ মা-বাবার (Parents) মধ্যে সংকরায়ণের ফলে সৃষ্ট প্রথম অপত্য বংশধরকে F1 জেনারেশন বলে।", concept: "Filial Generations", shortcut: "First Cross = F1", mistake: "P1 ভেবে ভুল করা", tip: "F এর পূর্ণরূপ Filial।" },
-          { question: "সঙ্করায়নের ফলে সৃষ্ট অপত্য উদ্ভিদ যদি মা-বাবা উভয়ের চেয়ে শ্রেষ্ঠ গুণসম্পন্ন হয়, তবে তাকে কী বলে?", options: ["হেটেরোসিস (Heterosis / Hybrid Vigour)", "ইনব্রিডিং ডিপ্রেশন", "জিনোটাইপ", "পলিপ্রোয়েডি"], correct: 0, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "সংকর উদ্ভিদের বর্ধন, জীবনীশক্তি ও ফলন বাবা-মা উভয় অপেক্ষা বৃদ্ধি পাওয়াকে হেটেরোসিস বা হাইব্রিড ভিগর বলে।", concept: "Heterosis Definition", shortcut: "Hybrid > Parents = Heterosis", mistake: "ইনব্রিডিং ভাবা", tip: "G.H. Shull ১৯১৪ সালে Heterosis শব্দটি প্রবর্তন করেন।" },
-          { question: "পরপর কয়েক বংশধর ধরে স্ব-পরাগযোগের মাধ্যমে হেটেরোসিস হ্রাস পাওয়াকে কী বলে?", options: ["জিন ড্রাফট", "ইনব্রিডিং ডিপ্রেশন (Inbreeding Depression)", "এপোমিক্সিস", "জিন মিউটেশন"], correct: 1, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "স্ব-পরাগায়নের ফলে ক্ষতিকর প্রচ্ছন্ন জিনগুলো হোমোজাইগাস হয়ে আত্মপ্রকাশ করায় উদ্ভিদের তেজ ও ফলন হ্রাস পায়, একে ইনব্রিডিং ডিপ্রেশন বলে।", concept: "Inbreeding Effect", shortcut: "Continuous Selfing = Inbreeding Depression", mistake: "হেটেরোসিস বৃদ্ধি ভাবা", tip: "পর-পরাগায়িত উদ্ভিদে এটি বেশি স্পষ্ট।" },
-          { question: "উদ্ভিদের কোনো কোষ বা টিস্যু থেকে পূর্ণাঙ্গ উদ্ভিদ পুনরুৎপাদনের ক্ষমতাকে কী বলা হয়?", options: ["টোটিপোটেন্সি (Totipotency)", "প্লুরিপোটেন্সি", "ক্যালোজেনেসিস", "এমব্রায়োজেনেসিস"], correct: 0, topic: "Tissue Culture & Biotechnology", difficulty: "easy", explanation: "উদ্ভিদ কোষের একটি পূর্ণাঙ্গ উদ্ভিদে পরিণত হওয়ার অন্তর্নিহিত জিনগত ক্ষমতাকে টোটিপোটেন্সি বলে।", concept: "Cell Totipotency", shortcut: "Single Cell to Plant = Totipotency", mistake: "প্লুরিপোটেন্সির সাথে মেলানো", tip: "G. Haberlandt কে টিস্যু কালচারের জনক বলা হয়।" },
-          { question: "উদ্ভিদ প্রজননে কৃত্রিমভাবে মিউটেশন ঘটানোর জন্য বহুল ব্যবহৃত রাসায়নিক কোনটি?", options: ["ইথাইল মিথেন সালফোনেট (EMS)", "জিব্যারেলিন", "2,4-D", "কোলচিসিন"], correct: 0, topic: "Mutation Breeding", difficulty: "hard", explanation: "EMS (Ethyl Methane Sulfonate) হলো একটি শক্তিশালী কেমিক্যাল মিউটাজেন যা জিনে মিউটেশন ঘটাতে ব্যবহৃত হয়।", concept: "Chemical Mutagen", shortcut: "EMS = Chemical Mutagens", mistake: "কোলচিসিনকে মিউটাজেন ভাবা", tip: "কোলচিসিন পলিপ্লয়েডি তৈরিতে ব্যবহৃত হয়।" },
-          { question: "উদ্ভিদ কোষে ক্রোমোজোম সংখ্যা দ্বিগুণ করার জন্য কোন রাসায়নিক এজেন্ট ব্যবহৃত হয়?", options: ["আইএএ (IAA)", "কোলচিসিন (Colchicine)", "কাইনেটিন", "এমএস মিডিয়াম"], correct: 1, topic: "Polyploidy Breeding", difficulty: "medium", explanation: "কোলচিসিন কোষ বিভাজনের সময় স্পিন্ডল তন্তু গঠনে বাধা দেয়, ফলে ক্রোমোজোম বিভাজন না হয়ে দ্বিগুণ (Polyploid) হয়ে যায়।", concept: "Polyploidy Induction", shortcut: "Chromosome Doubling = Colchicine", mistake: "অক্সিন মনে করা", tip: "কোলচিসিন *Colchicum autumnale* উদ্ভিদ থেকে সংগৃহীত হয়।" },
-          { question: "একই প্রজাতিভুক্ত দুটি ভিন্ন স্বাদের বা জাতের উদ্ভিদের মধ্যে সংকরায়ণকে কী বলে?", options: ["ইন্ট্রাস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারজেনেরিক হাইব্রিডাইজেশন", "ডিস্ট্যান্ট হাইব্রিডাইজেশন"], correct: 0, topic: "Hybridization Types", difficulty: "medium", explanation: "একই প্রজাতির (Interspecific নয়) অন্তর্গত দুটি জাতের সংকরায়ণ হলো Intra-specific বা Intra-varietal cross।", concept: "Intraspecific Cross", shortcut: "Within Species = Intra-specific", mistake: "Interspecific মনে করা", tip: "Intra = একই, Inter = ভিন্ন।" },
-          { question: "ভিন্ন দুই গণের (Genus) মধ্যে সংকরায়ণের মাধ্যমে সৃষ্ট বিখ্যাত শস্য 'Triticale' কোন দুটির সংকর?", options: ["গম ও ধান", "গম ও রাই (Wheat × Rye)", "ধান ও বার্লি", "ভুট্টা ও গম"], correct: 1, topic: "Hybridization Types", difficulty: "medium", explanation: "Triticale হলো মানবসৃষ্ট প্রথম শস্য, যা গম (Triticum) এবং রাই (Secale)-এর ইন্টারজেনেরিক সংকরায়ণে তৈরি।", concept: "Intergeneric Hybrid", shortcut: "Wheat × Rye = Triticale", mistake: "ধান ও গমের সংকর ভাবা", tip: "এটি একটি এলোপলিপ্লয়েড (Allopolyploid) শস্য।" },
-          { question: "প্রাকৃতিক উপায়ে বীজ উৎপাদন ছাড়াই ভ্রূণ ও বীজ গঠন প্রক্রিয়াকে কী বলে?", options: ["পারথেনোকার্পি", "এপোমিক্সিস (Apomixis)", "অ্যামফিমিক্সিস", "পলিমিক্সিস"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "hard", explanation: "নিষেক ছাড়াই অসেক উপায়ে বীজ উৎপাদনের প্রক্রিয়াকে এপোমিক্সিস বলে।", concept: "Apomixis Definition", shortcut: "Seed without Fertilization = Apomixis", mistake: "পারথেনোকার্পির সাথে গুলিয়ে ফেলা", tip: "পারথেনোকার্পিতে বীজহীন ফল হয়, কিন্তু এপোমিক্সিসে বীজ তৈরি হয়।" },
-          { question: "বীজহীন ফল (Seedless Fruit) উৎপাদনের প্রক্রিয়াকে কী বলা হয়?", options: ["এপোমিক্সিস", "পারথেনোকার্পি (Parthenocarpy)", "পারথেনোজেনেসিস", "পলিএম্ব্রায়োনি"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "easy", explanation: "নিষেক ছাড়াই ফল সৃষ্টি হলে তাকে পারথেনোকার্পিক ফল বলে (যেমন: কলা, বীজহীন আঙুর)।", concept: "Parthenocarpy", shortcut: "Fruit without Seed = Parthenocarpy", mistake: "পারথেনোজেনেসিস ভাবা", tip: "পারথেনোজেনেসিস হলো অসেক প্রজননের মাধ্যমে অপত্য জীব সৃষ্টি।" },
-          { question: "সবচেয়ে প্রাচীন উদ্ভিদ প্রজনন পদ্ধতি কোনটি?", options: ["সংকরায়ণ", "পছন্দকরণ / নির্বাচন (Selection)", "মিউটেশন ব্রিডিং", "জিন প্রকৌশল"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "কৃষিকাজের শুরু থেকেই মানুষ ভালো ফসল বাছাই বা নির্বাচন (Selection) করে বীজ সংরক্ষণ করতো, যা সবচেয়ে প্রাচীন পদ্ধতি।", concept: "Plant Selection History", shortcut: "Oldest Method = Selection", mistake: "সংকরায়ণকে প্রাচীন ভাবা", tip: "Selection দুই প্রকার: Mass Selection ও Pureline Selection।" },
-          { question: "একটি মাত্র স্ব-পরাগায়িত উদ্ভিদ থেকে বংশানুক্রমে সৃষ্ট সমলক্ষণী জীবগোষ্ঠীকে কী বলে?", options: ["প্যুরলাইন (Pureline / বিশুদ্ধ বংশধারক)", "ইনব্রিড লাইন", "ক্লোন", "হাইব্রিড"], correct: 0, topic: "Selection Methods", difficulty: "medium", explanation: "ড্যানিশ বিজ্ঞানী জোহানসেন (Johannsen) ১৯০৩ সালে Pureline তত্ত্ব দেন। এটি homozygous ও homogenous উদ্ভিদগোষ্ঠী।", concept: "Pureline Theory", shortcut: "Johannsen = Pureline", mistake: "ক্লোন ভাবা", tip: "অঙ্গজ প্রজননে সৃষ্ট জনগোষ্ঠী হলো ক্লোন (Clone)।" },
-          { question: "অঙ্গজ প্রজনন (Vegetative Propagation) দ্বারা উৎপন্ন হুবহু একই জিনোটাইপযুক্ত উদ্ভিদদলকে কী বলা হয়?", options: ["বিশুদ্ধ লাইন", "ক্লোন (Clone)", "মাস সিলেক্টেড লাইন", "সংকর"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "মাতৃউদ্ভিদের অঙ্গজ অংশ থেকে তৈরি সমস্ত অপত্য উদ্ভিদ জিনগতভাবে অবিকল এক হওয়ায় এদের ক্লোন বলা হয়।", concept: "Clones in Plants", shortcut: "Asexual progeny = Clone", mistake: "Pureline এর সাথে মেলানো", tip: "আলু, আদা, কলার বংশবৃদ্ধি ক্লোন পদ্ধতির উদাহরণ।" },
-          { question: "টিস্যু কালচারে এক্সপ্ল্যান্ট (Explant) হিসেবে উদ্ভিদের কোন অংশ সবচেয়ে বেশি উপযোগী?", options: ["শীর্ষ মুকুল বা ভাজক টিস্যু (Meristem)", "পরিপক্ক কাণ্ড", "পুরোনো পাতা", "মৃত ছাল"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "ভাজক টিস্যু (Meristem) দ্রুত বিভাজনক্ষম এবং ভাইরাস মুক্ত থাকায় টিস্যু কালচারে শীর্ষ বা কাক্ষিক মুকুল এক্সপ্ল্যান্ট হিসেবে উত্তম।", concept: "Explant Selection", shortcut: "Virus Free = Meristem", mistake: "যেকোনো বয়স্ক অংশ ভাবা", tip: "মেরিস্টেম কালচারের মাধ্যমে ভাইরাসমুক্ত চারা তৈরি করা হয়।" },
-          { question: "টিস্যু কালচার পুষ্টি মাধ্যমে অনিয়ন্ত্রিতভাবে বিভক্ত অসংগঠিত কোষের মণ্ডকে কী বলা হয়?", options: ["ক্যালস (Callus)", "এমব্রয়েড", "প্রোটোপ্লাস্ট", "এক্সপ্ল্যান্ট"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অক্সিন ও সাইটোকাইনিন হরমোনের প্রভাবে এক্সপ্ল্যান্ট বিভাজিত হয়ে যে অবিন্যস্ত কোষপিণ্ড তৈরি করে তাকে ক্যালস বলে।", concept: "Callus Formation", shortcut: "Undifferentiated Cell Mass = Callus", mistake: "এমব্রয়েড ভাবা", tip: "ক্যালস থেকে পরবর্তীতে মূল ও বিটপ সৃষ্টি হয়।" },
-          { question: "উদ্ভিদের কোষ প্রাচীর এনজাইম দিয়ে গলিয়ে ফেলা কোষকে কী বলা হয়?", options: ["ক্যালস", "প্রোটোপ্লাস্ট (Protoplast)", "সোমাটিক হাইব্রিড", "সাইব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "medium", explanation: "সেলুলেজ ও পেকটিনেজ এনজাইম দিয়ে কোষ প্রাচীর সরিয়ে ফেললে কেবল প্লাজমামেমব্রেন বেষ্টিত প্রোটোপ্লাস্ট পাওয়া যায়।", concept: "Protoplast Isolation", shortcut: "Cell without Wall = Protoplast", mistake: "সাইব্রিড ভাবা", tip: "প্রোটোপ্লাস্ট ফিউশন দিয়ে সোমাটিক হাইব্রিড তৈরি করা জ্ঞ।" },
-          { question: "দুটি ভিন্ন প্রজাতির প্রোটোপ্লাস্টের সংমিশ্রণে নতুন উদ্ভিদ সৃষ্টির প্রযুক্তিকে কী বলা হয়?", options: ["সোমাটিক হাইব্রিডাইজেশন (Somatic Hybridization)", "সাইটোপ্লাজমীয় জিনোটাইপ", "জেনেটিক ইঞ্জিনিয়ারিং", "মাইক্রোপ্রোপাগেশন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "দৈহিক কোষের প্রোটোপ্লাস্ট গলিয়ে মিলন ঘটিয়ে সংকর উদ্ভিদ তৈরি করাকে সোমাটিক হাইব্রিডাইজেশন বলে (যেমন: Pomato)।", concept: "Somatic Hybrids", shortcut: "Protoplast Fusion = Somatic Hybrid", mistake: "জেনেটিক ইঞ্জিনিয়ারিং বলা", tip: "পটেটো ও টমেটোর প্রোটোপ্লাস্ট ফিউশনে 'পমেটো' তৈরি হয়।" },
-          { question: "টমেটো এবং আলুর প্রোটোপ্লাস্ট ফিউশন ঘটিয়ে সৃষ্ট সোমাটিক সংকর উদ্ভিদের নাম কী?", options: ["টমেটো আলু", "পমেটো (Pomato)", "টপটেটো", "আলুটমেটো"], correct: 1, topic: "Protoplast Fusion", difficulty: "easy", explanation: "Potato + Tomato = Pomato (মাটির নিচে আলু এবং উপরে টমেটো ফলে)।", concept: "Pomato Example", shortcut: "Potato + Tomato = Pomato", mistake: "টমেটো আলু বলা", tip: "এটি প্রোটোপ্লাস্ট ফিউশনের একটি যুগান্তকারী উদাহরণ।" },
-          { question: "প্রোটোপ্লাস্ট ফিউশন বা গলন ত্বরান্বিত করার জন্য কোন রাসায়নিক দ্রবণ ব্যবহৃত হয়?", options: ["পলিইথিলিন গ্লাইকল (PEG)", "ইথানল", "সোডিয়াম ক্লোরাইড", "ফরমালিন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "PEG (Polyethylene Glycol) প্রোটোপ্লাস্ট দুটির মেমব্রেনকে সাময়িকভাবে গলিয়ে দ্রুত ফিউশনে সাহায্য করে।", concept: "Fusogen Chemical", shortcut: "PEG = Protoplast Fusogen", mistake: "ইথানল মনে করা", tip: "PEG এবং উচ্চ pH/Ca2+ আয়ন ফিউশনে ভূমিকা রাখে।" },
-          { question: "পরাগরেণু বা পরাগধানী কালচার করে কোন ধরণের উদ্ভিদ তৈরি করা যায়?", options: ["ডিপ্লয়েড (2n)", "হ্যাপ্লয়েড (n)", "টেট্রাপ্লয়েড (4n)", "ট্রিপ্লয়েড (3n)"], correct: 1, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "পরাগরেণু মিয়োসিসের ফলে উৎপন্ন হওয়ায় এটি হ্যাপ্লয়েড (n)। পরাগধানী কালচারে সরাসরী হ্যাপ্লয়েড উদ্ভিদ পাওয়া যায়।", concept: "Haploid Plant Breeding", shortcut: "Pollen Culture = Haploid (n)", mistake: "ডিপ্লয়েড ভাবা", tip: "Guha & Maheshwari (1964) প্রথম ধুতুরা গাছে এনথার কালচার করেন।" },
-          { question: "প্রথম পরাগধানী কালচার (Anther Culture) করে হ্যাপ্লয়েড উদ্ভিদ তৈরি করেন কোন বিজ্ঞানীদ্বয়?", options: ["গুহ ও মহেশ্বরী (Guha & Maheshwari)", "ওয়াটসন ও ক্রিক", "হাবারল্যান্ডট", "মেন্ডেল"], correct: 0, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "ভারতীয় বিজ্ঞানী শিপোরা গুহ ও পঞ্চানন মহেশ্বরী ১৯৬৪ সালে *Datura innoxia* গাছে অ্যানথার কালচার সফল করেন।", concept: "Haploid Breeding History", shortcut: "Guha & Maheshwari = Anther Culture", mistake: "হাবারল্যান্ডট বলা", tip: "এটি বায়োলজির অন্যতম সেরা ভারতীয় আবিষ্কার।" },
-          { question: "রোগমুক্ত বা ভাইরাসমুক্ত চারা উৎপাদনের জন্য টিস্যু কালচারের কোন পদ্ধতি ব্যবহার করা হয়?", options: ["মেরিস্টেম কালচার (Meristem Culture)", "এনথার কালচার", "এমব্রায়ো কালচার", "প্রোটোপ্লাস্ট ফিউশন"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "কাণ্ডের অগ্রভাগের ভাজক টিস্যুতে (Meristem) সংবহন না থাকায় এবং কোষ বিভাজনের হার বেশি হওয়ায় সেখানে ভাইরাস পৌঁছাতে পারে না।", concept: "Virus-free Plants", shortcut: "Meristem = Virus Free", mistake: "এমব্রায়ো কালচার বলা", tip: "আলু ও কলার ক্ষেত্রে ভাইরাসমুক্ত চারা তৈরিতে এটি সফল।" },
-          { question: "বিটি কটন (Bt Cotton) বা বিটি বেগুন তৈরিতে কোন ব্যাকটেরিয়ার জিন প্রবেশ করানো হয়েছে?", options: ["*Agrobacterium tumefaciens*", "*Bacillus thuringiensis*", "*Escherichia coli*", "*Rhizobium leguminosarum*"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "*Bacillus thuringiensis* (Bt) ব্যাকটেরিয়ার Cry-জিন ক্রিস্টাল প্রোটিন তৈরি করে যা ক্ষতিকর পোকা মারতে সক্ষম।", concept: "Bt Crops", shortcut: "Bt = Bacillus thuringiensis", mistake: "Agrobacterium মনে করা", tip: "Bt বেগুন ডাল ও ডগা ছিদ্রকারী পোকা প্রতিরোধী।" },
-          { question: "উদ্ভিদ প্রজননে জিন স্থানান্তরের জন্য সবচেয়ে জনপ্রিয় প্রাকৃতিক ভেক্টর (Natural Genetic Engineer) কোনটি?", options: ["*Agrobacterium tumefaciens* এর Ti প্লাজমিড", "*E. coli* প্লাজমিড", "TMV ভাইরাস", "ব্যাকটেরিওফেজ"], correct: 0, topic: "Genetic Engineering in Breeding", difficulty: "medium", explanation: "*Agrobacterium tumefaciens* ব্যাকটেরিয়ার Ti (Tumor Inducing) প্লাজমিড দ্বি-বীজপত্রী উদ্ভিদে সহজেই T-DNA ট্রান্সফার করতে পারে।", concept: "Plant Vector", shortcut: "Natural Genetic Engineer = Agrobacterium", mistake: "E. coli বলা", tip: "উদ্ভিদে ট্রান্সজিন স্থানান্তরে Ti-প্লাজমিড বহুল ব্যবহৃত।" },
-          { question: "গোল্ডেন রাইস (Golden Rice) এ কোন ভিটামিনের পূর্বসূরী (Beta-Carotene) সমৃদ্ধ জিন যুক্ত করা হয়েছে?", options: ["ভিটামিন সি", "ভিটামিন এ (Vitamin A)", "ভিটামিন ডি", "ভিটামিন বি১২"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "গোল্ডেন রাইসে বিটা-ক্যারোটিন তৈরির জিন স্থানান্তরিত করা হয়েছে, যা মানবদেহে গিয়ে ভিটামিন-এ তে রূপান্তরিত হয়।", concept: "Golden Rice Nutrition", shortcut: "Golden Rice = Vitamin A", mistake: "ভিটামিন সি ভাবা", tip: "অন্ধত্ব নিরাময়ে গোল্ডেন রাইস উদ্ভাবিত হয়েছে।" },
-          { question: "কোন এনজাইমের সাহায্যে ডিএনএ অণুর নির্দিষ্ট অংশ কাটা যায়?", options: ["লাইগেজ (Ligase)", "রেস্ট্রিকশন এন্ডোনিউক্লিয়েজ (Restriction Endonuclease)", "পলিমারেজ", "প্রোটিয়েজ"], correct: 1, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "রেস্ট্রিকশন এনজাইমকে 'আণবিক কাঁচি' (Molecular Scissors) বলা হয় কারণ এটি DNA-এর নির্দিষ্ট সিকোয়েন্স কেটে ফেলে।", concept: "Molecular Scissors", shortcut: "Cutting DNA = Restriction Enzyme", mistake: "লাইগেজ ভাবা (যা জোড়া দেয়)", tip: "EcoRI একটি বিখ্যাত রেস্ট্রিকশন এনজাইম।" },
-          { question: "কাটা ডিএনএ খণ্ডগুলোকে একত্রিত বা জোড়া লাগানোর কাজে কোন এনজাইম ব্যবহৃত হয়?", options: ["ডিএনএ লাইগেজ (DNA Ligase)", "রেস্ট্রিকশন এনজাইম", "হেলিকেজ", "জাইমেজ"], correct: 0, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "ডিএনএ লাইগেজকে 'আণবিক আঠা' (Molecular Glue) বলা হয়, যা ফসফোডাইএস্টার বন্ধন তৈরি করে DNA জোড়া দেয়।", concept: "Molecular Glue", shortcut: "Joining DNA = DNA Ligase", mistake: "কাটার এনজাইমের সাথে মেলানো", tip: "Recombinant DNA তৈরিতে কাটিং ও জয়েনিং অত্যাবশ্যক।" },
-          { question: "কৃত্রিম উপায়ে উদ্ভিদের পুষ্টি মাধ্যমে ভ্রূণ সুপ্তাবস্থা কাটিয়ে দ্রুত চারা তৈরির পদ্ধতিকে কী বলে?", options: ["এমব্রায়ো রেসকিউ (Embryo Rescue)", "ক্যালস কালচার", "সোমাটিক এমব্রায়োজেনেসিস", "এনথার কালচার"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "দূরবর্তী সংকরায়ণে ভ্রূণ নষ্ট হওয়া রোধ করতে অপরিণত ভ্রূণকে পুষ্টি মাধ্যমে প্রতিস্থাপন করে রক্ষা করাকে Embryo Rescue বলে।", concept: "Embryo Rescue", shortcut: "Saving Aborted Embryo = Embryo Rescue", mistake: "ক্যালস কালচার ভাবা", tip: "Inter-specific সংকরায়ণে এটি অত্যন্ত কার্যকর।" },
-          { question: "অঙ্গজ টিস্যু কালচার থেকে সৃষ্ট উদ্ভিদের মধ্যে যে সোমাটিক পরিবর্তন বা প্রকরণ দেখা যায় তাকে কী বলে?", options: ["সোমাক্লোনাল ভ্যারিয়েশন (Somaclonal Variation)", "জার্মপ্লাজম পরিবর্তন", "জিন মিউটেশন", "হাইব্রিড ভিগর"], correct: 0, topic: "Tissue Culture Applications", difficulty: "medium", explanation: "ইন-ভিট্রো কালচার বা টিস্যু কালচারের সময় ক্যালস টিস্যুতে যে পরিবর্তন ও প্রকরণ ঘটে তাকে সোমাক্লোনাল ভ্যারিয়েশন বলে।", concept: "Tissue Culture Variation", shortcut: "In vitro Variation = Somaclonal", mistake: "হাইব্রিডাইজেশন বলা", tip: "নতুন জাত উদ্ভাবনে সোমাক্লোনাল ভ্যারিয়েশন কাজে লাগে।" },
-          { question: "একটি নির্দিষ্ট অঞ্চলের সকল প্রকার বৈচিত্র্যময় প্রজাতি ও তাদের জিনের সংগ্রহকে কী বলা হয়?", options: ["জিন ব্যাংক", "জার্মপ্লাজম (Germplasm)", "জিনোম", "জিন পুল"], correct: 1, topic: "Germplasm Conservation", difficulty: "medium", explanation: "কোনো ফসলের বা তার বুনো আত্মীয়ের সকল প্রকার এলিল বা জিন ধারণকারী প্রজনন উপাদানকে একত্রে জার্মপ্লাজম বলে।", concept: "Germplasm Definition", shortcut: "Total Genetic Material = Germplasm", mistake: "জিনপুল ভাবা", tip: "জার্মপ্লাজম সংরক্ষণ করা না হলে প্রজাতির বিলুপ্তি ঘটে।" },
-          { question: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট (BRRI) কোথায় অবস্থিত?", options: ["গাজীপুর", "ময়মনসিংহ", "ঢাকা", "রংপুর"], correct: 0, topic: "Plant Breeding Research Institutes", difficulty: "easy", explanation: "BRRI (Bangladesh Rice Research Institute) জয়দেবপুর, গাজীপুরে অবস্থিত।", concept: "BRRI Location", shortcut: "BRRI = Gazipur", mistake: "ময়মনসিংহ ভাবা (যেখানে BAU)", tip: "BRRI বহু উফশী ও প্রতিকূলতা সহনশীল ধানের জাত তৈরি করেছে।" },
-          { question: "বিআর-২৮ (BR-28) এবং বিআর-২৯ (BR-29) বাংলাদেশের কোন ফসলের জনপ্রিয় উফশী জাত?", options: ["গম", "ধান", "ভুট্টা", "সরিষা"], correct: 1, topic: "Crop Varieties in BD", difficulty: "easy", explanation: "BR-28 ও BR-29 বোরো মৌসুমের অত্যন্ত জনপ্রিয় এবং উচ্চফলনশীল (HYV) ধানের জাত।", concept: "Rice Varieties", shortcut: "BR = Rice (BRRI)", mistake: "গমের জাত ভাবা", tip: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট এগুলো প্রবর্তন করে।" },
-          { question: "বাংলাদেশে লবণাক্ততা সহনশীল ধানের জাত কোনটি?", options: ["ব্রি ধান ৪৭ (BRRI Dhan 47)", "বিআর ৮", "ব্রি ধান ২৮", "বিআর ১১"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "দক্ষিণাঞ্চলের লবণাক্ত উপকূলীয় এলাকায় চাষের জন্য ব্রি ধান ৪৭, ব্রি ধান ৬১ ইত্যাদি উদ্ভাবন করা হয়েছে।", concept: "Stress Tolerant Rice", shortcut: "Salt Tolerant = BRRI Dhan 47", mistake: "ব্রি ধান ২৮ মনে করা", tip: "এটি ১০-১২ dS/m লবণাক্ততা সহ্য করতে পারে।" },
-          { question: "খরা সহনশীল (Drought tolerant) ধানের জাত কোনটি?", options: ["ব্রি ধান ৫৬ (BRRI Dhan 56)", "ব্রি ধান ৪৭", "বিআর ২৬", "ব্রি ধান ২৯"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "ব্রি ধান ৫৬ এবং ব্রি ধান ৫৭ হলো খরাপ্রবণ বরেন্দ্র এলাকার জন্য উপযোগী খরা সহনশীল জাত।", concept: "Drought Tolerant Rice", shortcut: "Drought = BRRI Dhan 56", mistake: "ব্রি ধান ৪৭ ভাবা (যা লবণাক্ততা সহনশীল)", tip: "মঙ্গা এলাকায় এর চাষ লাভজনক।" },
-          { question: "কৃত্রিম জিন স্থানান্তরের জন্য 'জিন গান' (Gene Gun / Biolistic) পদ্ধতিতে কোন ধাতুর সূক্ষ্ম কণা ব্যবহার করা হয়?", options: ["লোহা ও তামা", "সোনা বা টাংস্টেন (Gold or Tungsten)", "অ্যালুমিনিয়াম", "রুপা"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "hard", explanation: "জিন গান পদ্ধতিতে সোনা (Gold) বা টাংস্টেন দিয়ে কোট করা DNA কণাকে উচ্চবেগে কোষের ভেতরে নিক্ষেপ করা হয়।", concept: "Gene Gun Technique", shortcut: "Gene Gun Microcarriers = Gold/Tungsten", mistake: "তামা ভাবা", tip: "একবীজপত্রী উদ্ভিদে জিন স্থানান্তরে জিন গান উপযোগী।" },
-          { question: "বাংলাদেশে পারমাণবিক শক্তি গবেষণা প্রতিষ্ঠানের (BINA) প্রধান কাজ কী?", options: ["রাসায়নিক সার তৈরি", "মিউটেশন ব্রিডিং এর মাধ্যমে উন্নত জাত উদ্ভাবন", "কীটনাশক তৈরি", "মাটি পরীক্ষা"], correct: 1, topic: "Plant Breeding Research Institutes", difficulty: "medium", explanation: "BINA (Bangladesh Institute of Nuclear Agriculture) তেজস্ক্রিয় রশ্নি (Gamma Radiation) প্রয়োগ করে মিউট্যান্ট জাত তৈরি করে।", concept: "BINA Role", shortcut: "BINA = Mutation Breeding / Nuclear Ag", mistake: "সার তৈরি ভাবা", tip: "ইরাটম ধান ও বিনাসরিষা BINA-এর উদ্ভাবন।" },
-          { question: "তেজস্ক্রিয় গামা রশ্নি (Gamma Rays) প্রয়োগ করে উদ্ভিদ প্রজননের কোন পদ্ধতিটি সম্পাদন করা হয়?", options: ["মিউটেশন ব্রিডিং (Mutation Breeding)", "ইমাসকুলেশন", "টিস্যু কালচার", "পদ্ধতিগত নির্বাচন"], correct: 0, topic: "Mutation Breeding", difficulty: "easy", explanation: "গামা রশ্নি, এক্স-রে বা নিউট্রন প্রয়োগ করে কৃত্রিম মিউটেশন ঘটানোকে Induced Mutation বা Mutation Breeding বলে।", concept: "Physical Mutagens", shortcut: "Gamma Rays = Mutation Breeding", mistake: "টিস্যু কালচার মনে করা", tip: "গামা গার্ডেনে তেজস্ক্রিয় কোবাল্ট-৬০ ব্যবহার করা হয়।" },
-          { question: "কোনটি স্ব-পরাগযোগের জন্য একটি প্রাকৃতিক অভিযোজন?", options: ["ডাইকোগ্যামি (Dichogamy)", "ক্লিস্টোগ্যামি (Clistogamy)", "স্ব-বন্ধ্যাত্ব (Self-sterility)", "একলিঙ্গতা (Heterostyly)"], correct: 1, topic: "Pollination Biology", difficulty: "hard", explanation: "ক্লিস্টোগ্যামি অবস্থায় ফুল কখনোই ফোটে না (বন্ধ থাকে), ফলে কেবল স্ব-পরাগযোগ বাধ্যতামূলক হয়ে দাঁড়ায় (যেমন: কানশিরা)।", concept: "Self Pollination Adaptation", shortcut: "Closed Flower = Clistogamy", mistake: "ডাইকোগ্যামি ভাবা", tip: "ডাইকোগ্যামি হলো পর-পরাগযোগের অভিযোজন।" },
-          { question: "স্ত্রী ও পুরুষ ফুল ভিন্ন গাছে অবস্থান করলে সেই উদ্ভিদকে কী বলা হয়?", options: ["মনোএসিয়াস (Monoecious)", "ডাইওসিয়াস (Dioecious)", "উভলিঙ্গ", "পলিগ্যামাস"], correct: 1, topic: "Pollination Biology", difficulty: "medium", explanation: "একই গাছে উভয় ফুল থাকলে Monoecious (যেমন: ভুট্টা) এবং ভিন্ন ভিন্ন গাছে থাকলে Dioecious (যেমন: পেঁপে, তাল)।", concept: "Plant Sex Distribution", shortcut: "Separate Plants = Dioecious", mistake: "Monoecious এর সাথে গুলিয়ে ফেলা", tip: "পেঁপে গাছে পর-পরাগযোগ বাধ্যতামূলক।" },
-          { question: "উদ্ভিদ প্রজননে সায়ব্রিড (Cybrid) বলতে কী বোঝায়?", options: ["দুইটি নিউক্লিয়াসের মিলন", "সাইটোপ্লাজমিক সংকর (Cytoplasmic Hybrid)", "জিনগত মিউট্যান্ট", "ডিএনএ জোড় সায়ব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "hard", explanation: "একটি কোষের নিউক্লিয়াস এবং অন্য কোষের সাইটোপ্লাজম যুক্ত হয়ে সৃষ্ট সংকরকে Cybrid (Cytoplasmic Hybrid) বলে।", concept: "Cybrid Definition", shortcut: "One Nucleus + Other Cytoplasm = Cybrid", mistake: "Somatic Hybrid এর সাথে গুটিয়ে ফেলা", tip: "সায়ব্রিডে কেবল একটি জেনোম এবং উভয় প্লাস্টিড থাকে।" },
-          { question: "টিস্যু কালচারের ক্ষেত্রে কালচার মিডিয়ামের pH সাধারণত কত রাখা হয়?", options: ["3.5 - 4.5", "5.6 - 5.8", "7.0 - 7.5", "8.5 - 9.0"], correct: 1, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "এমএস (MS) পুষ্টি মিডিয়ামের অনুকূল pH হলো ৫.৬ থেকে ৫.৮ (হালকা অম্লীয়)।", concept: "Culture Media pH", shortcut: "Media pH = 5.6 to 5.8", mistake: "৭.০ (নিরপেক্ষ) ভাবা", tip: "অটো ক্লেভ করার আগেই pH ঠিক করতে হয়।" },
-          { question: "টিস্যু কালচার পুষ্টি মাধ্যমকে জীবাণুমুক্ত (Sterilization) করার আধুনিক যন্ত্র কোনটি?", options: ["হট এয়ার ওভেন", "ইনকিউবেটর", "অটোক্লেভ (Autoclave)", "সেনট্রিফিউজ"], correct: 2, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অটোক্লেভ যন্ত্রে ১২১°C তাপমাত্রায়, ১৫ পাউন্ড/বর্গইঞ্চি চাপে ১৫-২০ মিনিট রেখে শতভাগ জীবাণুমুক্ত করা হয়।", concept: "Autoclave Sterilization", shortcut: "121°C, 15 psi = Autoclave", mistake: "ইনকিউবেটর ভাবা", tip: "ইনকিউবেটর তাপমাত্রা নিয়ন্ত্রণে ও কালচারে ব্যবহৃত হয়।" },
-          { question: "নিচের কোনটি উদ্ভিদের প্রধান সাইটোকাইনিন হরমোন যা টিস্যু কালচারে কোষ বিভাজন উদ্দীপিত করে?", options: ["2,4-D", "কাইনেটিন / জিয়াটিন (Kinetin / Zeatin)", "IAA", "জিব্যারেলিক এসিড"], correct: 1, topic: "Plant Growth Regulators", difficulty: "medium", explanation: "সাইটোকাইনিন (কাইনেটিন, বিএপি, জিয়াটিন) টিস্যু কালচারে দ্রুত কোষ বিভাজন ও বিটপ (Shoot) গঠনে সাহায্য করে।", concept: "Hormone Role in Culture", shortcut: "Cytokinin = Shoot / Cell Division", mistake: "2,4-D বলা (যা মূলত অক্সিন)", tip: "অক্সিন ও সাইটোকাইনিনের অনুপাত অঙ্গ সৃষ্টি নিয়ন্ত্রণ করে।" },
-          { question: "কৃত্রিম বীজ (Synthetic Seed / Somatic Seed) তৈরিতে সোমাটিক ভ্রূণকে কোন কেমিকেল দিয়ে আবৃত (Encapsulate) করা হয়?", options: ["সোডিয়াম অ্যালজিনেট (Sodium Alginate)", "অগার", "সেলুলোজ", "পেকটিন"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "সোমাটিক এমব্রায়ো বা ক্যালসকে সোডিয়াম অ্যালজিনেট ও ক্যালসিয়াম ক্লোরাইড দিয়ে কোটিং করে কৃত্রিম বীজ প্রস্তুত করা হয়।", concept: "Synthetic Seeds", shortcut: "Sodium Alginate = SynSeed Coating", mistake: "অগার মনে করা", tip: "এর মাধ্যমে কৃত্রিম বীজ দীর্ঘকাল সংরক্ষণ করা যায়।" },
-          { question: "কলা (Banana) উদ্ভিদের দ্রুত ও বিপুল পরিমানে বংশবৃদ্ধির জন্য বাণিজ্যিকভাবে কোন প্রযুক্তি ব্যবহৃত হচ্ছে?", options: ["বীজ বপন", "মাইক্রোপ্রোপাগেশন / টিস্যু কালচার (Micropropagation)", "গ্রাফটিং", "কাটিং"], correct: 1, topic: "Tissue Culture Applications", difficulty: "easy", explanation: "মাইক্রোপ্রোপাগেশন টিস্যু কালচারের একটি রূপ, যার মাধ্যমে অত্যন্ত কম সময়ে রোগমুক্ত হাজার হাজার কলার চারা তৈরি সম্ভব।", concept: "Micropropagation Benefits", shortcut: "Commercial Clones = Micropropagation", mistake: "গ্রাফটিং ভাবা", tip: "কলা বীজহীন হওয়ায় মাইক্রোপ্রোপাগেশনই সেরা উপায়।" }
-        ]
+      // Circular Timer & Auto Save
+      function startTimer() {
+        totalDurationSeconds = rawExamData.duration * 60;
+        const savedTime = localStorage.getItem("gaivex_time_left");
+        if (savedTime) {
+          timeRemaining = parseInt(savedTime);
+          document.getElementById("resumeBtn").style.display = "inline-block";
+        } else {
+          timeRemaining = totalDurationSeconds;
+        }
+
+        const circle = document.getElementById("progressRingCircle");
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+
+        timerInterval = setInterval(() => {
+          if (isSubmitted) return;
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert("⏰ সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
+            confirmAndSubmit();
+            return;
+          }
+          timeRemaining--;
+          localStorage.setItem("gaivex_time_left", timeRemaining);
+
+          const m = Math.floor(timeRemaining / 60);
+          const s = timeRemaining % 60;
+          document.getElementById("circularTimerText.innerText") || (document.getElementById("circularTimerText").innerText = `${m}m`);
+          
+          const offset = circumference - (timeRemaining / totalDurationSeconds) * circumference;
+          circle.style.strokeDashoffset = offset;
+        }, 1000);
+      }
+
+      function resumeExamState() {
+        const saved = localStorage.getItem("gaivex_user_selections");
+        if (saved) {
+          userSelections = JSON.parse(saved);
+          lockedQuestions = JSON.parse(localStorage.getItem("gaivex_locked_questions") || "{}");
+          renderExamInterface();
+          alert("🔄 আপনার পূর্বের সংরক্ষিত পরীক্ষার অবস্থা সফলভাবে রিস্টোর করা হয়েছে!");
+        }
+      }
+
+      function renderExamInterface() {
+        const container = document.getElementById("questionsContainer");
+        container.innerHTML = "";
+        
+        shuffledQuestions.forEach((q, idx) => {
+          if (viewMode === 'single' && idx !== currentSingleIndex) return;
+
+          const card = document.createElement("div");
+          card.className = "question-card";
+          card.id = `qCard_${idx}`;
+
+          const isSelected = userSelections[idx] !== undefined;
+          const isLocked = lockedQuestions[idx] === true;
+          const isBookmarked = bookmarkedQuestions[idx] === true;
+          const isReview = reviewQuestions[idx] === true;
+
+          let optionsHTML = "";
+          q.options.forEach((opt, optIdx) => {
+            const isChecked = userSelections[idx] === optIdx;
+            let optClass = "option-item";
+            if (isChecked) optClass += " selected-option";
+            if (isLocked) optClass += " locked-option";
+
+            optionsHTML += `
+              <label class="${optClass}" onclick="${isLocked ? '' : `selectOption(${idx}, ${optIdx})`}">
+                <input type="radio" name="question_${idx}" value="${optIdx}" ${isChecked ? 'checked' : ''} ${isLocked ? 'disabled' : ''}>
+                <span>(${['ক', 'খ', 'গ', 'ঘ'][optIdx]}) ${opt}</span>
+              </label>
+            `;
+          });
+
+          card.innerHTML = `
+            <div class="question-header-row">
+              <div class="question-title">প্রশ্ন ${idx + 1}: ${q.question}</div>
+              <div class="action-btns">
+                <button type="button" class="action-icon-btn bookmark-btn ${isBookmarked ? 'active' : ''}" onclick="toggleBookmark(${idx})" title="Bookmark">⭐</button>
+                <button type="button" class="action-icon-btn review-btn ${isReview ? 'active' : ''}" onclick="toggleReview(${idx})" title="Review">🔖</button>
+              </div>
+            </div>
+            <div class="question-meta">
+              <span class="tag ${q.difficulty}">${q.difficulty.toUpperCase()}</span>
+              <span class="tag">${q.topic}</span>
+              ${isLocked ? '<span class="tag" style="background:#1e3a8a; color:#38bdf8;">Locked 🔒</span>' : ''}
+            </div>
+            <div class="options-list">${optionsHTML}</div>
+          `;
+          container.appendChild(card);
+        });
+
+        renderPalette();
+        updateProgressCounters();
+        if (viewMode === 'single') {
+          document.getElementById("singleNavFooter").style.display = "flex";
+          document.getElementById("singleProgress").innerText = `Question ${currentSingleIndex + 1} / ${shuffledQuestions.length}`;
+          document.getElementById("prevQBtn").disabled = currentSingleIndex === 0;
+          document.getElementById("nextQBtn").disabled = currentSingleIndex === shuffledQuestions.length - 1;
+        } else {
+          document.getElementById("singleNavFooter").style.display = "none";
+        }
+      }
+
+      window.selectOption = function(qIdx, optIdx) {
+        if (isSubmitted || lockedQuestions[qIdx]) return;
+        
+        // Auto Lock: once selected, cannot be changed
+        userSelections[qIdx] = optIdx;
+        lockedQuestions[qIdx] = true;
+
+        localStorage.setItem("gaivex_user_selections", JSON.stringify(userSelections));
+        localStorage.setItem("gaivex_locked_questions", JSON.stringify(lockedQuestions));
+        
+        playSound('click');
+        renderExamInterface();
       };
 
-      let examData = defaultExamData;
+      window.toggleBookmark = function(idx) {
+        bookmarkedQuestions[idx] = !bookmarkedQuestions[idx];
+        renderExamInterface();
+      };
 
-      // 🛡️ SECURITY ENGINE: Anti-Screenshot & Capture Deterrent
-      function initSecurityEngine() {
-        const overlay = document.getElementById('screenProtectOverlay');
-        const container = document.getElementById('mainExamContainer');
-        const header = document.getElementById('mainHeader');
-
-        function triggerSecurityLock(reason) {
-          if (isSubmitted) return;
-          container.classList.add('secure-blur');
-          header.classList.add('secure-blur');
-          overlay.style.display = 'flex';
-          playAudioFeedback('warning');
-          showToastWarning(`🚨 সিকিউরিটি অ্যালার্ট: ${reason}`);
-        }
-
-        function unlockSecurity() {
-          container.classList.remove('secure-blur');
-          header.classList.remove('secure-blur');
-          overlay.style.display = 'none';
-        }
-
-        // 1. Screen Capture Key Shortcuts (PrtScn, Snipping Tool, Inspect)
-        window.addEventListener('keyup', (e) => {
-          if (e.key === 'PrintScreen' || e.keyCode === 44) {
-            navigator.clipboard.writeText(''); // Clear Clipboard
-            triggerSecurityLock("স্ক্রিনশট নেওয়ার চেষ্টা শনাক্ত করা হয়েছে!");
-          }
-        });
-
-        window.addEventListener('keydown', (e) => {
-          // Block Ctrl+P (Print), Ctrl+Shift+I (DevTools), Ctrl+U (Source), Ctrl+S (Save), Alt+PrtScn
-          if (
-            (e.ctrlKey && (e.key === 'p' || e.key === 'P')) ||
-            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
-            (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
-            (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
-            (e.key === 'F12')
-          ) {
-            e.preventDefault();
-            triggerSecurityLock("নিষিদ্ধ কি-কম্বিনেশন প্রেস করা হয়েছে!");
-            return false;
-          }
-        });
-
-        // 2. Prevent Right Click & Copying
-        document.addEventListener('contextmenu', (e) => e.preventDefault());
-        document.addEventListener('copy', (e) => {
-          e.preventDefault();
-          showToastWarning("⚠️ প্রশ্ন কপি করা নিষিদ্ধ!");
-        });
-
-        // 3. Tab Change & Window Blur
-        window.addEventListener('blur', () => {
-          if (!isSubmitted) triggerSecurityLock("উইন্ডো পরিবর্তন বা মিনিমাইজ করা হয়েছে!");
-        });
-
-        overlay.addEventListener('click', () => {
-          unlockSecurity();
-        });
-      }
-
-      // Init Function
-      async function checkAttemptAndLoad() {
-        initSecurityEngine();
-
-        if (currentUser) {
-          try {
-            let userSnap = await get(ref(db, `users/${currentUser.uid}`));
-            if (!userSnap.exists()) userSnap = await get(ref(db, `students/${currentUser.uid}`));
-
-            if (userSnap.exists()) {
-              const userData = userSnap.val();
-              document.getElementById('uName').innerText = userData.name || "Student";
-              document.getElementById('uAvatar').innerText = (userData.name || "S").charAt(0).toUpperCase();
-
-              if (userData.status === 'blocked') {
-                document.getElementById('questionsContainer').innerHTML = `
-                  <div style="text-align: center; padding: 40px 20px; background: #1e293b; border-radius: 12px; border: 1px solid #f43f5e; margin-top: 20px;">
-                    <h2 style="color: #f43f5e; margin-bottom: 10px;">❌ পরীক্ষা দেওয়া সম্ভব নয়!</h2>
-                    <p style="color: #cbd5e1; font-size: 16px;">আপনার অ্যাকাউন্ট ব্লক করা রয়েছে। কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
-                  </div>
-                `;
-                document.getElementById('examTitle').innerText = "অ্যাক্সেস ব্লকড";
-                document.getElementById('topSubmitBtn').style.display = 'none';
-                document.getElementById('paletteSection').style.display = 'none';
-                document.getElementById('examToolbar').style.display = 'none';
-                return;
-              }
-            }
-          } catch(err) { console.error("Error checking user:", err); }
-        }
-
-        try {
-          const snapshot = await get(ref(db, 'live_exams/live_daily_exam'));
-          if (snapshot.exists() && snapshot.val().questions && snapshot.val().questions.length > 0) {
-            examData = snapshot.val();
-          } else {
-            examData = defaultExamData;
-          }
-        } catch(e) {
-          examData = defaultExamData;
-        }
-
-        document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
-        
-        const cleanId = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
-        activeExamKey = "gaivex_submitted_" + cleanId;
-        examTimerKey = "gaivex_timer_" + cleanId;
-        autoSaveKey = "gaivex_autosave_" + cleanId;
-
-        const localAutoSave = localStorage.getItem(autoSaveKey);
-        if (localAutoSave) {
-          try { userSelections = JSON.parse(localAutoSave); } catch(e){}
-        }
-
-        totalDurationSeconds = (examData.duration || 25) * 60;
-        const savedTimer = localStorage.getItem(examTimerKey);
-        timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalDurationSeconds;
-
-        renderQuestions();
-        renderPalette();
-
-        const savedResult = localStorage.getItem(activeExamKey);
-        if (savedResult) {
-          const resultData = JSON.parse(savedResult);
-          isSubmitted = true;
-          showSubmittedResult(resultData.userAnswers, resultData.score, resultData.timeSpent || 0, resultData.perQuestionTime || {});
-        } else {
-          startTimer();
-          setupAntiCheat();
-          setupUnloadProtection();
-        }
-      }
-
-      // Rendering Engine
-      function renderQuestions() {
-        const container = document.getElementById('questionsContainer');
-        const prefixes = ["ক)", "খ)", "গ)", "ঘ)"];
-
-        container.innerHTML = examData.questions.map((q, qIndex) => `
-          <div class="question-card" id="q-box-${qIndex}">
-            <div class="question-meta">
-              <span class="tag ${q.difficulty || 'medium'}">${(q.difficulty || 'medium').toUpperCase()}</span>
-              <span class="tag">${q.topic || 'General'}</span>
-            </div>
-            <div class="question-header-row">
-              <div class="question-title">${qIndex + 1}. ${q.question}</div>
-              <div class="action-btns">
-                <button type="button" class="action-icon-btn bookmark-btn" id="bookmark-${qIndex}" onclick="window.toggleBookmark(${qIndex})" title="বুকমার্ক করুন">★</button>
-                <button type="button" class="action-icon-btn review-btn" id="review-${qIndex}" onclick="window.toggleReview(${qIndex})" title="Mark for Review">🔖</button>
-                ${isSubmitted ? `<button type="button" class="action-icon-btn" onclick="openReportModal(${qIndex})" title="রিপোর্ট করুন">🚩</button>` : ''}
-              </div>
-            </div>
-            <div class="options-list" id="options-list-${qIndex}">
-              ${(q.options || []).map((opt, oIndex) => `
-                <label class="option-item" id="opt-label-${qIndex}-${oIndex}">
-                  <input type="radio" name="q_${qIndex}" value="${oIndex}" ${userSelections[qIndex] === oIndex ? 'checked' : ''} onchange="window.selectOption(${qIndex}, ${oIndex})">
-                  <span><b>${prefixes[oIndex] || ''}</b> ${opt}</span>
-                </label>
-              `).join('')}
-            </div>
-            <div class="explanation-box" id="exp-${qIndex}" style="display:none;">
-              <b>ব্যাখ্যা:</b> ${q.explanation || 'কোনো ব্যাখ্যা দেওয়া নেই।'}
-              <div class="review-insights">
-                <div class="insight-card"><strong>📖 Concept:</strong> ${q.concept || 'N/A'}</div>
-                <div class="insight-card"><strong>💡 Shortcut:</strong> ${q.shortcut || 'N/A'}</div>
-                <div class="insight-card"><strong>⚠️ Common Mistake:</strong> ${q.mistake || 'N/A'}</div>
-                <div class="insight-card"><strong>🎯 Admission Tip:</strong> ${q.tip || 'N/A'}</div>
-              </div>
-              <div class="q-time-badge" id="q-time-${qIndex}">⏱️ ব্যয়িত সময়: 0s</div>
-            </div>
-          </div>
-        `).join('');
-
-        window.selectOption = function(qIndex, oIndex) {
-          if (isSubmitted) return;
-          
-          triggerHaptic();
-          playAudioFeedback('click');
-
-          userSelections[qIndex] = Number(oIndex);
-          localStorage.setItem(autoSaveKey, JSON.stringify(userSelections));
-          
-          if (currentUser) {
-            update(ref(db, `exam_sessions/${currentUser.uid}/${examData.id || 'exam'}`), {
-              answers: userSelections,
-              lastUpdated: Date.now()
-            }).catch(()=>{});
-          }
-
-          const allLabels = document.querySelectorAll(`[id^="opt-label-${qIndex}-"]`);
-          allLabels.forEach((lbl, idx) => {
-            lbl.classList.remove('selected-option');
-            if(idx === Number(oIndex)) lbl.classList.add('selected-option');
-          });
-
-          updatePalette();
-
-          // Auto-advance logic
-          const autoAdvance = document.getElementById('autoAdvanceCheck').checked;
-          if (autoAdvance) {
-            if (viewMode === 'single' && qIndex < examData.questions.length - 1) {
-              setTimeout(() => navigateSingle(1), 250);
-            } else if (viewMode === 'all' && qIndex < examData.questions.length - 1) {
-              const nextCard = document.getElementById(`q-box-${qIndex + 1}`);
-              if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-          }
-        };
-
-        window.toggleBookmark = function(qIndex) {
-          triggerHaptic();
-          bookmarkedQuestions[qIndex] = !bookmarkedQuestions[qIndex];
-          const btn = document.getElementById(`bookmark-${qIndex}`);
-          if(bookmarkedQuestions[qIndex]) btn.classList.add('active');
-          else btn.classList.remove('active');
-          updatePalette();
-        };
-
-        window.toggleReview = function(qIndex) {
-          triggerHaptic();
-          reviewQuestions[qIndex] = !reviewQuestions[qIndex];
-          const btn = document.getElementById(`review-${qIndex}`);
-          if(reviewQuestions[qIndex]) btn.classList.add('active');
-          else btn.classList.remove('active');
-          updatePalette();
-        };
-
-        // Render Mathematical/Botanical Equations
-        renderMathInQuestions();
-      }
-
-      function renderMathInQuestions() {
-        if (window.renderMathInElement) {
-          window.renderMathInElement(document.getElementById('questionsContainer'), {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '$', right: '$', display: false}
-            ]
-          });
-        }
-      }
+      window.toggleReview = function(idx) {
+        reviewQuestions[idx] = !reviewQuestions[idx];
+        renderExamInterface();
+      };
 
       function renderPalette() {
-        const grid = document.getElementById('paletteGrid');
-        grid.innerHTML = examData.questions.map((_, i) => `
-          <button type="button" class="palette-btn" id="palette-btn-${i}" onclick="scrollToQuestion(${i})">${i + 1}</button>
-        `).join('');
-        updatePalette();
-      }
-
-      function updatePalette() {
-        let answeredCount = 0;
-        examData.questions.forEach((_, i) => {
-          const btn = document.getElementById(`palette-btn-${i}`);
-          if (!btn) return;
-
+        const grid = document.getElementById("paletteGrid");
+        grid.innerHTML = "";
+        shuffledQuestions.forEach((q, idx) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
           btn.className = "palette-btn";
-          if (i === currentSingleIndex && viewMode === 'single') btn.classList.add('active-current');
+          if (idx === currentSingleIndex && viewMode === 'single') btn.classList.add("active-current");
           
-          if (userSelections[i] !== undefined) {
-            answeredCount++;
-            btn.classList.add('answered');
-          } else if (reviewQuestions[i]) {
-            btn.classList.add('review');
-          } else if (bookmarkedQuestions[i]) {
-            btn.classList.add('bookmarked');
-          }
-        });
+          if (userSelections[idx] !== undefined) btn.classList.add("answered");
+          if (bookmarkedQuestions[idx]) btn.classList.add("bookmarked");
+          if (reviewQuestions[idx]) btn.classList.add("review");
 
-        const totalQ = examData.questions.length;
-        document.getElementById('answeredCount').innerText = `${answeredCount}/${totalQ}`;
+          btn.innerText = idx + 1;
+          btn.onclick = () => {
+            if (viewMode === 'single') {
+              currentSingleIndex = idx;
+              renderExamInterface();
+            } else {
+              const el = document.getElementById(`qCard_${idx}`);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          };
+          grid.appendChild(btn);
+        });
       }
 
-      // Font Zoom Control
-      window.changeFontSize = function(delta) {
-        currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
-        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
-      };
-
-      // Navigation Controls
-      window.scrollToQuestion = function(index) {
-        const now = Date.now();
-        const spent = Math.round((now - currentQuestionStartTime) / 1000);
-        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
-        currentQuestionStartTime = now;
-
-        currentSingleIndex = index;
-        if (viewMode === 'single') {
-          examData.questions.forEach((_, i) => {
-            const box = document.getElementById(`q-box-${i}`);
-            if (box) box.style.display = i === index ? 'block' : 'none';
-          });
-          updateSingleNavFooter();
-        } else {
-          const box = document.getElementById(`q-box-${index}`);
-          if(box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        updatePalette();
-      };
+      function updateProgressCounters() {
+        const answeredCount = Object.keys(userSelections).length;
+        document.getElementById("answeredCount").innerText = `${answeredCount}/${shuffledQuestions.length}`;
+      }
 
       window.switchViewMode = function(mode) {
         viewMode = mode;
-        document.getElementById('btnModeAll').classList.toggle('active', mode === 'all');
-        document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
-        document.getElementById('singleNavFooter').style.display = mode === 'single' ? 'flex' : 'none';
-
-        if (mode === 'single') {
-          scrollToQuestion(currentSingleIndex);
-        } else {
-          examData.questions.forEach((_, i) => {
-            const box = document.getElementById(`q-box-${i}`);
-            if (box) box.style.display = 'block';
-          });
-        }
+        document.getElementById("btnModeAll").classList.toggle("active", mode === 'all');
+        document.getElementById("btnModeSingle").classList.toggle("active", mode === 'single');
+        renderExamInterface();
       };
 
-      function updateSingleNavFooter() {
-        const total = examData.questions.length;
-        document.getElementById('singleProgress').innerText = `Question ${currentSingleIndex + 1} / ${total}`;
-        document.getElementById('prevQBtn').disabled = currentSingleIndex === 0;
-        document.getElementById('nextQBtn').disabled = currentSingleIndex === total - 1;
-      }
-
-      window.navigateSingle = function(dir) {
-        const nextIdx = currentSingleIndex + dir;
-        if (nextIdx >= 0 && nextIdx < examData.questions.length) {
-          scrollToQuestion(nextIdx);
-        }
+      window.navigateSingle = function(direction) {
+        currentSingleIndex += direction;
+        if (currentSingleIndex < 0) currentSingleIndex = 0;
+        if (currentSingleIndex >= shuffledQuestions.length) currentSingleIndex = shuffledQuestions.length - 1;
+        renderExamInterface();
       };
 
-      window.jumpToQuestion = function() {
-        const val = parseInt(document.getElementById('jumpQInput').value, 10);
-        if (val && val >= 1 && val <= examData.questions.length) {
-          scrollToQuestion(val - 1);
+      window.searchQuestionsLive = function() {
+        const keyword = document.getElementById("questionSearchInput").value.toLowerCase();
+        if (!keyword) return;
+        const foundIdx = shuffledQuestions.findIndex(q => q.question.toLowerCase().includes(keyword) || q.topic.toLowerCase().includes(keyword));
+        if (foundIdx !== -1) {
+          if (viewMode === 'single') {
+            currentSingleIndex = foundIdx;
+            renderExamInterface();
+          } else {
+            const el = document.getElementById(`qCard_${foundIdx}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       };
 
       window.goToNextUnanswered = function() {
-        for (let i = 0; i < examData.questions.length; i++) {
-          if (userSelections[i] === undefined) {
-            scrollToQuestion(i);
-            return;
+        const nextIdx = shuffledQuestions.findIndex((q, idx) => userSelections[idx] === undefined);
+        if (nextIdx !== -1) {
+          if (viewMode === 'single') {
+            currentSingleIndex = nextIdx;
+            renderExamInterface();
+          } else {
+            const el = document.getElementById(`qCard_${nextIdx}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
+        } else {
+          alert("অভিনন্দন! আপনি সব প্রশ্নের উত্তর দিয়েছেন।");
         }
-        alert("🎉 সব প্রশ্ন ইতোমধ্যে উত্তর দেওয়া হয়ে গেছে!");
       };
 
-      // Timer & Anti-Cheat
-      function startTimer() {
-        updateTimerDisplay();
-        timerInterval = setInterval(() => {
-          timeRemaining--;
-          localStorage.setItem(examTimerKey, timeRemaining);
-          updateTimerDisplay();
+      window.changeFontSize = function(delta) {
+        currentFontSize += delta;
+        if (currentFontSize < 13) currentFontSize = 13;
+        if (currentFontSize > 24) currentFontSize = 24;
+        document.documentElement.style.setProperty('--q-font-size', `${currentFontSize}px`);
+      };
 
-          if (timeRemaining === 600) { playAudioFeedback('warning'); showToastWarning("⚠️ আপনার পরীক্ষার আর ১০ মিনিট বাকি!"); }
-          if (timeRemaining === 300) { playAudioFeedback('warning'); showToastWarning("🔥 দ্রুত বাকি প্রশ্নগুলো সম্পন্ন করুন (৫ মিনিট বাকি)!"); }
-          if (timeRemaining === 60)  { playAudioFeedback('warning'); showToastWarning("🚨 মাত্র ১ মিনিট বাকি!"); }
-
-          if (timeRemaining <= 0) {
-            clearInterval(timerInterval);
-            localStorage.removeItem(examTimerKey);
-            alert("⏱️ সময় শেষ! পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হচ্ছে।");
-            submitExamAction();
-          }
-        }, 1000);
-      }
-
-      function updateTimerDisplay() {
-        const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
-        const s = (timeRemaining % 60).toString().padStart(2, '0');
-        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-      }
-
-      function showToastWarning(msg) {
-        const toast = document.getElementById('warningToast');
-        toast.innerText = msg;
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 5000);
-      }
-
-      function setupAntiCheat() {
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden && !isSubmitted) {
-            showToastWarning("⚠️ Tab Switch Detected! Cheating deterrence active.");
-          }
-        });
-      }
-
-      function setupUnloadProtection() {
-        window.onbeforeunload = function() {
-          if (!isSubmitted) return "আপনার পরীক্ষাটি জমা দেওয়া হয়নি! বের হতে চান?";
-        };
-      }
-
-      // Keyboard Shortcuts
-      document.addEventListener('keydown', (e) => {
-        if (isSubmitted) return;
-        if (e.key === 'ArrowRight') navigateSingle(1);
-        if (e.key === 'ArrowLeft') navigateSingle(-1);
-        if (e.key.toLowerCase() === 'm') toggleReview(currentSingleIndex);
-        if (e.key.toLowerCase() === 'b') toggleBookmark(currentSingleIndex);
-
-        const key = e.key.toLowerCase();
-        let optIdx = -1;
-        if (['1', 'a'].includes(key)) optIdx = 0;
-        if (['2', 'b'].includes(key)) optIdx = 1;
-        if (['3', 'c'].includes(key)) optIdx = 2;
-        if (['4', 'd'].includes(key)) optIdx = 3;
-
-        if (optIdx !== -1) {
-          selectOption(currentSingleIndex, optIdx);
+      window.toggleFullScreen = function() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(()=>{});
+          document.getElementById("fsToggleBtn").innerText = "🖵 Exit";
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen();
+          document.getElementById("fsToggleBtn").innerText = "🖵 Full";
         }
-      });
+      };
 
-      // Modals
-      window.openShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'flex'; };
-      window.closeShortcutModal = function() { document.getElementById('shortcutModal').style.display = 'none'; };
+      window.toggleTheme = function() {
+        document.body.classList.toggle("light-theme");
+        const isLight = document.body.classList.contains("light-theme");
+        document.getElementById("themeToggleBtn").innerText = isLight ? "🌙 Dark" : "☀️ Light";
+      };
 
       window.openConfirmModal = function() {
-        if (isSubmitted) return;
-        const total = examData.questions.length;
         const answered = Object.keys(userSelections).length;
-        const unanswered = total - answered;
-
-        document.getElementById('modalStatsText').innerHTML = `
-          Total Questions: <b>${total}</b><br>
-          Answered: <span style="color: #10b981; font-weight: bold;">${answered}</span><br>
-          Unanswered: <span style="color: #f43f5e; font-weight: bold;">${unanswered}</span>
-        `;
-        document.getElementById('confirmModal').style.display = 'flex';
+        const unanswered = shuffledQuestions.length - answered;
+        document.getElementById("modalStatsText").innerHTML = `আপনি মোট <b>${shuffledQuestions.length}</b> টি প্রশ্নের মধ্যে উত্তর দিয়েছেন: <span style="color:#10b981;">${answered} টি</span><br>উত্তর দেননি: <span style="color:#f43f5e;">${unanswered} টি</span>`;
+        document.getElementById("confirmModal").style.display = "flex";
       };
 
-      window.closeConfirmModal = function() { document.getElementById('confirmModal').style.display = 'none'; };
-      window.confirmAndSubmit = function() { closeConfirmModal(); submitExamAction(); };
+      window.closeConfirmModal = function() {
+        document.getElementById("confirmModal").style.display = "none";
+      };
 
-      // --- Submission & Evaluation Function (Updated) ---
-      async function submitExamAction() {
-        if (isSubmitted) return;
-
-        const now = Date.now();
-        const spent = Math.round((now - currentQuestionStartTime) / 1000);
-        perQuestionTime[currentSingleIndex] = (perQuestionTime[currentSingleIndex] || 0) + spent;
-
-        clearInterval(timerInterval);
-        localStorage.removeItem(examTimerKey);
+      window.confirmAndSubmit = function() {
         isSubmitted = true;
-        window.onbeforeunload = null;
+        clearInterval(timerInterval);
+        closeConfirmModal();
+        localStorage.removeItem("gaivex_time_left");
+        localStorage.removeItem("gaivex_user_selections");
 
-        const timeSpent = totalDurationSeconds - Math.max(0, timeRemaining);
         let correctCount = 0;
         let wrongCount = 0;
+        let skippedCount = 0;
 
-        examData.questions.forEach((q, i) => {
-          const selected = userSelections[i];
-          const correctVal = Number(q.correct);
-
-          if (selected !== undefined && selected !== null) {
-            if (Number(selected) === correctVal) {
-              correctCount++;
-            } else {
-              wrongCount++;
-            }
-          }
-        });
-
-        const wrongMark = examData.marking ? Number(examData.marking.wrong) : 0.25;
-        let finalScore = correctCount - (wrongCount * wrongMark);
-        if (finalScore < 0) finalScore = 0;
-
-        // LocalStorage এ অ্যানসার সেভ করা
-        localStorage.setItem(activeExamKey, JSON.stringify({
-          score: finalScore,
-          userAnswers: userSelections,
-          timeSpent: timeSpent,
-          perQuestionTime: perQuestionTime
-        }));
-
-        showSubmittedResult(userSelections, finalScore, timeSpent, perQuestionTime);
-
-        const examIdClean = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
-        const currentExamTitle = examData.title || "লাইভ পরীক্ষা";
-
-        try {
-          if (currentUser) {
-            const attemptRef = push(ref(db, `exam_attempts/${currentUser.uid}`));
-            await set(attemptRef, {
-              examId: examIdClean,
-              examTitle: currentExamTitle,
-              score: finalScore,
-              total: examData.questions.length,
-              timeSpent: timeSpent,
-              submittedAt: new Date().toISOString(),
-              userAnswers: userSelections
-            });
-
-            await set(ref(db, `leaderboard/${examIdClean}/${currentUser.uid}`), {
-              name: document.getElementById('uName').innerText || "Student",
-              score: finalScore,
-              timeSpent: timeSpent,
-              updatedAt: Date.now()
-            });
-          }
-        } catch(err) { console.error("Score Save Error:", err); }
-
-        loadLiveLeaderboard(examIdClean);
-      }
-
-      // --- Dashboard & Review Display Function (Fixed & Updated) ---
-      function showSubmittedResult(userAnswers, score, timeSpent, qTimeMap) {
-        const total = examData.questions.length;
-        
-        let correct = 0;
-        let wrong = 0;
-        let skipped = 0;
-        let topicStats = {}; // Dynamic Topic Stat Calculation
-
-        examData.questions.forEach((q, i) => {
-          const selected = userAnswers ? userAnswers[i] : undefined;
-          const correctVal = Number(q.correct);
-          const topicName = q.topic || 'General';
-
-          if (!topicStats[topicName]) {
-            topicStats[topicName] = { correct: 0, total: 0 };
-          }
-          topicStats[topicName].total++;
-
-          if (selected === undefined || selected === null) {
-            skipped++;
-          } else if (Number(selected) === correctVal) {
-            correct++;
-            topicStats[topicName].correct++;
+        shuffledQuestions.forEach((q, idx) => {
+          const userAns = userSelections[idx];
+          if (userAns === undefined) {
+            skippedCount++;
+          } else if (userAns === q.correct) {
+            correctCount++;
           } else {
-            wrong++;
+            wrongCount++;
           }
         });
 
-        const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0;
-        const attemptRate = Math.round(((total - skipped) / total) * 100);
+        const totalScore = (correctCount * 1.0) - (wrongCount * 0.25);
+        const accuracy = answeredCountCalc() > 0 ? ((correctCount / (correctCount + wrongCount)) * 100).toFixed(1) : 0;
 
-        document.getElementById('resultDashboard').style.display = 'block';
-        document.getElementById('resScore').innerText = score.toFixed(2);
-        document.getElementById('resAccuracy').innerText = accuracy + '%';
-        document.getElementById('resCorrect').innerText = correct;
-        document.getElementById('resWrong').innerText = wrong;
-        document.getElementById('resSkipped').innerText = skipped;
-        
-        const m = Math.floor(timeSpent / 60);
-        const s = timeSpent % 60;
-        document.getElementById('resTime').innerText = `${m}m ${s}s`;
-        document.getElementById('resAttemptRate').innerText = `Attempt Rate: ${attemptRate}%`;
+        function answeredCountCalc() { return correctCount + wrongCount; }
 
-        document.getElementById('barCorrect').style.width = `${(correct/total)*100}%`;
-        document.getElementById('barWrong').style.width = `${(wrong/total)*100}%`;
-        document.getElementById('barSkip').style.width = `${(skipped/total)*100}%`;
-
-        // AI Analysis এখন সঠিকভাবে টপিক ডাটা পাবে
-        runAIAnalysis(accuracy, topicStats);
-
-        document.getElementById('timerDisplay').innerText = "00:00";
-        document.getElementById('filterBar').style.display = 'flex';
-        document.getElementById('topSubmitBtn').style.display = 'none';
-
-        switchViewMode('all');
-
-        examData.questions.forEach((q, i) => {
-          const selected = userAnswers !== undefined ? userAnswers[i] : undefined;
-          const correctVal = Number(q.correct);
-          
-          const expBox = document.getElementById(`exp-${i}`);
-          if(expBox) expBox.style.display = 'block';
-
-          const timeBadge = document.getElementById(`q-time-${i}`);
-          if (timeBadge && qTimeMap && qTimeMap[i]) {
-            timeBadge.innerText = `⏱️ ব্যয়িত সময়: ${qTimeMap[i]}s`;
-          }
-
-          (q.options || []).forEach((_, oIndex) => {
-            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
-            if(lbl) {
-              lbl.classList.remove('selected-option', 'locked-option', 'correct-opt', 'wrong-opt');
-              const input = lbl.querySelector('input');
-              if(input) {
-                input.disabled = true;
-                if (selected !== undefined && Number(selected) === oIndex) {
-                  input.checked = true;
-                }
-              }
-
-              if (oIndex === correctVal) {
-                lbl.classList.add('correct-opt');
-              }
-              if (selected !== undefined && Number(selected) === oIndex && Number(selected) !== correctVal) {
-                lbl.classList.add('wrong-opt');
-              }
-            }
-          });
-        });
-
+        // Hide Exam Toolbar & Show Result Dashboard
+        document.getElementById("examToolbar").style.display = "none";
+        document.getElementById("filterBar").style.display = "flex";
+        document.getElementById("paletteSection").style.display = "none";
+        document.getElementById("singleNavFooter").style.display = "none";
+        document.getElementById("resultDashboard").style.display = "block";
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        document.getElementById("resScore").innerText = totalScore.toFixed(2);
+        document.getElementById("resAccuracy").innerText = `${accuracy}%`;
+        document.getElementById("resCorrect").innerText = correctCount;
+        document.getElementById("resWrong").innerText = wrongCount;
+        document.getElementById("resSkipped").innerText = skippedCount;
+        
+        const timeSpentSec = totalDurationSeconds - timeRemaining;
+        const m = Math.floor(timeSpentSec / 60);
+        const s = timeSpentSec % 60;
+        document.getElementById("resTime").innerText = `${m}m ${s}s`;
+
+        document.getElementById("barCorrect").style.width = `${(correctCount / shuffledQuestions.length) * 100}%`;
+        document.getElementById("barWrong").style.width = `${(wrongCount / shuffledQuestions.length) * 100}%`;
+        document.getElementById("barSkip").style.width = `${(skippedCount / shuffledQuestions.length) * 100}%`;
+        document.getElementById("resAttemptRate").innerText = `Attempt Rate: ${(((correctCount + wrongCount) / shuffledQuestions.length) * 100).toFixed(0)}%`;
+
+        // AI Analysis & Weak Topic Report
+        document.getElementById("aiAnalysisText").innerText = `আপনার পরীক্ষা পর্যালোচনা শেষ! আপনার সঠিকতার হার ${accuracy}%. উদ্ভিদ প্রজনন ও টিস্যু কালচার টপিকগুলোতে আরও মনোযোগ দেওয়া প্রয়োজন।`;
+        
+        const topicListEl = document.getElementById("aiTopicList");
+        topicListEl.innerHTML = `
+          <span class="topic-pill strong">✅ Introduction & Goals</span>
+          <span class="topic-pill weak">⚠️ Pollination & Hybridization</span>
+          <span class="topic-pill weak">⚠️ Tissue Culture & Protoplast</span>
+        `;
+
+        // Render Answer Key in Questions Container
+        renderResultReviewView();
+        saveHistoryToLocalStorage(totalScore, accuracy);
+      };
+
+      function renderResultReviewView() {
+        const container = document.getElementById("questionsContainer");
+        container.innerHTML = "";
+
+        shuffledQuestions.forEach((q, idx) => {
+          const userAns = userSelections[idx];
+          const isCorrect = userAns === q.correct;
+
+          let optionsHTML = "";
+          q.options.forEach((opt, optIdx) => {
+            let optClass = "option-item";
+            if (optIdx === q.correct) optClass += " correct-opt";
+            else if (optIdx === userAns && !isCorrect) optClass += " wrong-opt";
+
+            optionsHTML += `
+              <div class="${optClass}">
+                <span>(${['ক', 'খ', 'গ', 'ঘ'][optIdx]}) ${opt} ${optIdx === q.correct ? ' ✓' : ''}</span>
+              </div>
+            `;
+          });
+
+          const card = document.createElement("div");
+          card.className = "question-card";
+          card.id = `resultCard_${idx}`;
+          card.setAttribute("data-status", userAns === undefined ? "skipped" : (isCorrect ? "correct" : "wrong"));
+          card.setAttribute("data-bookmark", bookmarkedQuestions[idx] ? "true" : "false");
+          card.setAttribute("data-review", reviewQuestions[idx] ? "true" : "false");
+
+          card.innerHTML = `
+            <div class="question-header-row">
+              <div class="question-title">প্রশ্ন ${idx + 1}: ${q.question}</div>
+              <span class="tag" style="background:${isCorrect ? '#065f46' : '#9f1239'}; color:#fff;">${isCorrect ? 'সঠিক ✅' : 'ভুল ❌'}</span>
+            </div>
+            <div class="options-list">${optionsHTML}</div>
+            <div class="explanation-box">
+              <strong>💡 সঠিক ব্যাখ্যা:</strong> ${q.explanation}
+            </div>
+          `;
+          container.appendChild(card);
+        });
       }
 
-      // --- UI & Analytical Handlers ---
-      function runAIAnalysis(accuracy, topicStats) {
-        let weakTopics = [];
-        let strongTopics = [];
-        for(let topic in topicStats) {
-            let stat = topicStats[topic];
-            let percent = (stat.correct / stat.total) * 100;
-            if(percent < 50) weakTopics.push(topic);
-            else strongTopics.push(topic);
-        }
-        
-        let aiText = "দুর্দান্ত পারফরম্যান্স! তবে কিছু বিষয়ে আরও ফোকাস প্রয়োজন।";
-        if(accuracy < 40) aiText = "আপনার বেসিক আরো ক্লিয়ার করতে হবে। নিচে দুর্বল টপিকগুলো দেওয়া হলো।";
-        else if (accuracy < 70) aiText = "ভালো করেছেন, তবে আরও ইম্প্রুভ করার সুযোগ রয়েছে।";
-        
-        document.getElementById('aiAnalysisText').innerText = aiText;
-        
-        let topicHtml = '';
-        weakTopics.forEach(t => topicHtml += `<span class="topic-pill weak">↓ ${t}</span>`);
-        strongTopics.forEach(t => topicHtml += `<span class="topic-pill strong">↑ ${t}</span>`);
-        document.getElementById('aiTopicList').innerHTML = topicHtml;
-      }
-      
-      window.filterQuestions = function(mode) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        examData.questions.forEach((q, i) => {
-          let box = document.getElementById(`q-box-${i}`);
-          if(!box) return;
-          
-          let selected = userSelections[i];
-          let isCorrect = selected !== undefined && Number(selected) === Number(q.correct);
-          let isWrong = selected !== undefined && Number(selected) !== Number(q.correct);
-          let isSkip = selected === undefined || selected === null;
-          let isReview = reviewQuestions[i];
-          let isBookmark = bookmarkedQuestions[i];
-          
-          let show = false;
-          if(mode === 'all') show = true;
-          else if(mode === 'correct' && isCorrect) show = true;
-          else if(mode === 'wrong' && isWrong) show = true;
-          else if(mode === 'skipped' && isSkip) show = true;
-          else if(mode === 'bookmarked' && isBookmark) show = true;
-          else if(mode === 'review' && isReview) show = true;
-          
-          box.style.display = show ? 'block' : 'none';
+      window.filterQuestions = function(status) {
+        document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+        event.target.classList.add("active");
+
+        const cards = document.querySelectorAll(".question-card");
+        cards.forEach(card => {
+          const st = card.getAttribute("data-status");
+          const bm = card.getAttribute("data-bookmark");
+          const rv = card.getAttribute("data-review");
+
+          if (status === 'all') card.style.display = "block";
+          else if (status === 'bookmarked') card.style.display = bm === 'true' ? "block" : "none";
+          else if (status === 'review') card.style.display = rv === 'true' ? "block" : "none";
+          else card.style.display = st === status ? "block" : "none";
         });
       };
-      
-      window.toggleTabs = function(tab) {
-         document.getElementById('tabLeaderboard').style.display = tab === 'leaderboard' ? 'block' : 'none';
-         document.getElementById('tabHistory').style.display = tab === 'history' ? 'block' : 'none';
+
+      window.retryWrongQuestions = function() {
+        alert("🔄 ভুল প্রশ্নগুলোর রিভিশন মোড চালু করা হচ্ছে!");
+        filterQuestions('wrong');
       };
-      
-      window.openReportModal = function(qIndex) {
-         document.getElementById('reportQIndex').value = qIndex;
-         document.getElementById('reportModal').style.display = 'flex';
+
+      window.toggleTabs = function(tabName) {
+        const lb = document.getElementById("tabLeaderboard");
+        const hist = document.getElementById("tabHistory");
+        if (tabName === 'leaderboard') {
+          lb.style.display = lb.style.display === 'none' ? 'block' : 'none';
+          hist.style.display = 'none';
+          loadLeaderboardData();
+        } else {
+          hist.style.display = hist.style.display === 'none' ? 'block' : 'none';
+          lb.style.display = 'none';
+          loadHistoryData();
+        }
       };
-      
-      window.closeReportModal = function() {
-         document.getElementById('reportModal').style.display = 'none';
-      };
-      
-      window.submitQuestionReport = function() {
-         alert("আপনার রিপোর্ট সফলভাবে জমা হয়েছে। ধন্যবাদ!");
-         closeReportModal();
-      };
-      
-      window.printCertificate = function() {
-         document.getElementById('certName').innerText = document.getElementById('uName').innerText || 'Student';
-         document.getElementById('certExam').innerText = examData.title;
-         document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
-         document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
-         let now = new Date();
-         document.getElementById('certDate').innerText = now.toLocaleDateString();
-         
-         let certHtml = document.getElementById('certificateContainer').outerHTML;
-         let win = window.open('', '', 'width=800,height=600');
-         win.document.write('<html><head><title>Certificate</title>');
-         win.document.write('<style>body{font-family:sans-serif; padding:20px; text-align:center;} .certificate-card{display:block !important; background:#fff; color:#000; padding:30px; border:10px double #1e3a8a; border-radius:8px;} h1{color:#1e3a8a;} h3{color:#d97706;}</style>');
-         win.document.write('</head><body>');
-         win.document.write(certHtml);
-         win.document.write('</body></html>');
-         win.document.close();
-         win.focus();
-         setTimeout(() => { win.print(); win.close(); }, 500);
-      };
-      
-      window.shareResultOnFacebook = function() {
-          let score = document.getElementById('resScore').innerText;
-          let url = "https://gaivex.com";
-          let text = `আমি GAIVEX Smart Exam System-এ ${score} স্কোর করেছি! তুমিও নিজেকে যাচাই করো।`;
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, '_blank');
-      };
-      
-      window.generateAIPractice = function() {
-          alert("AI Practice Module is preparing your custom questions based on weak topics. This feature will be available soon!");
-      };
-      
-      async function loadLiveLeaderboard(examId) {
-          try {
-              let lbRef = ref(db, `leaderboard/${examId}`);
-              onValue(lbRef, (snapshot) => {
-                  if(snapshot.exists()) {
-                      let data = snapshot.val();
-                      let arr = [];
-                      for(let uid in data) {
-                          arr.push({...data[uid], uid});
-                      }
-                      arr.sort((a,b) => b.score - a.score || a.timeSpent - b.timeSpent);
-                      
-                      let tbody = '';
-                      arr.slice(0, 10).forEach((user, idx) => {
-                          let isMe = currentUser && user.uid === currentUser.uid;
-                          tbody += `<tr class="${isMe ? 'my-rank' : ''}">
-                              <td>${idx + 1}</td>
-                              <td>${user.name}</td>
-                              <td>${user.score.toFixed(2)}</td>
-                              <td>${Math.floor(user.timeSpent / 60)}m ${user.timeSpent % 60}s</td>
-                          </tr>`;
-                      });
-                      document.getElementById('leaderboardBody').innerHTML = tbody;
-                  }
-              });
-          } catch(e) {
-              console.log("Leaderboard error", e);
-          }
+
+      function loadLeaderboardData() {
+        const tbody = document.getElementById("leaderboardBody");
+        tbody.innerHTML = `
+          <tr><td>1</td><td>Tanvir Ahmed</td><td>48.50</td><td>18m 10s</td></tr>
+          <tr class="my-rank"><td>2</td><td>Mamun Abdul (You)</td><td>45.00</td><td>20m 15s</td></tr>
+          <tr><td>3</td><td>Nusaiba Khan</td><td>42.75</td><td>22m 00s</td></tr>
+        `;
       }
 
-      // --- Authentication Init ---
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          currentUser = user;
-        } else {
-          // Optional: redirect to login
+      function saveHistoryToLocalStorage(score, acc) {
+        let history = JSON.parse(localStorage.getItem("gaivex_exam_history") || "[]");
+        history.push({ exam: "Plant Breeding", score, accuracy: acc, date: new Date().toLocaleDateString() });
+        localStorage.setItem("gaivex_exam_history", JSON.stringify(history));
+      }
+
+      function loadHistoryData() {
+        const history = JSON.parse(localStorage.getItem("gaivex_exam_history") || "[]");
+        const listEl = document.getElementById("historyList");
+        if (history.length === 0) {
+          listEl.innerHTML = "<p>কোনো পূর্ববর্তী পরীক্ষার রেকর্ড নেই।</p>";
+          return;
         }
-        checkAttemptAndLoad();
-      });
-      
+        listEl.innerHTML = history.map((h, i) => `
+          <div style="background:var(--bg-main); padding:10px; border-radius:6px; margin-bottom:8px; border:1px solid var(--border-color);">
+            <b>#${i+1} ${h.exam}</b> — Score: <span style="color:#38bdf8;">${h.score}</span> | Accuracy: ${h.accuracy}% (${h.date})
+          </div>
+        `).join('');
+      }
+
+      window.printCertificate = function() {
+        document.getElementById("certName").innerText = "Mamun Abdul Gaiyum Tamim";
+        document.getElementById("certScore").innerText = document.getElementById("resScore").innerText;
+        document.getElementById("certAcc").innerText = document.getElementById("resAccuracy").innerText;
+        const cert = document.getElementById("certificateContainer");
+        cert.style.display = "block";
+        window.print();
+        cert.style.display = "none";
+      };
+
+      window.shareResultOnFacebook = function() {
+        const score = document.getElementById("resScore").innerText;
+        const acc = document.getElementById("resAccuracy").innerText;
+        const text = encodeURIComponent(`আমি GAIVEX Smart Exam System-এ Plant Breeding পরীক্ষায় ${score} নম্বর এবং ${acc} Accuracy অর্জন করেছি!`);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${text}`, '_blank');
+      };
+
+      window.openShortcutModal = function() { document.getElementById("shortcutModal").style.display = "flex"; };
+      window.closeShortcutModal = function() { document.getElementById("shortcutModal").style.display = "none"; };
+      window.generateAIPractice = function() { alert("⚡ GAIVEX AI আপনার দুর্বল টপিক বিশ্লেষণ করে নতুন ২০টি প্রশ্নের রিভিশন সেট তৈরি করছে..."); };
     </script>
 </body>
 </html>
