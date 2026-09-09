@@ -246,7 +246,7 @@
         <!-- Sticky Timer Bar -->
         <div class="timer-header">
             <div class="timer-info">
-                <h3 id="examTitle">পরীক্ষা লোড হচ্ছে...</h3>
+                <h3 id="examTitle">Exam Loading...</h3>
                 <div class="timer-box" id="timerDisplay">00:00</div>
             </div>
             <button type="button" class="btn-top-submit" id="topSubmitBtn" onclick="openConfirmModal()">Submit Exam 🚀</button>
@@ -256,7 +256,7 @@
         <div class="result-dashboard" id="resultDashboard">
             <div class="dash-header">
                 <h2 style="color: #38bdf8;">🏆 পরীক্ষার পারফরম্যান্স ড্যাশবোর্ড</h2>
-                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (Admission Physics) — Live Exam Result</p>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;" id="dashSubtitle">Plant Breeding (উদ্ভিদ প্রজনন) — Live Exam Result</p>
                 
                 <div class="stats-grid">
                     <div class="stat-card"><div class="num" id="resScore">0.00</div><div class="lbl">মোট নম্বর</div></div>
@@ -369,7 +369,7 @@
         <!-- Single Question Navigation Buttons -->
         <div class="single-nav-footer" id="singleNavFooter">
             <button type="button" class="nav-btn" id="prevQBtn" onclick="navigateSingle(-1)">← Previous</button>
-            <span id="singleProgress" style="font-size: 13px; font-weight: bold; color: #38bdf8;">Question 1 / 60</span>
+            <span id="singleProgress" style="font-size: 13px; font-weight: bold; color: #38bdf8;">Question 1 / 50</span>
             <button type="button" class="nav-btn" id="nextQBtn" onclick="navigateSingle(1)">Next →</button>
         </div>
 
@@ -377,7 +377,7 @@
         <div class="palette-section" id="paletteSection">
             <div class="palette-title">
                 <span>প্রশ্ন প্যালেট (Smart Navigation)</span>
-                <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৬০</span>
+                <span id="answeredCount" style="font-size: 13px; color: #10b981;">০/৫০</span>
             </div>
             <div class="palette-grid" id="paletteGrid"></div>
             <div class="palette-legend">
@@ -444,7 +444,7 @@
         <h3>Certificate of Participation & Performance</h3>
         <p>This is awarded to</p>
         <h2 id="certName" style="color:#1e3a8a; margin: 10px 0;">Student Name</h2>
-        <p>for completing the live examination <b><span id="certExam">Periodic Motion</span></b></p>
+        <p>for completing the live examination <b><span id="certExam">Plant Breeding</span></b></p>
         <br>
         <p>Score Obtained: <b><span id="certScore">00</span></b> | Accuracy: <b><span id="certAcc">00%</span></b></p>
         <p>Date: <span id="certDate">09/09/2026</span></p>
@@ -491,12 +491,12 @@
       // Global State Management
       let currentUser = null;
       let timerInterval = null;
-      let totalDurationSeconds = 1800; // 30 mins for 60 Qs
-      let timeRemaining = 1800;
+      let totalDurationSeconds = 1500;
+      let timeRemaining = 1500;
       let startTimeStamp = Date.now();
-      let activeExamKey = "gaivex_exam_physics_periodic";
-      let examTimerKey = "gaivex_timer_physics_periodic";
-      let autoSaveKey = "gaivex_autosave_physics_periodic";
+      let activeExamKey = "gaivex_exam_default";
+      let examTimerKey = "gaivex_timer_default";
+      let autoSaveKey = "gaivex_autosave_answers";
       let userSelections = {};
       let bookmarkedQuestions = {};
       let reviewQuestions = {};
@@ -537,71 +537,63 @@
         if (navigator.vibrate) navigator.vibrate(30);
       }
 
-      // ⚡ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (60 Admission MCQ)
+      // 🌾 50 Plant Breeding (উদ্ভিদ প্রজনন) Exam Questions
       const defaultExamData = {
-        id: "physics_periodic_motion_60",
-        title: "⚡ পদার্থবিজ্ঞান: পর্যায়বৃত্ত গতি (Admission Special) 🌀",
-        duration: 30,
+        id: "plant_breeding_mcq_50_v2",
+        title: "🌾 উদ্ভিদ প্রজনন (Plant Breeding) 🎋",
+        duration: 25,
         marking: { correct: 1, wrong: 0.25 },
         questions: [
-          { question: "নিচের কোনটি পর্যায়বৃত্ত গতির (Periodic Motion) উদাহরণ নয়?", options: ["ঘড়ির কাটার গতি", "সূর্যের চারদিকে পৃথিবীর আবর্তন", "সরল দোলকের গতি", "বাতাসে নিক্ষিপ্ত পাথরের গতি"], correct: 3, topic: "Basic Concepts", difficulty: "easy", explanation: "বাতাসে নিক্ষিপ্ত পাথরের গতি একটি সরলরৈখিক বা বক্রগতির উদাহরণ, এটি নির্দিষ্ট সময় পর পর পুনরাবৃত্তি হয় না তাই এটি পর্যায়বৃত্ত গতি নয়।", concept: "Periodic Motion Definition", shortcut: "Repeated Motion = Periodic", mistake: "সব গতির ক্ষেত্রে ঘড়ির কাটার সাথে মেলানো", tip: "নির্দিষ্ট সময় পর পর নির্দিষ্ট দিক থেকে অতিক্রম করাই পর্যায়বৃত্ত গতি।" },
-          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কোনো কণার ত্বরণ ও স্মরণের মধ্যে সম্পর্ক কোনটি?", options: ["$a \\propto x$", "$a \\propto -x$", "$a \\propto \\frac{1}{x}$", "$a \\propto x^2$"], correct: 1, topic: "SHM Kinematics", difficulty: "easy", explanation: "সরল ছন্দিত গতির ক্ষেত্রে ত্বরণ স্মরণের সমানুপাতিক কিন্তু বিপরীতমুখী, অর্থাৎ $a = -\\omega^2 x$ বা $a \\propto -x$।", concept: "SHM Acceleration", shortcut: "a = -ω²x", mistake: "ঋণাত্মক চিহ্ন বাদ দেওয়া", tip: "ঋণাত্মক চিহ্নটি নির্দেশ করে ত্বরণ সর্বদা সাম্যাবস্থানের দিকেমুখী।" },
-          { question: "সরল দোলকের কার্যকর দৈর্ঘ্য ৪ গুণ বাড়ালে এর দোলনকাল কত গুণ হবে?", options: ["২ গুণ", "৪ গুণ", "$\\sqrt{2}$ গুণ", "অর্ধেক"], correct: 0, topic: "Simple Pendulum", difficulty: "medium", explanation: "$T = 2\\pi \\sqrt{L/g}$। সুতরাং $L$ ৪ গুণ হলে $T$ হবে $\\sqrt{4} = 2$ গুণ।", concept: "Pendulum Length & Time Period", shortcut: "T ∝ √L", mistake: "৪ গুণ লিখে ফেলা", tip: "দৈর্ঘ্য ৪ গুণ হলে দোলনকাল দ্বিগুণ হয়।" },
-          { question: "একটি সেকেন্ড দোলকের কার্যকর দৈর্ঘ্য পৃথিবীর কেন্দ্রে নিয়ে গেলে এর দোলনকাল কত হবে?", options: ["২ সেকেন্ড", "শূন্য", "অসীম (Infinite)", "১ সেকেন্ড"], correct: 2, topic: "Simple Pendulum", difficulty: "hard", explanation: "পৃথিবীর কেন্দ্রে অভিকর্ষজ ত্বরণ $g = 0$। সূত্র $T = 2\\pi \\sqrt{L/g}$ অনুযায়ী $g = 0$ হলে দোলনকাল অসীম হয়। অর্থাৎ দোলকটি আর দুলবে না।", concept: "Gravity at Earth Center", shortcut: "g = 0 ⟹ T = ∞", mistake: "শূন্য ধরে নেওয়া", tip: "কেন্দ্রের দিকে বা মহাশূন্যে দোলক অচল হয়ে যায়।" },
-          { question: "সরল ছন্দিত স্পন্দন গতিসম্পন্ন কণার সর্বোচ্চ বেগ কত?", options: ["$v_{max} = \\omega x$", "$v_{max} = \\omega A$", "$v_{max} = \\frac{A}{\\omega}$", "$v_{max} = \\omega^2 A$"], correct: 1, topic: "SHM Velocity", difficulty: "easy", explanation: "সর্বোচ্চ সরণ বা বিস্তার $x = A$ হলে বেগ সর্বোচ্চ হয়, যার মান $v_{max} = \\omega A$।", concept: "Maximum Velocity in SHM", shortcut: "v_max = ωA", mistake: "ωx ব্যবহার করা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ এবং বিস্তার অবস্থানে বেগ শূন্য।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার মোট শক্তির সমীকরণ কোনটি?", options: ["$E = \\frac{1}{2}m\\omega^2 A^2$", "$E = m\\omega^2 A$", "$E = \\frac{1}{2}m\\omega A^2$", "$E = m\\omega A$"], correct: 0, topic: "SHM Energy", difficulty: "medium", explanation: "সরল ছন্দিত গতিতে মোট শক্তি গতিশক্তি ও স্থিতিশক্তির যোগফল, যার মান ধ্রুবক এবং $E = \\frac{1}{2}m\\omega^2 A^2$।", concept: "Total Energy of SHM", shortcut: "E = ½ mω²A²", mistake: "হাফ বাদ দেওয়া", tip: "মোট শক্তি বিস্তারের বর্গের সমানুপাতিক।" },
-          { question: "একটি স্প্রিংকে টেনে লম্বা করলে এর মধ্যে কোন শক্তি সঞ্চিত হয়?", options: ["গতিশক্তি", "স্থিতিশক্তি (Potential Energy)", "চৌম্বক শক্তি", "রাসায়নিক শক্তি"], correct: 1, topic: "Spring Oscillation", difficulty: "easy", explanation: "স্প্রিংকে প্রসারিত বা সংকুচিত করলে কৃতকাজ স্থিতিশক্তি হিসেবে সঞ্চিত হয় ($U = \\frac{1}{2}kx^2$)।", concept: "Spring Potential Energy", shortcut: "Elastic PE", mistake: "গতিশক্তি ভাবা", tip: "স্প্রিংয়ের ক্ষেত্রে বিভব শক্তি ও স্থিতিশক্তি একই।" },
-          { question: "কোন তাপমাত্রায় সেকেন্ড দোলকের ঘড়ি সঠিক সময় দেয়?", options: ["$0^\\circ C$", "$4^\\circ C$", "$20^\\circ C$", "নির্দিষ্ট কোনো তাপমাত্রা নেই (Room Temp/Standard)"], correct: 3, topic: "Temperature Effect on Pendulum", difficulty: "medium", explanation: "ঘড়ি প্রস্তুতকারক নির্দিষ্ট কোনো আদর্শ তাপমাত্রায় (সাধারণত ২০° সেলসিয়াস) সেকেন্ড দোলক তৈরি করেন, যা পরিবেশভেদে পরিবর্তিত হয়।", concept: "Standard Clock Temperature", shortcut: "Standard Calibration Temp", mistake: "৪ ডিগ্রি সেলসিয়াস ভাবা", tip: "তাপমাত্রা বাড়লে দোলক দীর্ঘ হয় এবং ঘড়ি স্লো হয়ে যায়।" },
-          { question: "একটি স্প্রিং ধ্রুবক $k$ বিশিষ্ট স্প্রিংকে সমান দুই টুকরো করলে প্রতি টুকরার স্প্রিং ধ্রুবক কত হবে?", options: ["$k$", "$2k$", "$k/2$", "$4k$"], correct: 1, topic: "Spring Constant", difficulty: "hard", explanation: "স্প্রিংয়ের দৈর্ঘ্য অর্ধেক হলে স্প্রিং ধ্রুবক দ্বিগুণ হয়, কারণ স্প্রিং ধ্রুবক দৈর্ঘ্যের ব্যস্তানুপাতিক ($k \\propto 1/L$)।", concept: "Spring Splitting", shortcut: "Length halved = Constant doubled (2k)", mistake: "অর্ধেক (k/2) ভেবে বসা", tip: "টুকরো করলে প্রতি অংশের দৈর্ঘ্য কমে তাই শক্তিমত্তা বাড়ে।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার সাম্যাবস্থানে ত্বরণ কত?", options: ["সর্বোচ্চ", "শূন্য (Zero)", "অসীম", "মধ্যম মানের"], correct: 1, topic: "SHM Kinematics", difficulty: "easy", explanation: "যেহেতু $a = -\\omega^2 x$, সাম্যাবস্থানে সরণ $x = 0$ হওয়ায় ত্বরণও শূন্য হয়।", concept: "Acceleration at Mean Position", shortcut: "x = 0 ⟹ a = 0", mistake: "সর্বোচ্চ মনে করা", tip: "সাম্যাবস্থানে বেগ সর্বোচ্চ কিন্তু ত্বরণ ও বল শূন্য।" },
-          { question: "সরল দোলকের সাম্যাবস্থান থেকে বিস্তার অবস্থানে পৌঁছাতে পর্যায়কালের কত সময় লাগে?", options: ["$T$", "$T/2$", "$T/4$", "$2T$"], correct: 2, topic: "Simple Pendulum Time", difficulty: "medium", explanation: "একটি পূর্ণ কম্পন সম্পন্ন করতে সময় লাগে $T$। সাম্যাবস্থান থেকে চরম অবস্থানে যেতে সময় লাগে পূর্ণ কম্পনের চারভাগের এক ভাগ বা $T/4$।", concept: "Quarter Period in SHM", shortcut: "Mean to Extremity = T/4", mistake: "T/2 ভাবা", tip: "পূর্ণ চক্রে ৪টি সমান দূরত্ব অতিক্রম করতে হয়।" },
-          { question: "কোন ধরনের তরঙ্গে কণাগুলোর কম্পন গতির দিকের সাথে লম্বভাবে সম্পন্ন হয়?", options: ["অনুদৈর্ঘ্য তরঙ্গ", "আড়াআড়ি বা অনুপ্রস্থ তরঙ্গ (Transverse Wave)", "শব্দ তরঙ্গ", "চাপ তরঙ্গ"], correct: 1, topic: "Wave Motion", difficulty: "easy", explanation: "যে তরঙ্গে কণার কম্পন তরঙ্গ প্রসারণের দিকের সাথে লম্বভাবে হয় তাকে অনুপ্রস্থ বা আড়াআড়ি তরঙ্গ বলে (যেমন: আলো, পানির ঢেউ)।", concept: "Transverse Wave Definition", shortcut: "Perpendicular = Transverse", mistake: "অনুদৈর্ঘ্য বলা", tip: "আলো একটি অনুপ্রস্থ তড়িৎ চৌম্বকীয় তরঙ্গ।" },
-          { question: "শব্দ তরঙ্গ বায়ুর মধ্য দিয়ে যাওয়ার সময় কোন ধরনের তরঙ্গ সৃষ্টি করে?", options: ["অনুপ্রস্থ তরঙ্গ", "অনুদৈর্ঘ্য তরঙ্গ (Longitudinal Wave)", "স্থির তরঙ্গ", "তড়িৎ চৌম্বক তরঙ্গ"], correct: 1, topic: "Wave Motion", difficulty: "easy", explanation: "শব্দ তরঙ্গে মাধ্যмы কণাগুলোর কম্পন তরঙ্গ প্রসারণের দিকের সমান্তরালে (সংকোচন ও প্রসারণ) হয়, তাই এটি অনুদৈর্ঘ্য তরঙ্গ।", concept: "Sound Wave Nature", shortcut: "Parallel = Longitudinal", mistake: "অনুপ্রস্থ ভাবা", tip: "শব্দ তরঙ্গের সঞ্চারণে সংকোচন ও বিরলীকরণ তৈরি হয়।" },
-          { question: "তরঙ্গ দীর্ঘ ($\\lambda$) এবং কম্পাঙ্ক ($f$) হলে তরঙ্গবেগ $v$ এর সঠিক সমীকরণ কোনটি?", options: ["$v = f\\lambda$", "$v = \\frac{f}{\\lambda}$", "$v = \\frac{\\lambda}{f}$", "$v = f^2\\lambda$"], correct: 0, topic: "Wave Equation", difficulty: "easy", explanation: "তরঙ্গবেগ $v = f\\lambda$ (যেখানে $f$ কম্পাঙ্ক এবং $\\lambda$ তরঙ্গদৈর্ঘ্য)।", concept: "Wave Velocity Relation", shortcut: "v = fλ", mistake: "ভাগ আকারে লেখা", tip: "মাধ্যমের প্রকৃতি পরিবর্তনে তরঙ্গবেগ পরিবর্তিত হয়।" },
-          { question: "দুটি সমমানের তরঙ্গ একই দিকে অগ্রসর হয়ে উপরিপাতনের ফলে তীব্রতা সর্বোচ্চ হলে তাকে কী বলে?", options: ["মৃত বা ধ্বংসাত্মক ব্যাতিচার", "গঠনমূলক ব্যাতিচার (Constructive Interference)", "বিপরীত দশা", "সমাবর্তন"], correct: 1, topic: "Interference", difficulty: "medium", explanation: "দশা পার্থক্য শূন্য বা জোড় পাই ($2n\\pi$) হলে গঠনমূলক ব্যাতিচার ঘটে এবং তীব্রতা সর্বোচ্চ হয়।", concept: "Constructive Interference", shortcut: "In-phase = Max Intensity", mistake: "ধ্বংসাত্মক ব্যাতিচার ভাবা", tip: "গঠনমূলক ব্যাতিচারে আলোর উজ্জ্বলতা বা শব্দের প্রাবল্য বাড়ে।" },
-          { question: "বিটের (Beat) সৃষ্টি হয় যখন সামান্য পার্থক্যের দুটি তরঙ্গ একসাথে চলে। বিট ফ্রিকোয়েন্সি বা বিট সংখ্যা কত?", options: ["$f_1 + f_2$", "$|f_1 - f_2|$", "$\\frac{f_1 f_2}{f_1 + f_2}$", "$2(f_1 - f_2)$"], correct: 1, topic: "Beats", difficulty: "easy", explanation: "প্রতি সেকেন্ডে উৎপন্ন বিট সংখ্যা দুটি উৎসের কম্পাঙ্কের পার্থক্যের সমান, অর্থাৎ $n = |f_1 - f_2|$।", concept: "Beat Frequency Formula", shortcut: "Beat = |f₁ - f₂|", mistake: "যোগফল নেওয়া", tip: "বিট সংখ্যা প্রতি সেকেন্ডে ১০ এর বেশি হলে কান আলাদা করতে পারে না।" },
-          { question: "ডপলার প্রভাব (Doppler Effect) নিচের কোনটির সাথে সম্পর্কিত?", options: ["আলো ও শব্দ উভয়ের কম্পাঙ্কের পরিবর্তন", "শুধুমাত্র আলোর বেগ", "শুধুমাত্র তরল প্রবাহ", "তাপমাত্রার পরিবর্তন"], correct: 0, topic: "Doppler Effect", difficulty: "medium", explanation: "উৎস ও শ্রোতার আপেক্ষিক গতির কারণে শব্দ বা আলোর আপাত কম্পাঙ্কের পরিবর্তনের ঘটনাকে ডপলার প্রভাব বলে।", concept: "Doppler Effect Scope", shortcut: "Relative Motion = Apparent Frequency Shift", mistake: "শুধুমাত্র শব্দ ভাবা", tip: "জ্যোতির্বিদ্যায় নক্ষত্রের গতি পরিমাপে আলোর ডপলার প্রভাব ব্যবহার হয়।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার বেগ শূন্য হয় কোথায়?", options: ["সাম্যাবস্থানে", "চরম বা বিস্তার অবস্থানে (Extremities)", "সব জায়গায় সমান", "সাম্যাবস্থান ও চরম অবস্থানের ঠিক মাঝখানে"], correct: 1, topic: "SHM Kinematics", difficulty: "easy", explanation: "চরম বা বিস্তার অবস্থানে কণার গতি দিক পরিবর্তন করে, তাই সেখানে বেগ শূন্য হয় এবং ত্বরণ সর্বোচ্চ হয়।", concept: "Velocity at Extremes", shortcut: "At A, v = 0", mistake: "সাম্যাবস্থানে শূন্য ভাবা", tip: "চরম বিন্দুতে বেগ জিরো এবং সরণ ম্যাক্সিমাম।" },
-          { question: "একটি সরল দোলকের দৈর্ঘ্য চারগুণ করলে এর কম্পাঙ্ক কত হবে?", options: ["দ্বিগুণ", "অর্ধেক (Half)", "চারগুণ", "অপরিবর্তিত থাকবে"], correct: 1, topic: "Simple Pendulum", difficulty: "medium", explanation: "যেহেতু দোলনকাল $T \\propto \\sqrt{L}$, তাই কম্পাঙ্ক $f \\propto \\frac{1}{\\sqrt{L}}$। দৈর্ঘ্য ৪ গুণ হলে কম্পাঙ্ক হবে $\\frac{1}{\\sqrt{4}} = \\frac{1}{2}$ বা অর্ধেক।", concept: "Frequency of Pendulum", shortcut: "f ∝ 1/√L", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "দৈর্ঘ্যের সাথে কম্পাঙ্কের সম্পর্ক ব্যস্তানুপাতিক।" },
-          { question: "মুক্ত কম্পনের (Free Oscillation) ক্ষেত্রে বিস্তার কেমন থাকে?", options: ["সময়ে সাথে কমতে থাকে", "ধ্রুবক বা অপরিবর্তিত থাকে", "বাড়তে থাকে", "পর্যায়ক্রমে শূন্য হয়"], correct: 1, topic: "Types of Oscillations", difficulty: "easy", explanation: "বাইরের কোনো বাধা বা বল না থাকলে আদর্শ মুক্ত কম্পনের শক্তি ও বিস্তার সর্বদা ধ্রুবক থাকে।", concept: "Free Oscillation Amplitude", shortcut: "Constant Amplitude", mistake: "কমে যাওয়া ভাবা", tip: "বাস্তব ক্ষেত্রে ঘর্ষণের কারণে এটি অবমন্দন হয়ে যায়।" },
-          { question: "অনুরণন (Resonance) কোন বিশেষ ঘটনার একটি রূপ?", options: ["ব্যাতিচারের", "সাদৃশ্যপূর্ণ বলের অধীনে লব্ধি কম্পন (Forced Oscillation max)", "ব্যতিচার ও সমাবর্তন", "পোলারায়ন"], correct: 1, topic: "Resonance", difficulty: "medium", explanation: "বাইরের পর্যায় বলের কম্পাঙ্ক বস্তুর স্বাভাবিক কম্পাঙ্কের সমান হলে বিস্তার হঠাৎ অনেক বেড়ে যায়, একে অনুনাদ বলে। এটি তীব্র পরবশ কম্পন।", concept: "Resonance Condition", shortcut: "External Frequency = Natural Frequency", mistake: "স্বাভাবিক কম্পন ভাবা", tip: "ব্রিজ পার হওয়ার সময় সৈন্যদের কুচকাওয়াজ বন্ধ রাখতে হয়।" },
-          { question: "স্থির তরঙ্গের ক্ষেত্রে দুটি পরপর নিস্পন্দ বিন্দুর (Nodes) মধ্যবর্তী দূরত্ব কত?", options: ["$\\lambda$", "$\\lambda/2$", "$\\lambda/4$", "$2\\lambda$"], correct: 1, topic: "Stationary Waves", difficulty: "medium", explanation: "স্থির তরঙ্গে দুটি পরপর নিস্পন্দ বিন্দু অথবা দুটি পরপর প্রস্পন্দ বিন্দুর মধ্যকার দূরত্ব হলো অর্ধ তরঙ্গদৈর্ঘ্য বা $\\lambda/2$।", concept: "Node Distance in Stationary Wave", shortcut: "Node to Node = λ/2", mistake: "λ/4 ভাবা", tip: "নিস্পন্দ ও প্রস্পন্দ বিন্দুর দূরত্ব হলো $\\lambda/4$।" },
-          { question: "সরল ছন্দিত স্পন্দনে গতিশক্তি ও স্থিতিশক্তির অনুপাত সমান হয় সাম্যাবস্থান থেকে কত দূরত্বে?", options: ["$x = A$", "$x = \\frac{A}{\\sqrt{2}}$", "$x = \\frac{A}{2}$", "$x = 0$"], correct: 1, topic: "SHM Energy Distribution", difficulty: "hard", explanation: "গতিশক্তি ও স্থিতিশক্তি সমান হলে $\\frac{1}{2}m\\omega^2(A^2 - x^2) = \\frac{1}{2}m\\omega^2 x^2 \\implies x = \\frac{A}{\\sqrt{2}}$।", concept: "KE equals PE in SHM", shortcut: "x = A/√2", mistake: "A/2 মনে করা", tip: "এটি একটি জনপ্রিয় এডমিশন ম্যাথমেটিক্যাল প্রশ্ন।" },
-          { question: "কোন মাধ্যমে শব্দের বেগ সবচেয়ে বেশি?", options: ["বায়ু মাধ্যম", "পানি মাধ্যম", "লোহা বা কঠিন মাধ্যম (Solid)", "শূন্যস্থান"], correct: 2, topic: "Sound Waves in Media", difficulty: "easy", explanation: "কঠিন মাধ্যমে স্থিতিস্থাপকতা অনেক বেশি থাকায় শব্দের বেগ কঠিন মাধ্যমে সবচেয়ে বেশি (লোহায় প্রায় ৫১৩ মাস/সে)।", concept: "Sound Speed by Medium", shortcut: "Solid > Liquid > Gas", mistake: "বায়ু মাধ্যম ভাবা", tip: "শূন্যস্থানে শব্দ চলতে পারে না।" },
-          { question: "একটি আদর্শ সেকেন্ড দোলকের কার্যকরী দৈর্ঘ্য কত প্রায়?", options: ["$0.5\\text{ m}$", "$0.993\\text{ m}$ বা প্রায় $1\\text{ m}$", "$2\\text{ m}$", "$9.8\\text{ m}$"], correct: 1, topic: "Simple Pendulum", difficulty: "easy", explanation: "পৃথিবী পৃষ্ঠে সেকেন্ড দোলকের (দোলনকাল ২ সেকেন্ড) কার্যকরী দৈর্ঘ্য প্রায় ৯৯.৩ সেন্টিমিটার বা ১ মিটার।", concept: "Second Pendulum Length", shortcut: "L ≈ 1 meter", mistake: "৯.৮ মিটার ভাবা", tip: "এটি ব্যবহারিক পরীক্ষার অত্যন্ত কমন প্রশ্ন।" },
-          { question: "শব্দের তীব্রতার একক নিচের কোনটি?", options: ["ওয়াট/$m^2$", "ডেসিবেল ($dB$)", "উভয়ই (Both A and B)", "হার্জ"], correct: 2, topic: "Sound Intensity", difficulty: "medium", explanation: "শব্দের তীব্রতা পরিমাপের একক W/$m^2$ এবং তীব্রতার লেভেল পরিমাপের একক হলো ডেসিবেল (dB)।", concept: "Sound Intensity Units", shortcut: "W/m² & dB", mistake: "শুধু ডেসিবেল ভাবা", tip: "সাধারণ কথোপকথন প্রায় ৬০ dB হয়ে থাকে।" },
-          { question: "সরল দোলকের গতি কোন ধরনের গতি?", options: ["পর্যায়বৃত্ত গতি কিন্তু সরল ছন্দিত নয়", "সরল ছন্দিত গতি (Simple Harmonic Motion - SHM)", "ঘূর্ণন গতি", "চলন গতি"], correct: 1, topic: "Simple Pendulum", difficulty: "medium", explanation: "কৌণিক সরণ খুব কম ($\\theta < 4^\\circ$) হলে সরল দোলকের গতিকে সরল ছন্দিত গতি হিসেবে ধরা হয়।", concept: "Pendulum as SHM", shortcut: "Small Angle = SHM", mistake: "সাধারণ পর্যায়বৃত্ত গতি বলা", tip: "বড় কোণের জন্য এটি সরল ছন্দিত থাকে না।" },
-          { question: "একটি কণার সরণ $x = A \\sin(\\omega t + \\delta)$ হলে এর আদি দশা (Initial Phase) কোনটি?", options: ["$\\omega t$", "$\\delta$", "$(\\omega t + \\delta)$", "$A$"], correct: 1, topic: "SHM Phase", difficulty: "medium", explanation: "$t = 0$ সময়ে কণার যে দশা থাকে তাকে আদি দশা বা ফেজ কনস্ট্যান্ট ($\\delta$) বলে।", concept: "Initial Phase Definition", shortcut: "At t=0, phase = δ", mistake: "ωt ভাবা", tip: "সময়ের সাথে দশা পরিবর্তিত হয় কিন্তু আদি দশা ধ্রুবক।" },
-          { question: "অনুপ্রস্থ তরঙ্গের ক্ষেত্রে তরঙ্গশীর্ষ (Crest) ও তরঙ্গপাদের (Trough) মধ্যকার পথপার্থক্য কত?", options: ["$\\lambda$", "$\\lambda/2$", "$\\lambda/4$", "$2\\lambda$"], correct: 1, topic: "Wave Properties", difficulty: "medium", explanation: "একটি সম্পূর্ণ তরঙ্গচক্রে একটি শীর্ষ ও একটি পাদ থাকে, যাদের মধ্যবর্তী দূরত্ব বা পথপার্থক্য হলো অর্ধ তরঙ্গদৈর্ঘ্য ($\\lambda/2$)।", concept: "Crest to Trough Path Difference", shortcut: "Crest to Trough = λ/2", mistake: "λ ভাবা", tip: "দশা পার্থক্য হয় $\\pi$ রেডিয়ান।" },
-          { question: "শব্দ দূষণ রোধে বিশ্ব স্বাস্থ্য সংস্থা (WHO) এর মতে শহরের দিনে অনুমোদিত শব্দের মাত্রা কত?", options: ["সতর্কতা নেই", "৪৫ ডেসিবেল", "৩৫ ডেসিবেল", "৪৫-৫০ ডেসিবেল (Residential Area)"], correct: 3, topic: "Sound Levels", difficulty: "medium", explanation: "ডব্লিউএইচও এর আদর্শ মান অনুযায়ী আবাসিক এলাকায় দিনের বেলা শব্দের গ্রহণযোগ্য মাত্রা ৪৫ থেকে ৫০ dB।", concept: "WHO Sound Standards", shortcut: "Residential Day Limit ≈ 45-50 dB", mistake: "১০০ ডেসিবেল ভাবা", tip: "৮৫ ডেসিবেলের বেশি শব্দ মানবদেহের জন্য ক্ষতিকর।" },
-          { question: "শব্দ তরঙ্গের প্রতিধ্বনি শোনার জন্য উৎস ও প্রতিফলক পৃষ্ঠের ন্যূনতম দূরত্ব কত হওয়া প্রয়োজন?", options: ["$16.6\\text{ m}$ বা প্রায় $17\\text{ m}$", "$34\\text{ m}$", "$10\\text{ m}$", "$5\\text{ m}$"], correct: 0, topic: "Echo & Sound", difficulty: "easy", explanation: "আমাদের কানের শব্দ স্থায়িত্বকাল ০.১ সেকেন্ড। বাতাসে শব্দের বেগ ৩৪৩ মি/সে হলে ন্যূনতম দূরত্ব হয় $\\frac{343 \\times 0.1}{2} \\approx 17\\text{ m}$।", concept: "Minimum Distance for Echo", shortcut: "16.6 m / 17 m", mistake: "৩৪ মিটার ভাবা", tip: "শব্দের রেশ মস্তিষ্কে ০.১ সেকেন্ড থাকে।" },
-          { question: "ডপলার প্রভাবে শব্দের কম্পাঙ্কের আপাত বৃদ্ধি ঘটে কখন?", options: ["উৎস ও শ্রোতা দূরে সরে গেলে", "উৎস ও শ্রোতার মধ্যকার দূরত্ব কমতে থাকলে", "উৎস স্থির ও শ্রোতা স্থির থাকলে", "বাতাস না থাকলে"], correct: 1, topic: "Doppler Effect", difficulty: "medium", explanation: "উৎস ও শ্রোতা একে অপরের কাছাকাছি এলে আপাত কম্পাঙ্ক ও তীব্রতা বৃদ্ধি পায়।", concept: "Doppler Apparent Frequency", shortcut: "Approaching = Higher Frequency", mistake: "দূরে সরে যাওয়া ভাবা", tip: "কাছাকাছি এলে তীক্ষ্ণতা বাড়ে।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার কৌণিক বেগ $\\omega$ এবং পর্যায়কাল $T$ এর মধ্যে সঠিক সম্পর্ক কোনটি?", options: ["$\\omega = \\frac{2\\pi}{T}$", "$\\omega = 2\\pi T$", "$\\omega = \\frac{T}{2\\pi}$", "$\\omega = \\pi T$"], correct: 0, topic: "SHM Parameters", difficulty: "easy", explanation: "এক পূর্ণ কম্পনে কোণ ঘুরে $2\\pi$, সময় লাগে $T$। সুতরাং কৌণিক বেগ $\\omega = \\frac{2\\pi}{T}$ বা $2\\pi f$।", concept: "Angular Frequency Relation", shortcut: "ω = 2π/T", mistake: "2πT ব্যবহার করা", tip: "এটি সব ধরনের পর্যায়বৃত্ত গতির ক্ষেত্রে প্রযোজ্য।" },
-          { question: "নিচের কোনটির ক্ষেত্রে মাধ্যমের প্রয়োজন হয় না?", options: ["শব্দ তরঙ্গ", "পানির তরঙ্গ", "তড়িৎ চৌম্বক তরঙ্গ (Electromagnetic Waves)", "টানটান তারের তরঙ্গ"], correct: 2, topic: "Wave Nature", difficulty: "easy", explanation: "আলো, এক্স-রে, রেডিও তরঙ্গ ইত্যাদি হলো তড়িৎ চৌম্বক তরঙ্গ, যা চলাচলের জন্য কোনো মাধ্যম প্রয়োজন হয় না (শূন্যস্থান দিয়েও চলতে পারে)।", concept: "EM Waves Nature", shortcut: "No medium needed for EM waves", mistake: "শব্দ তরঙ্গ ভাবা", tip: "সূর্যের আলো পৃথিবী পর্যন্ত শূন্যস্থান পেরিয়ে আসে।" },
-          { question: "একটি কণার সমীকরণ $y = 5 \\sin(100t + \\pi/4)$ হলে এর বিস্তার ($A$) কত?", options: ["$5$", "$100$", "$10$", "$\\pi/4$"], correct: 1, topic: "SHM Equation Analysis", difficulty: "easy", explanation: "প্রমিত সমীকরণ $y = A \\sin(\\omega t + \\delta)$ এর সাথে তুলনা করে পাই বিস্তার $A = 5$ এবং কৌণিক বেগ $\\omega = 100$।", concept: "Amplitude Identification", shortcut: "Coefficient of sin = Amplitude (5)", mistake: "100 কে বিস্তার বলা", tip: "সামনের সংখ্যাটি সবসময় বিস্তার নির্দেশ করে।" },
-          { question: "অবমন্দিত কম্পনের (Damped Oscillation) ক্ষেত্রে কী ঘটে?", options: ["বিস্তার সময়ের সাথে ক্রমান্বয়ে হ্রাস পায়", "বিস্তার বাড়ে", "শক্তি সর্বদা ধ্রুবক থাকে", "কম্পাঙ্ক অসীম হয়"], correct: 0, topic: "Damped Oscillation", difficulty: "easy", explanation: "ঘর্ষণ বা সান্দ্রতার কারণে সিস্টেমের শক্তি অপচয় হয়, ফলে অবমন্দিত কম্পনের বিস্তার সময়ের সাথে কমতে থাকে।", concept: "Damped Wave Amplitude", shortcut: "Amplitude decreases over time", mistake: "বিস্তার বৃদ্ধি পাওয়া ভাবা", tip: "গাড়ির শক absorbers অবমন্দিত কম্পনের বাস্তব উদাহরণ।" },
-          { question: "একটি টানা তারের দৈর্ঘ্য দ্বিগুণ করলে এবং টান অপরিবর্তিত রাখলে এর মূল কম্পাঙ্ক কীরূপ পরিবর্তিত হবে?", options: ["দ্বিগুণ হবে", "অর্ধেক হবে", "চারগুণ হবে", "অপরিবর্তিত থাকবে"], correct: 1, topic: "Stretched String", difficulty: "medium", explanation: "টানা তারের মূল কম্পাঙ্ক $f \\propto \\frac{1}{L}$। দৈর্ঘ্য দ্বিগুণ করা হলে কম্পাঙ্ক অর্ধেক হয়ে যাবে।", concept: "String Frequency & Length", shortcut: "f ∝ 1/L", mistake: "দ্বিগুণ হওয়া ভাবা", tip: "গিটার বা সেতারের তার টিপে কম্পাঙ্ক পরিবর্তন করা হয়।" },
-          { question: "শব্দের তীব্রতা লেভেলের একক বেল (Bel) অপেক্ষা ডেসিবেল (dB) কত গুণ ছোট?", options: ["১০ গুণ", "১০০ গুণ", "১০১৮ গুণ", "১০০০ গুণ"], correct: 0, topic: "Sound Intensity Levels", difficulty: "medium", explanation: "১ বেল = ১০ ডেসিবেল (dB)। অর্থাৎ ডেসিবেল হলো বেলের এক দশমাংশ, বা বেল ডেসিবেলের ১০ গুণ বড়।", concept: "Bel to Decibel Conversion", shortcut: "1 Bel = 10 dB", mistake: "১০০ গুণ ভাবা", tip: "আলেকজান্ডার গ্রাহাম বেলের নামানুসারে 'বেল' একক রাখা হয়েছে।" },
-          { question: "দুটি তরঙ্গ উপরিপাতিত হয়ে চরম বা অন্ধকার বিন্দু (Destructive) তৈরি করলে তীব্রতা কত হবে?", options: ["সর্বোচ্চ", "শূন্য (Zero)", "সর্বোচ্চের অর্ধেক", "অপরিবর্তিত"], correct: 1, topic: "Interference", difficulty: "easy", explanation: "ধ্বংসাত্মক ব্যাতিচারের ক্ষেত্রে বিপরীত দশার মিলনের ফলে বিস্তার ও তীব্রতা উভয়ই শূন্য হয়ে যায়।", concept: "Destructive Interference Intensity", shortcut: "Destructive = Zero Intensity", mistake: "সর্বোচ্চ ভাবা", tip: "দশা পার্থক্য বিজোড় পাই হলে এটি ঘটে।" },
-          { question: "কোন তাপমাত্রায় সেলসিয়াস ও ফারেনহাইট স্কেলে একই পাঠ পাওয়া যায়?", options: ["$0^\\circ$", "$-40^\\circ$", "$100^\\circ$", "$32^\\circ$"], correct: 1, topic: "Miscellaneous Physics", difficulty: "easy", explanation: "সূত্র $\\frac{C}{5} = \\frac{F-32}{9}$ এ $C = F = x$ বসালে মান আসে $-40^\\circ$।", concept: "Temperature Scales Intersection", shortcut: "C = F = -40", mistake: "শূন্য ধরে নেওয়া", tip: "এটি তাপগতিবিদ্যা ও পর্যায়বৃত্ত গতির কমন সাধারণ জ্ঞান।" },
-          { question: "টানা তারে আড়াআড়ি তরঙ্গের বেগ $v = \\sqrt{T/m}$। এখানে $m$ কী নির্দেশ করে?", options: ["মোট ভর", "একক দৈর্ঘ্যের ভর বা রৈখিক ভরঘনত্ব (Mass per unit length)", "ত্বরণ", "টান বল"], correct: 1, topic: "Stretched String Velocity", difficulty: "medium", explanation: "সূত্রে $T$ হলো তারের টান এবং $m$ হলো তারের একক দৈর্ঘ্যের ভর ($\\mu$ বা $m$)।", concept: "Linear Mass Density", shortcut: "m = Mass per unit length", mistake: "মোট ভর মনে করা", tip: "তার যত ভারী হবে, তরঙ্গের বেগ তত কম হবে।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার বেগ এবং স্মরণের মধ্যে দশা পার্থক্য কত?", options: ["$0$", "$\\pi/2$ radian", "$\\pi$ radian", "$2\\pi$ radian"], correct: 1, topic: "SHM Phase Relation", difficulty: "hard", explanation: "সরণ $x = A \\sin(\\omega t)$ হলে বেগ $v = \\omega A \\cos(\\omega t) = \\omega A \\sin(\\omega t + \\pi/2)$। সুতরাং দশা পার্থক্য $\\pi/2$ বা $90^\\circ$।", concept: "Displacement and Velocity Phase", shortcut: "Velocity leads displacement by π/2", mistake: "দশা পার্থক্য শূন্য ভাবা", tip: "ত্বরণ ও স্মরণের দশা পার্থক্য পাই ($\\pi$)।" },
-          { question: "কোনো মাধ্যমে শব্দের বেগ বায়ুর তাপমাত্রার সাথে কীভাবে পরিবর্তিত হয়?", options: ["তাপমাত্রার বর্গমূলের সমানুপাতিক ($v \\propto \\sqrt{T}$)", "তাপমাত্রার ব্যস্তানুপাতিক", "তাপমাত্রার বর্গের সমানুপাতিক", "অপরিবর্তিত থাকে"], correct: 0, topic: "Sound Speed & Temperature", difficulty: "medium", explanation: "শব্দের বেগ পরম তাপমাত্রার বর্গমূলের সমানুপাতিক, অর্থাৎ $v \\propto \\sqrt{T}$। তাপমাত্রা বাড়লে শব্দের বেগ বাড়ে।", concept: "Speed of Sound vs Temperature", shortcut: "v ∝ √T", mistake: "ব্যাস্তানুপাতিক ভাবা", tip: "গ্রীষ্মকালে শীতকালের চেয়ে শব্দের বেগ বেশি হয়।" },
-          { question: "সরল দোলকের বব (Bob) যদি লোহা থেকে পারদে পরিবর্তন করা হয়, তবে এর দোলনকালের কী পরিবর্তন হবে?", options: ["বাড়বে", "কমবে", "অপরিবর্তিত থাকবে", "শূন্য হবে"], correct: 2, topic: "Simple Pendulum", difficulty: "medium", explanation: "দোলনকালের সূত্রে পদার্থের ঘনত্বের কোনো সরাসরি প্রভাব নেই, এটি কেবল কার্যকর দৈর্ঘ্য ($L$) এবং অভিকর্ষজ ত্বরণের ($g$) ওপর নির্ভর করে।", concept: "Pendulum Bob Material Independence", shortcut: "Independent of bob material", mistake: "ঘনত্ব ভিন্ন হওয়ায় পরিবর্তন ভাবা", tip: "ববের আকার বা উপাদান দোলনকাল পরিবর্তন করে না।" },
-          { question: "একটি সেকেন্ড দোলককে পাহাড়ের চূড়ায় নিয়ে গেলে কী ঘটবে?", options: ["ঘড়িটি সঠিক সময় দেবে", "ঘড়িটি স্লো বা ধীরে চলবে (Lose time)", "ঘড়িটি ফাস্ট বা দ্রুত চলবে", "দোলকটি থেমে যাবে"], correct: 1, topic: "Simple Pendulum", difficulty: "medium", explanation: "পাহáরের চূড়ায় অভিকর্ষজ ত্বরণ $g$ এর মান কমে যায়। ফলে $T$ বেড়ে যায় এবং ঘড়ি ধীরে চলে বা সময় হারায়।", concept: "Pendulum on Mountain", shortcut: "g decreases ⟹ T increases ⟹ Loses time", mistake: "দ্রুত চলা ভাবা", tip: "খনি বা পাহাড় উভয় স্থানেই g কমে তাই ঘড়ি স্লো হয়।" },
-          { question: "শব্দ তরঙ্গের তীব্রতা লেভেলের পরিবর্তনশীলতা মানুষের কানে কোন আইন মেনে অনুভূত হয়?", options: ["রৈখিক আইন", "ওয়েবার-ফেখনার সূত্র (Weber-Fechner Law - Logarithmic)", "নিউটনীয় সূত্র", "বয়েলের সূত্র"], correct: 1, topic: "Acoustics & Sound Perception", difficulty: "hard", explanation: "মানুষের কান শব্দের তীব্রতার লঘুগাণিতিক বা লগারিদমিক (Logarithmic) পরিবর্তন অনুভব করে, যা ওয়েবার-ফেখনার সূত্র নামে পরিচিত।", concept: "Weber-Fechner Law", shortcut: "Logarithmic sensation", mistake: "রৈখিক অনুপাত ভাবা", tip: "এ কারণেই ডেসিবেল স্কেলে লগারিদম ব্যবহার করা হয়।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার মোট শক্তি কিসের ওপর নির্ভর করে?", options: ["বিস্তারের বর্গের ওপর ($E \\propto A^2$)", "শুধুমাত্র ভরের ওপর", "সময়ের ওপর", "কম্পাঙ্কের বর্গমূলের ওপর"], correct: 0, topic: "SHM Energy", difficulty: "easy", explanation: "মোট শক্তির সমীকরণ $E = \\frac{1}{2}m\\omega^2 A^2$ থেকে স্পষ্ট যে শক্তি বিস্তার $A$ এর বর্গের সমানুপাতিক।", concept: "SHM Total Energy Dependence", shortcut: "Energy ∝ Amplitude²", mistake: "সময় বা রৈখিক বেগের ওপর ভাবা", tip: "বিস্তার দ্বিগুণ হলে মোট শক্তি চারগুণ হয়।" },
-          { question: "স্থির তরঙ্গের ক্ষেত্রে দুটি পরপর নিস্পন্দ বিন্দুর মাঝখানে থাকা প্রস্পন্দ বিন্দুতে কণার বিস্তার কীরূপ থাকে?", options: ["শূন্য", "সর্বোচ্চ ($2A$)", "মাঝারি", "ন্যূনতম"], correct: 1, topic: "Stationary Waves", difficulty: "medium", explanation: "স্থির তরঙ্গে নিস্পন্দ বিন্দুতে সরণ সবসময় শূন্য এবং প্রস্পন্দ বিন্দুতে কণাগুলোর সরণ ও বেগ সর্বোচ্চ ($2A$) হয়।", concept: "Antinode Amplitude", shortcut: "Antinode = Max Amplitude", mistake: "শূন্য ভাবা", tip: "এখানে শক্তি স্থানান্তরিত হয় না, কেবল বন্দি থাকে।" },
-          { question: "একটি কণার উপর দুটি লম্ব সরল ছন্দিত স্পন্দন প্রযুক্ত হলে লব্ধি গতিপথ উপবৃত্তাকার হতে পারে, যদি দশা পার্থক্য কত হয়?", options: ["$0$ বা $\\pi$", "$\\pi/2$ বা $90^\\circ$", "$2\\pi$", "কোনোটিই নয়"], correct: 1, topic: "Lissajous Figures / SHM Composition", difficulty: "hard", explanation: "পরস্পর লম্ব দুটি সরল ছন্দিত গতির দশা পার্থক্য $\\pi/2$ এবং সমান বিস্তার না হলে লব্ধি গতিপথ উপবৃত্তাকার (Elliptical) হয়।", concept: "Superposition of Perpendicular SHMs", shortcut: "Phase diff π/2 = Ellipse/Circle", mistake: "শূন্য ভাবা", tip: "এটি লিসাজু ফিগার নামে পরিচিত।" },
-          { question: "ডপলার প্রভাবে যদি শ্রোতা স্থির থাকে এবং উৎস শ্রোতার দিকে শব্দের বেগের অর্ধেক বেগে এগিয়ে আসে, তবে আপাত কম্পাঙ্ক মূল কম্পাঙ্কের কত গুণ হবে?", options: ["$2$ গুণ", "$1.5$ গুণ", "$0.5$ গুণ", "$3$ গুণ"], correct: 0, topic: "Doppler Effect Math", difficulty: "hard", explanation: "সূত্র $f' = f \\frac{v}{v - v_s}$। এখানে $v_s = v/2$ বসালে $f' = f \\frac{v}{v - v/2} = 2f$ বা দ্বিগুণ হয়।", concept: "Doppler Calculation", shortcut: "v_s = v/2 ⟹ f' = 2f", mistake: "দেড় গুণ ভাবা", tip: "এডমিশন পরীক্ষায় এই ধরনের নিউমেরিক্যাল প্রায়ই আসে।" },
-          { question: "তরঙ্গের তীব্রতা ($I$) এবং বিস্তারের ($A$) মধ্যে সঠিক সম্পর্ক কোনটি?", options: ["$I \\propto A$", "$I \\propto A^2$", "$I \\propto \\sqrt{A}$", "$I \\propto A^3$"], correct: 1, topic: "Wave Intensity", difficulty: "medium", explanation: "যেকোনো তরঙ্গের তীব্রতা বা শক্তি তার বিস্তারের বর্গের সমানুপাতিক, অর্থাৎ $I \\propto A^2$।", concept: "Intensity vs Amplitude", shortcut: "Intensity ∝ Amplitude²", mistake: "বর্গমূলের সমানুপাতিক ভাবা", tip: "বিস্তার দ্বিগুণ হলে তীব্রতা চারগুণ বৃদ্ধি পায়।" },
-          { question: "সরল ছন্দিত গতিতে গতিশক্তি ও স্থিতিশক্তির পরিবর্তনের হার প্রতি পূর্ণকম্পনে কতবার ঘটে?", options: ["১ বার", "২ বার", "৪ বার", "৮ বার"], correct: 2, topic: "SHM Energy Cycle", difficulty: "hard", explanation: "প্রতি কম্পনে গতিশক্তি ও স্থিতিশক্তি উভয়ই দুইবার সর্বোচ্চ এবং দুইবার সর্বনিম্ন হয়, যার ফলে মোট পরিবর্তনের চক্র ৪ বার পূর্ণ হয়।", concept: "Energy Change Frequency in SHM", shortcut: "4 times per cycle", mistake: "দুইবার ভাবা", tip: "সরণের দ্বিগুণ কম্পাঙ্কে শক্তি পরিবর্তিত হয়।" },
-          { question: "বায়ুতে শব্দের বেগ কোনটির ওপর নির্ভর করে না?", options: ["বায়ুর চাপ ($P$)", "বায়ুর তাপমাত্রা ($T$)", "বায়ুর আর্দ্রতা", "বায়ুর প্রকৃতি"], correct: 0, topic: "Sound Speed Factors", difficulty: "medium", explanation: "ল্যাপলাসের সূত্রানুসারে চাপ বাড়লে ঘনত্বও সেই অনুপাতে বাড়ে, ফলে বায়ুর চাপের পরিবর্তনে শব্দের বেগের কোনো পরিবর্তন হয় না।", concept: "Independence of Sound Speed on Pressure", shortcut: "Velocity independent of Pressure", mistake: "চাপের সমানুপাতিক ভাবা", tip: "এটি লাপলাসের সংশোধন নামে পরিচিত।" },
-          { question: "একটি সেকেন্ড দোলকের কার্যকর দৈর্ঘ্য ৪ গুণ করলে নতুন দোলনকাল কত হবে?", options: ["$1\\text{ s}$", "$2\\text{ s}$", "$4\\text{ s}$", "$8\\text{ s}$"], correct: 2, topic: "Simple Pendulum", difficulty: "medium", explanation: "সেকেন্ড দোলকের আদি দোলনকাল $2\\text{ s}$। দৈর্ঘ্য ৪ গুণ করলে দোলনকাল দ্বিগুণ হবে, অর্থাৎ নতুন দোলনকাল $2 \\times 2 = 4\\text{ s}$।", concept: "Second Pendulum Length Scaling", shortcut: "T_new = 2 × T_old = 4s", mistake: "আট সেকেন্ড ভাবা", tip: "দৈর্ঘ্য বাড়লে দোলনকাল বাড়ে।" },
-          { question: "পানির উপর তেলের পাতলা স্তর থাকলে কিসের কারণে রঙিন দেখায়?", options: ["ব্যতিচার (Interference)", "অপবর্তন", "পোলারায়ন", "বিচ্ছুরণ"], correct: 0, topic: "Wave Interference in Thin Films", difficulty: "medium", explanation: "পাতলা ফিল্মের ব্যতিচারের (Thin film interference) কারণে তেলের স্তর বা সাবানের বুদবুদ রোদের আলোয় রঙিন দেখায়।", concept: "Thin Film Interference", shortcut: "Oil film colors = Interference", mistake: "বিচ্ছুরণ ভাবা", tip: "এটি তরঙ্গ optics এর একটি চমৎকার উদাহরণ।" },
-          { question: "সরল ছন্দিত গতিসম্পন্ন কণার সরণ সর্বোচ্চ হলে কিসের মান শূন্য হয়?", options: ["ত্বরণ", "বল", "বেগ (Velocity)", "স্থিতিশক্তি"], correct: 2, topic: "SHM Kinematics", difficulty: "easy", explanation: "বিস্তার অবস্থানে সরণ সর্বোচ্চ হলেও কণা মুহূর্তের জন্য থেমে যায়, তাই সেখানে বেগ শূন্য হয়।", concept: "Velocity at Max Displacement", shortcut: "At max x, v = 0", mistake: "ত্বরণ শূন্য ভাবা", tip: "বিস্তারে বেগ শূন্য হলেও ত্বরণ সর্বোচ্চ থাকে।" },
-          { question: "নিচের কোন কণা বা তরঙ্গটি যান্ত্রিক তরঙ্গ (Mechanical Wave)?", options: ["আলো তরঙ্গ", "এক্স-রে", "শব্দ তরঙ্গ (Sound Wave)", "রেডিও তরঙ্গ"], correct: 2, topic: "Wave Classification", difficulty: "easy", explanation: "যে তরঙ্গ চলাচলের জন্য মাধ্যম আবশ্যক তাকে যান্ত্রিক তরঙ্গ বলে। শব্দ তরঙ্গ চলার জন্য মাধ্যম লাগে, তাই এটি যান্ত্রিক তরঙ্গ।", concept: "Mechanical Wave Definition", shortcut: "Sound = Mechanical Wave", mistake: "আলো তরঙ্গ ভাবা", tip: "তড়িৎ চৌম্বকীয় তরঙ্গ যান্ত্রিক তরঙ্গ নয়।" },
-          { question: "একটি স্প্রিংয়ে $m$ ভর ঝুলিয়ে দিলে এটি টেনে ছেড়ে দিলে যে কম্পন হয় তা কিসের উদাহরণ?", options: ["সরল ছন্দিত স্পন্দন (SHM)", "ঘূর্ণন গতি", "চলন গতি", "তরঙ্গ গতি"], correct: 0, topic: "Spring Oscillation", difficulty: "easy", explanation: "স্প্রিং-ভর সিস্টেমে হুকের সূত্র মেনে চলা হয় এবং উৎপন্ন গতি একটি নিখুঁত সরল ছন্দিত স্পন্দন গতি।", concept: "Mass-Spring SHM", shortcut: "Spring = SHM", mistake: "সাধারণ পর্যায়বৃত্ত গতি বলা", tip: "এর কম্পাঙ্ক $f = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}}$।" }
+          { question: "উদ্ভিদ প্রজননের মূল লক্ষ্য কোনটি?", options: ["উদ্ভিদের রূপ বৃদ্ধি করা", "উচ্চ ফলনশীল ও রোগপ্রতিরোধী জাত উদ্ভাবন", "উদ্ভিদের আয়ু কমানো", "উদ্ভিদের আকার ছোট করা"], correct: 1, topic: "Introduction to Plant Breeding", difficulty: "easy", explanation: "উদ্ভিদ প্রজননের প্রধান উদ্দেশ্য হলো ফসলের ফলন বৃদ্ধি, গুণগত মান উন্নয়ন এবং প্রতিকূল পরিবেশ ও রোগ সহ্য করার ক্ষমতা বাড়ানো।", concept: "Plant Breeding Goals", shortcut: "High Yield + Resistance", mistake: "শুধুমাত্র আকৃতি বৃদ্ধি মনে করা", tip: "উদ্ভিদের অর্থনৈতিক বৈশিষ্ট্য উন্নয়নই মূল উদ্দেশ্য।" },
+          { question: "ফুলের পরাগরেণু একই ফুলের গর্ভমুণ্ডে পতিত হওয়াকে কী বলে?", options: ["পরপরাগযোগ (Cross Pollination)", "স্বসংকরায়ন", "স্ব-পরাগযোগ (Self Pollination)", "এপোমিক্সিস"], correct: 2, topic: "Pollination Biology", difficulty: "easy", explanation: "একই ফুল বা একই গাছের অন্য ফুলের মধ্যে পরাগযোগ ঘটলে তাকে স্ব-পরাগযোগ বলে।", concept: "Pollination Modes", shortcut: "Same Flower/Plant = Self", mistake: "পরপরাগযোগের সাথে গুটিয়ে ফেলা", tip: "ধান, গম, মটরশুঁটি স্ব-পরাগায়িত উদ্ভিদ।" },
+          { question: "নিচের কোনটি স্ব-পরাগায়িত (Self-pollinated) উদ্ভিদ?", options: ["ভুট্টা", "ধান", "পেঁপে", "সরিষা"], correct: 1, topic: "Pollination Biology", difficulty: "easy", explanation: "ধান, গম, টমেটো, মটরশুঁটি ইত্যাদি প্রধানত স্ব-পরাগায়িত ফসল।", concept: "Crop Selfing", shortcut: "Paddy = Self Pollinated", mistake: "ভুট্টাকে স্ব-পরাগায়িত ভাবা", tip: "ভুট্টা একটি প্রধান পর-পরাগায়িত উদ্ভিদ।" },
+          { question: "উভলিঙ্গ ফুল থেকে কচি অবস্থায় পুংকেশর কেটে ফেলে দেওয়াকে কী বলা হয়?", options: ["ইমাসকুলেশন (Emasculation)", "ব্যাগিং (Bagging)", "ট্যাগিং (Tagging)", "ক্রসিং"], correct: 0, topic: "Hybridization Technique", difficulty: "easy", explanation: "কৃত্রিম সংকরায়ণে অवांছিত স্ব-পরাগযোগ রোধে ফুল ফোটার আগে পরাগধানী বা পুংকেশর অপসারণ করাকে ইমাসকুলেশন বলে।", concept: "Emasculation Definition", shortcut: "Anther Removal = Emasculation", mistake: "ব্যাগিংয়ের সাথে গুলিয়ে ফেলা", tip: "ইমাসকুলেশন কেবল স্ত্রী-প্যারেন্ট উদ্ভিদে করা হয়।" },
+          { question: "ইমাসকুলেশনের পর ফুলকে বাটার পেপার দিয়ে ঢেকে দেওয়াকে কী বলে?", options: ["ট্যাগিং", "ইমাসকুলেশন", "ব্যাগিং (Bagging)", "আইসোলেশন"], correct: 2, topic: "Hybridization Technique", difficulty: "easy", explanation: "বাইরের অনিচ্ছাকৃত পরাগরেণু এসে যেন গর্ভমুণ্ডে না পড়ে, সেজন্য ইমাসকুলেটেড ফুলকে বাটার পেপার ব্যাগ দিয়ে ঢেকে রাখা হয়।", concept: "Bagging Technique", shortcut: "Covering = Bagging", mistake: "ট্যাগিং মনে করা", tip: "ব্যাগিং পরাগরেণুর দূষণ রোধ করে।" },
+          { question: "সংকরায়ণে প্রাপ্ত প্রথম বংশধরকে কী বলা হয়?", options: ["F2 জনু", "F1 জনু (First Filial Generation)", "P1 জনু", "প্যারেন্টাল জেনারেশন"], correct: 1, topic: "Hybridization Concepts", difficulty: "easy", explanation: "দুইটি বিশুদ্ধ মা-বাবার (Parents) মধ্যে সংকরায়ণের ফলে সৃষ্ট প্রথম অপত্য বংশধরকে F1 জেনারেশন বলে।", concept: "Filial Generations", shortcut: "First Cross = F1", mistake: "P1 ভেবে ভুল করা", tip: "F এর পূর্ণরূপ Filial।" },
+          { question: "সঙ্করায়নের ফলে সৃষ্ট অপত্য উদ্ভিদ যদি মা-বাবা উভয়ের চেয়ে শ্রেষ্ঠ গুণসম্পন্ন হয়, তবে তাকে কী বলে?", options: ["হেটেরোসিস (Heterosis / Hybrid Vigour)", "ইনব্রিডিং ডিপ্রেশন", "জিনোটাইপ", "পলিপ্রোয়েডি"], correct: 0, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "সংকর উদ্ভিদের বর্ধন, জীবনীশক্তি ও ফলন বাবা-মা উভয় অপেক্ষা বৃদ্ধি পাওয়াকে হেটেরোসিস বা হাইব্রিড ভিগর বলে।", concept: "Heterosis Definition", shortcut: "Hybrid > Parents = Heterosis", mistake: "ইনব্রিডিং ভাবা", tip: "G.H. Shull ১৯১৪ সালে Heterosis শব্দটি প্রবর্তন করেন।" },
+          { question: "পরপর কয়েক বংশধর ধরে স্ব-পরাগযোগের মাধ্যমে হেটেরোসিস হ্রাস পাওয়াকে কী বলে?", options: ["জিন ড্রাফট", "ইনব্রিডিং ডিপ্রেশন (Inbreeding Depression)", "এপোমিক্সিস", "জিন মিউটেশন"], correct: 1, topic: "Heterosis & Hybrid Vigour", difficulty: "medium", explanation: "স্ব-পরাগায়নের ফলে ক্ষতিকর প্রচ্ছন্ন জিনগুলো হোমোজাইগাস হয়ে আত্মপ্রকাশ করায় উদ্ভিদের তেজ ও ফলন হ্রাস পায়, একে ইনব্রিডিং ডিপ্রেশন বলে।", concept: "Inbreeding Effect", shortcut: "Continuous Selfing = Inbreeding Depression", mistake: "হেটেরোসিস বৃদ্ধি ভাবা", tip: "পর-পরাগায়িত উদ্ভিদে এটি বেশি স্পষ্ট।" },
+          { question: "উদ্ভিদের কোনো কোষ বা টিস্যু থেকে পূর্ণাঙ্গ উদ্ভিদ পুনরুৎপাদনের ক্ষমতাকে কী বলা হয়?", options: ["টোটিপোটেন্সি (Totipotency)", "প্লুরিপোটেন্সি", "ক্যালোজেনেসিস", "এমব্রায়োজেনেসিস"], correct: 0, topic: "Tissue Culture & Biotechnology", difficulty: "easy", explanation: "উদ্ভিদ কোষের একটি পূর্ণাঙ্গ উদ্ভিদে পরিণত হওয়ার অন্তর্নিহিত জিনগত ক্ষমতাকে টোটিপোটেন্সি বলে।", concept: "Cell Totipotency", shortcut: "Single Cell to Plant = Totipotency", mistake: "প্লুরিপোটেন্সির সাথে মেলানো", tip: "G. Haberlandt কে টিস্যু কালচারের জনক বলা হয়।" },
+          { question: "উদ্ভিদ প্রজননে কৃত্রিমভাবে মিউটেশন ঘটানোর জন্য বহুল ব্যবহৃত রাসায়নিক কোনটি?", options: ["ইথাইল মিথেন সালফোনেট (EMS)", "জিব্যারেলিন", "2,4-D", "কোলচিসিন"], correct: 0, topic: "Mutation Breeding", difficulty: "hard", explanation: "EMS (Ethyl Methane Sulfonate) হলো একটি শক্তিশালী কেমিক্যাল মিউটাজেন যা জিনে মিউটেশন ঘটাতে ব্যবহৃত হয়।", concept: "Chemical Mutagen", shortcut: "EMS = Chemical Mutagens", mistake: "কোলচিসিনকে মিউটাজেন ভাবা", tip: "কোলচিসিন পলিপ্লয়েডি তৈরিতে ব্যবহৃত হয়।" },
+          { question: "উদ্ভিদ কোষে ক্রোমোজোম সংখ্যা দ্বিগুণ করার জন্য কোন রাসায়নিক এজেন্ট ব্যবহৃত হয়?", options: ["আইএএ (IAA)", "কোলচিসিন (Colchicine)", "কাইনেটিন", "এমএস মিডিয়াম"], correct: 1, topic: "Polyploidy Breeding", difficulty: "medium", explanation: "কোলচিসিন কোষ বিভাজনের সময় স্পিন্ডল তন্তু গঠনে বাধা দেয়, ফলে ক্রোমোজোম বিভাজন না হয়ে দ্বিগুণ (Polyploid) হয়ে যায়।", concept: "Polyploidy Induction", shortcut: "Chromosome Doubling = Colchicine", mistake: "অক্সিন মনে করা", tip: "কোলচিসিন *Colchicum autumnale* উদ্ভিদ থেকে সংগৃহীত হয়।" },
+          { question: "একই প্রজাতিভুক্ত দুটি ভিন্ন স্বাদের বা জাতের উদ্ভিদের মধ্যে সংকরায়ণকে কী বলে?", options: ["ইন্ট্রাস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারস্পেসিফিক হাইব্রিডাইজেশন", "ইন্টারজেনেরিক হাইব্রিডাইজেশন", "ডিস্ট্যান্ট হাইব্রিডাইজেশন"], correct: 0, topic: "Hybridization Types", difficulty: "medium", explanation: "একই প্রজাতির (Interspecific নয়) অন্তর্গত দুটি জাতের সংকরায়ণ হলো Intra-specific বা Intra-varietal cross।", concept: "Intraspecific Cross", shortcut: "Within Species = Intra-specific", mistake: "Interspecific মনে করা", tip: "Intra = একই, Inter = ভিন্ন।" },
+          { question: "ভিন্ন দুই গণের (Genus) মধ্যে সংকরায়ণের মাধ্যমে সৃষ্ট বিখ্যাত শস্য 'Triticale' কোন দুটির সংকর?", options: ["গম ও ধান", "গম ও রাই (Wheat × Rye)", "ধান ও বার্লি", "ভুট্টা ও গম"], correct: 1, topic: "Hybridization Types", difficulty: "medium", explanation: "Triticale হলো মানবসৃষ্ট প্রথম শস্য, যা গম (Triticum) এবং রাই (Secale)-এর ইন্টারজেনেরিক সংকরায়ণে তৈরি।", concept: "Intergeneric Hybrid", shortcut: "Wheat × Rye = Triticale", mistake: "ধান ও গমের সংকর ভাবা", tip: "এটি একটি এলোপলিপ্লয়েড (Allopolyploid) শস্য।" },
+          { question: "প্রাকৃতিক উপায়ে বীজ উৎপাদন ছাড়াই ভ্রূণ ও বীজ গঠন প্রক্রিয়াকে কী বলে?", options: ["পারথেনোকার্পি", "এপোমিক্সিস (Apomixis)", "অ্যামফিমিক্সিস", "পলিমিক্সিস"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "hard", explanation: "নিষেক ছাড়াই অসেক উপায়ে বীজ উৎপাদনের প্রক্রিয়াকে এপোমিক্সিস বলে।", concept: "Apomixis Definition", shortcut: "Seed without Fertilization = Apomixis", mistake: "পারথেনোকার্পির সাথে গুলিয়ে ফেলা", tip: "পারথেনোকার্পিতে বীজহীন ফল হয়, কিন্তু এপোমিক্সিসে বীজ তৈরি হয়।" },
+          { question: "বীজহীন ফল (Seedless Fruit) উৎপাদনের প্রক্রিয়াকে কী বলা হয়?", options: ["এপোমিক্সিস", "পারথেনোকার্পি (Parthenocarpy)", "পারথেনোজেনেসিস", "পলিএম্ব্রায়োনি"], correct: 1, topic: "Apomixis & Tissue Culture", difficulty: "easy", explanation: "নিষেক ছাড়াই ফল সৃষ্টি হলে তাকে পারথেনোকার্পিক ফল বলে (যেমন: কলা, বীজহীন আঙুর)।", concept: "Parthenocarpy", shortcut: "Fruit without Seed = Parthenocarpy", mistake: "পারথেনোজেনেসিস ভাবা", tip: "পারথেনোজেনেসিস হলো অসেক প্রজননের মাধ্যমে অপত্য জীব সৃষ্টি।" },
+          { question: "সবচেয়ে প্রাচীন উদ্ভিদ প্রজনন পদ্ধতি কোনটি?", options: ["সংকরায়ণ", "পছন্দকরণ / নির্বাচন (Selection)", "মিউটেশন ব্রিডিং", "জিন প্রকৌশল"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "কৃষিকাজের শুরু থেকেই মানুষ ভালো ফসল বাছাই বা নির্বাচন (Selection) করে বীজ সংরক্ষণ করতো, যা সবচেয়ে প্রাচীন পদ্ধতি।", concept: "Plant Selection History", shortcut: "Oldest Method = Selection", mistake: "সংকরায়ণকে প্রাচীন ভাবা", tip: "Selection দুই প্রকার: Mass Selection ও Pureline Selection।" },
+          { question: "একটি মাত্র স্ব-পরাগায়িত উদ্ভিদ থেকে বংশানুক্রমে সৃষ্ট সমলক্ষণী জীবগোষ্ঠীকে কী বলে?", options: ["প্যুরলাইন (Pureline / বিশুদ্ধ বংশধারক)", "ইনব্রিড লাইন", "ক্লোন", "হাইব্রিড"], correct: 0, topic: "Selection Methods", difficulty: "medium", explanation: "ড্যানিশ বিজ্ঞানী জোহানসেন (Johannsen) ১৯০৩ সালে Pureline তত্ত্ব দেন। এটি homozygous ও homogenous উদ্ভিদগোষ্ঠী।", concept: "Pureline Theory", shortcut: "Johannsen = Pureline", mistake: "ক্লোন ভাবা", tip: "অঙ্গজ প্রজননে সৃষ্ট জনগোষ্ঠী হলো ক্লোন (Clone)।" },
+          { question: "অঙ্গজ প্রজনন (Vegetative Propagation) দ্বারা উৎপন্ন হুবহু একই জিনোটাইপযুক্ত উদ্ভিদদলকে কী বলা হয়?", options: ["বিশুদ্ধ লাইন", "ক্লোন (Clone)", "মাস সিলেক্টেড লাইন", "সংকর"], correct: 1, topic: "Selection Methods", difficulty: "easy", explanation: "মাতৃউদ্ভিদের অঙ্গজ অংশ থেকে তৈরি সমস্ত অপত্য উদ্ভিদ জিনগতভাবে অবিকল এক হওয়ায় এদের ক্লোন বলা হয়।", concept: "Clones in Plants", shortcut: "Asexual progeny = Clone", mistake: "Pureline এর সাথে মেলানো", tip: "আলু, আদা, কলার বংশবৃদ্ধি ক্লোন পদ্ধতির উদাহরণ।" },
+          { question: "টিস্যু কালচারে এক্সপ্ল্যান্ট (Explant) হিসেবে উদ্ভিদের কোন অংশ সবচেয়ে বেশি উপযোগী?", options: ["শীর্ষ মুকুল বা ভাজক টিস্যু (Meristem)", "পরিপক্ক কাণ্ড", "পুরোনো পাতা", "মৃত ছাল"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "ভাজক টিস্যু (Meristem) দ্রুত বিভাজনক্ষম এবং ভাইরাস মুক্ত থাকায় টিস্যু কালচারে শীর্ষ বা কাক্ষিক মুকুল এক্সপ্ল্যান্ট হিসেবে উত্তম।", concept: "Explant Selection", shortcut: "Virus Free = Meristem", mistake: "যেকোনো বয়স্ক অংশ ভাবা", tip: "মেরিস্টেম কালচারের মাধ্যমে ভাইরাসমুক্ত চারা তৈরি করা হয়।" },
+          { question: "টিস্যু কালচার পুষ্টি মাধ্যমে অনিয়ন্ত্রিতভাবে বিভক্ত অসংগঠিত কোষের মণ্ডকে কী বলা হয়?", options: ["ক্যালস (Callus)", "এমব্রয়েড", "প্রোটোপ্লাস্ট", "এক্সপ্ল্যান্ট"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অক্সিন ও সাইটোকাইনিন হরমোনের প্রভাবে এক্সপ্ল্যান্ট বিভাজিত হয়ে যে অবিন্যস্ত কোষপিণ্ড তৈরি করে তাকে ক্যালস বলে।", concept: "Callus Formation", shortcut: "Undifferentiated Cell Mass = Callus", mistake: "এমব্রয়েড ভাবা", tip: "ক্যালস থেকে পরবর্তীতে মূল ও বিটপ সৃষ্টি হয়।" },
+          { question: "উদ্ভিদের কোষ প্রাচীর এনজাইম দিয়ে গলিয়ে ফেলা কোষকে কী বলা হয়?", options: ["ক্যালস", "প্রোটোপ্লাস্ট (Protoplast)", "সোমাটিক হাইব্রিড", "সাইব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "medium", explanation: "সেলুলেজ ও পেকটিনেজ এনজাইম দিয়ে কোষ প্রাচীর সরিয়ে ফেললে কেবল প্লাজমামেমব্রেন বেষ্টিত প্রোটোপ্লাস্ট পাওয়া যায়।", concept: "Protoplast Isolation", shortcut: "Cell without Wall = Protoplast", mistake: "সাইব্রিড ভাবা", tip: "প্রোটোপ্লাস্ট ফিউশন দিয়ে সোমাটিক হাইব্রিড তৈরি করা জ্ঞ।" },
+          { question: "দুটি ভিন্ন প্রজাতির প্রোটোপ্লাস্টের সংমিশ্রণে নতুন উদ্ভিদ সৃষ্টির প্রযুক্তিকে কী বলা হয়?", options: ["সোমাটিক হাইব্রিডাইজেশন (Somatic Hybridization)", "সাইটোপ্লাজমীয় জিনোটাইপ", "জেনেটিক ইঞ্জিনিয়ারিং", "মাইক্রোপ্রোপাগেশন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "দৈহিক কোষের প্রোটোপ্লাস্ট গলিয়ে মিলন ঘটিয়ে সংকর উদ্ভিদ তৈরি করাকে সোমাটিক হাইব্রিডাইজেশন বলে (যেমন: Pomato)।", concept: "Somatic Hybrids", shortcut: "Protoplast Fusion = Somatic Hybrid", mistake: "জেনেটিক ইঞ্জিনিয়ারিং বলা", tip: "পটেটো ও টমেটোর প্রোটোপ্লাস্ট ফিউশনে 'পমেটো' তৈরি হয়।" },
+          { question: "টমেটো এবং আলুর প্রোটোপ্লাস্ট ফিউশন ঘটিয়ে সৃষ্ট সোমাটিক সংকর উদ্ভিদের নাম কী?", options: ["টমেটো আলু", "পমেটো (Pomato)", "টপটেটো", "আলুটমেটো"], correct: 1, topic: "Protoplast Fusion", difficulty: "easy", explanation: "Potato + Tomato = Pomato (মাটির নিচে আলু এবং উপরে টমেটো ফলে)।", concept: "Pomato Example", shortcut: "Potato + Tomato = Pomato", mistake: "টমেটো আলু বলা", tip: "এটি প্রোটোপ্লাস্ট ফিউশনের একটি যুগান্তকারী উদাহরণ।" },
+          { question: "প্রোটোপ্লাস্ট ফিউশন বা গলন ত্বরান্বিত করার জন্য কোন রাসায়নিক দ্রবণ ব্যবহৃত হয়?", options: ["পলিইথিলিন গ্লাইকল (PEG)", "ইথানল", "সোডিয়াম ক্লোরাইড", "ফরমালিন"], correct: 0, topic: "Protoplast Fusion", difficulty: "hard", explanation: "PEG (Polyethylene Glycol) প্রোটোপ্লাস্ট দুটির মেমব্রেনকে সাময়িকভাবে গলিয়ে দ্রুত ফিউশনে সাহায্য করে।", concept: "Fusogen Chemical", shortcut: "PEG = Protoplast Fusogen", mistake: "ইথানল মনে করা", tip: "PEG এবং উচ্চ pH/Ca2+ আয়ন ফিউশনে ভূমিকা রাখে।" },
+          { question: "পরাগরেণু বা পরাগধানী কালচার করে কোন ধরণের উদ্ভিদ তৈরি করা যায়?", options: ["ডিপ্লয়েড (2n)", "হ্যাপ্লয়েড (n)", "টেট্রাপ্লয়েড (4n)", "ট্রিপ্লয়েড (3n)"], correct: 1, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "পরাগরেণু মিয়োসিসের ফলে উৎপন্ন হওয়ায় এটি হ্যাপ্লয়েড (n)। পরাগধানী কালচারে সরাসরী হ্যাপ্লয়েড উদ্ভিদ পাওয়া যায়।", concept: "Haploid Plant Breeding", shortcut: "Pollen Culture = Haploid (n)", mistake: "ডিপ্লয়েড ভাবা", tip: "Guha & Maheshwari (1964) প্রথম ধুতুরা গাছে এনথার কালচার করেন।" },
+          { question: "প্রথম পরাগধানী কালচার (Anther Culture) করে হ্যাপ্লয়েড উদ্ভিদ তৈরি করেন কোন বিজ্ঞানীদ্বয়?", options: ["গুহ ও মহেশ্বরী (Guha & Maheshwari)", "ওয়াটসন ও ক্রিক", "হাবারল্যান্ডট", "মেন্ডেল"], correct: 0, topic: "Anther Culture & Haploids", difficulty: "medium", explanation: "ভারতীয় বিজ্ঞানী শিপোরা গুহ ও পঞ্চানন মহেশ্বরী ১৯৬৪ সালে *Datura innoxia* গাছে অ্যানথার কালচার সফল করেন।", concept: "Haploid Breeding History", shortcut: "Guha & Maheshwari = Anther Culture", mistake: "হাবারল্যান্ডট বলা", tip: "এটি বায়োলজির অন্যতম সেরা ভারতীয় আবিষ্কার।" },
+          { question: "রোগমুক্ত বা ভাইরাসমুক্ত চারা উৎপাদনের জন্য টিস্যু কালচারের কোন পদ্ধতি ব্যবহার করা হয়?", options: ["মেরিস্টেম কালচার (Meristem Culture)", "এনথার কালচার", "এমব্রায়ো কালচার", "প্রোটোপ্লাস্ট ফিউশন"], correct: 0, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "কাণ্ডের অগ্রভাগের ভাজক টিস্যুতে (Meristem) সংবহন না থাকায় এবং কোষ বিভাজনের হার বেশি হওয়ায় সেখানে ভাইরাস পৌঁছাতে পারে না।", concept: "Virus-free Plants", shortcut: "Meristem = Virus Free", mistake: "এমব্রায়ো কালচার বলা", tip: "আলু ও কলার ক্ষেত্রে ভাইরাসমুক্ত চারা তৈরিতে এটি সফল।" },
+          { question: "বিটি কটন (Bt Cotton) বা বিটি বেগুন তৈরিতে কোন ব্যাকটেরিয়ার জিন প্রবেশ করানো হয়েছে?", options: ["*Agrobacterium tumefaciens*", "*Bacillus thuringiensis*", "*Escherichia coli*", "*Rhizobium leguminosarum*"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "*Bacillus thuringiensis* (Bt) ব্যাকটেরিয়ার Cry-জিন ক্রিস্টাল প্রোটিন তৈরি করে যা ক্ষতিকর পোকা মারতে সক্ষম।", concept: "Bt Crops", shortcut: "Bt = Bacillus thuringiensis", mistake: "Agrobacterium মনে করা", tip: "Bt বেগুন ডাল ও ডগা ছিদ্রকারী পোকা প্রতিরোধী।" },
+          { question: "উদ্ভিদ প্রজননে জিন স্থানান্তরের জন্য সবচেয়ে জনপ্রিয় প্রাকৃতিক ভেক্টর (Natural Genetic Engineer) কোনটি?", options: ["*Agrobacterium tumefaciens* এর Ti প্লাজমিড", "*E. coli* প্লাজমিড", "TMV ভাইরাস", "ব্যাকটেরিওফেজ"], correct: 0, topic: "Genetic Engineering in Breeding", difficulty: "medium", explanation: "*Agrobacterium tumefaciens* ব্যাকটেরিয়ার Ti (Tumor Inducing) প্লাজমিড দ্বি-বীজপত্রী উদ্ভিদে সহজেই T-DNA ট্রান্সফার করতে পারে।", concept: "Plant Vector", shortcut: "Natural Genetic Engineer = Agrobacterium", mistake: "E. coli বলা", tip: "উদ্ভিদে ট্রান্সজিন স্থানান্তরে Ti-প্লাজমিড বহুল ব্যবহৃত।" },
+          { question: "গোল্ডেন রাইস (Golden Rice) এ কোন ভিটামিনের পূর্বসূরী (Beta-Carotene) সমৃদ্ধ জিন যুক্ত করা হয়েছে?", options: ["ভিটামিন সি", "ভিটামিন এ (Vitamin A)", "ভিটামিন ডি", "ভিটামিন বি১২"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "easy", explanation: "গোল্ডেন রাইসে বিটা-ক্যারোটিন তৈরির জিন স্থানান্তরিত করা হয়েছে, যা মানবদেহে গিয়ে ভিটামিন-এ তে রূপান্তরিত হয়।", concept: "Golden Rice Nutrition", shortcut: "Golden Rice = Vitamin A", mistake: "ভিটামিন সি ভাবা", tip: "অন্ধত্ব নিরাময়ে গোল্ডেন রাইস উদ্ভাবিত হয়েছে।" },
+          { question: "কোন এনজাইমের সাহায্যে ডিএনএ অণুর নির্দিষ্ট অংশ কাটা যায়?", options: ["লাইগেজ (Ligase)", "রেস্ট্রিকশন এন্ডোনিউক্লিয়েজ (Restriction Endonuclease)", "পলিমারেজ", "প্রোটিয়েজ"], correct: 1, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "রেস্ট্রিকশন এনজাইমকে 'আণবিক কাঁচি' (Molecular Scissors) বলা হয় কারণ এটি DNA-এর নির্দিষ্ট সিকোয়েন্স কেটে ফেলে।", concept: "Molecular Scissors", shortcut: "Cutting DNA = Restriction Enzyme", mistake: "লাইগেজ ভাবা (যা জোড়া দেয়)", tip: "EcoRI একটি বিখ্যাত রেস্ট্রিকশন এনজাইম।" },
+          { question: "কাটা ডিএনএ খণ্ডগুলোকে একত্রিত বা জোড়া লাগানোর কাজে কোন এনজাইম ব্যবহৃত হয়?", options: ["ডিএনএ লাইগেজ (DNA Ligase)", "রেস্ট্রিকশন এনজাইম", "হেলিকেজ", "জাইমেজ"], correct: 0, topic: "Recombinant DNA in Breeding", difficulty: "easy", explanation: "ডিএনএ লাইগেজকে 'আণবিক আঠা' (Molecular Glue) বলা হয়, যা ফসফোডাইএস্টার বন্ধন তৈরি করে DNA জোড়া দেয়।", concept: "Molecular Glue", shortcut: "Joining DNA = DNA Ligase", mistake: "কাটার এনজাইমের সাথে মেলানো", tip: "Recombinant DNA তৈরিতে কাটিং ও জয়েনিং অত্যাবশ্যক।" },
+          { question: "কৃত্রিম উপায়ে উদ্ভিদের পুষ্টি মাধ্যমে ভ্রূণ সুপ্তাবস্থা কাটিয়ে দ্রুত চারা তৈরির পদ্ধতিকে কী বলে?", options: ["এমব্রায়ো রেসকিউ (Embryo Rescue)", "ক্যালস কালচার", "সোমাটিক এমব্রায়োজেনেসিস", "এনথার কালচার"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "দূরবর্তী সংকরায়ণে ভ্রূণ নষ্ট হওয়া রোধ করতে অপরিণত ভ্রূণকে পুষ্টি মাধ্যমে প্রতিস্থাপন করে রক্ষা করাকে Embryo Rescue বলে।", concept: "Embryo Rescue", shortcut: "Saving Aborted Embryo = Embryo Rescue", mistake: "ক্যালস কালচার ভাবা", tip: "Inter-specific সংকরায়ণে এটি অত্যন্ত কার্যকর।" },
+          { question: "অঙ্গজ টিস্যু কালচার থেকে সৃষ্ট উদ্ভিদের মধ্যে যে সোমাটিক পরিবর্তন বা প্রকরণ দেখা যায় তাকে কী বলে?", options: ["সোমাক্লোনাল ভ্যারিয়েশন (Somaclonal Variation)", "জার্মপ্লাজম পরিবর্তন", "জিন মিউটেশন", "হাইব্রিড ভিগর"], correct: 0, topic: "Tissue Culture Applications", difficulty: "medium", explanation: "ইন-ভিট্রো কালচার বা টিস্যু কালচারের সময় ক্যালস টিস্যুতে যে পরিবর্তন ও প্রকরণ ঘটে তাকে সোমাক্লোনাল ভ্যারিয়েশন বলে।", concept: "Tissue Culture Variation", shortcut: "In vitro Variation = Somaclonal", mistake: "হাইব্রিডাইজেশন বলা", tip: "নতুন জাত উদ্ভাবনে সোমাক্লোনাল ভ্যারিয়েশন কাজে লাগে।" },
+          { question: "একটি নির্দিষ্ট অঞ্চলের সকল প্রকার বৈচিত্র্যময় প্রজাতি ও তাদের জিনের সংগ্রহকে কী বলা হয়?", options: ["জিন ব্যাংক", "জার্মপ্লাজম (Germplasm)", "জিনোম", "জিন পুল"], correct: 1, topic: "Germplasm Conservation", difficulty: "medium", explanation: "কোনো ফসলের বা তার বুনো আত্মীয়ের সকল প্রকার এলিল বা জিন ধারণকারী প্রজনন উপাদানকে একত্রে জার্মপ্লাজম বলে।", concept: "Germplasm Definition", shortcut: "Total Genetic Material = Germplasm", mistake: "জিনপুল ভাবা", tip: "জার্মপ্লাজম সংরক্ষণ করা না হলে প্রজাতির বিলুপ্তি ঘটে।" },
+          { question: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট (BRRI) কোথায় অবস্থিত?", options: ["গাজীপুর", "ময়মনসিংহ", "ঢাকা", "রংপুর"], correct: 0, topic: "Plant Breeding Research Institutes", difficulty: "easy", explanation: "BRRI (Bangladesh Rice Research Institute) জয়দেবপুর, গাজীপুরে অবস্থিত।", concept: "BRRI Location", shortcut: "BRRI = Gazipur", mistake: "ময়মনসিংহ ভাবা (যেখানে BAU)", tip: "BRRI বহু উফশী ও প্রতিকূলতা সহনশীল ধানের জাত তৈরি করেছে।" },
+          { question: "বিআর-২৮ (BR-28) এবং বিআর-২৯ (BR-29) বাংলাদেশের কোন ফসলের জনপ্রিয় উফশী জাত?", options: ["গম", "ধান", "ভুট্টা", "সরিষা"], correct: 1, topic: "Crop Varieties in BD", difficulty: "easy", explanation: "BR-28 ও BR-29 বোরো মৌসুমের অত্যন্ত জনপ্রিয় এবং উচ্চফলনশীল (HYV) ধানের জাত।", concept: "Rice Varieties", shortcut: "BR = Rice (BRRI)", mistake: "গমের জাত ভাবা", tip: "বাংলাদেশ ধান গবেষণা ইনস্টিটিউট এগুলো প্রবর্তন করে।" },
+          { question: "বাংলাদেশে লবণাক্ততা সহনশীল ধানের জাত কোনটি?", options: ["ব্রি ধান ৪৭ (BRRI Dhan 47)", "বিআর ৮", "ব্রি ধান ২৮", "বিআর ১১"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "দক্ষিণাঞ্চলের লবণাক্ত উপকূলীয় এলাকায় চাষের জন্য ব্রি ধান ৪৭, ব্রি ধান ৬১ ইত্যাদি উদ্ভাবন করা হয়েছে।", concept: "Stress Tolerant Rice", shortcut: "Salt Tolerant = BRRI Dhan 47", mistake: "ব্রি ধান ২৮ মনে করা", tip: "এটি ১০-১২ dS/m লবণাক্ততা সহ্য করতে পারে।" },
+          { question: "খরা সহনশীল (Drought tolerant) ধানের জাত কোনটি?", options: ["ব্রি ধান ৫৬ (BRRI Dhan 56)", "ব্রি ধান ৪৭", "বিআর ২৬", "ব্রি ধান ২৯"], correct: 0, topic: "Crop Varieties in BD", difficulty: "medium", explanation: "ব্রি ধান ৫৬ এবং ব্রি ধান ৫৭ হলো খরাপ্রবণ বরেন্দ্র এলাকার জন্য উপযোগী খরা সহনশীল জাত।", concept: "Drought Tolerant Rice", shortcut: "Drought = BRRI Dhan 56", mistake: "ব্রি ধান ৪৭ ভাবা (যা লবণাক্ততা সহনশীল)", tip: "মঙ্গা এলাকায় এর চাষ লাভজনক।" },
+          { question: "কৃত্রিম জিন স্থানান্তরের জন্য 'জিন গান' (Gene Gun / Biolistic) পদ্ধতিতে কোন ধাতুর সূক্ষ্ম কণা ব্যবহার করা হয়?", options: ["লোহা ও তামা", "সোনা বা টাংস্টেন (Gold or Tungsten)", "অ্যালুমিনিয়াম", "রুপা"], correct: 1, topic: "Genetic Engineering in Breeding", difficulty: "hard", explanation: "জিন গান পদ্ধতিতে সোনা (Gold) বা টাংস্টেন দিয়ে কোট করা DNA কণাকে উচ্চবেগে কোষের ভেতরে নিক্ষেপ করা হয়।", concept: "Gene Gun Technique", shortcut: "Gene Gun Microcarriers = Gold/Tungsten", mistake: "তামা ভাবা", tip: "একবীজপত্রী উদ্ভিদে জিন স্থানান্তরে জিন গান উপযোগী।" },
+          { question: "বাংলাদেশে পারমাণবিক শক্তি গবেষণা প্রতিষ্ঠানের (BINA) প্রধান কাজ কী?", options: ["রাসায়নিক সার তৈরি", "মিউটেশন ব্রিডিং এর মাধ্যমে উন্নত জাত উদ্ভাবন", "কীটনাশক তৈরি", "মাটি পরীক্ষা"], correct: 1, topic: "Plant Breeding Research Institutes", difficulty: "medium", explanation: "BINA (Bangladesh Institute of Nuclear Agriculture) তেজস্ক্রিয় রশ্নি (Gamma Radiation) প্রয়োগ করে মিউট্যান্ট জাত তৈরি করে।", concept: "BINA Role", shortcut: "BINA = Mutation Breeding / Nuclear Ag", mistake: "সার তৈরি ভাবা", tip: "ইরাটম ধান ও বিনাসরিষা BINA-এর উদ্ভাবন।" },
+          { question: "তেজস্ক্রিয় গামা রশ্নি (Gamma Rays) প্রয়োগ করে উদ্ভিদ প্রজননের কোন পদ্ধতিটি সম্পাদন করা হয়?", options: ["মিউটেশন ব্রিডিং (Mutation Breeding)", "ইমাসকুলেশন", "টিস্যু কালচার", "পদ্ধতিগত নির্বাচন"], correct: 0, topic: "Mutation Breeding", difficulty: "easy", explanation: "গামা রশ্নি, এক্স-রে বা নিউট্রন প্রয়োগ করে কৃত্রিম মিউটেশন ঘটানোকে Induced Mutation বা Mutation Breeding বলে।", concept: "Physical Mutagens", shortcut: "Gamma Rays = Mutation Breeding", mistake: "টিস্যু কালচার মনে করা", tip: "গামা গার্ডেনে তেজস্ক্রিয় কোবাল্ট-৬০ ব্যবহার করা হয়।" },
+          { question: "কোনটি স্ব-পরাগযোগের জন্য একটি প্রাকৃতিক অভিযোজন?", options: ["ডাইকোগ্যামি (Dichogamy)", "ক্লিস্টোগ্যামি (Clistogamy)", "স্ব-বন্ধ্যাত্ব (Self-sterility)", "একলিঙ্গতা (Heterostyly)"], correct: 1, topic: "Pollination Biology", difficulty: "hard", explanation: "ক্লিস্টোগ্যামি অবস্থায় ফুল কখনোই ফোটে না (বন্ধ থাকে), ফলে কেবল স্ব-পরাগযোগ বাধ্যতামূলক হয়ে দাঁড়ায় (যেমন: কানশিরা)।", concept: "Self Pollination Adaptation", shortcut: "Closed Flower = Clistogamy", mistake: "ডাইকোগ্যামি ভাবা", tip: "ডাইকোগ্যামি হলো পর-পরাগযোগের অভিযোজন।" },
+          { question: "স্ত্রী ও পুরুষ ফুল ভিন্ন গাছে অবস্থান করলে সেই উদ্ভিদকে কী বলা হয়?", options: ["মনোএসিয়াস (Monoecious)", "ডাইওসিয়াস (Dioecious)", "উভলিঙ্গ", "পলিগ্যামাস"], correct: 1, topic: "Pollination Biology", difficulty: "medium", explanation: "একই গাছে উভয় ফুল থাকলে Monoecious (যেমন: ভুট্টা) এবং ভিন্ন ভিন্ন গাছে থাকলে Dioecious (যেমন: পেঁপে, তাল)।", concept: "Plant Sex Distribution", shortcut: "Separate Plants = Dioecious", mistake: "Monoecious এর সাথে গুলিয়ে ফেলা", tip: "পেঁপে গাছে পর-পরাগযোগ বাধ্যতামূলক।" },
+          { question: "উদ্ভিদ প্রজননে সায়ব্রিড (Cybrid) বলতে কী বোঝায়?", options: ["দুইটি নিউক্লিয়াসের মিলন", "সাইটোপ্লাজমিক সংকর (Cytoplasmic Hybrid)", "জিনগত মিউট্যান্ট", "ডিএনএ জোড় সায়ব্রিড"], correct: 1, topic: "Protoplast Fusion", difficulty: "hard", explanation: "একটি কোষের নিউক্লিয়াস এবং অন্য কোষের সাইটোপ্লাজম যুক্ত হয়ে সৃষ্ট সংকরকে Cybrid (Cytoplasmic Hybrid) বলে।", concept: "Cybrid Definition", shortcut: "One Nucleus + Other Cytoplasm = Cybrid", mistake: "Somatic Hybrid এর সাথে গুটিয়ে ফেলা", tip: "সায়ব্রিডে কেবল একটি জেনোম এবং উভয় প্লাস্টিড থাকে।" },
+          { question: "টিস্যু কালচারের ক্ষেত্রে কালচার মিডিয়ামের pH সাধারণত কত রাখা হয়?", options: ["3.5 - 4.5", "5.6 - 5.8", "7.0 - 7.5", "8.5 - 9.0"], correct: 1, topic: "Tissue Culture & Micropropagation", difficulty: "medium", explanation: "এমএস (MS) পুষ্টি মিডিয়ামের অনুকূল pH হলো ৫.৬ থেকে ৫.৮ (হালকা অম্লীয়)।", concept: "Culture Media pH", shortcut: "Media pH = 5.6 to 5.8", mistake: "৭.০ (নিরপেক্ষ) ভাবা", tip: "অটো ক্লেভ করার আগেই pH ঠিক করতে হয়।" },
+          { question: "টিস্যু কালচার পুষ্টি মাধ্যমকে জীবাণুমুক্ত (Sterilization) করার আধুনিক যন্ত্র কোনটি?", options: ["হট এয়ার ওভেন", "ইনকিউবেটর", "অটোক্লেভ (Autoclave)", "সেনট্রিফিউজ"], correct: 2, topic: "Tissue Culture & Micropropagation", difficulty: "easy", explanation: "অটোক্লেভ যন্ত্রে ১২১°C তাপমাত্রায়, ১৫ পাউন্ড/বর্গইঞ্চি চাপে ১৫-২০ মিনিট রেখে শতভাগ জীবাণুমুক্ত করা হয়।", concept: "Autoclave Sterilization", shortcut: "121°C, 15 psi = Autoclave", mistake: "ইনকিউবেটর ভাবা", tip: "ইনকিউবেটর তাপমাত্রা নিয়ন্ত্রণে ও কালচারে ব্যবহৃত হয়।" },
+          { question: "নিচের কোনটি উদ্ভিদের প্রধান সাইটোকাইনিন হরমোন যা টিস্যু কালচারে কোষ বিভাজন উদ্দীপিত করে?", options: ["2,4-D", "কাইনেটিন / জিয়াটিন (Kinetin / Zeatin)", "IAA", "জিব্যারেলিক এসিড"], correct: 1, topic: "Plant Growth Regulators", difficulty: "medium", explanation: "সাইটোকাইনিন (কাইনেটিন, বিএপি, জিয়াটিন) টিস্যু কালচারে দ্রুত কোষ বিভাজন ও বিটপ (Shoot) গঠনে সাহায্য করে।", concept: "Hormone Role in Culture", shortcut: "Cytokinin = Shoot / Cell Division", mistake: "2,4-D বলা (যা মূলত অক্সিন)", tip: "অক্সিন ও সাইটোকাইনিনের অনুপাত অঙ্গ সৃষ্টি নিয়ন্ত্রণ করে।" },
+          { question: "কৃত্রিম বীজ (Synthetic Seed / Somatic Seed) তৈরিতে সোমাটিক ভ্রূণকে কোন কেমিকেল দিয়ে আবৃত (Encapsulate) করা হয়?", options: ["সোডিয়াম অ্যালজিনেট (Sodium Alginate)", "অগার", "সেলুলোজ", "পেকটিন"], correct: 0, topic: "Tissue Culture Applications", difficulty: "hard", explanation: "সোমাটিক এমব্রায়ো বা ক্যালসকে সোডিয়াম অ্যালজিনেট ও ক্যালসিয়াম ক্লোরাইড দিয়ে কোটিং করে কৃত্রিম বীজ প্রস্তুত করা হয়।", concept: "Synthetic Seeds", shortcut: "Sodium Alginate = SynSeed Coating", mistake: "অগার মনে করা", tip: "এর মাধ্যমে কৃত্রিম বীজ দীর্ঘকাল সংরক্ষণ করা যায়।" },
+          { question: "কলা (Banana) উদ্ভিদের দ্রুত ও বিপুল পরিমানে বংশবৃদ্ধির জন্য বাণিজ্যিকভাবে কোন প্রযুক্তি ব্যবহৃত হচ্ছে?", options: ["বীজ বপন", "মাইক্রোপ্রোপাগেশন / টিস্যু কালচার (Micropropagation)", "গ্রাফটিং", "কাটিং"], correct: 1, topic: "Tissue Culture Applications", difficulty: "easy", explanation: "মাইক্রোপ্রোপাগেশন টিস্যু কালচারের একটি রূপ, যার মাধ্যমে অত্যন্ত কম সময়ে রোগমুক্ত হাজার হাজার কলার চারা তৈরি সম্ভব।", concept: "Micropropagation Benefits", shortcut: "Commercial Clones = Micropropagation", mistake: "গ্রাফটিং ভাবা", tip: "কলা বীজহীন হওয়ায় মাইক্রোপ্রোপাগেশনই সেরা উপায়।" }
         ]
       };
 
@@ -712,7 +704,7 @@
 
         document.getElementById('examTitle').innerText = examData.title || "লাইভ পরীক্ষা";
         
-        const cleanId = (examData.id || "exam_physics").replace(/[^a-zA-Z0-9]/g, "_");
+        const cleanId = (examData.id || "exam_v1").replace(/[^a-zA-Z0-9]/g, "_");
         activeExamKey = "gaivex_submitted_" + cleanId;
         examTimerKey = "gaivex_timer_" + cleanId;
         autoSaveKey = "gaivex_autosave_" + cleanId;
@@ -722,7 +714,7 @@
           try { userSelections = JSON.parse(localAutoSave); } catch(e){}
         }
 
-        totalDurationSeconds = (examData.duration || 30) * 60;
+        totalDurationSeconds = (examData.duration || 25) * 60;
         const savedTimer = localStorage.getItem(examTimerKey);
         timeRemaining = savedTimer !== null ? parseInt(savedTimer, 10) : totalDurationSeconds;
 
@@ -835,7 +827,7 @@
           updatePalette();
         };
 
-        // Render Mathematical/Physics Equations using KaTeX
+        // Render Mathematical/Botanical Equations
         renderMathInQuestions();
       }
 
@@ -1044,7 +1036,7 @@
       window.closeConfirmModal = function() { document.getElementById('confirmModal').style.display = 'none'; };
       window.confirmAndSubmit = function() { closeConfirmModal(); submitExamAction(); };
 
-      // --- Submission & Evaluation Function ---
+      // --- Submission & Evaluation Function (Updated) ---
       async function submitExamAction() {
         if (isSubmitted) return;
 
@@ -1078,6 +1070,7 @@
         let finalScore = correctCount - (wrongCount * wrongMark);
         if (finalScore < 0) finalScore = 0;
 
+        // LocalStorage এ অ্যানসার সেভ করা
         localStorage.setItem(activeExamKey, JSON.stringify({
           score: finalScore,
           userAnswers: userSelections,
@@ -1111,15 +1104,18 @@
             });
           }
         } catch(err) { console.error("Score Save Error:", err); }
+
+        loadLiveLeaderboard(examIdClean);
       }
 
+      // --- Dashboard & Review Display Function (Fixed & Updated) ---
       function showSubmittedResult(userAnswers, score, timeSpent, qTimeMap) {
         const total = examData.questions.length;
         
         let correct = 0;
         let wrong = 0;
         let skipped = 0;
-        let topicStats = {};
+        let topicStats = {}; // Dynamic Topic Stat Calculation
 
         examData.questions.forEach((q, i) => {
           const selected = userAnswers ? userAnswers[i] : undefined;
@@ -1160,6 +1156,7 @@
         document.getElementById('barWrong').style.width = `${(wrong/total)*100}%`;
         document.getElementById('barSkip').style.width = `${(skipped/total)*100}%`;
 
+        // AI Analysis এখন সঠিকভাবে টপিক ডাটা পাবে
         runAIAnalysis(accuracy, topicStats);
 
         document.getElementById('timerDisplay').innerText = "00:00";
@@ -1180,152 +1177,171 @@
             timeBadge.innerText = `⏱️ ব্যয়িত সময়: ${qTimeMap[i]}s`;
           }
 
-          const allLabels = document.querySelectorAll(`[id^="opt-label-${i}-"]`);
-          allLabels.forEach((lbl, idx) => {
-            lbl.classList.add('locked-option');
-            if (idx === correctVal) {
-              lbl.classList.add('correct-opt');
-            } else if (selected !== undefined && idx === Number(selected) && idx !== correctVal) {
-              lbl.classList.add('wrong-opt');
+          (q.options || []).forEach((_, oIndex) => {
+            const lbl = document.getElementById(`opt-label-${i}-${oIndex}`);
+            if(lbl) {
+              lbl.classList.remove('selected-option', 'locked-option', 'correct-opt', 'wrong-opt');
+              const input = lbl.querySelector('input');
+              if(input) {
+                input.disabled = true;
+                if (selected !== undefined && Number(selected) === oIndex) {
+                  input.checked = true;
+                }
+              }
+
+              if (oIndex === correctVal) {
+                lbl.classList.add('correct-opt');
+              }
+              if (selected !== undefined && Number(selected) === oIndex && Number(selected) !== correctVal) {
+                lbl.classList.add('wrong-opt');
+              }
             }
           });
         });
 
-        renderMathInQuestions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
+      // --- UI & Analytical Handlers ---
       function runAIAnalysis(accuracy, topicStats) {
-        const textElem = document.getElementById('aiAnalysisText');
-        const listElem = document.getElementById('aiTopicList');
-
-        let msg = `আপনার সার্বিক একুরেসি ${accuracy}%. `;
-        if (accuracy >= 80) {
-          msg += "আপনার প্রস্তুতি অত্যন্ত চমৎকার! পর্যায়বৃত্ত গতি ও তরঙ্গের সূত্রগুলোতে আপনার দখল দারুণ।";
-        } else if (accuracy >= 50) {
-          msg += "আপনার প্রস্তুতি ভালো, তবে কিছু ম্যাথ ও তাত্ত্বিক অংশে আরও প্র্যাকটিস প্রয়োজন।";
-        } else {
-          msg += "আপনার বেসিক ক্লিয়ারেন্স বাড়াতে হবে। বিশেষ করে স্প্রিং ও দোলক সম্পর্কিত সমীকরণগুলো ভালোভাবে রিভিশন দিন।";
+        let weakTopics = [];
+        let strongTopics = [];
+        for(let topic in topicStats) {
+            let stat = topicStats[topic];
+            let percent = (stat.correct / stat.total) * 100;
+            if(percent < 50) weakTopics.push(topic);
+            else strongTopics.push(topic);
         }
-        textElem.innerText = msg;
-
-        let pillsHtml = "";
-        for (let tName in topicStats) {
-          let tData = topicStats[tName];
-          let tAcc = Math.round((tData.correct / tData.total) * 100);
-          let isStrong = tAcc >= 60;
-          pillsHtml += `<div class="topic-pill ${isStrong ? 'strong' : 'weak'}"><span>${isStrong ? '✅' : '⚠️'}</span> ${tName} (${tAcc}%)</div>`;
-        }
-        listElem.innerHTML = pillsHtml;
+        
+        let aiText = "দুর্দান্ত পারফরম্যান্স! তবে কিছু বিষয়ে আরও ফোকাস প্রয়োজন।";
+        if(accuracy < 40) aiText = "আপনার বেসিক আরো ক্লিয়ার করতে হবে। নিচে দুর্বল টপিকগুলো দেওয়া হলো।";
+        else if (accuracy < 70) aiText = "ভালো করেছেন, তবে আরও ইম্প্রুভ করার সুযোগ রয়েছে।";
+        
+        document.getElementById('aiAnalysisText').innerText = aiText;
+        
+        let topicHtml = '';
+        weakTopics.forEach(t => topicHtml += `<span class="topic-pill weak">↓ ${t}</span>`);
+        strongTopics.forEach(t => topicHtml += `<span class="topic-pill strong">↑ ${t}</span>`);
+        document.getElementById('aiTopicList').innerHTML = topicHtml;
       }
-
-      window.runAIAnalysis = runAIAnalysis;
-
-      window.filterQuestions = function(filterType) {
+      
+      window.filterQuestions = function(mode) {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
-
+        
         examData.questions.forEach((q, i) => {
-          const box = document.getElementById(`q-box-${i}`);
-          if (!box) return;
-
-          const selected = userSelections[i];
-          const correctVal = Number(q.correct);
-          let show = true;
-
-          if (filterType === 'correct') {
-            show = (selected !== undefined && Number(selected) === correctVal);
-          } else if (filterType === 'wrong') {
-            show = (selected !== undefined && Number(selected) !== correctVal);
-          } else if (filterType === 'skipped') {
-            show = (selected === undefined);
-          } else if (filterType === 'bookmarked') {
-            show = !!bookmarkedQuestions[i];
-          } else if (filterType === 'review') {
-            show = !!reviewQuestions[i];
-          }
-
+          let box = document.getElementById(`q-box-${i}`);
+          if(!box) return;
+          
+          let selected = userSelections[i];
+          let isCorrect = selected !== undefined && Number(selected) === Number(q.correct);
+          let isWrong = selected !== undefined && Number(selected) !== Number(q.correct);
+          let isSkip = selected === undefined || selected === null;
+          let isReview = reviewQuestions[i];
+          let isBookmark = bookmarkedQuestions[i];
+          
+          let show = false;
+          if(mode === 'all') show = true;
+          else if(mode === 'correct' && isCorrect) show = true;
+          else if(mode === 'wrong' && isWrong) show = true;
+          else if(mode === 'skipped' && isSkip) show = true;
+          else if(mode === 'bookmarked' && isBookmark) show = true;
+          else if(mode === 'review' && isReview) show = true;
+          
           box.style.display = show ? 'block' : 'none';
         });
       };
-
-      window.toggleTabs = function(tabName) {
-        const lb = document.getElementById('tabLeaderboard');
-        const hi = document.getElementById('tabHistory');
-        if (tabName === 'leaderboard') {
-          lb.style.display = lb.style.display === 'block' ? 'none' : 'block';
-          hi.style.display = 'none';
-        } else {
-          hi.style.display = hi.style.display === 'block' ? 'none' : 'block';
-          lb.style.display = 'none';
-        }
+      
+      window.toggleTabs = function(tab) {
+         document.getElementById('tabLeaderboard').style.display = tab === 'leaderboard' ? 'block' : 'none';
+         document.getElementById('tabHistory').style.display = tab === 'history' ? 'block' : 'none';
       };
-
-      async function loadLiveLeaderboard(examIdClean) {
-        try {
-          const snap = await get(ref(db, `leaderboard/${examIdClean}`));
-          const tbody = document.getElementById('leaderboardBody');
-          if (!snap.exists()) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">কোনো র‍্যাংক পাওয়া যায়নি।</td></tr>`;
-            return;
+      
+      window.openReportModal = function(qIndex) {
+         document.getElementById('reportQIndex').value = qIndex;
+         document.getElementById('reportModal').style.display = 'flex';
+      };
+      
+      window.closeReportModal = function() {
+         document.getElementById('reportModal').style.display = 'none';
+      };
+      
+      window.submitQuestionReport = function() {
+         alert("আপনার রিপোর্ট সফলভাবে জমা হয়েছে। ধন্যবাদ!");
+         closeReportModal();
+      };
+      
+      window.printCertificate = function() {
+         document.getElementById('certName').innerText = document.getElementById('uName').innerText || 'Student';
+         document.getElementById('certExam').innerText = examData.title;
+         document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
+         document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
+         let now = new Date();
+         document.getElementById('certDate').innerText = now.toLocaleDateString();
+         
+         let certHtml = document.getElementById('certificateContainer').outerHTML;
+         let win = window.open('', '', 'width=800,height=600');
+         win.document.write('<html><head><title>Certificate</title>');
+         win.document.write('<style>body{font-family:sans-serif; padding:20px; text-align:center;} .certificate-card{display:block !important; background:#fff; color:#000; padding:30px; border:10px double #1e3a8a; border-radius:8px;} h1{color:#1e3a8a;} h3{color:#d97706;}</style>');
+         win.document.write('</head><body>');
+         win.document.write(certHtml);
+         win.document.write('</body></html>');
+         win.document.close();
+         win.focus();
+         setTimeout(() => { win.print(); win.close(); }, 500);
+      };
+      
+      window.shareResultOnFacebook = function() {
+          let score = document.getElementById('resScore').innerText;
+          let url = "https://gaivex.com";
+          let text = `আমি GAIVEX Smart Exam System-এ ${score} স্কোর করেছি! তুমিও নিজেকে যাচাই করো।`;
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, '_blank');
+      };
+      
+      window.generateAIPractice = function() {
+          alert("AI Practice Module is preparing your custom questions based on weak topics. This feature will be available soon!");
+      };
+      
+      async function loadLiveLeaderboard(examId) {
+          try {
+              let lbRef = ref(db, `leaderboard/${examId}`);
+              onValue(lbRef, (snapshot) => {
+                  if(snapshot.exists()) {
+                      let data = snapshot.val();
+                      let arr = [];
+                      for(let uid in data) {
+                          arr.push({...data[uid], uid});
+                      }
+                      arr.sort((a,b) => b.score - a.score || a.timeSpent - b.timeSpent);
+                      
+                      let tbody = '';
+                      arr.slice(0, 10).forEach((user, idx) => {
+                          let isMe = currentUser && user.uid === currentUser.uid;
+                          tbody += `<tr class="${isMe ? 'my-rank' : ''}">
+                              <td>${idx + 1}</td>
+                              <td>${user.name}</td>
+                              <td>${user.score.toFixed(2)}</td>
+                              <td>${Math.floor(user.timeSpent / 60)}m ${user.timeSpent % 60}s</td>
+                          </tr>`;
+                      });
+                      document.getElementById('leaderboardBody').innerHTML = tbody;
+                  }
+              });
+          } catch(e) {
+              console.log("Leaderboard error", e);
           }
-
-          let list = [];
-          snap.forEach(child => { list.push(child.val()); });
-          list.sort((a,b) => b.score - a.score || a.timeSpent - b.timeSpent);
-
-          tbody.innerHTML = list.map((item, idx) => `
-            <tr class="${currentUser && item.name === document.getElementById('uName').innerText ? 'my-rank' : ''}">
-              <td>#${idx + 1}</td>
-              <td>${item.name}</td>
-              <td style="color:#38bdf8; font-weight:bold;">${item.score.toFixed(2)}</td>
-              <td>${Math.floor(item.timeSpent/60)}m ${item.timeSpent%60}s</td>
-            </tr>
-          `).join('');
-        } catch(e) {}
       }
 
-      window.printCertificate = function() {
-        document.getElementById('certName').innerText = document.getElementById('uName').innerText || "Student";
-        document.getElementById('certScore').innerText = document.getElementById('resScore').innerText;
-        document.getElementById('certAcc').innerText = document.getElementById('resAccuracy').innerText;
-        document.getElementById('certDate').innerText = new Date().toLocaleDateString();
-
-        const card = document.getElementById('certificateContainer');
-        card.style.display = 'block';
-        window.print();
-        setTimeout(() => { card.style.display = 'none'; }, 1000);
-      };
-
-      window.shareResultOnFacebook = function() {
-        const score = document.getElementById('resScore').innerText;
-        const acc = document.getElementById('resAccuracy').innerText;
-        const text = encodeURIComponent(`আমি GAIVEX-এর পদার্থবিজ্ঞান (পর্যায়বৃত্ত গতি) লাইভ পরীক্ষায় ${score} নম্বর এবং ${acc} একুরেসি অর্জন করেছি! 🔥`);
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${text}`, '_blank');
-      };
-
-      window.generateAIPractice = function() {
-        alert("⚡ আপনার দুর্বল টপিকগুলোর ওপর ভিত্তি করে ২০টি নতুন রিভিশন প্রশ্ন জেনারেট করা হচ্ছে...");
-      };
-
-      window.openReportModal = function(qIndex) {
-        document.getElementById('reportQIndex').value = qIndex;
-        document.getElementById('reportModal').style.display = 'flex';
-      };
-      window.closeReportModal = function() { document.getElementById('reportModal').style.display = 'none'; };
-      window.submitQuestionReport = function() {
-        alert("🚩 আপনার রিপোর্ট সফলভাবে জমা দেওয়া হয়েছে। ধন্যবাদ!");
-        closeReportModal();
-      };
-
-      // Auth state observer
+      // --- Authentication Init ---
       onAuthStateChanged(auth, (user) => {
         if (user) {
           currentUser = user;
         } else {
-          currentUser = null;
+          // Optional: redirect to login
         }
         checkAttemptAndLoad();
       });
+      
     </script>
 </body>
 </html>
