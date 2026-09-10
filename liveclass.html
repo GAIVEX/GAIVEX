@@ -358,6 +358,8 @@ input,textarea{ font-family:inherit; }
 <!-- TOPBAR -->
 <div class="topbar">
     <div class="brand">
+        <!-- Back button added to the header -->
+        <button class="icon-btn" title="Back to Lobby" onclick="goBackToLobby()">←</button>
         <div class="brand-mark">GAIVEX<span>.</span></div>
         <div class="brand-tag latin">LIVE CLASS</div>
     </div>
@@ -388,7 +390,7 @@ input,textarea{ font-family:inherit; }
 
                 <button class="raise-hand-fab hidden" id="raiseHandBtn" onclick="toggleRaiseHand()">🙋 <span class="rh-label"></span></button>
 
-                <!-- LIVE POPUP OVERLAY FOR POLL / QUIZ (Moved inside videoWrap so it shows inside Fullscreen mode) -->
+                <!-- LIVE POPUP OVERLAY FOR POLL / QUIZ -->
                 <div id="livePopupOverlay" class="live-popup-overlay hidden">
                     <div class="live-popup-card glass" id="livePopupContent"></div>
                 </div>
@@ -440,6 +442,8 @@ input,textarea{ font-family:inherit; }
                 <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ Questions<span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
                 <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 People</button>
             </div>
+            <!-- Cross button added inside the chat head for going back/closing -->
+            <button class="icon-btn" onclick="goBackToLobby()" style="flex-shrink:0; border-color:rgba(244,63,94,0.3); color:var(--rose);" title="Leave Class">✕</button>
             <button class="icon-btn" onclick="closeChatDrawer()" style="display:none;flex-shrink:0;" id="chatCloseBtn">✕</button>
         </div>
 
@@ -495,7 +499,7 @@ input,textarea{ font-family:inherit; }
     <span class="badge hidden" id="chatFabBadge">0</span>
 </button>
 
-<!-- CLASS MATERIALS MODAL (Resources + Homework) -->
+<!-- CLASS MATERIALS MODAL -->
 <div class="modal-overlay" id="moreModal">
     <div class="modal-card glass">
         <div class="modal-top">
@@ -534,7 +538,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Copy Protection Script (Disable Right-click, Copy, Cut, Select, Shortcuts)
+// Copy Protection Script
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('copy', event => event.preventDefault());
 document.addEventListener('cut', event => event.preventDefault());
@@ -596,6 +600,17 @@ let currentQuiz = null;
 let currentPinnedQuestion = null;
 let pinnedAnnounceCache = null;
 let dismissedPopupKey = null;
+
+// Function to go back to the lobby or previous page
+window.goBackToLobby = function(){
+    if(document.referrer && document.referrer.includes(location.hostname)){
+        history.back();
+    } else {
+        // Clear class query param and show lobby
+        history.replaceState(null, "", location.pathname);
+        location.reload();
+    }
+};
 
 function showToast(icon, text, kind){
     const stack = document.getElementById("toastStack");
