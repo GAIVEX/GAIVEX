@@ -225,29 +225,32 @@ input,textarea{ font-family:inherit; }
 .qna-filter-row{ display:flex; gap:6px; padding:10px 12px 0; }
 .qna-filter-row .qna-mini-btn{ flex:1; justify-content:center; }
 
-/* Live Popup Overlay for Poll / Quiz */
+/* Live Popup Overlay for Poll / Quiz (Shifted to bottom-left/corner so screen is clearly visible) */
 .live-popup-overlay{
-    position:fixed; inset:0; z-index:800; display:flex; align-items:center; justify-content:center; padding:20px;
-    background:rgba(4,7,15,.75); backdrop-filter:blur(8px); animation:fadeIn .2s ease;
+    position:fixed; bottom:20px; left:20px; z-index:800; display:flex; align-items:flex-end; justify-content:flex-start;
+    pointer-events:none; animation:fadeIn .2s ease;
 }
-@keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
-.live-popup-card{ width:100%; max-width:440px; border-radius:var(--radius-lg); padding:22px; background:rgba(15,23,42,0.95); border:1px solid var(--sky); box-shadow:0 10px 40px rgba(56,189,248,0.25); }
+.live-popup-overlay *{ pointer-events:auto; }
+@keyframes fadeIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+.live-popup-card{ width:100%; max-width:360px; border-radius:var(--radius-lg); padding:18px; background:rgba(15,23,42,0.95); border:1px solid var(--sky); box-shadow:0 10px 40px rgba(56,189,248,0.25); position:relative; }
+.live-popup-close{ position:absolute; top:12px; right:12px; background:none; border:none; color:var(--ink-dim); font-size:18px; cursor:pointer; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,.05); transition:.15s; }
+.live-popup-close:hover{ background:rgba(255,255,255,.15); color:#fff; }
 
 /* Poll / Quiz common style inside popup */
-.pq-question{ font-size:15px; font-weight:700; margin-bottom:12px; line-height:1.5; color:#fff; }
-.pq-timer{ font-size:12px; color:var(--rose); font-weight:700; margin-bottom:10px; }
-.pq-option{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:11px; background:rgba(30,41,59,.8); border:1px solid var(--glass-border); margin-bottom:8px; font-size:13.5px; position:relative; overflow:hidden; }
+.pq-question{ font-size:14px; font-weight:700; margin-bottom:10px; line-height:1.4; color:#fff; padding-right:20px; }
+.pq-timer{ font-size:11.5px; color:var(--rose); font-weight:700; margin-bottom:8px; }
+.pq-option{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; background:rgba(30,41,59,.8); border:1px solid var(--glass-border); margin-bottom:6px; font-size:13px; position:relative; overflow:hidden; }
 .pq-option-fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(56,189,248,.16); z-index:0; transition:width .4s; }
 .pq-option-label{ position:relative; z-index:1; }
-.pq-option-pct{ position:relative; z-index:1; font-weight:700; color:var(--sky); font-size:12px; }
+.pq-option-pct{ position:relative; z-index:1; font-weight:700; color:var(--sky); font-size:11.5px; }
 .pq-option.correct{ border-color:rgba(16,185,129,.55); }
 .pq-option.correct .pq-option-fill{ background:rgba(16,185,129,.22); }
 .pq-option.wrong-pick{ border-color:rgba(244,63,94,.55); }
 .pq-option.selectable{ cursor:pointer; }
 .pq-option.selectable:hover{ border-color:rgba(56,189,248,.4); background:rgba(56,189,248,.1); }
 .pq-option.chosen{ border-color:var(--sky); }
-.pq-vote-note{ font-size:11.5px; color:var(--ink-dim); margin-top:8px; text-align:center; }
-.pq-result-note{ text-align:center; font-size:13.5px; font-weight:700; margin-top:10px; }
+.pq-vote-note{ font-size:11px; color:var(--ink-dim); margin-top:6px; text-align:center; }
+.pq-result-note{ text-align:center; font-size:13px; font-weight:700; margin-top:8px; }
 .pq-result-note.correct{ color:var(--ok); }
 .pq-result-note.wrong{ color:var(--rose); }
 
@@ -309,6 +312,8 @@ input,textarea{ font-family:inherit; }
     .chat-fab{ display:flex; }
     .brand-tag{ display:none; }
     .banner-stack{ padding:0 12px; }
+    .live-popup-overlay{ bottom:10px; left:10px; right:10px; }
+    .live-popup-card{ max-width:none; }
 }
 @media(max-width:520px){
     .topbar{ padding:12px 14px; }
@@ -577,6 +582,7 @@ let currentPoll = null;
 let currentQuiz = null;
 let currentPinnedQuestion = null;
 let pinnedAnnounceCache = null;
+let dismissedPopupKey = null; // To track if student closed the current poll/quiz popup
 
 function showToast(icon, text, kind){
     const stack = document.getElementById("toastStack");
@@ -710,7 +716,11 @@ function registerClassListeners(){
     });
 
     onValue(ref(db, POLL_PATH), (snap)=>{
-        currentPoll = snap.exists() ? snap.val() : null;
+        const newPoll = snap.exists() ? snap.val() : null;
+        if(newPoll && (!currentPoll || currentPoll.startedAt !== newPoll.startedAt)){
+            dismissedPopupKey = null; // Reset dismissal on new poll
+        }
+        currentPoll = newPoll;
         checkAndRenderLivePopup();
         if(currentPoll && currentPoll.active && currentPoll.startedAt !== notifiedPollKey && notifiedPollKey !== null && studentName){
             showToast("📊", "A new poll has started!");
@@ -720,7 +730,11 @@ function registerClassListeners(){
     setInterval(()=>{ if(currentPoll && currentPoll.active) checkAndRenderLivePopup(); }, 1000);
 
     onValue(ref(db, QUIZ_PATH), (snap)=>{
-        currentQuiz = snap.exists() ? snap.val() : null;
+        const newQuiz = snap.exists() ? snap.val() : null;
+        if(newQuiz && (!currentQuiz || currentQuiz.startedAt !== newQuiz.startedAt)){
+            dismissedPopupKey = null; // Reset dismissal on new quiz
+        }
+        currentQuiz = newQuiz;
         checkAndRenderLivePopup();
         if(currentQuiz && currentQuiz.active && currentQuiz.startedAt !== notifiedQuizKey && notifiedQuizKey !== null && studentName){
             showToast("🧠", "A new quiz has started!");
@@ -738,6 +752,15 @@ function registerClassListeners(){
 function checkAndRenderLivePopup(){
     const overlay = document.getElementById("livePopupOverlay");
     const content = document.getElementById("livePopupContent");
+
+    const activeQuizKey = currentQuiz && currentQuiz.active ? "quiz_" + currentQuiz.startedAt : null;
+    const activePollKey = currentPoll && currentPoll.active ? "poll_" + currentPoll.startedAt : null;
+    const currentActiveKey = activeQuizKey || activePollKey;
+
+    if(dismissedPopupKey && dismissedPopupKey === currentActiveKey){
+        overlay.classList.add("hidden");
+        return;
+    }
 
     if(currentQuiz && currentQuiz.active){
         overlay.classList.remove("hidden");
@@ -764,6 +787,7 @@ function checkAndRenderLivePopup(){
         }
 
         content.innerHTML = `
+            <button class="live-popup-close" onclick="dismissLivePopup('${activeQuizKey}')">&times;</button>
             <div class="pq-question">🧠 Quiz: ${escapeHtml(currentQuiz.question||"")}</div>
             ${remaining !== null ? `<div class="pq-timer">⏳ ${remaining}s left</div>` : ""}
             ${optsHtml}
@@ -791,6 +815,7 @@ function checkAndRenderLivePopup(){
         });
 
         content.innerHTML = `
+            <button class="live-popup-close" onclick="dismissLivePopup('${activePollKey}')">&times;</button>
             <div class="pq-question">📊 Poll: ${escapeHtml(currentPoll.question||"")}</div>
             ${remaining !== null ? `<div class="pq-timer">⏳ ${remaining}s left</div>` : ""}
             ${optsHtml}
@@ -800,6 +825,11 @@ function checkAndRenderLivePopup(){
         overlay.classList.add("hidden");
     }
 }
+
+window.dismissLivePopup = function(key){
+    dismissedPopupKey = key;
+    document.getElementById("livePopupOverlay").classList.add("hidden");
+};
 
 function renderSession(){
     const offlineScreen = document.getElementById("offlineScreen");
