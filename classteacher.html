@@ -233,8 +233,8 @@ input,textarea,select{ font-family:inherit; }
             </div>
 
             <div class="form-group">
-                <label class="form-label">YouTube / Facebook Video or Live Link</label>
-                <input id="ytInput" class="form-control" placeholder="Paste YouTube or Facebook link (e.g. https://www.facebook.com/watch/?v=...)">
+                <label class="form-label">YouTube Video ID or Live Link</label>
+                <input id="ytInput" class="form-control" placeholder="Paste YouTube link or ID (e.g. https://www.youtube.com/live/2W5d_8RExJU)">
             </div>
 
             <div class="form-row">
@@ -381,7 +381,7 @@ input,textarea,select{ font-family:inherit; }
                 <div id="livePollResults" style="margin-top:10px;"></div>
             </div>
 
-            <!-- QUIZ -->
+            <!-- QUIZ (FIXED MULTI OPTION CORRECT SELECTION) -->
             <div class="panel-pane hidden" id="pane-quiz">
                 <div class="card glass" style="padding:12px; margin-bottom:0;">
                     <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Create Quiz Test</div>
@@ -558,48 +558,29 @@ function bindFirebaseListeners(){
     });
 }
 
-/* VIDEO LINK PARSER (YOUTUBE & FACEBOOK) */
-function parseVideoEmbedUrl(urlOrInput) {
-    if (!urlOrInput) return { type: '', embedUrl: '' };
-    const text = urlOrInput.trim();
-
-    // Check if it's Facebook
-    if (text.includes("facebook.com") || text.includes("fb.watch")) {
-        const encodedUrl = encodeURIComponent(text);
-        return {
-            type: 'facebook',
-            embedUrl: `https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=1200&autoplay=true`
-        };
-    }
-
-    // Otherwise treat as YouTube
+/* YOUTUBE ID PARSER */
+function parseYoutubeId(urlOrId){
+    if(!urlOrId) return "";
+    const text = urlOrId.trim();
     const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const match = text.match(regExp);
-    const ytId = (match && match[1]) ? match[1] : (text.length === 11 ? text : text);
-
-    return {
-        type: 'youtube',
-        embedUrl: `https://www.youtube.com/embed/${ytId}?autoplay=1`
-    };
+    return (match && match[1]) ? match[1] : (text.length === 11 ? text : text);
 }
 
 /* LIVE ACTIONS */
 window.startLive = async function(){
-    const rawInput = document.getElementById("ytInput").value.trim();
+    const rawYt = document.getElementById("ytInput").value;
+    const ytId = parseYoutubeId(rawYt);
     const title = document.getElementById("classTitleInput").value.trim() || "Live Class";
     const subject = document.getElementById("subjectSelect").value;
     const paper = document.getElementById("paperSelect").value;
     const chapter = document.getElementById("chapterInput").value.trim() || "—";
 
-    if(!rawInput){ alert("Please enter a valid YouTube or Facebook video/live link!"); return; }
-
-    const videoInfo = parseVideoEmbedUrl(rawInput);
+    if(!ytId){ alert("Please enter a valid YouTube Video ID or URL!"); return; }
 
     const sessionPayload = {
         isLive: true,
-        videoUrl: rawInput, // Storing raw link or identifier
-        embedUrl: videoInfo.embedUrl,
-        videoType: videoInfo.type,
+        youtubeId: ytId,
         title: title,
         subject: subject,
         paper: paper,
@@ -634,15 +615,10 @@ function updateSessionUI(s){
         btnStart.classList.add("hidden");
         btnEnd.classList.remove("hidden");
 
-        if(s.videoUrl) {
-            document.getElementById("ytInput").value = s.videoUrl;
-        }
-        if(s.embedUrl) {
-            iframe.src = s.embedUrl;
-        } else if(s.youtubeId) {
+        if(s.youtubeId) {
+            document.getElementById("ytInput").value = s.youtubeId;
             iframe.src = `https://www.youtube.com/embed/${s.youtubeId}?autoplay=1`;
         }
-
         if(s.title) document.getElementById("classTitleInput").value = s.title;
         if(s.subject) document.getElementById("subjectSelect").value = s.subject;
         if(s.paper) document.getElementById("paperSelect").value = s.paper;
@@ -828,7 +804,7 @@ function renderLivePollResults(poll){
     container.innerHTML = html;
 }
 
-/* QUIZ */
+/* QUIZ (FIXED) */
 window.launchQuiz = async function(){
     const q = document.getElementById("quizQ").value.trim();
     const o0 = document.getElementById("quizOpt0").value.trim();
