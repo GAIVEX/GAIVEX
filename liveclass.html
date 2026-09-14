@@ -219,7 +219,7 @@ input,textarea{ font-family:inherit; }
 .qna-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:5px; }
 .qna-name{ font-size:11px; color:var(--ink-faint); }
 .qna-text{ font-size:13px; line-height:1.5; }
-.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:9px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
+.qna-answer{ margin-top:7px; padding:8px 10px; border-radius:99px; background:rgba(56,189,248,.1); border:1px solid rgba(56,189,248,.25); font-size:12.5px; }
 .qna-answer b{ color:var(--sky); }
 .qna-actions{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
 .qna-mini-btn{ font-size:11px; padding:4px 9px; border-radius:99px; border:1px solid var(--glass-border); background:rgba(15,23,42,.5); color:var(--ink-dim); display:flex; align-items:center; gap:4px; }
@@ -416,8 +416,6 @@ input,textarea{ font-family:inherit; }
         <div class="brand-tag latin">LIVE CLASS</div>
     </div>
     <div class="topbar-right">
-        <button class="icon-btn" title="Search" onclick="openTab('chat');document.getElementById('chatSearchInput').focus();openChatDrawer();">🔎</button>
-        <button class="icon-btn" title="Share class link" onclick="shareClassLink()">🔗</button>
         <button class="icon-btn" title="Class materials" onclick="openMoreModal()">⋮</button>
     </div>
 </div>
@@ -1362,6 +1360,7 @@ document.addEventListener("fullscreenchange", ()=>{
     }
 });
 
+// shareClassLink function is kept inside JS scope if needed elsewhere, but removed from header UI
 window.shareClassLink = function(){
     const url = location.href;
     if(navigator.share){
