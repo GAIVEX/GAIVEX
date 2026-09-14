@@ -178,7 +178,7 @@ input,textarea{ font-family:inherit; }
 .chat-head{ padding:12px 12px 0; border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; gap:6px; }
 .tab-row{ display:flex; gap:2px; overflow-x:auto; flex:1; scrollbar-width:none; }
 .tab-row::-webkit-scrollbar{ display:none; }
-.tab-btn{ flex-shrink:0; background:none; border:none; padding:9px 11px; font-size:12px; font-weight:600; color:var(--ink-faint); border-bottom:2px solid transparent; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+.tab-btn{ flex-shrink:0; background:none; border:none; padding:99px; font-size:12px; font-weight:600; color:var(--ink-faint); border-bottom:2px solid transparent; display:flex; align-items:center; gap:5px; white-space:nowrap; padding: 9px 11px; }
 .tab-btn.active{ color:var(--sky); border-bottom-color:var(--sky); }
 .tab-count{ background:rgba(244,63,94,.85); color:#fff; font-size:9px; font-weight:700; min-width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; }
 
@@ -295,6 +295,46 @@ input,textarea{ font-family:inherit; }
 .lobby-list{ display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; }
 .live-dot-sm{ width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0; box-shadow:0 0 0 0 rgba(239,68,68,.55); animation:pulse-dot 1.6s infinite; }
 
+/* ============ EXIT CONFIRMATION MODAL ============ */
+.exit-modal-card {
+    text-align: center;
+}
+.exit-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+}
+.exit-modal-sub {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 22px;
+}
+.exit-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+.exit-btn-leave {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    border-radius: 99px;
+    background: linear-gradient(135deg, #f43f5e, #e11d48);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13.5px;
+}
+.exit-btn-back {
+    flex: 1;
+    padding: 11px;
+    border: 1px solid var(--glass-border);
+    border-radius: 99px;
+    background: rgba(15,23,42,.6);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 13.5px;
+}
+
 /* ============ MORE (Resources & Homework) MODAL ============ */
 .modal-overlay{ position:fixed; inset:0; z-index:600; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(4,7,15,.72); backdrop-filter:blur(6px); }
 .modal-overlay.show{ display:flex; }
@@ -355,11 +395,23 @@ input,textarea{ font-family:inherit; }
     </div>
 </div>
 
+<!-- LEAVE CLASS CONFIRMATION MODAL -->
+<div id="leaveModalOverlay" class="gate-overlay hidden">
+    <div class="gate-card glass exit-modal-card">
+        <div class="exit-modal-title">Leave Live Class?</div>
+        <div class="exit-modal-sub">Are you sure you want to leave the live class session?</div>
+        <div class="exit-modal-actions">
+            <button class="exit-btn-leave" onclick="confirmLeaveClass()">Leave</button>
+            <button class="exit-btn-back" onclick="closeLeaveModal()">Back</button>
+        </div>
+    </div>
+</div>
+
 <!-- TOPBAR -->
 <div class="topbar">
     <div class="brand">
-        <!-- Back button added to the header -->
-        <button class="icon-btn" title="Back to Lobby" onclick="goBackToLobby()">←</button>
+        <!-- Back button triggers exit confirmation modal -->
+        <button class="icon-btn" title="Back to Lobby" onclick="openLeaveModal()">←</button>
         <div class="brand-mark">GAIVEX<span>.</span></div>
         <div class="brand-tag latin">LIVE CLASS</div>
     </div>
@@ -442,8 +494,7 @@ input,textarea{ font-family:inherit; }
                 <button class="tab-btn" data-tab="qna" onclick="openTab('qna')">❓ Questions<span class="tab-count hidden" id="qnaUnansweredBadge">0</span></button>
                 <button class="tab-btn" data-tab="people" onclick="openTab('people')">👥 People</button>
             </div>
-            <!-- Cross button added inside the chat head for going back/closing -->
-            <button class="icon-btn" onclick="goBackToLobby()" style="flex-shrink:0; border-color:rgba(244,63,94,0.3); color:var(--rose);" title="Leave Class">✕</button>
+            <!-- Close button only hides mobile chat drawer -->
             <button class="icon-btn" onclick="closeChatDrawer()" style="display:none;flex-shrink:0;" id="chatCloseBtn">✕</button>
         </div>
 
@@ -601,12 +652,20 @@ let currentPinnedQuestion = null;
 let pinnedAnnounceCache = null;
 let dismissedPopupKey = null;
 
-// Function to go back to the lobby or previous page
-window.goBackToLobby = function(){
+// Leave Class Modal Controls
+window.openLeaveModal = function(){
+    document.getElementById("leaveModalOverlay").classList.remove("hidden");
+};
+
+window.closeLeaveModal = function(){
+    document.getElementById("leaveModalOverlay").classList.add("hidden");
+};
+
+window.confirmLeaveClass = function(){
+    document.getElementById("leaveModalOverlay").classList.add("hidden");
     if(document.referrer && document.referrer.includes(location.hostname)){
         history.back();
     } else {
-        // Clear class query param and show lobby
         history.replaceState(null, "", location.pathname);
         location.reload();
     }
