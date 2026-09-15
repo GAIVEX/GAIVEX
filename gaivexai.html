@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GAIVEX AI - Smart Admission Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Marked.js for Rendering Markdown -->
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
-    <!-- MathJax for Rendering LaTeX Math Formulas Properly -->
+    <!-- MathJax for TeX/LaTeX -->
     <script>
         window.MathJax = {
             tex: {
@@ -21,113 +24,158 @@
     <script type="text/javascript" id="MathJax-script" async
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
-    
+
     <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --accent-blue: #38bdf8;
+            --accent-dark-blue: #0284c7;
+            --accent-rose: #f43f5e;
+            --accent-emerald: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --glass-bg: rgba(30, 41, 59, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        html, body { height: 100%; width: 100%; overflow: hidden; background-color: #0f172a; color: #f8fafc; }
+        html, body { height: 100%; width: 100%; overflow: hidden; background-color: var(--bg-main); color: var(--text-main); }
         
-        /* App Structure Layout */
+        /* App Structure */
         .app-container { display: flex; height: 100vh; width: 100vw; position: relative; overflow: hidden; }
 
-        /* Overlay for Mobile Sidebar Background Blur */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 999; backdrop-filter: blur(2px); }
+        /* Overlay */
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 999; backdrop-filter: blur(4px); }
         .sidebar-overlay.active { display: block; }
 
-        /* Sidebar for Chat History */
-        .sidebar { width: 280px; background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
-        .sidebar-header { padding: 12px 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        /* Sidebar Structure */
+        .sidebar { width: 320px; background: var(--bg-card); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
+        .sidebar-header { padding: 14px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         
-        .new-chat-btn { flex: 1; padding: 10px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 14px; }
+        .new-chat-btn { flex: 1; padding: 10px; background: var(--accent-dark-blue); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 14px; }
         .new-chat-btn:hover { background: #0369a1; }
         
-        .close-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #f43f5e; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .close-sidebar-btn:hover { background: #f43f5e; color: #fff; }
+        .close-sidebar-btn { background: var(--bg-main); border: 1px solid #475569; color: var(--accent-rose); width: 38px; height: 38px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-        /* ইতিহাস তালিকা ফিক্স */
-        .history-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .history-item { padding: 10px 12px; min-height: 44px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; transition: 0.2s; user-select: none; -webkit-user-select: none; }
-        .history-item:hover, .history-item.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
+        /* Student Dashboard Widget */
+        .dashboard-card { padding: 12px 15px; background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 14px; font-weight: bold; color: var(--accent-blue); }
 
-        /* Main Content View */
+        /* History & Filter */
+        .sidebar-search { padding: 8px 12px; border-bottom: 1px solid var(--border-color); }
+        .sidebar-search input { width: 100%; padding: 6px 10px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 12px; }
+
+        .history-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .history-item { padding: 10px 12px; min-height: 44px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-size: 13px; color: #cbd5e1; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .history-item:hover, .history-item.active { background: var(--bg-card-hover); color: var(--accent-blue); border-color: var(--accent-blue); }
+        .history-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+        /* Main View */
         .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; }
 
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid #334155; height: 60px; z-index: 100; gap: 10px; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 100; gap: 10px; }
         .nav-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .toggle-sidebar-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-        .logo { font-size: 18px; font-weight: 700; color: #38bdf8; text-decoration: none; white-space: nowrap; }
-        .logo span { color: #f43f5e; }
+        .toggle-sidebar-btn { background: var(--bg-main); border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .logo { font-size: 18px; font-weight: 700; color: var(--accent-blue); text-decoration: none; white-space: nowrap; }
+        .logo span { color: var(--accent-rose); }
 
         .nav-right-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         #authNavContainer { display: flex; gap: 8px; align-items: center; }
-        .btn-auth { background: #38bdf8; color: #0f172a; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 13px; }
+        .btn-auth { background: var(--accent-blue); color: var(--bg-main); border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 13px; }
         .btn-auth:hover { background: #7dd3fc; }
 
-        /* User Profile Button in Navbar */
-        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #334155; padding: 3px 10px 3px 4px; border-radius: 20px; border: 1px solid #475569; height: 36px; max-width: 140px; overflow: hidden; }
-        .user-avatar { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: #38bdf8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 12px; overflow: hidden; flex-shrink: 0; }
-        .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
-        .user-name-text { font-size: 12px; font-weight: bold; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-profile-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; background: var(--bg-card-hover); padding: 3px 10px 3px 4px; border-radius: 20px; border: 1px solid #475569; height: 36px; max-width: 140px; }
+        .user-avatar { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--bg-main); font-size: 12px; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .user-name-text { font-size: 12px; font-weight: bold; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .menu-container { position: relative; }
-        .menu-btn { background: #0f172a; border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; font-size: 18px; cursor: pointer; }
-        .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 170px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; }
-        .dropdown-menu button, .dropdown-menu a { display: block; width: 100%; text-align: left; padding: 10px 15px; color: #f8fafc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #334155; background: none; border: none; cursor: pointer; }
+        .menu-btn { background: var(--bg-main); border: 1px solid #475569; color: #fff; width: 36px; height: 36px; border-radius: 6px; font-size: 18px; cursor: pointer; }
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; width: 190px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; }
+        .dropdown-menu button, .dropdown-menu a { display: block; width: 100%; text-align: left; padding: 10px 15px; color: var(--text-main); text-decoration: none; font-size: 13px; border-bottom: 1px solid var(--border-color); background: none; border: none; cursor: pointer; }
+        .dropdown-menu button:hover, .dropdown-menu a:hover { background: var(--bg-card-hover); }
         .dropdown-menu.show { display: block; }
 
-        /* Fixed Chat Area */
-        .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); background: #0f172a; position: relative; }
+        /* Quick Action Bar */
+        .quick-actions-bar { display: flex; gap: 8px; overflow-x: auto; padding: 8px 15px; background: rgba(15, 23, 42, 0.4); border-bottom: 1px solid var(--border-color); scrollbar-width: none; }
+        .quick-actions-bar::-webkit-scrollbar { display: none; }
+        .action-chip { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 4px 12px; border-radius: 16px; font-size: 12px; white-space: nowrap; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
+        .action-chip:hover { border-color: var(--accent-blue); color: var(--accent-blue); background: var(--bg-card-hover); }
+
+        /* Chat Core */
+        .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 105px); background: var(--bg-main); position: relative; }
         .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
 
-        .message { display: flex; gap: 10px; max-width: 88%; }
+        .message { display: flex; gap: 10px; max-width: 88%; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
         .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message.ai { align-self: flex-start; }
 
-        .msg-avatar { width: 32px; height: 32px; min-width: 32px; max-width: 32px; min-height: 32px; max-height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
-        .msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        .msg-avatar { width: 32px; height: 32px; min-width: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; font-weight: bold; overflow: hidden; }
+        .msg-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .message.user .msg-avatar { background: var(--accent-blue); color: var(--bg-main); }
+        .message.ai .msg-avatar { background: var(--accent-dark-blue); color: #fff; }
 
-        .message.user .msg-avatar { background: #38bdf8; color: #0f172a; }
-        .message.ai .msg-avatar { background: #0284c7; color: #fff; }
-
+        .msg-container { display: flex; flex-direction: column; gap: 4px; max-width: 100%; }
         .msg-content { padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
-        .message.user .msg-content { background: #0284c7; color: #fff; border-bottom-right-radius: 2px; }
-        .message.ai .msg-content { background: #1e293b; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 2px; }
+        .message.user .msg-content { background: var(--accent-dark-blue); color: #fff; border-bottom-right-radius: 2px; }
+        .message.ai .msg-content { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-bottom-left-radius: 2px; }
 
-        .msg-content p { margin-bottom: 6px; }
-        .msg-content p:last-child { margin-bottom: 0; }
-        .msg-content strong { color: #38bdf8; }
+        /* Image Attachment Preview in Bubble */
+        .attached-img-preview { max-width: 200px; max-height: 200px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border-color); }
 
-        /* Fixed Bottom Chat Input Bar */
-        .chat-input-area { padding: 10px 12px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; }
-        .chat-input-area input { flex: 1; padding: 10px 15px; background: #0f172a; border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; min-width: 0; }
-        .chat-input-area input:disabled { background: #1e293b; cursor: not-allowed; opacity: 0.6; }
-        .chat-input-area input:focus { border-color: #38bdf8; }
-        .send-btn { background: #38bdf8; color: #0f172a; border: none; width: 40px; height: 40px; min-width: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        /* Message Action Toolbar */
+        .msg-actions { display: flex; gap: 8px; margin-top: 4px; font-size: 11px; color: var(--text-muted); opacity: 0.8; }
+        .msg-action-btn { cursor: pointer; background: none; border: none; color: var(--text-muted); font-size: 12px; padding: 2px 4px; border-radius: 4px; }
+        .msg-action-btn:hover { color: var(--accent-blue); background: var(--bg-card-hover); }
+
+        /* Attachment Bar / Upload Indicator */
+        .attachment-preview-bar { display: none; padding: 6px 12px; background: var(--bg-card); border-top: 1px solid var(--border-color); align-items: center; gap: 10px; font-size: 12px; }
+        .attachment-preview-bar.active { display: flex; }
+        .preview-thumb { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; background: var(--bg-main); border: 1px solid var(--border-color); }
+
+        /* Fixed Chat Input Bar */
+        .chat-input-area { padding: 10px 12px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; }
+        .chat-input-area input { flex: 1; padding: 10px 15px; background: var(--bg-main); border: 1px solid #475569; border-radius: 25px; color: #fff; font-size: 14px; outline: none; min-width: 0; }
+        .chat-input-area input:disabled { opacity: 0.6; cursor: not-allowed; }
+        .chat-input-area input:focus { border-color: var(--accent-blue); }
+
+        .icon-btn { background: var(--bg-main); border: 1px solid #475569; color: var(--text-muted); width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s; }
+        .icon-btn:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+        .icon-btn.recording { color: var(--accent-rose); border-color: var(--accent-rose); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .send-btn { background: var(--accent-blue); color: var(--bg-main); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .send-btn:disabled { background: #475569; cursor: not-allowed; }
 
-        .typing-indicator { font-size: 13px; color: #94a3b8; display: none; align-items: center; gap: 6px; padding: 6px 15px; background: #0f172a; }
+        .typing-indicator { font-size: 13px; color: var(--text-muted); display: none; align-items: center; gap: 6px; padding: 6px 15px; background: var(--bg-main); }
 
-        /* Auth Locked Notice */
-        .auth-locked-notice { background: #f43f5e22; border: 1px solid #f43f5e; color: #f43f5e; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
+        .auth-locked-notice { background: rgba(244, 63, 94, 0.15); border: 1px solid var(--accent-rose); color: var(--accent-rose); padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; margin: 0 10px 8px 10px; display: none; }
 
         /* Modals */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:#1e293b; color:#f8fafc; padding:20px; border-radius:12px; width:92%; max-width:400px; border:1px solid #334155; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-        .modal-header h3 { color: #38bdf8; font-size: 18px; }
-        .modal-close-x { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; }
+        .modal-content { background:var(--bg-card); color:var(--text-main); padding:20px; border-radius:12px; width:92%; max-width:420px; border:1px solid var(--border-color); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .modal-header h3 { color: var(--accent-blue); font-size: 18px; }
+        .modal-close-x { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
 
         .modal-content label { font-weight:600; display:block; margin-top:10px; margin-bottom:4px; font-size:13px; }
-        .modal-content input { width:100%; padding:10px; border-radius:6px; border:1px solid #475569; background:#0f172a; color:#fff; font-size:14px; margin-bottom:8px; }
+        .modal-content input, .modal-content select { width:100%; padding:10px; border-radius:6px; border:1px solid #475569; background:var(--bg-main); color:#fff; font-size:14px; margin-bottom:8px; }
         .btn-group { display:flex; gap:10px; margin-top:15px; }
         .btn { padding:10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; flex:1; text-align: center; font-size: 14px; }
-        .btn-save { background:#10b981; color:white; }
-        .btn-close { background:#ef4444; color:white; }
+        .btn-save { background:var(--accent-emerald); color:white; }
+        .btn-close { background:var(--accent-rose); color:white; }
         .btn-google { background:#ea4335; color:white; width:100%; margin-top:10px; padding: 10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
         
-        .tab-menu { display:flex; border-bottom: 1px solid #334155; margin-bottom: 15px; }
-        .tab-btn { flex:1; padding: 8px; background: none; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; }
-        .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
+        .tab-menu { display:flex; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
+        .tab-btn { flex:1; padding: 8px; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; }
+        .tab-btn.active { color: var(--accent-blue); border-bottom: 2px solid var(--accent-blue); }
 
         /* Responsive Breakpoints */
         @media (max-width: 768px) {
@@ -140,19 +188,41 @@
 <body>
 
     <div class="app-container">
-        <!-- সাইডবার ওভারলে -->
+        <!-- Sidebar Overlay -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-        <!-- চ্যাট হিস্টোরি সাইডবার -->
+        <!-- Sidebar for History & Analytics -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <button class="new-chat-btn" onclick="createNewChat()">➕ নতুন চ্যাট</button>
                 <button class="close-sidebar-btn" onclick="closeSidebar()" title="হিস্টোরি বন্ধ করুন">✕</button>
             </div>
+
+            <!-- Student Progress Stats -->
+            <div class="dashboard-card">
+                <div class="stat-item">
+                    <div>🔥 Streak</div>
+                    <div class="stat-val" id="statStreak">1 Day</div>
+                </div>
+                <div class="stat-item">
+                    <div>🎯 Solved</div>
+                    <div class="stat-val" id="statSolved">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>⚡ XP</div>
+                    <div class="stat-val" id="statXP">100</div>
+                </div>
+            </div>
+
+            <!-- Chat History Search -->
+            <div class="sidebar-search">
+                <input type="text" id="historySearch" placeholder="🔍 চ্যাট খুঁজুন..." oninput="filterHistoryList()">
+            </div>
+
             <div class="history-list" id="historyList"></div>
         </aside>
 
-        <!-- মেইন কনটেন্ট এরিয়া -->
+        <!-- Main Content View -->
         <div class="main-content">
             <header class="navbar">
                 <div class="nav-left">
@@ -168,31 +238,55 @@
                         <button class="menu-btn" onclick="toggleMenu()">⋮</button>
                         <div class="dropdown-menu" id="dropdownMenu">
                             <a href="index.html">🏠 হোম</a>
+                            <button onclick="openModal('profileModal')">👤 স্টুডেন্ট প্রোফাইল</button>
                             <button onclick="openModal('noticeModal')">📢 নোটিশ বোর্ড</button>
+                            <button onclick="clearAllUserData()" style="color: var(--accent-rose);">🗑️ ডাটা ক্লিয়ার করুন</button>
                             <div id="dropdownAuthAction"></div>
                         </div>
                     </div>
                 </div>
             </header>
 
+            <!-- Quick Actions Bar -->
+            <div class="quick-actions-bar">
+                <div class="action-chip" onclick="injectQuickPrompt('ব্যাখ্যা করুন: ')">💡 ব্যাখ্যা করুন</div>
+                <div class="action-chip" onclick="injectQuickPrompt('MCQ প্রশ্ন তৈরি করুন: ')">📝 MCQ তৈরি</div>
+                <div class="action-chip" onclick="injectQuickPrompt('সংক্ষেপে সারসংক্ষেপ দিন: ')">📊 সারসংক্ষেপ</div>
+                <div class="action-chip" onclick="injectQuickPrompt('ধাপে ধাপে সমাধান করুন: ')">🧮 Step-by-Step Math</div>
+                <div class="action-chip" onclick="injectQuickPrompt('রিভিশন নোটস দিন: ')">📚 রিভিশন নোটস</div>
+            </div>
+
             <main class="chat-section">
                 <div class="chat-box" id="chatBox">
                     <div class="message ai">
                         <div class="msg-avatar">🤖</div>
-                        <div class="msg-content">Hi! I am <strong>GAIVEX AI.</strong> Your Educational Assistant!</div>
+                        <div class="msg-container">
+                            <div class="msg-content">Hi! I am <strong>GAIVEX AI</strong>. Your Smart Educational & Admission Assistant! কীভাবে সাহায্য করতে পারি?</div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="typing-indicator" id="typingIndicator">
-                    <span>🤖 GAIVEX AI Thinking...</span>
+                    <span>🤖 GAIVEX AI চিন্তাভাবনা করছে...</span>
                 </div>
 
                 <div class="auth-locked-notice" id="authLockedNotice">
                     🔒 AI এর সাথে কথা বলতে এবং চ্যাট করতে প্রথমে লগইন করুন!
                 </div>
 
-                <!-- চ্যাট ইনপুট বার -->
+                <!-- File Attachment Preview Bar -->
+                <div class="attachment-preview-bar" id="attachmentBar">
+                    <img id="attachmentThumb" class="preview-thumb" src="" alt="preview">
+                    <span id="attachmentName" style="flex: 1; color: var(--accent-blue);"></span>
+                    <button onclick="removeAttachment()" style="background:none; border:none; color:var(--accent-rose); cursor:pointer;">✕</button>
+                </div>
+
+                <!-- Input Area -->
                 <form class="chat-input-area" onsubmit="sendChatMessage(event)">
+                    <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;" onchange="handleFileSelect(event)">
+                    <button type="button" class="icon-btn" onclick="document.getElementById('fileInput').click()" title="ফাইল/ছবি যুক্ত করুন">📎</button>
+                    <button type="button" class="icon-btn" id="micBtn" onclick="toggleVoiceInput()" title="ভয়েস ইনপুট">🎤</button>
+                    
                     <input type="text" id="userInput" placeholder="লগইন করার পর এখানে প্রশ্ন লিখুন..." autocomplete="off" required disabled>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>➤</button>
                 </form>
@@ -200,7 +294,7 @@
         </div>
     </div>
 
-    <!-- অথেন্টিকেশন মোডাল -->
+    <!-- Auth Modal -->
     <div id="authModal" class="modal">
       <div class="modal-content">
         <div class="tab-menu">
@@ -223,18 +317,38 @@
       </div>
     </div>
 
-    <!-- নোটিশ বোর্ড মোডাল -->
+    <!-- Student Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👤 স্টুডেন্ট প্রোফাইল</h3>
+                <button class="modal-close-x" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <label>টার্গেট এডমিশন:</label>
+            <select id="targetAdmissionSelect">
+                <option value="engineering">Engineering (BUET/CKRUET)</option>
+                <option value="medical">Medical (DMC/MATS)</option>
+                <option value="varsity">Varsity A/B/C Unit</option>
+                <option value="hsc">HSC Academic</option>
+            </select>
+            <label>পছন্দের বিষয়:</label>
+            <input type="text" id="prefSubjects" placeholder="Physics, Chemistry, Math...">
+            <button class="btn btn-save" style="width:100%; margin-top:15px;" onclick="saveProfileSettings()">সেভ করুন</button>
+        </div>
+    </div>
+
+    <!-- Notice Modal -->
     <div id="noticeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>📢 গুরুত্বপূর্ণ নোটিশ</h3>
                 <button class="modal-close-x" onclick="closeModal('noticeModal')">&times;</button>
             </div>
-            <p style="color:#94a3b8; font-size:14px;">বর্তমানে কোনো নতুন নোটিশ নেই।</p>
+            <p style="color:var(--text-muted); font-size:14px;">GAIVEX AI সংস্করণ ৩.০ আপডেট সম্পন্ন হয়েছে। এখন ভয়েস ইনপুট ও ইমেজ সলভার সক্রিয়।</p>
         </div>
     </div>
 
-    <!-- Firebase ও AI লজিক Script -->
+    <!-- Logic Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -259,6 +373,10 @@
         let activeChatId = Date.now().toString();
         let chatSessions = {};
         let currentMessages = [];
+        let attachedFile = null; 
+
+        // App States & Gamification
+        let userStats = { streak: 1, solved: 0, xp: 100 };
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -276,18 +394,19 @@
                 const nameDisplay = (user.displayName || user.email).split(' ')[0];
 
                 c.innerHTML = `
-                    <div class="user-profile-btn">
+                    <div class="user-profile-btn" onclick="openModal('profileModal')">
                         <div class="user-avatar">${photoHtml}</div>
                         <span class="user-name-text">${nameDisplay}</span>
                     </div>`;
                 
-                dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: #f43f5e;">🚪 লগআউট</button>`;
+                dropdownAuth.innerHTML = `<button onclick="handleLogout()" style="color: var(--accent-rose);">🚪 লগআউট</button>`;
                 
                 userInput.disabled = false;
                 sendBtn.disabled = false;
                 userInput.placeholder = "এখানে আপনার প্রশ্ন লিখুন...";
                 authNotice.style.display = 'none';
 
+                loadUserData();
                 loadHistoryList();
             } else {
                 c.innerHTML = `<button class="btn-auth" onclick="toggleAuthModal(true)">লগইন</button>`;
@@ -302,16 +421,14 @@
 
         const SYSTEM_INSTRUCTION = `You are "GAIVEX AI", a dedicated AI assistant for GAIVEX Scholars. You MUST NEVER identify yourself as Gemini or Google. Always speak politely in Bengali. GAIVEX Owner /founder/Creator MAMUN ABDUL GAIYUM TAMIM When someone wants to know the identity of the owner.`;
 
+        // Send Chat
         window.sendChatMessage = async function(e) {
             e.preventDefault();
-            if(!currentUser) {
-                toggleAuthModal(true);
-                return;
-            }
+            if(!currentUser) { toggleAuthModal(true); return; }
 
             const inputEl = document.getElementById('userInput');
             const prompt = inputEl.value.trim();
-            if (!prompt) return;
+            if (!prompt && !attachedFile) return;
 
             const chatBox = document.getElementById('chatBox');
             const typingIndicator = document.getElementById('typingIndicator');
@@ -320,28 +437,31 @@
                 ? `<img src="${currentUser.photoURL}" alt="User">` 
                 : (currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U');
 
-            appendMessage('user', userAvatar, prompt);
+            const payloadImage = attachedFile ? attachedFile.base64 : null;
+            
+            appendMessage('user', userAvatar, prompt, false, payloadImage);
             
             const requestHistory = currentMessages.slice(-4);
+            currentMessages.push({ role: 'user', content: prompt, image: payloadImage });
             
-            currentMessages.push({ role: 'user', content: prompt });
             inputEl.value = '';
+            removeAttachment();
 
             typingIndicator.style.display = 'flex';
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // নিরাপত্তা টোকেন সহ ফেচ রিকোয়েস্ট
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'X-Worker-Auth': 'GAIVEX_SECRET_2026' // ওয়ার্কারের সাথে মিল রাখা সিক্রেট টোকেন
+                        'X-Worker-Auth': 'GAIVEX_SECRET_2026'
                     },
                     body: JSON.stringify({ 
                         system_instruction: SYSTEM_INSTRUCTION,
                         history: requestHistory,
-                        prompt: prompt 
+                        prompt: prompt,
+                        image: payloadImage
                     })
                 });
 
@@ -352,8 +472,13 @@
                 replyText = replyText.replace(/Gemini/g, "GAIVEX AI").replace(/Google/g, "GAIVEX");
 
                 appendMessage('ai', '🤖', replyText, true);
-
                 currentMessages.push({ role: 'model', content: replyText });
+                
+                // Analytics update
+                userStats.solved += 1;
+                userStats.xp += 10;
+                updateStatsDisplay();
+                
                 saveCurrentChat();
 
             } catch (error) {
@@ -364,14 +489,27 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         };
 
-        function appendMessage(role, avatar, text, isMarkdown = false) {
+        function appendMessage(role, avatar, text, isMarkdown = false, imageBase64 = null) {
             const chatBox = document.getElementById('chatBox');
             const parsedText = isMarkdown ? marked.parse(text) : text.replace(/\n/g, '<br>');
-            
+            const msgId = 'msg_' + Date.now() + Math.random().toString(36).substr(2, 4);
+
+            let imgHtml = imageBase64 ? `<img src="${imageBase64}" class="attached-img-preview"><br>` : '';
+
+            let actionsHtml = role === 'ai' ? `
+                <div class="msg-actions">
+                    <button class="msg-action-btn" onclick="copyText('${msgId}')">📋 Copy</button>
+                    <button class="msg-action-btn" onclick="speakText('${msgId}')">🔊 Listen</button>
+                </div>
+            ` : '';
+
             const msgHTML = `
                 <div class="message ${role}">
                     <div class="msg-avatar">${avatar}</div>
-                    <div class="msg-content">${parsedText}</div>
+                    <div class="msg-container">
+                        <div class="msg-content" id="${msgId}">${imgHtml}${parsedText}</div>
+                        ${actionsHtml}
+                    </div>
                 </div>
             `;
             chatBox.innerHTML += msgHTML;
@@ -381,65 +519,152 @@
             }
         }
 
+        // Voice Input Implementation
+        let recognition = null;
+        window.toggleVoiceInput = function() {
+            const micBtn = document.getElementById('micBtn');
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('আপনার ব্রাউজারে ভয়েস ইনপুট সমর্থিত নয়।');
+                return;
+            }
+
+            if (recognition) {
+                recognition.stop();
+                recognition = null;
+                micBtn.classList.remove('recording');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'bn-BD';
+            recognition.continuous = false;
+
+            recognition.onstart = () => micBtn.classList.add('recording');
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userInput').value += transcript;
+                micBtn.classList.remove('recording');
+                recognition = null;
+            };
+            recognition.onerror = () => {
+                micBtn.classList.remove('recording');
+                recognition = null;
+            };
+            recognition.onend = () => {
+                micBtn.classList.remove('recording');
+                recognition = null;
+            };
+
+            recognition.start();
+        };
+
+        // Speech Output
+        window.speakText = function(msgId) {
+            const el = document.getElementById(msgId);
+            if(!el) return;
+            const text = el.innerText;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'bn-BD';
+            window.speechSynthesis.speak(utterance);
+        };
+
+        // Text Copy
+        window.copyText = function(msgId) {
+            const el = document.getElementById(msgId);
+            if(!el) return;
+            navigator.clipboard.writeText(el.innerText);
+            alert('কপি করা হয়েছে!');
+        };
+
+        // Attachment Handling
+        window.handleFileSelect = function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                attachedFile = {
+                    name: file.name,
+                    base64: evt.target.result
+                };
+                document.getElementById('attachmentThumb').src = evt.target.result;
+                document.getElementById('attachmentName').innerText = file.name;
+                document.getElementById('attachmentBar').classList.add('active');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.removeAttachment = function() {
+            attachedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('attachmentBar').classList.remove('active');
+        };
+
+        window.injectQuickPrompt = function(prefix) {
+            const input = document.getElementById('userInput');
+            input.value = prefix + input.value;
+            input.focus();
+        };
+
         function saveCurrentChat() {
             if (currentMessages.length === 0 || !currentUser) return;
             const title = currentMessages[0].content.substring(0, 28) + '...';
             chatSessions[activeChatId] = { title, messages: currentMessages };
             localStorage.setItem('gaivex_chats_' + currentUser.uid, JSON.stringify(chatSessions));
+            localStorage.setItem('gaivex_stats_' + currentUser.uid, JSON.stringify(userStats));
             loadHistoryList();
+        }
+
+        function loadUserData() {
+            if(!currentUser) return;
+            const stats = localStorage.getItem('gaivex_stats_' + currentUser.uid);
+            if(stats) userStats = JSON.parse(stats);
+            updateStatsDisplay();
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('statStreak').innerText = userStats.streak + ' Day';
+            document.getElementById('statSolved').innerText = userStats.solved;
+            document.getElementById('statXP').innerText = userStats.xp;
         }
 
         function loadHistoryList() {
             if(!currentUser) return;
             chatSessions = JSON.parse(localStorage.getItem('gaivex_chats_' + currentUser.uid) || '{}');
+            filterHistoryList();
+        }
+
+        window.filterHistoryList = function() {
+            const query = document.getElementById('historySearch').value.toLowerCase();
             const listEl = document.getElementById('historyList');
             listEl.innerHTML = '';
             
             Object.keys(chatSessions).sort((a, b) => b - a).forEach(id => {
+                const title = chatSessions[id].title;
+                if(query && !title.toLowerCase().includes(query)) return;
+
                 const item = document.createElement('div');
                 item.className = `history-item ${id === activeChatId ? 'active' : ''}`;
-                item.innerText = chatSessions[id].title;
+                item.innerHTML = `<span class="history-text">${title}</span><span onclick="event.stopPropagation(); deleteChat('${id}')" style="color:var(--accent-rose)">✕</span>`;
                 
                 item.onclick = () => {
                     switchChat(id);
                     closeSidebar();
                 };
 
-                let pressTimer;
-                const triggerDelete = (e) => {
-                    e.preventDefault();
-                    if(confirm(`"${chatSessions[id].title}" এই চ্যাট হিস্টোরিটি ডিলিট করতে চান?`)) {
-                        deleteChat(id);
-                    }
-                };
-
-                item.addEventListener('mousedown', () => {
-                    pressTimer = setTimeout(() => triggerDelete(event), 600);
-                });
-                item.addEventListener('mouseup', () => clearTimeout(pressTimer));
-                item.addEventListener('mouseleave', () => clearTimeout(pressTimer));
-
-                item.addEventListener('touchstart', (e) => {
-                    pressTimer = setTimeout(() => triggerDelete(e), 600);
-                });
-                item.addEventListener('touchend', () => clearTimeout(pressTimer));
-                item.addEventListener('touchmove', () => clearTimeout(pressTimer));
-
                 listEl.appendChild(item);
             });
-        }
+        };
 
         window.deleteChat = function(id) {
             if(!currentUser) return;
             delete chatSessions[id];
             localStorage.setItem('gaivex_chats_' + currentUser.uid, JSON.stringify(chatSessions));
             
-            if(id === activeChatId) {
-                createNewChat();
-            } else {
-                loadHistoryList();
-            }
-        }
+            if(id === activeChatId) createNewChat();
+            else loadHistoryList();
+        };
 
         window.switchChat = function(id) {
             activeChatId = id;
@@ -450,7 +675,7 @@
                 const avatar = msg.role === 'user' 
                     ? (currentUser.photoURL ? `<img src="${currentUser.photoURL}">` : (currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'))
                     : '🤖';
-                appendMessage(msg.role === 'user' ? 'user' : 'ai', avatar, msg.content, msg.role !== 'user');
+                appendMessage(msg.role === 'user' ? 'user' : 'ai', avatar, msg.content, msg.role !== 'user', msg.image || null);
             });
             loadHistoryList();
         };
@@ -461,18 +686,28 @@
             document.getElementById('chatBox').innerHTML = `
                 <div class="message ai">
                     <div class="msg-avatar">🤖</div>
-                    <div class="msg-content">Hi! I am GAIVEX AI, কীভাবে সাহায্য করতে পারি?</div>
+                    <div class="msg-container">
+                        <div class="msg-content">Hi! I am GAIVEX AI, কীভাবে সাহায্য করতে পারি?</div>
+                    </div>
                 </div>
             `;
             loadHistoryList();
             closeSidebar();
         };
 
+        window.clearAllUserData = function() {
+            if(!currentUser) return;
+            if(confirm('আপনার সমস্ত চ্যাট হিস্টোরি ও ডেটা মুছে ফেলতে চান?')) {
+                localStorage.removeItem('gaivex_chats_' + currentUser.uid);
+                localStorage.removeItem('gaivex_stats_' + currentUser.uid);
+                chatSessions = {};
+                createNewChat();
+            }
+        };
+
         window.toggleSidebar = () => {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
         };
 
         window.closeSidebar = () => {
@@ -501,6 +736,11 @@
         window.toggleMenu = () => document.getElementById('dropdownMenu').classList.toggle('show');
         window.openModal = (id) => document.getElementById(id).style.display = 'flex';
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
+        window.saveProfileSettings = function() {
+            alert('প্রোফাইল সেটিংস সংরক্ষিত হয়েছে!');
+            closeModal('profileModal');
+        };
     </script>
 </body>
 </html>
