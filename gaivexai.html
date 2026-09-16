@@ -24,9 +24,6 @@
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
 
-    <!-- PDF.js for client-side PDF text extraction (PDF & Notes AI) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
 
@@ -94,10 +91,10 @@
         .history-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 10px; }
 
         /* Main Content View */
-        .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; }
+        .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; width: 100%; min-width: 0; }
 
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: color-mix(in srgb, var(--bg-secondary) 95%, transparent); background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 100; gap: 10px; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 100; gap: 10px; flex-shrink: 0; }
         .nav-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; min-width: 0; }
         .toggle-sidebar-btn { background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 36px; height: 36px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .logo { font-size: 18px; font-weight: 700; color: var(--accent); text-decoration: none; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -122,11 +119,10 @@
         .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; width: 210px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; max-height: 80vh; overflow-y: auto; }
         .dropdown-menu button, .dropdown-menu a { display: flex; align-items:center; gap:8px; width: 100%; text-align: left; padding: 10px 15px; color: var(--text-primary); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border-color); background: none; border: none; cursor: pointer; }
         .dropdown-menu button:hover, .dropdown-menu a:hover { background: var(--bg-primary); }
-        .dropdown-menu .badge-new { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
         .dropdown-menu.show { display: block; }
 
         /* Fixed Chat Area */
-        .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); background: var(--bg-primary); position: relative; }
+        .chat-section { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); background: var(--bg-primary); position: relative; overflow: hidden; }
         .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
 
         .message { display: flex; gap: 10px; max-width: 90%; flex-direction: column; }
@@ -148,7 +144,6 @@
         .msg-content p { margin-bottom: 6px; }
         .msg-content p:last-child { margin-bottom: 0; }
         .msg-content strong { color: var(--accent); }
-        .msg-content img.attached-img { max-width: 100%; max-height: 250px; border-radius: 8px; margin-bottom: 6px; display: block; object-fit: contain; }
         .msg-content pre { position: relative; background: rgba(0,0,0,0.35); padding: 10px; border-radius: 8px; overflow-x: auto; margin: 6px 0; }
         .copy-code-btn { position: absolute; top: 4px; right: 4px; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 11px; padding: 2px 6px; border-radius: 5px; cursor: pointer; }
 
@@ -159,31 +154,15 @@
         .msg-action-btn.active-like { color: var(--success); border-color: var(--success); }
         .msg-action-btn.active-dislike { color: var(--danger); border-color: var(--danger); }
         .msg-action-btn.active-bookmark { color: #fbbf24; border-color: #fbbf24; }
-        .msg-action-btn.speaking { color: var(--accent); border-color: var(--accent); animation: pulse 1s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
 
         .chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; padding-left: 42px; }
         .chip-btn { background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--accent); font-size: 12px; padding: 5px 10px; border-radius: 16px; cursor: pointer; white-space: nowrap; }
         .chip-btn:hover { background: var(--accent); color: var(--accent-contrast); }
 
-        /* Composer */
-        .attach-preview { display: none; padding: 8px 12px 0; gap: 8px; flex-wrap: wrap; }
-        .attach-preview.show { display: flex; }
-        .attach-chip { display: flex; align-items: center; gap: 6px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px 8px; font-size: 12px; color: var(--text-secondary); }
-        .attach-chip img { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; }
-        .attach-chip button { background: none; border: none; color: var(--danger); font-size: 14px; cursor: pointer; }
-
-        .attach-menu { display: none; position: absolute; bottom: 58px; left: 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 200; }
-        .attach-menu.show { display: block; }
-        .attach-menu button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 16px; background: none; border: none; color: var(--text-primary); font-size: 13px; cursor: pointer; white-space: nowrap; }
-        .attach-menu button:hover { background: var(--bg-primary); }
-
-        .chat-input-area { padding: 10px 12px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; position: sticky; bottom: 0; width: 100%; position: relative; }
+        .chat-input-area { padding: 10px 12px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; width: 100%; position: relative; flex-shrink: 0; }
         .chat-input-area input[type=text] { flex: 1; padding: 10px 15px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 25px; color: var(--text-primary); font-size: 14px; outline: none; min-width: 0; }
         .chat-input-area input:disabled { background: var(--bg-secondary); cursor: not-allowed; opacity: 0.6; }
         .chat-input-area input:focus { border-color: var(--accent); }
-        .round-btn { background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 40px; height: 40px; min-width: 40px; border-radius: 50%; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .round-btn.recording { background: var(--danger); color: #fff; border-color: var(--danger); animation: pulse 1s infinite; }
         .send-btn { background: var(--accent); color: var(--accent-contrast); border: none; width: 40px; height: 40px; min-width: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .send-btn:disabled { background: var(--border-color); cursor: not-allowed; }
         .send-btn.stop-mode { background: var(--danger); color: #fff; }
@@ -355,21 +334,9 @@
                     🔒 AI এর সাথে কথা বলতে এবং চ্যাট করতে প্রথমে লগইন করুন!
                 </div>
 
-                <div class="attach-preview" id="attachPreview"></div>
-
-                <!-- অ্যাটাচমেন্ট মেনু -->
-                <div class="attach-menu" id="attachMenu">
-                    <button onclick="triggerFilePick('image')">🖼️ ছবি আপলোড করুন (প্রশ্ন/অংক)</button>
-                    <button onclick="triggerFilePick('pdf')">📄 PDF/নোট আপলোড করুন</button>
-                </div>
-                <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageSelect(event)">
-                <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none" onchange="handlePdfSelect(event)">
-
                 <!-- চ্যাট ইনপুট বার -->
                 <form class="chat-input-area" onsubmit="sendChatMessage(event)">
-                    <button type="button" class="round-btn" id="attachBtn" onclick="toggleAttachMenu()" title="ছবি/PDF যুক্ত করুন">📎</button>
                     <input type="text" id="userInput" placeholder="লগইন করার পর এখানে প্রশ্ন লিখুন..." autocomplete="off" required disabled>
-                    <button type="button" class="round-btn" id="micBtn" onclick="toggleVoiceInput()" title="ভয়েসে প্রশ্ন বলুন">🎤</button>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>➤</button>
                 </form>
             </main>
@@ -440,9 +407,6 @@
 
             <label>🎨 অ্যাকসেন্ট কালার</label>
             <div class="swatch-row" id="accentSwatchRow"></div>
-
-            <label>🎤 ভয়েস ভাষা</label>
-            <div class="option-grid" id="voiceLangGrid"></div>
 
             <div class="btn-group"><button type="button" class="btn btn-primary" onclick="closeModal('settingsModal')">সংরক্ষণ করে বন্ধ করুন</button></div>
         </div>
@@ -568,16 +532,9 @@
         let activeChatId = Date.now().toString();
         let chatSessions = {};
         let currentMessages = [];
-        let messageMeta = {}; 
         let pendingAbortController = null;
         let isGenerating = false;
         let lastUserPrompt = null;
-        let lastRequestPayloadExtra = null;
-        let pendingImage = null; // {mimeType, data, previewUrl}
-        let pendingPdf = null;   // {name, text}
-        let recognition = null;
-        let isRecording = false;
-        let speakingBtn = null;
 
         /* ---------------- Utility ---------------- */
         function uid() { return currentUser ? currentUser.uid : 'guest'; }
@@ -589,7 +546,7 @@
         }
         function todayStr() { return new Date().toISOString().slice(0, 10); }
 
-        /* ---------------- Settings (Subject / Admission / Personality / Theme) ---------------- */
+        /* ---------------- Settings ---------------- */
         const SUBJECTS = [
             { v: 'general', l: '🎯 সাধারণ' }, { v: 'physics', l: '⚛️ পদার্থবিজ্ঞান' }, { v: 'chemistry', l: '🧪 রসায়ন' },
             { v: 'biology', l: '🧬 জীববিজ্ঞান' }, { v: 'math', l: '🧮 গণিত' }, { v: 'english', l: '🇬🇧 ইংরেজি' },
@@ -603,7 +560,6 @@
             { v: 'friendly', l: '😊 Friendly Tutor' }, { v: 'strict', l: '🧐 Strict Exam Coach' }, { v: 'quick', l: '⚡ Quick Answer' },
             { v: 'detailed', l: '📖 Detailed Teacher' }, { v: 'socratic', l: '🤔 Socratic Tutor' }, { v: 'expert', l: '🎓 Admission Expert' }
         ];
-        const VOICE_LANGS = [ { v: 'bn-BD', l: '🇧🇩 বাংলা' }, { v: 'en-US', l: '🇺🇸 English' } ];
         const ACCENTS = [
             { name: 'sky', c1: '#38bdf8', c2: '#7dd3fc' }, { name: 'violet', c1: '#a78bfa', c2: '#c4b5fd' },
             { name: 'emerald', c1: '#34d399', c2: '#6ee7b7' }, { name: 'rose', c1: '#fb7185', c2: '#fda4af' },
@@ -611,7 +567,7 @@
         ];
 
         function defaultSettings() {
-            return { subject: 'general', admissionTarget: 'none', personality: 'friendly', hintMode: false, theme: 'dark', accent: 'sky', voiceLang: 'bn-BD' };
+            return { subject: 'general', admissionTarget: 'none', personality: 'friendly', hintMode: false, theme: 'dark', accent: 'sky' };
         }
         function getSettings() {
             try { return { ...defaultSettings(), ...JSON.parse(localStorage.getItem('gaivex_settings_' + uid()) || '{}') }; }
@@ -634,6 +590,7 @@
 
         function buildOptionGrid(containerId, options, currentVal, onSelect) {
             const el = document.getElementById(containerId);
+            if(!el) return;
             el.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
@@ -656,20 +613,21 @@
             buildOptionGrid('admissionTargetGrid', ADMISSION_TARGETS, s.admissionTarget, v => { const s2 = getSettings(); s2.admissionTarget = v; saveSettings(s2); });
             buildOptionGrid('subjectGrid', SUBJECTS, s.subject, v => { const s2 = getSettings(); s2.subject = v; saveSettings(s2); });
             buildOptionGrid('personalityGrid', PERSONALITIES, s.personality, v => { const s2 = getSettings(); s2.personality = v; saveSettings(s2); });
-            buildOptionGrid('voiceLangGrid', VOICE_LANGS, s.voiceLang, v => { const s2 = getSettings(); s2.voiceLang = v; saveSettings(s2); });
             document.getElementById('hintModeToggle').checked = s.hintMode;
             document.getElementById('themeDarkBtn').classList.toggle('active', s.theme === 'dark');
             document.getElementById('themeLightBtn').classList.toggle('active', s.theme === 'light');
 
             const swatchRow = document.getElementById('accentSwatchRow');
-            swatchRow.innerHTML = '';
-            ACCENTS.forEach(a => {
-                const sw = document.createElement('div');
-                sw.className = 'swatch' + (a.name === s.accent ? ' active' : '');
-                sw.style.background = a.c1;
-                sw.onclick = () => { const s2 = getSettings(); s2.accent = a.name; saveSettings(s2); };
-                swatchRow.appendChild(sw);
-            });
+            if(swatchRow) {
+                swatchRow.innerHTML = '';
+                ACCENTS.forEach(a => {
+                    const sw = document.createElement('div');
+                    sw.className = 'swatch' + (a.name === s.accent ? ' active' : '');
+                    sw.style.background = a.c1;
+                    sw.onclick = () => { const s2 = getSettings(); s2.accent = a.name; saveSettings(s2); };
+                    swatchRow.appendChild(sw);
+                });
+            }
         }
 
         window.setTheme = function (t) { const s = getSettings(); s.theme = t; saveSettings(s); };
@@ -702,15 +660,13 @@
             return parts.join(' ');
         }
 
-        /* ---------------- AI Call Helper (2 Messages Limit & Vision Support Added) ---------------- */
+        /* ---------------- AI Call Helper ---------------- */
         async function callAI(promptText, opts = {}) {
-            const body = { system_instruction: buildSystemInstruction(), history: opts.history || [], prompt: promptText };
-            
-            // ছবি সাপোর্টের জন্য images প্যারামিটার যুক্ত
-            if (opts.image) {
-                body.images = [opts.image];
-            }
-            if (opts.rawSystem) body.system_instruction = opts.rawSystem;
+            const body = { 
+                system_instruction: opts.rawSystem || buildSystemInstruction(), 
+                history: opts.history || [], 
+                prompt: promptText 
+            };
             
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
@@ -779,7 +735,7 @@
 
             const inputEl = document.getElementById('userInput');
             const prompt = (overridePrompt !== undefined && overridePrompt !== null) ? overridePrompt : inputEl.value.trim();
-            if (!prompt && !pendingImage) return;
+            if (!prompt) return;
 
             const chatBox = document.getElementById('chatBox');
             const typingIndicator = document.getElementById('typingIndicator');
@@ -788,24 +744,13 @@
                 ? `<img src="${currentUser.photoURL}" alt="User">`
                 : (currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U');
 
-            let finalPrompt = prompt;
-            if (pendingPdf) {
-                finalPrompt = `Context extracted from an uploaded PDF named "${pendingPdf.name}" (use it to answer the question below):\n"""${pendingPdf.text}"""\n\nQuestion: ${prompt || 'এই PDF এর গুরুত্বপূর্ণ বিষয়গুলো সংক্ষেপে বুঝিয়ে দাও।'}`;
-            }
+            appendMessage('user', userAvatar, prompt, false);
 
-            appendMessage('user', userAvatar, prompt || '📎 সংযুক্তি পাঠানো হলো', false, { imageDataUrl: pendingImage ? pendingImage.previewUrl : null, pdfName: pendingPdf ? pendingPdf.name : null });
-
-            // ⚠️ শুধুমাত্র সর্বশেষ ২টি মেসেজ পাঠানোর জন্য হিস্টোরি ফিল্টারিং (১টি user এবং ১টি model)
             const requestHistory = currentMessages.slice(-2);
 
-            currentMessages.push({ role: 'user', content: prompt || '(attachment)' });
+            currentMessages.push({ role: 'user', content: prompt });
             if (!overridePrompt) inputEl.value = '';
-            lastUserPrompt = finalPrompt;
-
-            const imagePayload = pendingImage ? { mimeType: pendingImage.mimeType, data: pendingImage.data } : null;
-            lastRequestPayloadExtra = { image: imagePayload };
-            clearAttachments();
-            closeAttachMenu();
+            lastUserPrompt = prompt;
 
             typingIndicator.style.display = 'flex';
             document.getElementById('typingText').textContent = '🤖 GAIVEX AI Thinking...';
@@ -814,7 +759,7 @@
 
             try {
                 pendingAbortController = new AbortController();
-                let replyText = await callAI(finalPrompt, { history: requestHistory, image: imagePayload, signal: pendingAbortController.signal });
+                let replyText = await callAI(prompt, { history: requestHistory, signal: pendingAbortController.signal });
                 typingIndicator.style.display = 'none';
                 setGeneratingState(false);
 
@@ -852,7 +797,6 @@
             else { sendBtn.textContent = '➤'; sendBtn.classList.remove('stop-mode'); sendBtn.disabled = false; }
         }
 
-        // Intercept send button click while generating to act as stop
         document.addEventListener('DOMContentLoaded', () => {
             const sendBtn = document.getElementById('sendBtn');
             sendBtn.addEventListener('click', (e) => {
@@ -878,15 +822,13 @@
         function appendMessage(role, avatar, text, isMarkdown = false, opts = {}) {
             const chatBox = document.getElementById('chatBox');
             const parsedText = isMarkdown ? marked.parse(text) : text.replace(/\n/g, '<br>');
-            const imgHtml = opts.imageDataUrl ? `<img class="attached-img" src="${opts.imageDataUrl}">` : '';
-            const pdfHtml = opts.pdfName ? `<div style="font-size:12px;opacity:.8;margin-bottom:4px;">📄 ${opts.pdfName}</div>` : '';
 
             const wrapper = document.createElement('div');
             wrapper.className = 'message ' + role;
             wrapper.innerHTML = `
                 <div class="msg-row">
                     <div class="msg-avatar">${avatar}</div>
-                    <div class="msg-content">${pdfHtml}${imgHtml}${parsedText}</div>
+                    <div class="msg-content">${parsedText}</div>
                 </div>
             `;
             chatBox.appendChild(wrapper);
@@ -948,15 +890,13 @@
 
             const regenBtn = mkActionBtn('🔄', 'আবার', () => regenerateLast());
 
-            const speakBtn = mkActionBtn('🔊', 'শুনুন', () => toggleSpeak(contentEl.innerText, speakBtn));
-
             const bookmarkBtn = mkActionBtn('🔖', 'সংরক্ষণ', () => {
                 addBookmark(lastUserPrompt || '', plainAnswer);
                 bookmarkBtn.classList.add('active-bookmark');
                 toast('উত্তর সংরক্ষিত হয়েছে 📌');
             });
 
-            [copyBtn, regenBtn, speakBtn, bookmarkBtn, likeBtn, dislikeBtn, shareBtn].forEach(b => row.appendChild(b));
+            [copyBtn, regenBtn, bookmarkBtn, likeBtn, dislikeBtn, shareBtn].forEach(b => row.appendChild(b));
 
             const chipRow = document.createElement('div');
             chipRow.className = 'chip-row';
@@ -1004,123 +944,7 @@
             localStorage.setItem(key, JSON.stringify(list));
         }
 
-        /* ---------------- Speech: Voice Input / Read Aloud ---------------- */
-        const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognitionImpl) {
-            recognition = new SpeechRecognitionImpl();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.onresult = (e) => {
-                const text = e.results[0][0].transcript;
-                const inputEl = document.getElementById('userInput');
-                inputEl.value = (inputEl.value ? inputEl.value + ' ' : '') + text;
-            };
-            recognition.onend = () => { isRecording = false; document.getElementById('micBtn').classList.remove('recording'); };
-            recognition.onerror = () => { isRecording = false; document.getElementById('micBtn').classList.remove('recording'); toast('ভয়েস শোনা যায়নি, আবার চেষ্টা করুন 🎤'); };
-        }
-        window.toggleVoiceInput = function () {
-            if (!currentUser) { toggleAuthModal(true); return; }
-            if (!SpeechRecognitionImpl) { toast('এই ব্রাউজারে ভয়েস ইনপুট সাপোর্ট নেই'); return; }
-            const micBtn = document.getElementById('micBtn');
-            if (isRecording) { recognition.stop(); isRecording = false; micBtn.classList.remove('recording'); return; }
-            recognition.lang = getSettings().voiceLang || 'bn-BD';
-            try { recognition.start(); isRecording = true; micBtn.classList.add('recording'); } catch (e) {}
-        };
-
-        function toggleSpeak(text, btnEl) {
-            if (!('speechSynthesis' in window)) { toast('এই ব্রাউজারে ভয়েস আউটপুট সাপোর্ট নেই'); return; }
-            if (speakingBtn === btnEl) {
-                window.speechSynthesis.cancel();
-                btnEl.classList.remove('speaking');
-                speakingBtn = null;
-                return;
-            }
-            window.speechSynthesis.cancel();
-            if (speakingBtn) speakingBtn.classList.remove('speaking');
-            const clean = text.replace(/[#*_`>-]/g, '').slice(0, 2000);
-            const utter = new SpeechSynthesisUtterance(clean);
-            utter.lang = getSettings().voiceLang || 'bn-BD';
-            utter.onend = () => { btnEl.classList.remove('speaking'); if (speakingBtn === btnEl) speakingBtn = null; };
-            btnEl.classList.add('speaking');
-            speakingBtn = btnEl;
-            window.speechSynthesis.speak(utter);
-        }
-
-        /* ---------------- Attachments: Image / PDF ---------------- */
-        window.toggleAttachMenu = function () {
-            if (!currentUser) { toggleAuthModal(true); return; }
-            document.getElementById('attachMenu').classList.toggle('show');
-        };
-        function closeAttachMenu() { document.getElementById('attachMenu').classList.remove('show'); }
-        window.triggerFilePick = function (kind) {
-            closeAttachMenu();
-            if (kind === 'image') document.getElementById('imageFileInput').click();
-            else document.getElementById('pdfFileInput').click();
-        };
-
-        // ছবির Base64 ডেটা এক্সট্র্যাক্ট করে AI প্রসেসিং এর উপযোগী করা
-        window.handleImageSelect = function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-                const dataUrl = reader.result;
-                const base64 = dataUrl.split(',')[1];
-                pendingImage = { mimeType: file.type, data: base64, previewUrl: dataUrl };
-                renderAttachPreview();
-            };
-            reader.readAsDataURL(file);
-            e.target.value = '';
-        };
-
-        window.handlePdfSelect = async function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            toast('📄 PDF থেকে লেখা বের করা হচ্ছে...');
-            try {
-                const buf = await file.arrayBuffer();
-                if (window.pdfjsLib) {
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-                    let text = '';
-                    const maxPages = Math.min(pdf.numPages, 30);
-                    for (let i = 1; i <= maxPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const content = await page.getTextContent();
-                        text += content.items.map(it => it.str).join(' ') + '\n';
-                        if (text.length > 15000) break;
-                    }
-                    pendingPdf = { name: file.name, text: text.slice(0, 15000) };
-                    renderAttachPreview();
-                    toast('✅ PDF যুক্ত হয়েছে, এখন প্রশ্ন লিখুন');
-                } else {
-                    toast('PDF রিডার লোড হয়নি, ইন্টারনেট চেক করুন');
-                }
-            } catch (err) {
-                toast('⚠️ PDF পড়তে সমস্যা হয়েছে');
-            }
-            e.target.value = '';
-        };
-
-        function renderAttachPreview() {
-            const box = document.getElementById('attachPreview');
-            box.innerHTML = '';
-            let has = false;
-            if (pendingImage) {
-                has = true;
-                box.innerHTML += `<div class="attach-chip"><img src="${pendingImage.previewUrl}">🖼️ ছবি সংযুক্ত <button onclick="removeImageAttach()">✕</button></div>`;
-            }
-            if (pendingPdf) {
-                has = true;
-                box.innerHTML += `<div class="attach-chip">📄 ${pendingPdf.name} <button onclick="removePdfAttach()">✕</button></div>`;
-            }
-            box.classList.toggle('show', has);
-        }
-        window.removeImageAttach = function () { pendingImage = null; renderAttachPreview(); };
-        window.removePdfAttach = function () { pendingPdf = null; renderAttachPreview(); };
-        function clearAttachments() { pendingImage = null; pendingPdf = null; renderAttachPreview(); }
-
-        /* ---------------- Chat History (Search / Pin / Rename / Group / Delete All) ---------------- */
+        /* ---------------- Chat History ---------------- */
         function saveCurrentChat() {
             if (currentMessages.length === 0 || !currentUser) return;
             const existing = chatSessions[activeChatId];
@@ -1140,6 +964,7 @@
             if (!currentUser) return;
             chatSessions = JSON.parse(localStorage.getItem('gaivex_chats_' + currentUser.uid) || '{}');
             const listEl = document.getElementById('historyList');
+            if(!listEl) return;
             listEl.innerHTML = '';
             const searchVal = (document.getElementById('historySearchInput').value || '').toLowerCase();
 
@@ -1269,7 +1094,6 @@
         window.createNewChat = function () {
             activeChatId = Date.now().toString();
             currentMessages = [];
-            clearAttachments();
             document.getElementById('chatBox').innerHTML = `
                 <div class="message ai">
                     <div class="msg-row">
@@ -1390,7 +1214,7 @@
             openModal('progressModal');
         };
 
-        /* ---------------- MCQ Generator ---------------- */
+        /* ---------------- MCQ Generator (Fixed Question Generation) ---------------- */
         let currentQuiz = null; 
 
         window.openMcqModal = function () {
@@ -1414,20 +1238,39 @@
             document.getElementById('mcqSetupView').style.display = 'none';
             document.getElementById('mcqLoadingView').style.display = 'block';
 
-            const prompt = `তুমি একজন প্রশ্ন প্রণয়নকারী বিশেষজ্ঞ। বিষয়: ${subject}। অধ্যায়/টপিক: ${chapter || 'সাধারণ (পুরো বিষয় থেকে)'}। কঠিনতা: ${difficulty}। ঠিক ${count}টি MCQ প্রশ্ন তৈরি করো বাংলা ভাষায় admission exam মানের। উত্তর অবশ্যই শুধুমাত্র একটি বৈধ JSON array হতে হবে — কোনো markdown code fence, ব্যাখ্যা বা অতিরিক্ত টেক্সট ছাড়া। প্রতিটি object এর ফরম্যাট এভাবে হবে: {"q":"প্রশ্ন লেখা","options":["ক","খ","গ","ঘ"],"answer":0,"explanation":"সংক্ষিপ্ত ব্যাখ্যা"} — answer হলো সঠিক option এর index (০-৩ এর বদলে সবসময় ইংরেজি সংখ্যা 0,1,2,3 ব্যবহার করবে)।`;
+            const prompt = `তুমি একজন অ্যাডমিশন প্রশ্ন তৈরি করার বিশেষজ্ঞ। বিষয়: ${subject}। অধ্যায়/টপিক: ${chapter || 'সাধারণ (পুরো বিষয় থেকে)'}। কঠিনতা: ${difficulty}। ঠিক ${count}টি MCQ প্রশ্ন তৈরি করো। 
+
+অবশ্যই একটি ভ্যালিড JSON Array ফরম্যাটে রেসপন্স দিতে হবে, কোনো এক্সট্রা টেক্সট বা ব্যাকটিক মার্ক রাখা যাবে না। 
+
+ফরম্যাটটি ঠিক এইরকম হতে হবে:
+[
+  {
+    "q": "প্রশ্ন ১?",
+    "options": ["অপশন ১", "অপশন ২", "অপশন ৩", "অপশন ৪"],
+    "answer": 0,
+    "explanation": "সংক্ষিপ্ত ব্যাখ্যা"
+  }
+]
+সঠিক উত্তর হিসেবে options অ্যারের ০, ১, ২, ৩ ইনডেক্স ব্যবহার করবে।`;
 
             try {
-                const raw = await callAI(prompt, { rawSystem: 'You output only valid raw JSON, nothing else. No markdown fences.' });
-                const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+                const raw = await callAI(prompt, { rawSystem: 'You generate strictly valid JSON arrays containing multiple-choice questions without any markdown syntax or extra words.' });
+                
+                // Clean the response
+                let cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
                 const jsonStart = cleaned.indexOf('[');
                 const jsonEnd = cleaned.lastIndexOf(']');
-                const jsonStr = jsonStart >= 0 ? cleaned.slice(jsonStart, jsonEnd + 1) : cleaned;
-                const questions = JSON.parse(jsonStr);
-                if (!Array.isArray(questions) || !questions.length) throw new Error('empty');
+                if (jsonStart !== -1 && jsonEnd !== -1) {
+                    cleaned = cleaned.substring(jsonStart, jsonEnd + 1);
+                }
+
+                const questions = JSON.parse(cleaned);
+                if (!Array.isArray(questions) || questions.length === 0) throw new Error('Invalid JSON format');
 
                 currentQuiz = { questions, subject, negative, timerOn, answers: new Array(questions.length).fill(null), timeLeft: questions.length * 60, timerInterval: null };
                 renderQuiz();
             } catch (err) {
+                console.error("MCQ Parse Error:", err);
                 document.getElementById('mcqLoadingView').style.display = 'none';
                 document.getElementById('mcqSetupView').style.display = 'block';
                 toast('⚠️ প্রশ্ন তৈরি করতে সমস্যা হয়েছে, আবার চেষ্টা করুন');
@@ -1473,7 +1316,8 @@
             if (!currentQuiz) return;
             currentQuiz.answers[qi] = oi;
             document.querySelectorAll(`.quiz-opt[data-qi="${qi}"]`).forEach(el => el.classList.remove('selected'));
-            document.querySelector(`.quiz-opt[data-qi="${qi}"][data-oi="${oi}"]`).classList.add('selected');
+            const target = document.querySelector(`.quiz-opt[data-qi="${qi}"][data-oi="${oi}"]`);
+            if(target) target.classList.add('selected');
         };
 
         window.submitQuiz = function () {
@@ -1660,20 +1504,12 @@
             if (id === 'mcqModal' && currentQuiz && currentQuiz.timerInterval) { clearInterval(currentQuiz.timerInterval); currentQuiz = null; }
         };
 
-        // Close dropdown/attach menu when clicking elsewhere
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('dropdownMenu');
             const menuBtn = e.target.closest('.menu-btn');
-            if (menu.classList.contains('show') && !menu.contains(e.target) && !menuBtn) menu.classList.remove('show');
-
-            const attachMenu = document.getElementById('attachMenu');
-            const attachBtn = document.getElementById('attachBtn');
-            if (attachMenu.classList.contains('show') && !attachMenu.contains(e.target) && e.target !== attachBtn && !attachBtn.contains(e.target)) {
-                attachMenu.classList.remove('show');
-            }
+            if (menu && menu.classList.contains('show') && !menu.contains(e.target) && !menuBtn) menu.classList.remove('show');
         });
 
-        // Close modals when clicking the dark backdrop
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
                 e.target.style.display = 'none';
@@ -1687,12 +1523,10 @@
             }
         });
 
-        // ESC key support
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;
 
             document.getElementById('dropdownMenu')?.classList.remove('show');
-            document.getElementById('attachMenu')?.classList.remove('show');
             closeSidebar();
 
             document.querySelectorAll('.modal').forEach(modal => {
@@ -1742,7 +1576,6 @@
             });
         });
 
-        /* ---------------- Prevent accidental page refresh ---------------- */
         window.addEventListener('beforeunload', (e) => {
             if (isGenerating) {
                 e.preventDefault();
@@ -1750,7 +1583,6 @@
             }
         });
 
-        /* ---------------- Service Worker ---------------- */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -1763,7 +1595,6 @@
             });
         }
 
-        /* ---------------- Global Error Handling ---------------- */
         window.addEventListener('unhandledrejection', (event) => {
             console.error('Unhandled promise rejection:', event.reason);
 
